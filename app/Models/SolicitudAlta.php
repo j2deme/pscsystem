@@ -25,6 +25,8 @@ class SolicitudAlta extends Model
         'domicilio_estado',
         'telefono',
         'email',
+        'estatura',
+        'peso',
         'status',
         'observaciones',
         'rol',
