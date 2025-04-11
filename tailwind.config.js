@@ -18,4 +18,13 @@ export default {
     },
 
     plugins: [forms],
+
 };
+module.exports = {
+    important: true, // Asegura que los estilos tengan prioridad
+    content: [
+        './resources/**/*.blade.php',
+        './resources/**/*.js',
+        './resources/**/*.vue',
+    ],
+}
