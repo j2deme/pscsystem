@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class SolicitudVacaciones extends Model
+{
+    use HasFactory;
+    protected $fillable = [
+        'user_id',
+        'dias_por_derecho',
+        'fecha_inicio',
+        'fecha_fin',
+        'monto',
+        'observaciones',
+        'dias_ya_utilizados',
+        'dias_disponibles',
+        'dias_solicitados',
+        'codigo_empleado',
+        'fecha_solicitud',
+        'estatus',
+    ];
+}

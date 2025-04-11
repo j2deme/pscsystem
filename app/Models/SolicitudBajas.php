@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class SolicitudBajas extends Model
+{
+    use HasFactory;
+    protected $fillable = [
+        'user_id',
+        'fecha_solicitud',
+        'motivo',
+        'ultima_asistencia',
+        'estatus',
+        'fecha_baja',
+        'observaciones',
+    ];
+}
