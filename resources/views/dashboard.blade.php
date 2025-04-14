@@ -32,7 +32,7 @@
                         <a href="admin.mostrarUsuarios" class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 rounded">
                             Gestion de Usuarios
                         </a>
-                        <a href="#" class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 rounded">
+                        <a href="{{route('profile.edit')}}" class="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 rounded">
                             Mi Perfil
                         </a>
                         <form method="POST" action="{{ route('logout') }}">
@@ -74,9 +74,34 @@
                                 <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1"></p>
                             </a>
                         </div>
+                        @elseif (Auth::user()->rol == 'Recursos Humanos')
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <a href="{{route('rh.solicitudesAltas')}}">
+                                <h3 class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Solicitudes de Altas</h3>
+                                <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1"></p>
+                            </a>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <a href="#">
+                                <h3 class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Solicitudes de Bajas</h3>
+                                <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1"></p>
+                            </a>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <a href="#">
+                                <h3 class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Solicitudes de Vacaciones</h3>
+                                <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1"></p>
+                            </a>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <a href="#">
+                                <h3 class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Archivos</h3>
+                                <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1"></p>
+                            </a>
+                        </div>
                         @else
                         <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-                            <h3 class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Acciones a relizar</h3>
+                            <h3 class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Acciones a realizar</h3>
                             <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1"></p>
                         </div>
                         @endif
