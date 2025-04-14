@@ -139,9 +139,12 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+                    <button type="submit" class="w-1/4 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
                         Continuar
                     </button>
+                    <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
+                        Regresar
+                    </a>
                 </div>
             </form>
             <p class="text-justify">Nota: Favor de llenar correctamente los campos requeridos, para posteriormente continuar con la subida de los documentos necesarios. <br>

@@ -133,4 +133,12 @@ class SupervisorController extends Controller
         return redirect()->route('sup.nuevoUsuarioForm')->with('success', 'Documentación subida correctamente');
     }
 
+    public function historialSolicitudes()
+    {
+        $usuario = auth()->user()->name;
+        $solicitudes = SolicitudAlta::where('solicitante', $usuario)->orderBy('created_at', 'desc')->get();
+
+        return view('supervisor.historialSolicitudes', compact('solicitudes'));
+    }
+
 }
