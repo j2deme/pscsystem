@@ -141,4 +141,10 @@ class SupervisorController extends Controller
         return view('supervisor.historialSolicitudes', compact('solicitudes'));
     }
 
+    public function detalleSolicitud($id){
+        $solicitud = SolicitudAlta::find($id);
+        $documentacion = DocumentacionAltas::where('solicitud_id', $id)->first();
+        return view('supervisor.detalleSolicitud', compact('solicitud', 'documentacion'));
+    }
+
 }
