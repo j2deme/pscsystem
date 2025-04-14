@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SupervisorController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -20,9 +21,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    //Usuario Admnistrador
     Route::get('/users', [ProfileController::class, 'mostrarUsuarios'])->name('admin.verUsuarios');
     Route::get('/users/registrarUsuario', [UserController::class, 'crearUsuario'])->name('crearUsuario');
     Route::post('/guardarUsuario', [UserController::class, 'registrarUsuario'])->name('registrarUsuario');
+
+    //Usuario Supervisor
+    Route::get('/nuevoUsuario', [SupervisorController::class, 'nuevoUsuarioForm'])->name('sup.nuevoUsuarioForm');
 });
 
 require __DIR__.'/auth.php';
