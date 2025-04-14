@@ -12,7 +12,7 @@
                             Mi Perfil
                         </a>
 
-                        <form method="POST" action="{{ route('logout') }}" class="inline mt-3">
+                        <form method="POST" action="{{ route('logout') }}" class="inlines mt-1">
                             @csrf
                             <button type="submit" class="px-3 py-3 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors duration-200">
                                 Cerrar Sesión

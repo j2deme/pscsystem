@@ -49,13 +49,13 @@
                                     <thead class="bg-gray-50 dark:bg-gray-700">
                                         <tr>
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                                ID
+                                                No.
                                             </th>
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                                 Nombre
                                             </th>
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                                Email
+                                                Correo
                                             </th>
                                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                                 Rol
@@ -69,7 +69,7 @@
                                         @foreach($users as $user)
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                                {{ $user->id }}
+                                                {{ $loop->iteration }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm font-medium text-gray-900 dark:text-gray-200">
@@ -80,7 +80,7 @@
                                                 {{ $user->email }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                                {{ $user->role }}
+                                                {{ $user->rol }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <a href="#" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-500 mr-3">Editar</a>
@@ -99,6 +99,10 @@
                             <div class="mt-4">
                                 {{ $users->links() }}
                             </div>
+                            <center>
+                                <a href="{{route('crearUsuario')}}" class="px-3 py-1 text-md text-gray-900 dark:text-gray-100 bg-green-300 dark:bg-green-400 rounded">Nuevo usuario</a>
+                                <a href="{{route('dashboard')}}" class="px-3 py-1 text-md text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-400 rounded">Regresar</a>
+                            </center>
                         </div>
                     </div>
                 </div>
