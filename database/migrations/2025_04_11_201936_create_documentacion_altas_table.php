@@ -20,13 +20,13 @@ return new class extends Migration
             $table->string('arch_comprobante_domicilio');
             $table->string('arch_rfc');
             $table->string('arch_comprobante_estudios');
-            $table->string('arch_carta_rec_laboral');
-            $table->string('arch_carta_rec_personal');
-            $table->string('arch_cartilla_militar');
-            $table->string('arch_infonavit');
-            $table->string('arch_fonacot');
-            $table->string('arch_licencia_conducir');
-            $table->string('arch_carta_no_penales');
+            $table->string('arch_carta_rec_laboral')->nullable();
+            $table->string('arch_carta_rec_personal')->nullable();
+            $table->string('arch_cartilla_militar')->nullable();
+            $table->string('arch_infonavit')->nullable();
+            $table->string('arch_fonacot')->nullable();
+            $table->string('arch_licencia_conducir')->nullable();
+            $table->string('arch_carta_no_penales')->nullable();
             $table->string('arch_foto');
             $table->timestamps();
 

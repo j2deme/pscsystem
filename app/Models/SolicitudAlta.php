@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\DocumentacionAltas;
 
 class SolicitudAlta extends Model
 {
@@ -35,4 +36,10 @@ class SolicitudAlta extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function documentacion()
+    {
+        return $this->hasOne(DocumentacionAltas::class, 'solicitud_id');
+    }
+
 }

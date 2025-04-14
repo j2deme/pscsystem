@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class DocumentacionAltas extends Model
@@ -20,8 +21,10 @@ class DocumentacionAltas extends Model
         'arch_cartilla_militar',
         'arch_infonavit',
         'arch_fonacot',
-        'arch_licencia conducir',
+        'arch_licencia_conducir',
         'arch_carta_no_penales',
         'arch_foto',
+        'visa',
+        'pasaporte'
     ];
 }

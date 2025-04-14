@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SolicitudAlta;
+use App\Models\DocumentacionAltas;
 use Illuminate\Http\Request;
 
 class SupervisorController extends Controller
@@ -63,15 +64,73 @@ class SupervisorController extends Controller
 
             $solicitud->save();
 
+
+
             //session(['user_id' => $solicitud->id]);
 
-            return view('supervisor.subirArchivosForm', compact('solicitud'));
+            return redirect()->route('sup.subirArchivosForm', ['id' => $solicitud->id]);
+
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al guardar la solicitud: ' . $e->getMessage());
         }
     }
 
-    public function subirArchivosForm(){
-        return view('supervisor.subirArchivosForm');
+    public function subirArchivosForm($id)
+    {
+        $solicitud = SolicitudAlta::findOrFail($id);
+        return view('supervisor.subirArchivosForm', compact('solicitud'));
     }
+
+    public function guardarArchivos(Request $request, $id)
+    {
+        $request->validate([
+            'arch_acta_nacimiento' => 'required|file',
+            'arch_curp' => 'required|file',
+            'arch_ine' => 'required|file',
+            'arch_comprobante_domicilio' => 'required|file',
+            'arch_rfc' => 'required|file',
+            'arch_comprobante_estudios' => 'required|file',
+            'arch_foto' => 'required|file',
+        ]);
+
+        $solicitudId = $id;
+        $documentacion = DocumentacionAltas::firstOrNew(['solicitud_id' => $solicitudId]);
+
+        $carpeta = 'solicitudesAltas/' . $solicitudId;
+
+        $archivos = [
+            'arch_acta_nacimiento',
+            'arch_curp',
+            'arch_ine',
+            'arch_comprobante_domicilio',
+            'arch_rfc',
+            'arch_comprobante_estudios',
+            'arch_carta_rec_laboral',
+            'arch_carta_rec_personal',
+            'arch_cartilla_militar',
+            'arch_infonavit',
+            'arch_fonacot',
+            'arch_licencia_conducir',
+            'arch_carta_no_penales',
+            'arch_foto',
+            'visa',
+            'pasaporte',
+        ];
+
+        foreach ($archivos as $campo) {
+            if ($request->hasFile($campo)) {
+                $archivo = $request->file($campo);
+                $nombreArchivo = $campo . '.' . $archivo->getClientOriginalExtension();
+                $ruta = $archivo->storeAs($carpeta, $nombreArchivo, 'public');
+
+                $documentacion->$campo = 'storage/' . $ruta;
+            }
+        }
+
+        $documentacion->solicitud_id = $solicitudId;
+        $documentacion->save();
+
+        return redirect()->route('sup.nuevoUsuarioForm')->with('success', 'Documentación subida correctamente');
+    }
+
 }

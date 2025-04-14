@@ -29,7 +29,9 @@ Route::middleware('auth')->group(function () {
     //Usuario Supervisor
     Route::get('/nuevoUsuario', [SupervisorController::class, 'nuevoUsuarioForm'])->name('sup.nuevoUsuarioForm');
     Route::post('/infoUsuario', [SupervisorController::class, 'guardarInfo'])->name('sup.guardarInfo');
-    Route::get('/archuvos_usuario', [SupervisorController::class, 'subirArchivosForm'])->name('sup.subirArchivosForm');
+    Route::get('/subir-archivos/{id}', [SupervisorController::class, 'subirArchivosForm'])->name('sup.subirArchivosForm');
+    Route::post('/subir-archivos/{id}', [SupervisorController::class, 'guardarArchivos'])->name('sup.guardarArchivos');
+
 });
 
 require __DIR__.'/auth.php';
