@@ -28,6 +28,8 @@ Route::middleware('auth')->group(function () {
 
     //Usuario Supervisor
     Route::get('/nuevoUsuario', [SupervisorController::class, 'nuevoUsuarioForm'])->name('sup.nuevoUsuarioForm');
+    Route::post('/infoUsuario', [SupervisorController::class, 'guardarInfo'])->name('sup.guardarInfo');
+    Route::get('/archuvos_usuario', [SupervisorController::class, 'subirArchivosForm'])->name('sup.subirArchivosForm');
 });
 
 require __DIR__.'/auth.php';

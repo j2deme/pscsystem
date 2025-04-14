@@ -20,33 +20,22 @@
         <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
             <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Solicitud de Alta de Usuario</h2>
 
-            @if(session('success'))
-                <div class="alert alert-success bg-green-200 text-green-800 p-4 rounded mb-4">
-                    {{ session('success') }}
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="alert alert-error bg-red-200 text-red-800 p-4 rounded mb-4">
-                    {{ session('error') }}
-                </div>
-            @endif
-
             <form action="{{route('sup.guardarInfo')}}" method="POST">
                 @csrf
 
                 <div class="form-group mb-4">
-                    <label for="name" class="block text-sm font-semibold text-gray-600">Nombre(s)</label>
+                    <label for="name" class="block text-sm font-semibold text-gray-600">Acta de Nacimiento</label>
                     <input type="text" id="name" name="name" placeholder="Nombre completo" value="{{ old('name') }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
                     @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="apellido_paterno" class="block text-sm font-semibold text-gray-600">Apellido Paterno</label>
-                    <input type="text" id="apellido_paterno" name="apellido_paterno"  placeholder="Apellido Paterno" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <label for="apellidoPaterno" class="block text-sm font-semibold text-gray-600">Apellido Paterno</label>
+                    <input type="text" id="apellidoPaterno" name="apellidoPaterno"  placeholder="Apellido Paterno" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" value="{{ old('ApellidoPaterno') }}" required>
                 </div>
                 <div class="form-group mb-4">
-                    <label for="apellido_materno" class="block text-sm font-semibold text-gray-600">Apellido Materno</label>
-                    <input type="text" id="apellido_materno" name="apellido_materno"  placeholder="Apellido Materno" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <label for="apellidoMaterno" class="block text-sm font-semibold text-gray-600">Apellido Materno</label>
+                    <input type="text" id="apellidoMaterno" name="apellidoMaterno"  placeholder="Apellido Materno" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" value="{{ old('ApellidoMaterno') }}" required>
                 </div>
 
                 <div class="form-group mb-4">
@@ -71,14 +60,15 @@
                         <option value="Soltero">Soltero/a</option>
                         <option value="Casado">Casado/a</option>
                         <option value="Divorciado">Divorciado/a</option>
-                        <option value="Viudo">Viudo/a</option>
+                        <option value="Divorciado">Viudo/a</option>
                         <option value="Union Civil">Unión civil</option>
                     </select>
+
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="rfc" class="block text-sm font-semibold text-gray-600">RFC</label>
-                    <input type="text" id="rfc" name="rfc" placeholder="RFC" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="rfc" name="rfc" placeholder="rfc" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
                 </div>
                 <div class="form-group mb-4">
                     <label for="telefono" class="block text-sm font-semibold text-gray-600">Teléfono</label>
@@ -92,7 +82,7 @@
 
                 <div class="form-group mb-4">
                     <label for="num_ext" class="block text-sm font-semibold text-gray-600">Domicilio (Numero)</label>
-                    <input type="number" id="num_ext" name="num_ext" placeholder="Numero" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="num_ext" name="num_ext" placeholder="Numero" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
                 </div>
 
                 <div class="form-group mb-4">
@@ -124,7 +114,6 @@
                     <label for="empresa" class="block text-sm font-semibold text-gray-600">Empresa</label>
                     <select id="empresa" name="empresa" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
                         <option value="" disabled selected>Selecciona una empresa</option>
-                        <option value="CPKC">CPKC</option>
                         <option value="SPYT">SPYT</option>
                         <option value="Montana">Montana</option>
                         <option value="PSC">PSC</option>
@@ -144,8 +133,7 @@
                     </button>
                 </div>
             </form>
-            <p class="text-justify">Nota: Favor de llenar correctamente los campos requeridos, para posteriormente continuar con la subida de los documentos necesarios. <br>
-            En caso de ser aceptada la solicitud, la contraseña para el nuevo usuario será su RFC.</p>
+
         </div>
     </div>
 </x-app-layout>
