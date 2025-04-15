@@ -49,4 +49,16 @@ class RhController extends Controller
 
         return redirect()->route('rh.solicitudesAltas')->with('success', 'Solicitud respondida correctamente.');
     }
+
+    public function enviarObservacion(Request $request, $id){
+        $request->validate([
+            'observacion' => 'required|string|max:1000'
+        ]);
+
+        $solicitud = SolicitudAlta::find($id);
+        $solicitud->observaciones = $request->observacion;
+        $solicitud->save();
+
+        return redirect()->route('rh.detalleSolicitud', $id)->with('success', 'Observación enviada correctamente.');
+    }
 }

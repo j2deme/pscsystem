@@ -3,6 +3,15 @@
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 space-y-8">
 
         <div class="bg-white shadow rounded-lg p-6">
+            @if(session('success'))
+                <div class="bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-4 py-3 shadow-md" role="alert">
+                    <div class="flex">
+                        <div>
+                            <p class="text-sm">{{ session('success') }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
             <p class="text-gray-900 text-2xl dark:text-gray-100 text-2xl">
                 Información del Solicitante
             </p><br>
@@ -92,7 +101,7 @@
         <div>
             <center><br>
                 @if($solicitud->status == 'En Proceso')
-                <a href="#" class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
+                <a href="{{route('sup.editarSolicitudForm', $solicitud->id)}}" class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
                     Editar
                 </a>
                 @else

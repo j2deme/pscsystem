@@ -5,6 +5,10 @@
                 <div class="flex justify-between items-center">
                     <div class="flex items-center space-x-1 sm:space-x-3 md:space-x-6">
 
+                        <a href="{{ route('dashboard') }}" class="px-3 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors duration-200">
+                            Inicio
+                        </a>
+
                         <a href="{{ route('profile.edit') }}" class="px-3 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors duration-200">
                             Mi Perfil
                         </a>
