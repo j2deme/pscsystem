@@ -1,25 +1,9 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4">
-            <div class="flex items-center gap-2">
-                <h2 class="font-semibold text-lg text-gray-800 dark:text-gray-200">
-                    {{ Auth::user()->name }}
-                </h2>
-            </div>
-            <div class="flex flex-wrap gap-2 sm:gap-4">
-                @if(Auth::user()->rol == 'admin')
-                <x-admin-layout></x-admin-layout>
-                @else
-                <x-user-layout></x-user-layout>
-                @endif
-            </div>
-        </div>
-    </x-slot>
-
+    <x-navbar></x-navbar>
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 space-y-8">
 
         <div class="bg-white shadow rounded-lg p-6">
-            <p class="text-gray-900 text-2xl font-bold dark:text-gray-100 text-2xl">
+            <p class="text-gray-900 text-2xl dark:text-gray-100 text-2xl">
                 Información del Solicitante
             </p><br>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -35,7 +19,36 @@
                 <div><strong>Empresa:</strong> {{ $solicitud->empresa }}</div>
                 <div><strong>Punto:</strong> {{ $solicitud->punto }}</div>
                 <div><strong>Fecha de Nacimiento:</strong> {{ $solicitud->fecha_nacimiento }}</div>
-            </div>
+                <div><strong>Estado de la solicitud:</strong>
+                    @if($solicitud->status == 'En Proceso')
+                        <span class="inline-flex items-center justify-center px-2 py-1 text-sm leading-none text-gray-900 bg-yellow-300 rounded-full">
+                            {{ $solicitud->status }}
+                        </span>
+                    @elseif($solicitud->status == 'Aceptada')
+                        <span class="inline-flex items-center justify-center px-2 py-1 text-sm leading-none text-gray-800 bg-green-300 rounded-full">
+                            {{ $solicitud->status }}
+                        </span>
+                    @elseif($solicitud->status == 'Rechazada')
+                        <span class="inline-flex items-center justify-center px-2 py-1 text-sm leading-none text-gray-100 bg-red-300 rounded-full">
+                            {{ $solicitud->status }}
+                        </span>
+                    @endif
+                </div>
+                <div><strong>Observaciones:</strong>
+                    @if($solicitud->status == 'En Proceso')
+                        <span class="inline-flex items-center justify-center px-2 py-1 text-sm leading-none text-gray-900 bg-yellow-300 rounded-full">
+                            {{ $solicitud->observaciones }}
+                        </span>
+                    @elseif($solicitud->status == 'Aceptada')
+                        <span class="inline-flex items-center justify-center px-2 py-1 text-sm leading-none text-gray-800 bg-green-300 rounded-full">
+                            {{ $solicitud->observaciones }}
+                            </span>
+                    @elseif($solicitud->status == 'Rechazada')
+                        <span class="inline-flex items-center justify-center px-2 py-1 text-sm leading-none text-gray-100 bg-red-300 rounded-full">
+                            {{ $solicitud->observaciones }}
+                        </span>
+                    @endif
+                </div>
         </div>
 
         <div class="bg-white shadow rounded-lg p-6">
@@ -54,7 +67,7 @@
                     'arch_infonavit' => 'Infonavit',
                     'arch_fonacot' => 'Fonacot',
                     'arch_licencia_conducir' => 'Licencia de Conducir',
-                    'arch_carta_no_penales' => 'Carta No Penales',
+                    'arch_carta_no_penales' => 'Carta Antecedentes no Penales',
                     'arch_foto' => 'Fotografía',
                     'visa' => 'Visa',
                     'pasaporte' => 'Pasaporte'
@@ -78,9 +91,12 @@
 
         <div>
             <center><br>
+                @if($solicitud->status == 'En Proceso')
                 <a href="#" class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
                     Editar
                 </a>
+                @else
+                @endif
                 <a href="{{ route('sup.historial') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
                     Regresar
                 </a>
