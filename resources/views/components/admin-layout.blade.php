@@ -1,28 +1,37 @@
-<div class="rounded-lg bg-gray-200 dark:bg-gray-800">
-    <div>
-        <nav class="bg-white bg-gray-200 dark:bg-gray-900 shadow py-4">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center space-x-1 sm:space-x-3 md:space-x-6">
-                        <a href="{{route('admin.verUsuarios')}}" class="px-3 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors duration-200">
-                            Gestión de Usuarios
-                        </a>
+<div class="rounded-lg bg-gray-100 dark:bg-gray-900">
+    <nav class="bg-white dark:bg-gray-800 shadow-md rounded-t-lg">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex flex-wrap items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-3 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-all duration-200">
+                        <svg class="w-5 h-5 text-blue-500 dark:text-blue-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 1.293a1 1 0 00-1.414 0l-7 7A1 1 0 003 9h1v7a2 2 0 002 2h2a1 1 0 001-1v-4h2v4a1 1 0 001 1h2a2 2 0 002-2V9h1a1 1 0 00.707-1.707l-7-7z" /></svg>
+                        Inicio
+                    </a>
 
-                        <a href="{{route('profile.edit')}}" class="px-3 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors duration-200">
-                            Mi Perfil
-                        </a>
+                    <a href="{{ route('admin.verUsuarios') }}" class="flex items-center gap-2 px-3 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-all duration-200">
+                        <svg class="w-5 h-5 text-green-500 dark:text-green-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a4 4 0 100 8 4 4 0 000-8zM4 14a6 6 0 0112 0v1a1 1 0 01-1 1H5a1 1 0 01-1-1v-1z" clip-rule="evenodd"/></svg>
+                        Gestión de Usuarios
+                    </a>
 
-                        <form method="POST" action="{{ route('logout') }}" class="inlines mt-1">
-                            @csrf
-                            <button type="submit" class="px-3 py-3 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors duration-200">
-                                Cerrar Sesión
-                            </button>
-                        </form>
-                    </div>
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-3 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-all duration-200">
+                        <svg class="w-5 h-5 text-purple-500 dark:text-purple-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 14.25V16a2 2 0 01-2 2H4a2 2 0 01-2-2v-1.75A6.25 6.25 0 018.25 8h3.5A6.25 6.25 0 0118 14.25zM10 7A3 3 0 1010 1a3 3 0 000 6z" clip-rule="evenodd" /></svg>
+                        Mi Perfil
+                    </a>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                                class="flex items-center gap-2 px-3 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-all duration-200">
+                            <svg class="w-5 h-5 text-red-500 dark:text-red-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h6a1 1 0 110 2H5v10h5a1 1 0 110 2H4a1 1 0 01-1-1V4zm11.293 1.293a1 1 0 011.414 1.414L14.414 9H17a1 1 0 110 2h-2.586l1.293 1.293a1 1 0 01-1.414 1.414L11 10l3.293-3.293z" clip-rule="evenodd" /></svg>
+                            Cerrar Sesión
+                        </button>
+                    </form>
                 </div>
             </div>
-        </nav>
-    </div>
+        </div>
+    </nav>
 
-    {{ $slot }}
+    <div class="p-4">
+        {{ $slot }}
+    </div>
 </div>
