@@ -1,24 +1,60 @@
-<div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-    <a href="{{route('rh.solicitudesAltas')}}">
-        <h3 class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Solicitudes de Altas</h3>
-        <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1"></p>
-    </a>
-</div>
-<div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-    <a href="#">
-        <h3 class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Solicitudes de Bajas</h3>
-        <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1"></p>
-    </a>
-</div>
-<div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-    <a href="#">
-        <h3 class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Solicitudes de Vacaciones</h3>
-        <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1"></p>
-    </a>
-</div>
-<div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-    <a href="#">
-        <h3 class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Archivos</h3>
-        <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1"></p>
-    </a>
+<div class="col-span-full">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @php
+            $cards = [
+                [
+                    'titulo' => 'Solicitudes de Altas',
+                    'ruta' => route('rh.solicitudesAltas'),
+                    'icono' => '📈',
+                    'color' => 'bg-blue-100 dark:bg-blue-700'
+                ],
+                [
+                    'titulo' => 'Solicitudes de Bajas',
+                    'ruta' => '#',
+                    'icono' => '📉',
+                    'color' => 'bg-red-100 dark:bg-red-700'
+                ],
+                [
+                    'titulo' => 'Solicitudes de Vacaciones',
+                    'ruta' => '#',
+                    'icono' => '🏖️',
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700'
+                ],
+                [
+                    'titulo' => 'Historial de Altas',
+                    'ruta' => '#',
+                    'icono' => '🗂️',
+                    'color' => 'bg-indigo-100 dark:bg-indigo-700'
+                ],
+                [
+                    'titulo' => 'Historial de Bajas',
+                    'ruta' => '#',
+                    'icono' => '📜',
+                    'color' => 'bg-pink-100 dark:bg-pink-700'
+                ],
+                [
+                    'titulo' => 'Archivos',
+                    'ruta' => '#',
+                    'icono' => '📁',
+                    'color' => 'bg-green-100 dark:bg-green-700'
+                ],
+            ];
+        @endphp
+
+        @foreach($cards as $card)
+            <a href="{{ $card['ruta'] }}" class="transition-transform transform hover:scale-105">
+                <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="text-3xl">
+                            {{ $card['icono'] }}
+                        </div>
+                        <h3 class="text-base font-semibold text-gray-800 dark:text-white">
+                            {{ $card['titulo'] }}
+                        </h3>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Haz clic para ver más detalles</p>
+                </div>
+            </a>
+        @endforeach
+    </div>
 </div>

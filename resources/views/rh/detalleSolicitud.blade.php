@@ -16,32 +16,58 @@
                     <p class="text-gray-900 text-2xl dark:text-gray-100 text-2xl">
                         Información del Solicitante
                     </p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                        <div><strong>Nombre:</strong> {{ $solicitud->nombre }} {{ $solicitud->apellido_paterno }} {{ $solicitud->apellido_materno }}</div>
-                        <div><strong>CURP:</strong> {{ $solicitud->curp }}</div>
-                        <div><strong>NSS:</strong> {{ $solicitud->nss }}</div>
-                        <div><strong>RFC:</strong> {{ $solicitud->rfc }}</div>
-                        <div><strong>Email:</strong> {{ $solicitud->email }}</div>
-                        <div><strong>Teléfono:</strong> {{ $solicitud->telefono }}</div>
-                        <div><strong>Dirección:</strong> {{ $solicitud->domicilio_calle }} #{{ $solicitud->domicilio_numero }}, {{ $solicitud->domicilio_colonia }}, {{ $solicitud->domicilio_ciudad }}, {{ $solicitud->domicilio_estado }}</div>
-                        <div><strong>Estado Civil:</strong> {{ $solicitud->estado_civil }}</div>
-                        <div><strong>Puesto Solicitado:</strong> {{ $solicitud->rol }}</div>
-                        <div><strong>Empresa:</strong> {{ $solicitud->empresa }}</div>
-                        <div><strong>Punto:</strong> {{ $solicitud->punto }}</div>
-                        <div><strong>Fecha de Nacimiento:</strong> {{ $solicitud->fecha_nacimiento }}</div>
-                        <div><strong>Estado de la Solicitud:</strong>
-                            @if($solicitud->status == 'En Proceso')
-                                <span class="inline-flex items-center justify-center px-2 py-1 text-sm leading-none text-gray-800 bg-yellow-300 rounded-full">
-                                    {{ $solicitud->status }}
-                                </span>
-                            @elseif($solicitud->status == 'Aceptada')
-                                <span class="inline-flex items-center justify-center px-2 py-1 text-sm leading-none text-gray-800 bg-green-300 rounded-full">
-                                    {{ $solicitud->status }}
-                                </span>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><strong>Nombre:</strong> {{ $solicitud->nombre }} {{ $solicitud->apellido_paterno }} {{ $solicitud->apellido_materno }}</div>
+                            <div><strong>CURP:</strong> {{ $solicitud->curp }}</div>
+                            <div><strong>NSS:</strong> {{ $solicitud->nss }}</div>
+                            <div><strong>RFC:</strong> {{ $solicitud->rfc }}</div>
+                            <div><strong>Email:</strong> {{ $solicitud->email }}</div>
+                            <div><strong>Teléfono:</strong> {{ $solicitud->telefono }}</div>
+                            <div><strong>Dirección:</strong> {{ $solicitud->domicilio_calle }} #{{ $solicitud->domicilio_numero }}, {{ $solicitud->domicilio_colonia }}, {{ $solicitud->domicilio_ciudad }}, {{ $solicitud->domicilio_estado }}</div>
+                            <div><strong>Estado Civil:</strong> {{ $solicitud->estado_civil }}</div>
+                            <div><strong>Puesto Solicitado:</strong> {{ $solicitud->rol }}</div>
+                            <div><strong>Empresa:</strong> {{ $solicitud->empresa }}</div>
+                            <div><strong>Punto:</strong> {{ $solicitud->punto }}</div>
+                            <div><strong>Fecha de Nacimiento:</strong> {{ $solicitud->fecha_nacimiento }}</div>
+                            <div><strong>Estado de la Solicitud:</strong>
+                                @if($solicitud->status == 'En Proceso')
+                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-800 bg-yellow-300 rounded-full">
+                                        {{ $solicitud->status }}
+                                    </span>
+                                @elseif($solicitud->status == 'Aceptada')
+                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-800 bg-green-300 rounded-full">
+                                        {{ $solicitud->status }}
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-800 bg-gray-300 rounded-full">
+                                        {{ $solicitud->status }}
+                                    </span>
+                                @endif
+                            </div>
+                            <div><strong>Observaciones:</strong>
+                                @if($solicitud->status == 'En Proceso')
+                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-900 bg-yellow-300 rounded-full">
+                                        {{ $solicitud->observaciones }}
+                                    </span>
+                                @elseif($solicitud->status == 'Aceptada')
+                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-800 bg-green-300 rounded-full">
+                                        {{ $solicitud->observaciones }}
+                                    </span>
+                                @elseif($solicitud->status == 'Rechazada')
+                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-100 bg-red-300 rounded-full">
+                                        {{ $solicitud->observaciones }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center justify-start text-center space-y-2">
+                            @if ($documentacion && $documentacion->arch_foto)
+                                <p class="font-semibold">Foto del solicitante:</p>
+                                <img src="{{ asset($documentacion->arch_foto) }}" alt="Foto del usuario" class="w-40 h-40 object-cover rounded-full shadow">
+                                <a href="{{ asset($documentacion->arch_foto) }}" target="_blank" class="text-blue-500 underline text-sm">Ver completa</a>
                             @else
-                                <span class="inline-flex items-center justify-center px-2 py-1 text-sm leading-none text-gray-800 bg-gray-300 rounded-full">
-                                    {{ $solicitud->status }}
-                                </span>
+                                <p class="text-sm text-gray-500">No hay foto cargada.</p>
                             @endif
                         </div>
                     </div>
@@ -90,7 +116,7 @@
                     Aceptar
                 </a>
 
-                <a href="#"
+                <a href="{{route('rh.rechazarSolicitud', $solicitud->id)}}"
                     class="inline-block bg-red-300 text-gray-800 py-2 px-4 rounded-md hover:bg-red-400 transition">
                     Rechazar
                 </a>

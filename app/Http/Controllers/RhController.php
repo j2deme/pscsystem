@@ -61,4 +61,13 @@ class RhController extends Controller
 
         return redirect()->route('rh.detalleSolicitud', $id)->with('success', 'Observación enviada correctamente.');
     }
+
+    public function rechazarSolicitud($id){
+        $solicitud = SolicitudAlta::find($id);
+        $solicitud->status = 'Rechazada';
+        $solicitud->observaciones = 'Solicitud no aprobada.';
+        $solicitud->save();
+
+        return redirect()->route('rh.solicitudesAltas')->with('success', 'Solicitud rechazada correctamente.');
+    }
 }
