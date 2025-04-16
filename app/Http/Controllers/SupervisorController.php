@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\SolicitudAlta;
 use App\Models\DocumentacionAltas;
+use App\Models\SolicitudBajas;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class SupervisorController extends Controller
 {
@@ -266,5 +269,54 @@ class SupervisorController extends Controller
 
         return redirect()->route('sup.solicitud.detalle', $solicitudId)->with('success', 'Documentos actualizados correctamente.');
     }
+
+    public function solicitarBajaForm()
+    {
+        $usuario = auth()->user();
+
+        $elementos = User::where('punto', $usuario->punto)
+            ->where('empresa', $usuario->empresa)
+            ->get();
+
+        return view('supervisor.solicitarBajaForm', compact('elementos'));
+    }
+
+    public function solicitarBajaVista($id){
+        $user = User::find($id);
+        $solicitud = SolicitudAlta::where('id', $user->sol_alta_id)->first();
+        $solicitudpendiente = SolicitudBajas::where('user_id', $user->id)->where('estatus', 'En Proceso')->first();
+        return view('supervisor.vistaSolicitarBaja', compact('user','solicitud','solicitudpendiente'));
+    }
+
+    public function guardarBajaNueva(Request $request, $id){
+        $request->validate([
+            'fecha_hoy' => 'required|date',
+            'incapacidad' => 'nullable|string|max:255',
+            'por' => 'required|in:Ausentismo,Separación Voluntaria,Renuncia',
+            'ultima_asistencia' => 'nullable|date',
+            'motivo' => 'nullable|string',
+        ]);
+
+        $user = User::findOrFail($id);
+
+        $solicitud = new SolicitudBajas();
+        $solicitud->user_id = $user->id;
+        $solicitud->fecha_solicitud = $request->fecha_hoy;
+        $solicitud->motivo = $request->motivo;
+        $solicitud->incapacidad = $request->incapacidad;
+        $solicitud->por = $request->por;
+        $solicitud->ultima_asistencia = $request->ultima_asistencia;
+        $solicitud->estatus = 'En Proceso';
+        $solicitud->observaciones = 'Solicitud de baja en proceso';
+
+        try {
+            $solicitud->save();
+        } catch (\Exception $e) {
+            return redirect()->route('dashboard')->with('error', 'Error al enviar la solicitud: ' . $e->getMessage());
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Solicitud de baja enviada correctamente');
+    }
+
 
 }

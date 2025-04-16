@@ -9,6 +9,12 @@
                     'color' => 'bg-blue-100 dark:bg-blue-700'
                 ],
                 [
+                    'titulo' => 'Solicitar Baja de Elemento',
+                    'ruta' => route('sup.solicitarBajaForm'),
+                    'icono' => '⬇️',
+                    'color' => 'bg-yellow-100 dark:bg-blue-700'
+                ],
+                [
                     'titulo' => 'Historial de Altas',
                     'ruta' => route('sup.historial'),
                     'icono' => '🗂️',

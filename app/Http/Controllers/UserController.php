@@ -46,7 +46,6 @@ class UserController extends Controller
     }
 
     public function solicitarBaja(Request $request, $id){
-        Log::info('Entrando al método solicitarBaja', $request->all());
         $request->validate([
             'fecha_hoy' => 'required|date',
             'incapacidad' => 'nullable|string|max:255',

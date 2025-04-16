@@ -26,7 +26,7 @@ class RhController extends Controller
     public function aceptarSolicitud($id){
         $solicitud = SolicitudAlta::find($id);
         $solicitud->status = 'Aceptada';
-        $solicitud->status = 'Alta Aprobada';
+        $solicitud->observaciones = 'Alta Aprobada';
         $solicitud->save();
 
         $docs = DocumentacionAltas::where('solicitud_id', $id)->first();
@@ -83,5 +83,13 @@ class RhController extends Controller
         ->where('por', 'Renuncia')
         ->get();
         return view('rh.solicitudesBajas', compact('solicitudes'));
+    }
+
+    public function historialSolicitudesBajas(){
+        $solicitudes = SolicitudBajas::with('user.solicitudAlta')
+        ->where('por', 'Renuncia')
+        ->get();
+
+        return view('rh.historialSolicitudesBajas', compact('solicitudes'));
     }
 }

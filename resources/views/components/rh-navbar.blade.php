@@ -28,7 +28,7 @@
                 ],
                 [
                     'titulo' => 'Historial de Bajas',
-                    'ruta' => '#',
+                    'ruta' => route('rh.historialSolicitudesBajas'),
                     'icono' => '📜',
                     'color' => 'bg-pink-100 dark:bg-pink-700'
                 ],
