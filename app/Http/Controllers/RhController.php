@@ -92,4 +92,23 @@ class RhController extends Controller
 
         return view('rh.historialSolicitudesBajas', compact('solicitudes'));
     }
+
+    public function detalleSolicitudBaja($id){
+        $solicitud = SolicitudBajas::find($id);
+        $userId = $solicitud->user_id;
+        $user = User::find($userId);
+
+
+        $solicitudAlta = SolicitudAlta::find($user->sol_alta_id);
+        $documentacion = DocumentacionAltas::where('solicitud_id', $user->sol_alta_id)->first();
+        return view('rh.detalleSolicitudBaja', compact('solicitud', 'user', 'documentacion','solicitudAlta'));
+    }
+
+    public function rechazarBaja($id){
+        $solicitud = SolicitudBajas::find($id);
+        $solicitud->estatus = 'Rechazada';
+        $solicitud->observaciones = 'Solicitud no aprobada.';
+        $solicitud->save();
+        return redirect()->route('rh.historialSolicitudesBajas')->with('success', 'Solicitud rechazada correctamente.');
+    }
 }
