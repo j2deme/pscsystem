@@ -70,4 +70,9 @@ class RhController extends Controller
 
         return redirect()->route('rh.solicitudesAltas')->with('success', 'Solicitud rechazada correctamente.');
     }
+
+    public function historialSolicitudesAltas(){
+        $solicitudes = SolicitudAlta::all();
+        return view('rh.historialSolicitudesAltas', compact('solicitudes'));
+    }
 }

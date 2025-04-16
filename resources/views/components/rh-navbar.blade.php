@@ -22,7 +22,7 @@
                 ],
                 [
                     'titulo' => 'Historial de Altas',
-                    'ruta' => '#',
+                    'ruta' => route('rh.historialSolicitudesAltas'),
                     'icono' => '🗂️',
                     'color' => 'bg-indigo-100 dark:bg-indigo-700'
                 ],

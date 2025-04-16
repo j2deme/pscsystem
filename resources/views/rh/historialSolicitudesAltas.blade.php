@@ -1,22 +1,11 @@
 <x-app-layout>
-    <x-navbar/>
+    <x-navbar></x-navbar>
     <div class="py-4 px-2 sm:py-6 sm:px-4">
         <div class="container mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-            <h2 class="text-2xl mb-4">Solicitudes Pendientes</h2>
-            @if(session('success'))
-                <div class="bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-4 py-3 shadow-md" role="alert">
-                    <div class="flex">
-                        <div>
-                            <p class="text-sm">{{ session('success') }}</p>
-                        </div>
-                    </div>
-                </div>
-                @else
-            @endif
-
+            <h2 class="text-2xl mb-4">Historial de Solicitudes de Alta</h2>
             @if($solicitudes->isEmpty())
-                <p class="mt-4">No hay solicitudes pendientes de respuesta.</p>
+                <p class="mt-4">No hay registros de solicitudes.</p>
             @else
                 <div class="overflow-x-auto bg-white rounded-lg shadow">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -64,4 +53,5 @@
             </div>
         </div>
     </div>
+
 </x-app-layout>

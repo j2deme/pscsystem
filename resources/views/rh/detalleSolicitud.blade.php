@@ -40,7 +40,7 @@
                                         {{ $solicitud->status }}
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-800 bg-gray-300 rounded-full">
+                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gry-900 bg-red-300 rounded-full">
                                         {{ $solicitud->status }}
                                     </span>
                                 @endif
@@ -51,11 +51,11 @@
                                         {{ $solicitud->observaciones }}
                                     </span>
                                 @elseif($solicitud->status == 'Aceptada')
-                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-800 bg-green-300 rounded-full">
+                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-900 bg-green-300 rounded-full">
                                         {{ $solicitud->observaciones }}
                                     </span>
                                 @elseif($solicitud->status == 'Rechazada')
-                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-100 bg-red-300 rounded-full">
+                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-900 bg-red-300 rounded-full">
                                         {{ $solicitud->observaciones }}
                                     </span>
                                 @endif
@@ -111,6 +111,7 @@
                 </div>
             </div>
             <div class="flex flex-wrap justify-center gap-4 mt-4">
+                @if($solicitud->status == 'En Proceso')
                 <a href="{{ route('rh.aceptarSolicitud', $solicitud->id) }}"
                     class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 transition">
                     Aceptar
@@ -150,10 +151,14 @@
                         </form>
                     </div>
                 </div>
-
                 <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
                     Regresar
                 </a>
+                @else
+                <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
+                    Regresar
+                </a>
+                @endif
             </div>
         </div>
     </div>
