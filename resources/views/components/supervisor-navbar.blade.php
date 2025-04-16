@@ -3,7 +3,7 @@
         @php
             $cards = [
                 [
-                    'titulo' => 'Registro de Usuarios',
+                    'titulo' => 'Alta de Usuarios',
                     'ruta' => route('sup.nuevoUsuarioForm'),
                     'icono' => '👨‍👩‍👧‍👦',
                     'color' => 'bg-blue-100 dark:bg-blue-700'
@@ -15,16 +15,23 @@
                     'color' => 'bg-yellow-100 dark:bg-blue-700'
                 ],
                 [
+                    'titulo' => 'Listas de Asistencia',
+                    'ruta' => route('sup.nuevoUsuarioForm'),
+                    'icono' => '📋',
+                    'color' => 'bg-red-100 dark:bg-red-700'
+                ],
+                [
                     'titulo' => 'Historial de Altas',
                     'ruta' => route('sup.historial'),
                     'icono' => '🗂️',
                     'color' => 'bg-indigo-100 dark:bg-indigo-700'
                 ],
+
                 [
-                    'titulo' => 'Listas de Asistencia',
-                    'ruta' => route('sup.nuevoUsuarioForm'),
-                    'icono' => '📋',
-                    'color' => 'bg-red-100 dark:bg-red-700'
+                    'titulo' => 'Historial de Bajas',
+                    'ruta' => route('sup.historialBajas'),
+                    'icono' => '📒',
+                    'color' => 'bg-green-100 dark:bg-green-700'
                 ],
             ];
         @endphp

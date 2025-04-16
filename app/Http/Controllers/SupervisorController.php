@@ -318,5 +318,15 @@ class SupervisorController extends Controller
         return redirect()->route('dashboard')->with('success', 'Solicitud de baja enviada correctamente');
     }
 
+    public function historialBajas(){
+        $authUser = Auth::user();
+
+    $solicitudes = SolicitudBajas::whereHas('user', function ($query) use ($authUser) {
+        $query->where('empresa', $authUser->empresa)
+            ->where('punto', $authUser->punto);
+            })->with('user')->get();
+
+        return view('supervisor.historialBajas', compact('solicitudes'));
+    }
 
 }

@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/sup_solicitar_baja', [SupervisorController::class,'solicitarBajaForm'])->name('sup.solicitarBajaForm');
     Route::get('/sup_solicitar_baja/{id}', [SupervisorController::class,'solicitarBajaVista'])->name('sup.validarSolicitudBaja');
     Route::post('/nueva_guardar_baja/{id}', [SupervisorController::class, 'guardarBajaNueva'])->name('sup.guardarBajaNueva');
+    Route::get('/historial_bajas', [SupervisorController::class,'historialBajas'])->name('sup.historialBajas');
 
     //usuario Recuersos Humanos
     Route::get('/solicitudes_altas', [RhController::class,'solicitudesAltas'])->name('rh.solicitudesAltas');
