@@ -10,7 +10,7 @@
                 ],
                 [
                     'titulo' => 'Solicitudes de Bajas',
-                    'ruta' => '#',
+                    'ruta' => route('rh.solicitudesBajas'),
                     'icono' => '📉',
                     'color' => 'bg-red-100 dark:bg-red-700'
                 ],

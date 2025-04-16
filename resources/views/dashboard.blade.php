@@ -8,6 +8,11 @@
         <div class="mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
                 <div class="space-y-4">
+                    @if (session('success'))
+                        <div class="bg-green-200 text-gray-700 p-2 mb-4 rounded-md">
+                            {{ session('success') }}
+                        </div>
+                    @endif
                     <p class="text-gray-900 text-2xl dark:text-gray-100 text-2xl">
                         Tablero de Opciones
                     </p>
@@ -20,10 +25,7 @@
                         @elseif (Auth::user()->rol == 'Recursos Humanos')
                             <x-rh-navbar></x-rh-navbar>
                         @else
-                        <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-                            <h3 class="font-medium text-gray-800 dark:text-gray-200 text-sm sm:text-base">Acciones a realizar</h3>
-                            <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mt-1"></p>
-                        </div>
+                            <x-user-navbar></x-user-navbar>
                         @endif
                     </div>
                 </div>

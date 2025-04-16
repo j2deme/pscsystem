@@ -50,4 +50,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function solicitudBajas() {
+        return $this->hasMany(SolicitudBajas::class);
+    }
+
+    public function solicitudAlta()
+    {
+        return $this->hasOne(SolicitudAlta::class, 'id', 'sol_alta_id');
+    }
 }

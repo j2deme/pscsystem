@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SolicitudAlta;
 use App\Models\DocumentacionAltas;
+use App\Models\SolicitudBajas;
 use App\Models\User;
 use Carbon\Carbon;
 use Hash;
@@ -74,5 +75,13 @@ class RhController extends Controller
     public function historialSolicitudesAltas(){
         $solicitudes = SolicitudAlta::all();
         return view('rh.historialSolicitudesAltas', compact('solicitudes'));
+    }
+
+    public function solicitudesBajas(){
+        $solicitudes = SolicitudBajas::with('user.solicitudAlta')
+        ->where('estatus', 'En Proceso')
+        ->where('por', 'Renuncia')
+        ->get();
+        return view('rh.solicitudesBajas', compact('solicitudes'));
     }
 }

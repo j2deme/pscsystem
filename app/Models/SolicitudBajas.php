@@ -12,9 +12,15 @@ class SolicitudBajas extends Model
         'user_id',
         'fecha_solicitud',
         'motivo',
+        'por',
+        'incapacidad',
         'ultima_asistencia',
         'estatus',
         'fecha_baja',
         'observaciones',
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }
