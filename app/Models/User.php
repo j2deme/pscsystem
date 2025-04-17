@@ -58,4 +58,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(SolicitudAlta::class, 'id', 'sol_alta_id');
     }
+
+    public function solicitarVacacionesForm(){
+        return view('user.solicitarVacacionesForm');
+    }
 }

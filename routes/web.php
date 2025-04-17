@@ -60,6 +60,7 @@ Route::middleware('auth')->group(function () {
     //Usuario 'User'
     Route::get('/solicitar_baja', [UserController::class,'solicitarBajaForm'])->name('user.solicitarBajaForm');
     Route::post('/registrar_solicitud_baja/{id}', [UserController::class,'solicitarBaja'])->name('user.registrarSolicitudBaja');
+    Route::get('/solicitar_vacaciones_form', [UserController::class,'solicitarVacacionesForm'])->name('user.solicitarVacacionesForm');
 
 });
 

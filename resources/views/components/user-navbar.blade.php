@@ -4,7 +4,7 @@
             $cards = [
                 [
                     'titulo' => 'Solicitar Vacaciones',
-                    'ruta' => '#',
+                    'ruta' => route('user.solicitarVacacionesForm'),
                     'icono' => '🎉',
                     'color' => 'bg-blue-100 dark:bg-blue-700'
                 ],
