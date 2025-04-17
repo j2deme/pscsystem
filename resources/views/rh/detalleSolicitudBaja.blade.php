@@ -62,6 +62,24 @@
                         {{ $solicitud->ultima_asistencia ?? 'No especificado' }}
                     </p>
                 </div>
+                <div>
+                    <p class="text-gray-500">Estado de la Solicitud</p>
+                    <p class="font-medium text-gray-900 dark:text-white">
+                        @if($solicitud->estatus == 'En Proceso')
+                            <span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none text-gray-800 bg-yellow-300 rounded-full">
+                                {{ $solicitud->estatus }}
+                            </span>
+                        @elseif($solicitud->estatus == 'Aceptada')
+                            <span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none text-green-100 bg-green-600 rounded-full">
+                                {{ $solicitud->estatus }}
+                            </span>
+                        @elseif($solicitud->estatus == 'Rechazada')
+                            <span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none text-red-100 bg-red-600 rounded-full">
+                                {{ $solicitud->estatus }}
+                            </span>
+                        @endif
+                    </p>
+                </div>
                 <div class="md:col-span-2">
                     <p class="text-gray-500">Motivo</p>
                     <p class="font-medium text-gray-900 dark:text-white whitespace-pre-line">
@@ -70,9 +88,9 @@
                 </div>
             </div>
         </div>
-
         <div class="text-center mt-6">
-            <a href="#" class="inline-block bg-green-300 text-gray-800 py-2 px-6 rounded-md hover:bg-green-400 transition-colors">
+            @if($solicitud->estatus == 'En Proceso')
+            <a href="{{route('rh.aceptarBaja', $solicitud->id)}}" class="inline-block bg-green-300 text-gray-800 py-2 px-6 rounded-md hover:bg-green-400 transition-colors">
                 Aceptar
             </a>
             <a href="{{route('rh.rechazarBaja', $solicitud->id)}}" class="inline-block bg-red-300 text-gray-800 py-2 px-6 rounded-md hover:bg-red-400 transition-colors">
@@ -84,6 +102,11 @@
             <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-6 rounded-md hover:bg-gray-400 transition-colors">
                 Regresar
             </a>
+            @else
+            <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-6 rounded-md hover:bg-gray-400 transition-colors">
+                Regresar
+            </a>
+            @endif
         </div>
 
     </div>

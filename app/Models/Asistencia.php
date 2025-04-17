@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Asistencia extends Model
@@ -14,5 +14,6 @@ class Asistencia extends Model
         'elementos_enlistados',
         'observaciones',
         'punto',
+        'empresa',
     ];
 }

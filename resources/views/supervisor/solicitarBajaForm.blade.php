@@ -27,6 +27,8 @@
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200">
                                 @foreach ($elementos as $elemento)
+                                    @if($elemento->estatus == 'Inactivo')
+                                    @else
                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                                             {{ $elemento->name ?? 'Sin usuario' }}
@@ -46,6 +48,7 @@
                                             </a>
                                         </td>
                                     </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>

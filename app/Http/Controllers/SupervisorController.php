@@ -6,9 +6,11 @@ use App\Models\SolicitudAlta;
 use App\Models\DocumentacionAltas;
 use App\Models\SolicitudBajas;
 use App\Models\User;
+use App\Models\Asistencia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class SupervisorController extends Controller
 {
@@ -327,6 +329,33 @@ class SupervisorController extends Controller
             })->with('user')->get();
 
         return view('supervisor.historialBajas', compact('solicitudes'));
+    }
+
+    public function listaAsistencia(){
+        $user = Auth::user();
+        $elementos = User::where('punto', $user->punto)
+            ->where('empresa', $user->empresa)
+            ->where('estatus', 'Activo')
+            ->where('rol', '!=', 'Supervisor')
+            ->with('solicitudAlta.documentacion')
+            ->get();
+        return view('supervisor.listaAsistencia', compact('elementos'));
+    }
+
+    public function guardarAsistencias(Request $request){
+        $user = Auth::user();
+
+        $asistencia = new Asistencia();
+        $asistencia->user_id = $user->id;
+        $asistencia->fecha = Carbon::now()->toDateString();
+        $asistencia->hora_asistencia = Carbon::now()->toTimeString();
+        $asistencia->elementos_enlistados =  json_encode($request->input('asistencias', []));
+        $asistencia->observaciones = $request->input('observaciones') ?: 'Ninguna';
+        $asistencia->punto = $user->punto;
+        $asistencia->empresa = $user->empresa;
+        $asistencia->save();
+
+        return redirect()->route('dashboard')->with('success', 'Asistencia registrada correctamente');
     }
 
 }

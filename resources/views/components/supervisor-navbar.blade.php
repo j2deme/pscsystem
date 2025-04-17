@@ -16,7 +16,7 @@
                 ],
                 [
                     'titulo' => 'Listas de Asistencia',
-                    'ruta' => route('sup.nuevoUsuarioForm'),
+                    'ruta' => route('sup.listaAsistencia'),
                     'icono' => '📋',
                     'color' => 'bg-red-100 dark:bg-red-700'
                 ],
@@ -32,6 +32,18 @@
                     'ruta' => route('sup.historialBajas'),
                     'icono' => '📒',
                     'color' => 'bg-green-100 dark:bg-green-700'
+                ],
+                [
+                    'titulo' => 'Historial de Asistencias',
+                    'ruta' => '#',
+                    'icono' => '📋',
+                    'color' => 'bg-blue-100 dark:bg-blue-700'
+                ],
+                [
+                    'titulo' => 'Gestión de Usuarios',
+                    'ruta' => '#',
+                    'icono' => '👨‍👩‍👧‍👦',
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
             ];
         @endphp

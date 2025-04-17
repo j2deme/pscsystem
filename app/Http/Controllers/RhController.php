@@ -88,6 +88,7 @@ class RhController extends Controller
     public function historialSolicitudesBajas(){
         $solicitudes = SolicitudBajas::with('user.solicitudAlta')
         ->where('por', 'Renuncia')
+        ->orderBy('fecha_solicitud', 'desc')
         ->get();
 
         return view('rh.historialSolicitudesBajas', compact('solicitudes'));
@@ -110,5 +111,19 @@ class RhController extends Controller
         $solicitud->observaciones = 'Solicitud no aprobada.';
         $solicitud->save();
         return redirect()->route('rh.historialSolicitudesBajas')->with('success', 'Solicitud rechazada correctamente.');
+    }
+
+    public function aceptarBaja($id){
+        $solicitud = SolicitudBajas::find($id);
+        $solicitud->estatus = 'Aceptada';
+        $solicitud->observaciones = 'Baja de elemento Aprobada.';
+        $solicitud->save();
+
+        $userId = $solicitud->user_id;
+        $user = User::find($userId);
+        $user->estatus = 'Inactivo';
+        $user->save();
+
+        return redirect()->route('rh.historialSolicitudesBajas')->with('success', 'Solicitud respondida correctamente.');
     }
 }
