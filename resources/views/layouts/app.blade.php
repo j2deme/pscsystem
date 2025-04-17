@@ -35,7 +35,7 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main class="bg-blue-50 dark:bg-gray-900 min-h-screen">
                 {{ $slot }}
             </main>
         </div>

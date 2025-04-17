@@ -40,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/historial_bajas', [SupervisorController::class,'historialBajas'])->name('sup.historialBajas');
     Route::get('/lista_asistencia', [SupervisorController::class, 'listaAsistencia'])->name('sup.listaAsistencia');
     Route::post('/guardar_asistencias', [SupervisorController::class, 'guardarAsistencias'])->name('sup.guardarAsistencias');
+    Route::get('/ver_asistencias', [SupervisorController::class,'verAsistencias'])->name('sup.verAsistencias');
+    Route::get('/supervisor/ver_fecha_sistencias', [SupervisorController::class, 'verFechaAsistencias'])->name('sup.verFechaAsistencias');
+
 
     //usuario Recuersos Humanos
     Route::get('/solicitudes_altas', [RhController::class,'solicitudesAltas'])->name('rh.solicitudesAltas');

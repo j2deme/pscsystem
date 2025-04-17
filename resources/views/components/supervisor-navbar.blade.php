@@ -35,7 +35,7 @@
                 ],
                 [
                     'titulo' => 'Historial de Asistencias',
-                    'ruta' => '#',
+                    'ruta' => route('sup.verAsistencias'),
                     'icono' => '📋',
                     'color' => 'bg-blue-100 dark:bg-blue-700'
                 ],

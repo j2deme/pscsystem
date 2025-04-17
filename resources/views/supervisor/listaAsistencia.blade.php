@@ -4,6 +4,17 @@
     <div class="py-4 px-2 sm:py-6 sm:px-4">
         <div class="container mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                @if($asistencia_hoy)
+                <p>El día de hoy ya se registró la asistencia de todos los usuarios. Favor de volver mañana.</p>
+                <center><br>
+                    <a href="{{ route('sup.verAsistencias') }}" class="inline-block bg-blue-300 text-gray-800 py-2 px-4 rounded-md hover:bg-blue-400 mr-2 mb-2">
+                        Ver Registros de Asistencia
+                    </a>
+                    <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                        Regresar
+                    </a>
+                </center>
+                @else
                 <h1 class="text-2xl mb-6 text-gray-800 dark:text-white">Usuarios Activos</h1>
 
                 <form action="{{route('sup.guardarAsistencias')}}" method="POST">
@@ -13,7 +24,7 @@
                         @foreach($elementos as $elemento)
                             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-5 border border-gray-200 dark:border-gray-700 flex flex-col justify-between">
                                 <div class="flex items-center space-x-4 mb-4">
-                                    <img src="{{ $elemento->solicitudAlta?->documentacion?->arch_foto ?? asset('images/default-user.png') }}" alt="Foto de {{ $elemento->name }}" class="w-16 h-16 rounded-full object-cover border border-gray-300 dark:border-gray-600">
+                                    <img src="{{ $elemento->solicitudAlta?->documentacion?->arch_foto ?: url('images/default-user.jpg') }}" alt="Foto de {{ $elemento->name }}" class="w-16 h-16 rounded-full object-cover border border-gray-300 dark:border-gray-600">
                                     <div>
                                         <h2 class="text-lg font-semibold text-gray-800 dark:text-white">{{ $elemento->name }}</h2>
                                         <p class="text-sm text-gray-600 dark:text-gray-300">{{ $elemento->empresa }} - {{ $elemento->punto }}</p>
@@ -45,6 +56,7 @@
                         </a>
                     </div>
                 </form>
+                @endif
             </div>
         </div>
     </div>

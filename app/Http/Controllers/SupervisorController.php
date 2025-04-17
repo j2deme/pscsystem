@@ -333,22 +333,24 @@ class SupervisorController extends Controller
 
     public function listaAsistencia(){
         $user = Auth::user();
+        $asistencia_hoy = Asistencia::where('fecha', Carbon::now()->toDateString());
         $elementos = User::where('punto', $user->punto)
             ->where('empresa', $user->empresa)
             ->where('estatus', 'Activo')
             ->where('rol', '!=', 'Supervisor')
             ->with('solicitudAlta.documentacion')
             ->get();
-        return view('supervisor.listaAsistencia', compact('elementos'));
+        return view('supervisor.listaAsistencia', compact('elementos', 'asistencia_hoy'));
     }
 
     public function guardarAsistencias(Request $request){
         $user = Auth::user();
+        $now = Carbon::now('America/Mexico_City');
 
         $asistencia = new Asistencia();
         $asistencia->user_id = $user->id;
-        $asistencia->fecha = Carbon::now()->toDateString();
-        $asistencia->hora_asistencia = Carbon::now()->toTimeString();
+        $asistencia->fecha = $now->toDateString();
+        $asistencia->hora_asistencia = $now->toTimeString();
         $asistencia->elementos_enlistados =  json_encode($request->input('asistencias', []));
         $asistencia->observaciones = $request->input('observaciones') ?: 'Ninguna';
         $asistencia->punto = $user->punto;
@@ -357,5 +359,46 @@ class SupervisorController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Asistencia registrada correctamente');
     }
+
+    public function verAsistencias(){
+        $user = Auth::user();
+        $asistencias = Asistencia::where('user_id', $user->id)
+            ->orderBy('fecha', 'desc')
+            ->get();
+
+            $asistenciasElementos = $asistencias->map(function ($asistencia) {
+                $ids = json_decode($asistencia->elementos_enlistados, true);
+
+                $usuarios = User::whereIn('id', $ids ?: [])->with('solicitudAlta.documentacion')->get();
+                $asistencia->usuarios_enlistados = $usuarios;
+                return $asistencia;
+            });
+
+        return view('supervisor.verAsistencias', compact('asistencias', 'asistenciasElementos'));
+    }
+
+    public function verFechaAsistencias(Request $request)
+    {
+        $user = Auth::user();
+        $fechaSeleccionada = $request->input('fecha');
+
+        $query = Asistencia::where('user_id', $user->id);
+
+        if ($fechaSeleccionada) {
+            $query->whereDate('fecha', $fechaSeleccionada);
+        }
+
+        $asistencias = $query->orderBy('fecha', 'desc')->get();
+
+        $asistenciasElementos = $asistencias->map(function ($asistencia) {
+            $ids = json_decode($asistencia->elementos_enlistados, true);
+            $usuarios = User::whereIn('id', $ids ?: [])->with('solicitudAlta.documentacion')->get();
+            $asistencia->usuarios_enlistados = $usuarios;
+            return $asistencia;
+        });
+
+        return view('supervisor.verAsistencias', compact('asistenciasElementos', 'fechaSeleccionada'));
+    }
+
 
 }

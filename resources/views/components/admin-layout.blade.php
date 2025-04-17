@@ -2,7 +2,7 @@
     <nav class="bg-white dark:bg-gray-800 shadow-md rounded-t-lg">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <div class="flex flex-wrap items-center justify-between">
-                <div class="flex items-center space-x-4">
+                <div class="flex flex-wrap items-center gap-4">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2 px-3 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-all duration-200">
                         <svg class="w-5 h-5 text-blue-500 dark:text-blue-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 1.293a1 1 0 00-1.414 0l-7 7A1 1 0 003 9h1v7a2 2 0 002 2h2a1 1 0 001-1v-4h2v4a1 1 0 001 1h2a2 2 0 002-2V9h1a1 1 0 00.707-1.707l-7-7z" /></svg>
                         Inicio
