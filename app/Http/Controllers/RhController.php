@@ -318,4 +318,8 @@ class RhController extends Controller
 
             return redirect()->route('dashboard')->with('success', 'Baja de usuario realizada correctamente.');
     }
+
+    public function verArchivos(){
+        return view('rh.archivos');
+    }
 }

@@ -34,7 +34,7 @@
                 ],
                 [
                     'titulo' => 'Archivos',
-                    'ruta' => '#',
+                    'ruta' => route('rh.archivos'),
                     'icono' => '📁',
                     'color' => 'bg-green-100 dark:bg-green-700'
                 ],

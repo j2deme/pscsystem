@@ -4,7 +4,7 @@
     <div class="py-4 px-2 sm:py-6 sm:px-4">
         <div class="container mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-                @if($asistencia_hoy)
+                @if(!$asistencia_hoy->isEmpty())
                 <p>El día de hoy ya se registró la asistencia de todos los usuarios. Favor de volver mañana.</p>
                 <center><br>
                     <a href="{{ route('sup.verAsistencias') }}" class="inline-block bg-blue-300 text-gray-800 py-2 px-4 rounded-md hover:bg-blue-400 mr-2 mb-2">

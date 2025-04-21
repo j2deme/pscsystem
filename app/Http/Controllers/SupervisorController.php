@@ -321,7 +321,8 @@ class SupervisorController extends Controller
 
     $solicitudes = SolicitudBajas::whereHas('user', function ($query) use ($authUser) {
         $query->where('empresa', $authUser->empresa)
-            ->where('punto', $authUser->punto);
+            ->where('punto', $authUser->punto)
+            ->where('por','Renuncia');
             })->with('user')->get();
 
         return view('supervisor.historialBajas', compact('solicitudes'));
@@ -329,7 +330,9 @@ class SupervisorController extends Controller
 
     public function listaAsistencia(){
         $user = Auth::user();
-        $asistencia_hoy = Asistencia::where('fecha', Carbon::now()->toDateString());
+        $asistencia_hoy = Asistencia::where('fecha', Carbon::now()->toDateString())
+                        ->where('user_id', $user->id)
+                        ->get();
         $elementos = User::where('punto', $user->punto)
             ->where('empresa', $user->empresa)
             ->where('estatus', 'Activo')
