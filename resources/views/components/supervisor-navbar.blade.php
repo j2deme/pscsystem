@@ -12,26 +12,26 @@
                     'titulo' => 'Solicitar Baja de Elemento',
                     'ruta' => route('sup.solicitarBajaForm'),
                     'icono' => '⬇️',
-                    'color' => 'bg-yellow-100 dark:bg-blue-700'
+                    'color' => 'bg-red-100 dark:bg-red-700'
                 ],
                 [
                     'titulo' => 'Listas de Asistencia',
                     'ruta' => route('sup.listaAsistencia'),
                     'icono' => '📋',
-                    'color' => 'bg-red-100 dark:bg-red-700'
+                    'color' => 'bg-green-100 dark:bg-green-700'
                 ],
                 [
                     'titulo' => 'Historial de Altas',
                     'ruta' => route('sup.historial'),
                     'icono' => '🗂️',
-                    'color' => 'bg-indigo-100 dark:bg-indigo-700'
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
 
                 [
                     'titulo' => 'Historial de Bajas',
                     'ruta' => route('sup.historialBajas'),
                     'icono' => '📒',
-                    'color' => 'bg-green-100 dark:bg-green-700'
+                    'color' => 'bg-red-100 dark:bg-red-700'
                 ],
                 [
                     'titulo' => 'Historial de Asistencias',
@@ -43,6 +43,18 @@
                     'titulo' => 'Gestión de Usuarios',
                     'ruta' => '#',
                     'icono' => '👨‍👩‍👧‍👦',
+                    'color' => 'bg-indigo-100 dark:bg-indigo-700'
+                ],
+                [
+                    'titulo' => 'Solicitar Vacaciones',
+                    'ruta' => route('user.solicitarVacacionesForm'),
+                    'icono' => '🎉',
+                    'color' => 'bg-green-100 dark:bg-green-700'
+                ],
+                [
+                    'titulo' => 'Mi Historial de Vacaciones',
+                    'ruta' => '#',
+                    'icono' => '📅',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
             ];

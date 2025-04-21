@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\SolicitudAlta;
 use App\Models\SolicitudBajas;
+use App\Models\SolicitudVacaciones;
+use App\Models\DocumentacionAltas;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -72,5 +75,85 @@ class UserController extends Controller
         }
 
         return redirect()->route('dashboard')->with('success', 'Solicitud de baja enviada correctamente');
+    }
+    public function solicitarVacacionesForm(){
+        $user = User::find(Auth::user()->id);
+        $antiguedad = (int) floor(Carbon::parse($user->fecha_ingreso)->floatDiffInYears(now()));
+
+        if($antiguedad <2){
+            $dias=12;
+        }elseif($antiguedad ==2){
+            $dias=14;
+        }elseif($antiguedad ==3){
+            $dias=16;
+        }elseif($antiguedad ==4){
+            $dias=18;
+        }elseif($antiguedad ==5){
+            $dias=20;
+        }elseif($antiguedad>5 && $antiguedad<=10){
+            $dias=22;
+        }elseif($antiguedad>10 && $antiguedad<=15){
+            $dias=24;
+        }elseif($antiguedad>15 && $antiguedad<=20){
+            $dias=26;
+        }elseif($antiguedad>20 && $antiguedad<=25){
+            $dias=28;
+        }elseif($antiguedad>25 && $antiguedad<=30){
+            $dias=30;
+        }else{
+            $dias=32;
+        }
+
+        $diasDisponibles = $dias;
+        $diasUtilizados = 0;
+        $fechaIngreso = Carbon::parse($user->fecha_ingreso);
+        $aniversario = Carbon::createFromDate(
+            now()->year,
+            $fechaIngreso->month,
+            $fechaIngreso->day
+        );
+
+        if ($aniversario->isFuture()) {
+            $aniversario->subYear();
+        }
+        $vacacionesTomadas = SolicitudVacaciones::where('user_id', $user->id)
+            ->where('created_at', '>=', $aniversario)
+            ->get();
+
+        foreach ($vacacionesTomadas as $vacacion) {
+            $diasDisponibles -= $vacacion->dias_solicitados;
+            $diasUtilizados += $vacacion->dias_solicitados;
+        }
+
+        $solicitud = SolicitudAlta::where('id', $user->sol_alta_id)->first();
+        $documentacion = DocumentacionAltas::where('solicitud_id', $user->sol_alta_id)->first();
+
+        return view('users.solicitarVacacionesForm', compact('user','solicitud', 'documentacion', 'antiguedad','dias', 'diasDisponibles', 'diasUtilizados'));
+    }
+
+    public function solicitarVacaciones(Request $request, $id){
+        $request->validate([
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date',
+            'dias_solicitados' => 'required|integer|min:1|max:30',
+            'dias_utilizados' => 'required|integer|min:0|max:36',
+            'dias_disponibles' => 'required|integer|min:0|max:36',
+            'dias_por_derecho' => 'required|integer|min:0|max:36',
+        ]);
+        $user = User::findorFail($id);
+        $solicitud = new SolicitudVacaciones();
+        $solicitud->user_id = $user->id;
+        $solicitud->fecha_inicio = $request->fecha_inicio;
+        $solicitud->fecha_fin = $request->fecha_fin;
+        $solicitud->dias_solicitados = $request->dias_solicitados;
+        $solicitud->dias_ya_utlizados = $request->dias_utilizados;
+        $solicitud->dias_disponibles = $request->dias_disponibles;
+        $solicitud->dias_por_derecho = $request->dias_por_derecho;
+        $solicitud->monto = 0.0;
+        $solicitud->observaciones = 'Solicitud de vacaciones en proceso';
+        $solicitud->estatus = 'En Proceso';
+
+        $solicitud->save();
+        return redirect()->route('dashboard')->with('success', 'Solicitud de vacaciones enviada correctamente');
     }
 }
