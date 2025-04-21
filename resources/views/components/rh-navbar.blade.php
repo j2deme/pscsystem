@@ -46,7 +46,7 @@
                 ],
                 [
                     'titulo' => 'Generar Nueva Baja',
-                    'ruta' => '#',
+                    'ruta' => route('rh.generarNuevaBajaForm'),
                     'icono' => '📉',
                     'color' => 'bg-red-100 dark:bg-red-700'
                 ],

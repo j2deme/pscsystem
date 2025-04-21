@@ -117,6 +117,7 @@ class RhController extends Controller
         $solicitud = SolicitudBajas::find($id);
         $solicitud->estatus = 'Aceptada';
         $solicitud->observaciones = 'Baja de elemento Aprobada.';
+        $solicitud->fecha_baja = Carbon::now();
         $solicitud->save();
 
         $userId = $solicitud->user_id;
@@ -260,5 +261,61 @@ class RhController extends Controller
 
 
         return redirect()->route('rh.generarNuevaAltaForm')->with('success', 'Documentación subida correctamente');
+    }
+
+    public function generarNuevaBajaForm(Request $request){
+        $busqueda = $request->input('busqueda');
+
+        $usuarios = User::when($busqueda, function ($query, $busqueda) {
+            return $query->where('name', 'like', "%{$busqueda}%");
+        })->orderBy('name')->paginate(10);
+
+        return view('rh.generarBaja', compact('usuarios'));
+    }
+
+    public function llenarBaja($id){
+        $user = User::find($id);
+        $solicitud = SolicitudAlta::find($user->sol_alta_id);
+        $solicitudpendiente = SolicitudBajas::where('user_id', $user->id)->where('estatus', 'En Proceso')->first();
+
+        return view('rh.llenarBaja', compact('user','solicitud','solicitudpendiente'));
+    }
+
+    public function almacenarBaja(Request $request, $id){
+        $request->validate([
+            'fecha_hoy' => 'required|date',
+            'incapacidad' => 'nullable|string|max:255',
+            'por' => 'required|in:Ausentismo,Separación Voluntaria,Renuncia',
+            'ultima_asistencia' => 'nullable|date',
+            'motivo' => 'nullable|string',
+        ]);
+
+            $user = User::findOrFail($id);
+
+            $solicitud = new SolicitudBajas();
+            $solicitud->user_id = $user->id;
+            $solicitud->fecha_solicitud = $request->fecha_hoy;
+            $solicitud->motivo = $request->motivo;
+            $solicitud->incapacidad = $request->incapacidad;
+            $solicitud->por = $request->por;
+            $solicitud->ultima_asistencia = $request->ultima_asistencia;
+            if ($request->por == 'Renuncia') {
+            $solicitud->estatus = 'Aceptada';
+            $solicitud->observaciones = 'Baja de elemento Aprobada.';
+            $solicitud->fecha_baja = Carbon::now();
+            $user->estatus = 'Inactivo';
+            $user->save();
+            } else {
+                $solicitud->estatus = 'En Proceso';
+                $solicitud->observaciones = 'Solicitud en revisión';
+            }
+
+            try {
+                $solicitud->save();
+            } catch (\Exception $e) {
+                return redirect()->route('dashboard')->with('error', 'Error al enviar la solicitud.');
+            }
+
+            return redirect()->route('dashboard')->with('success', 'Baja de usuario realizada correctamente.');
     }
 }

@@ -60,6 +60,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/guardar_alta', [RhController::class, 'guardarAlta'])->name('rh.guardarAlta');
     Route::get('/subir_archivos_alta/{id}', [RhController::class,'subirArchivosAltaForm'])->name('rh.subirArchivosAltaForm');
     Route::post('/guardar_archivos_alta/{id}', [RhController::class, 'guardarArchivosAlta'])->name('rh.guardarArchivosAlta');
+    Route::get('/generar_nueva_baja', [RhController::class, 'generarNuevaBajaForm'])->name('rh.generarNuevaBajaForm');
+    Route::get('llenar_baja/{id}', [RhController::class, 'llenarBaja'])->name('rh.llenarBaja');
+    Route::post('almacenar_baja/{id}', [RhController::class, 'almacenarBaja'])->name('rh.almacenarBajaNueva');
 
     //Usuario 'User'
     Route::get('/solicitar_baja', [UserController::class,'solicitarBajaForm'])->name('user.solicitarBajaForm');

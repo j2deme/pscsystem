@@ -1,6 +1,5 @@
 <x-app-layout>
     <x-navbar></x-navbar>
-
     <div class="py-4 px-2 sm:py-6 sm:px-4">
         <div class="container mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
@@ -14,7 +13,7 @@
                             Regresar
                         </a></center>
                     @else
-                    <form action="{{ route('sup.guardarBajaNueva', $user->id) }}" method="POST" class="space-y-6">
+                    <form action="{{ route('rh.almacenarBajaNueva', $user->id) }}" method="POST" class="space-y-6">
                         @csrf
 
                         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
@@ -36,6 +35,7 @@
                                     <label for="fecha_ingreso" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fecha de Ingreso</label>
                                     <p class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                         {{ optional(\Carbon\Carbon::parse($user->fecha_ingreso))->format('d/m/Y') }}
+
                                     </p>
                                 </div>
 
@@ -105,4 +105,5 @@
             </div>
         </div>
     </div>
+
 </x-app-layout>
