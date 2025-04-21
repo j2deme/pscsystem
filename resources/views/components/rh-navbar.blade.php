@@ -38,6 +38,18 @@
                     'icono' => '📁',
                     'color' => 'bg-green-100 dark:bg-green-700'
                 ],
+                [
+                    'titulo' => 'Generar Nueva Alta',
+                    'ruta' => route('rh.generarNuevaAltaForm'),
+                    'icono' => '📈',
+                    'color' => 'bg-green-100 dark:bg-green-700'
+                ],
+                [
+                    'titulo' => 'Generar Nueva Baja',
+                    'ruta' => '#',
+                    'icono' => '📉',
+                    'color' => 'bg-red-100 dark:bg-red-700'
+                ],
             ];
         @endphp
 

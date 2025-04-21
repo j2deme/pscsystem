@@ -1,9 +1,9 @@
 <x-app-layout>
     <x-navbar></x-navbar>
-
-    <div class="container mx-auto px-4 py-6">
-        <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Solicitud de Alta de Usuario</h2>
+    <div class="py-4 px-2 sm:py-6 sm:px-4">
+        <div class="container mx-auto max-w-7xl">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Formulario de Alta de Usuario</h2>
 
             @if(session('success'))
                 <div class="alert alert-success bg-green-200 text-green-800 p-4 rounded mb-4">
@@ -16,7 +16,7 @@
                 </div>
             @endif
 
-            <form action="{{route('sup.guardarInfo')}}" method="POST">
+            <form action="{{route('rh.guardarAlta')}}" method="POST">
                 @csrf
 
                 <div class="form-group mb-4">
@@ -40,12 +40,12 @@
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="curp" class="block text-sm font-semibold text-gray-600">CURP</label>
+                    <label for="curp" class="block text-sm font-semibold text-gray-600" minlength="18" maxlength="18">CURP</label>
                     <input type="text" id="curp" name="curp" placeholder="CURP" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="nss" class="block text-sm font-semibold text-gray-600" maxlength="11" minlength="11">NSS</label>
+                    <label for="nss" class="block text-sm font-semibold text-gray-600" minlength="11" maxlength="11">NSS</label>
                     <input type="text" id="nss" name="nss" placeholder="NSS" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
                 </div>
 
@@ -62,7 +62,7 @@
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="rfc" class="block text-sm font-semibold text-gray-600">RFC</label>
+                    <label for="rfc" class="block text-sm font-semibold text-gray-600" minlength="13" maxlength="13">RFC</label>
                     <input type="text" id="rfc" name="rfc" placeholder="RFC" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
                 </div>
                 <div class="form-group mb-4">
@@ -123,17 +123,17 @@
                     @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="form-group">
-                    <button type="submit" class="w-1/4 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+                <div class="form-group flex items-center justify-center">
+                    <button type="submit" class="inline-block bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
                         Continuar
                     </button>
-                    <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
+                    <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 ml-2 mr-2">
                         Regresar
                     </a>
                 </div>
             </form>
-            <p class="text-justify">Nota: Favor de llenar correctamente los campos requeridos, para posteriormente continuar con la subida de los documentos necesarios. <br>
-            En caso de ser aceptada la solicitud, la contraseña para el nuevo usuario será su RFC.</p>
+            <p class="text-justify">Nota: Favor de llenar correctamente los campos requeridos, para posteriormente continuar con la subida de los documentos necesarios. <br></p>
+            </div>
         </div>
     </div>
 </x-app-layout>

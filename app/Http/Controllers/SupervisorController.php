@@ -70,14 +70,10 @@ class SupervisorController extends Controller
 
             $solicitud->save();
 
-
-
-            //session(['user_id' => $solicitud->id]);
-
             return redirect()->route('sup.subirArchivosForm', ['id' => $solicitud->id]);
 
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error al guardar la solicitud: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al guardar la solicitud, intente nuevamente.');
         }
     }
 
@@ -167,7 +163,7 @@ class SupervisorController extends Controller
                 'apellido_materno' => 'required|string|max:255',
                 'fecha_nacimiento' => 'required|date',
                 'curp' => 'required|string|max:255',
-                'nss' => 'required|string|max:255',
+                'nss' => ['required|string|digits:11'],
                 'edo_civil' => 'required|string',
                 'rfc' => 'required|string|max:255',
                 'telefono' => 'required|string|max:255',
