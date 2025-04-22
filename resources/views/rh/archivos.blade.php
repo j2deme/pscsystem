@@ -18,29 +18,39 @@
                                 <td class="px-6 py-4 whitespace-nowrap">1</td>
                                 <td class="px-6 py-4 whitespace-nowrap">Archivo Rojo</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <a href="{{ route('exportar.bajas') }}"
-   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded inline-flex items-center"
-   wire:loading.attr="disabled">
-    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-    </svg>
-    <span wire:loading.remove>Exportar Excel</span>
-    <span wire:loading>Generando...</span>
-</a>
+                                    <a href="{{ route('exportar.bajas') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded inline-flex items-center" wire:loading.attr="disabled">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        <span wire:loading.remove>Exportar Excel</span>
+                                        <span wire:loading>Generando...</span>
+                                    </a>
                                 </td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">2</td>
                                 <td class="px-6 py-4 whitespace-nowrap">Archivo Rosa</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <a href="#" class="text-blue-600 hover:text-blue-900">Ver Más</a>
+                                    <a href="{{ route('exportar.altas') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded inline-flex items-center" wire:loading.attr="disabled">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        <span wire:loading.remove>Exportar Excel</span>
+                                        <span wire:loading>Generando...</span>
+                                    </a>
                                 </td>
                             </tr>
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">3</td>
                                 <td class="px-6 py-4 whitespace-nowrap">Archivo de Vacaciones</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <a href="#" class="text-blue-600 hover:text-blue-900">Ver Más</a>
+                                    <a href="{{ route('exportar.vacaciones') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded inline-flex items-center" wire:loading.attr="disabled">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        <span wire:loading.remove>Exportar Excel</span>
+                                        <span wire:loading>Generando...</span>
+                                    </a>
                                 </td>
                             </tr>
                     </tbody>

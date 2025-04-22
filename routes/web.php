@@ -1,6 +1,8 @@
 <?php
 
+use App\Exports\AltasSpreadsheetExport;
 use App\Exports\BajasSpreadsheetExport;
+use App\Exports\VacacionesSpreadsheetExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -72,6 +74,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/descargar-bajas', function () {
         return (new BajasSpreadsheetExport())->generateFile();
     })->name('exportar.bajas');
+
+    Route::get('/descargar-altas', function () {
+        return (new AltasSpreadsheetExport())->generateFile();
+    })->name('exportar.altas');
+
+    Route::get('/descargar-vacaciones', function () {
+        return (new VacacionesSpreadsheetExport())->generateFile();
+    })->name('exportar.vacaciones');
+
     //Usuario 'User'
     Route::get('/solicitar_baja', [UserController::class,'solicitarBajaForm'])->name('user.solicitarBajaForm');
     Route::post('/registrar_solicitud_baja/{id}', [UserController::class,'solicitarBaja'])->name('user.registrarSolicitudBaja');
