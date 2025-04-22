@@ -1,5 +1,7 @@
 <?php
 
+use App\Exports\BajasSpreadsheetExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SupervisorController;
@@ -67,6 +69,9 @@ Route::middleware('auth')->group(function () {
     Route::post('almacenar_baja/{id}', [RhController::class, 'almacenarBaja'])->name('rh.almacenarBajaNueva');
     Route::get('/archivos', [RhController::class, 'verArchivos'])->name('rh.archivos');
 
+    Route::get('/descargar-bajas', function () {
+        return (new BajasSpreadsheetExport())->generateFile();
+    })->name('exportar.bajas');
     //Usuario 'User'
     Route::get('/solicitar_baja', [UserController::class,'solicitarBajaForm'])->name('user.solicitarBajaForm');
     Route::post('/registrar_solicitud_baja/{id}', [UserController::class,'solicitarBaja'])->name('user.registrarSolicitudBaja');
