@@ -40,10 +40,10 @@
                     'color' => 'bg-blue-100 dark:bg-blue-700'
                 ],
                 [
-                    'titulo' => 'Gestión de Usuarios',
-                    'ruta' => '#',
-                    'icono' => '👨‍👩‍👧‍👦',
-                    'color' => 'bg-indigo-100 dark:bg-indigo-700'
+                    'titulo' => 'Solicitudes de Vacaciones',
+                    'ruta' => route('sup.solicitudesVacaciones'),
+                    'icono' => '🏖️',
+                    'color' => 'bg-blue-100 dark:bg-blue-700'
                 ],
                 [
                     'titulo' => 'Solicitar Vacaciones',
@@ -56,6 +56,12 @@
                     'ruta' => '#',
                     'icono' => '📅',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
+                ],
+                [
+                    'titulo' => 'Gestión de Usuarios',
+                    'ruta' => '#',
+                    'icono' => '👨‍👩‍👧‍👦',
+                    'color' => 'bg-indigo-100 dark:bg-indigo-700'
                 ],
             ];
         @endphp

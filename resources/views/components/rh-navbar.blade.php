@@ -15,12 +15,6 @@
                     'color' => 'bg-red-100 dark:bg-red-700'
                 ],
                 [
-                    'titulo' => 'Solicitudes de Vacaciones',
-                    'ruta' => '#',
-                    'icono' => '🏖️',
-                    'color' => 'bg-yellow-100 dark:bg-yellow-700'
-                ],
-                [
                     'titulo' => 'Historial de Altas',
                     'ruta' => route('rh.historialSolicitudesAltas'),
                     'icono' => '🗂️',

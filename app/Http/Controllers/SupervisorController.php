@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SolicitudAlta;
 use App\Models\DocumentacionAltas;
 use App\Models\SolicitudBajas;
+use App\Models\SolicitudVacaciones;
 use App\Models\User;
 use App\Models\Asistencia;
 use Illuminate\Http\Request;
@@ -20,7 +21,6 @@ class SupervisorController extends Controller
 
     public function guardarInfo(Request $request)
     {
-        //dd($request->all());
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
@@ -138,7 +138,9 @@ class SupervisorController extends Controller
     public function historialSolicitudes()
     {
         $usuario = auth()->user()->name;
-        $solicitudes = SolicitudAlta::where('solicitante', $usuario)->orderBy('created_at', 'desc')->get();
+        $solicitudes = SolicitudAlta::where('solicitante', $usuario)
+        ->orderBy('created_at', 'desc')
+        ->get();
 
         return view('supervisor.historialSolicitudes', compact('solicitudes'));
     }
@@ -399,5 +401,36 @@ class SupervisorController extends Controller
         return view('supervisor.verAsistencias', compact('asistenciasElementos', 'fechaSeleccionada'));
     }
 
+    public function solicitudesVacaciones(){
+        $punto = Auth::user()->punto;
+
+        $solicitudes = SolicitudVacaciones::whereHas('user', function ($query) use ($punto) {
+            $query->where('punto', $punto);
+        })->with('user')
+        ->orderBy('created_at', 'desc')
+        ->get();
+        return view('supervisor.solicitudesVacaciones', compact('solicitudes'));
+    }
+
+    public function aceptarSolicitudVacaciones($id){
+        $solicitud = SolicitudVacaciones::find($id);
+        $solicitud->estatus = 'Aceptada';
+        $solicitud->observaciones = 'Solicitud de vacaciones aceptada';
+
+        $solicitud->save();
+
+        return redirect()->route('sup.solicitudesVacaciones')->with('success', 'Solicitud de vacaciones aceptada correctamente.');
+    }
+
+    public function rechazarSolicitudVacaciones($id){
+        $solicitud = SolicitudVacaciones::find($id);
+        $solicitud->estatus = 'Rechazada';
+        $solicitud->observaciones = 'Solicitud de vacaciones rechazada';
+
+
+        $solicitud->save();
+
+        return redirect()->route('sup.solicitudesVacaciones')->with('success', 'Solicitud de vacaciones rechazada correctamente.');
+    }
 
 }

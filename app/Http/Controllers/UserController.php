@@ -117,6 +117,7 @@ class UserController extends Controller
             $aniversario->subYear();
         }
         $vacacionesTomadas = SolicitudVacaciones::where('user_id', $user->id)
+            ->whereIn('estatus', ['Aceptada', 'En Proceso'])
             ->where('created_at', '>=', $aniversario)
             ->get();
 
@@ -133,6 +134,7 @@ class UserController extends Controller
 
     public function solicitarVacaciones(Request $request, $id){
         $request->validate([
+            'tipo' => 'required|string',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date',
             'dias_solicitados' => 'required|integer|min:1|max:30',
@@ -140,9 +142,11 @@ class UserController extends Controller
             'dias_disponibles' => 'required|integer|min:0|max:36',
             'dias_por_derecho' => 'required|integer|min:0|max:36',
         ]);
+
         $user = User::findorFail($id);
         $solicitud = new SolicitudVacaciones();
         $solicitud->user_id = $user->id;
+        $solicitud->tipo = $request->tipo;
         $solicitud->fecha_inicio = $request->fecha_inicio;
         $solicitud->fecha_fin = $request->fecha_fin;
         $solicitud->dias_solicitados = $request->dias_solicitados;

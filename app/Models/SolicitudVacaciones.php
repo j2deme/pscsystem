@@ -22,4 +22,9 @@ class SolicitudVacaciones extends Model
         'fecha_solicitud',
         'estatus',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

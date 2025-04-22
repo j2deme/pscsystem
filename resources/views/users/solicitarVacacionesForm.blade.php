@@ -54,6 +54,15 @@
                                     <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Solicitar Vacaciones</h3>
 
                                     <div>
+                                        <label for="tipo" class="block text-sm font-semibold text-gray-600">Tipo:</label>
+                                        <select name="tipo" id="tipo" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                                            <option value="" disabled selected>Selecciona una opción</option>
+                                            <option value="Disfrutadas">Disfrutadas</option>
+                                            <option value="Pagadas">Pagadas</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
                                         <label for="fecha_inicio" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Fecha de Inicio</label>
                                         <input type="date" name="fecha_inicio" id="fecha_inicio" class="mt-1 w-full rounded border-gray-300 shadow-sm" required>
                                     </div>
