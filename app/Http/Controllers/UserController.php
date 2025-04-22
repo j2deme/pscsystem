@@ -160,4 +160,12 @@ class UserController extends Controller
         $solicitud->save();
         return redirect()->route('dashboard')->with('success', 'Solicitud de vacaciones enviada correctamente');
     }
+
+    public function historialVacaciones(){
+        $user = User::find(Auth::user()->id);
+        $vacaciones = SolicitudVacaciones::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        return view('users.historialVacaciones', compact('vacaciones'));
+    }
 }
