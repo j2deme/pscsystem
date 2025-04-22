@@ -49,9 +49,12 @@
                                             </span>
                                         @endif
                                     </td>
+
                                     <td class="py-2 px-4">
-                                        <a href="#" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
-                                    </td>
+                                            <a href="{{route('sup.verSolicitudBaja', $solicitud->id)}}" class="inline-block bg-blue-400 text-gray-100 py-2 px-4 rounded-md hover:bg-blue-500 mr-2 mb-2">
+                                                Ver Más
+                                            </a>
+                                        </td>
                                 </tr>
                             @endforeach
                         </tbody>

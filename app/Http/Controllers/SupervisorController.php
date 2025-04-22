@@ -433,4 +433,12 @@ class SupervisorController extends Controller
         return redirect()->route('sup.solicitudesVacaciones')->with('success', 'Solicitud de vacaciones rechazada correctamente.');
     }
 
+    public function verSolicitudBaja($id){
+        $solicitudBaja = SolicitudBajas::findOrFail($id);
+        $user = User::findOrFail($solicitudBaja->user_id);
+        $solicitudAlta = SolicitudAlta::findOrFail($user->sol_alta_id);
+
+        return view('supervisor.detalleBaja', compact('user','solicitudAlta', 'solicitudBaja'));
+    }
+
 }

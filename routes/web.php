@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/solicitudes_vacaciones', [SupervisorController::class,'solicitudesVacaciones'])->name('sup.solicitudesVacaciones');
     Route::get('/aceptar_solicitud_vacaciones/{id}', [SupervisorController::class, 'aceptarSolicitudVacaciones'])->name('sup.aceptarSolicitudVacaciones');
     Route::get('/rechazar_solicitud_vacaciones/{id}', [SupervisorController::class,'rechazarSolicitudVacaciones'])->name('sup.rechazarSolicitudVacaciones');
+    Route::get('/ver_solicitud_baja/{id}', [SupervisorController::class,'verSolicitudBaja'])->name('sup.verSolicitudBaja');
 
     //usuario Recuersos Humanos
     Route::get('/solicitudes_altas', [RhController::class,'solicitudesAltas'])->name('rh.solicitudesAltas');
