@@ -465,6 +465,9 @@ class SupervisorController extends Controller
 
     public function tiemposExtrasForm($id){
         $supervisor = Auth::user();
+        $extraHoy = TiemposExtra::where('user_id', $id)
+                ->whereDate('fecha', Carbon::now()->toDateString())
+                ->first();
         $elemento = User::where('id', $id)
             ->with('solicitudAlta.documentacion')
             ->firstOrFail();
@@ -473,13 +476,22 @@ class SupervisorController extends Controller
         $foto = $foto ? asset($foto) : null;
         $solicitud = SolicitudAlta::where('id', $elemento->sol_alta_id)->first();
 
-        return view('supervisor.tiemposExtrasForm', compact('supervisor', 'elemento','solicitud', 'foto'));
+        return view('supervisor.tiemposExtrasForm', compact('supervisor', 'elemento','solicitud', 'foto', 'extraHoy'));
     }
 
     public function guardarTiempoExtra(Request $request, $id){
         $request->validate([
             'user_id',
-            'fecha',
+            'fecha' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    try {
+                        Carbon::parse($value, 'America/Mexico_City');
+                    } catch (\Exception $e) {
+                        $fail('La fecha no es válida.');
+                    }
+                }
+            ],
             'hora_inicio',
             'hora_fin',
             'observaciones',
@@ -519,6 +531,17 @@ class SupervisorController extends Controller
         ->get();
 
         return view('supervisor.historialTiemposExtras', compact('tiemposExtras'));
+    }
+
+    public function gestionUsuarios(){
+        $user = Auth::user();
+        $usuarios = User::where('punto', $user->punto)
+            ->where('empresa', $user->empresa)
+            ->where('estatus', 'Activo')
+            ->where('rol', '!=', 'Supervisor')
+            ->get();
+
+        return view('supervisor.gestionUsuarios', compact('usuarios'));
     }
 
 }

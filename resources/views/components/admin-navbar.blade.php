@@ -20,6 +20,12 @@
                     'icono' => '📈',
                     'color' => 'bg-red-100 dark:bg-red-700'
                 ],
+                [
+                    'titulo' => 'Gestión de Usuarios',
+                    'ruta' => route('admin.verUsuarios'),
+                    'icono' => '👨‍💻',
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700'
+                ],
             ];
         @endphp
 

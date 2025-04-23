@@ -64,14 +64,14 @@
                     'color' => 'bg-green-100 dark:bg-green-700'
                 ],
                 [
-                    'titulo' => 'Historial deTiempos Extras',
+                    'titulo' => 'Historial de Tiempos Extras',
                     'ruta' => route('sup.historialTiemposExtras'),
                     'icono' => '📅',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
                 [
                     'titulo' => 'Gestión de Usuarios',
-                    'ruta' => '#',
+                    'ruta' => route('sup.gestionUsuarios'),
                     'icono' => '👨‍👩‍👧‍👦',
                     'color' => 'bg-indigo-100 dark:bg-indigo-700'
                 ],

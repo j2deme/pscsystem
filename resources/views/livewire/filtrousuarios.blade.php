@@ -30,7 +30,7 @@
                         <td class="px-4 py-2">{{ $usuario->rol }}</td>
                         <td class="px-4 py-2">{{ $usuario->punto }}</td>
                         <td class="px-4 py-2">
-                            <a href="{{route('rh.llenarBaja', $usuario->id)}}" class="inline-block rounded ml-2 text-gray-100 bg-red-500 dark:bg-red-700 px-2 hover:bg-red-700">Generar Baja</a>
+                            <a href="{{route('rh.llenarBaja', $usuario->id)}}" class="inline-block rounded ml-2 text-red-500 dark:bg-red-700 px-2">Generar Baja</a>
                         </td>
                     </tr>
                 @empty

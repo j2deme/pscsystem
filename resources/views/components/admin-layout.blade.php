@@ -8,11 +8,6 @@
                         Inicio
                     </a>
 
-                    <a href="{{ route('admin.verUsuarios') }}" class="flex items-center gap-2 px-3 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-all duration-200">
-                        <svg class="w-5 h-5 text-green-500 dark:text-green-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a4 4 0 100 8 4 4 0 000-8zM4 14a6 6 0 0112 0v1a1 1 0 01-1 1H5a1 1 0 01-1-1v-1z" clip-rule="evenodd"/></svg>
-                        Gestión de Usuarios
-                    </a>
-
                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-3 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-all duration-200">
                         <svg class="w-5 h-5 text-purple-500 dark:text-purple-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 14.25V16a2 2 0 01-2 2H4a2 2 0 01-2-2v-1.75A6.25 6.25 0 018.25 8h3.5A6.25 6.25 0 0118 14.25zM10 7A3 3 0 1010 1a3 3 0 000 6z" clip-rule="evenodd" /></svg>
                         Mi Perfil

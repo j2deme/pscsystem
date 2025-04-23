@@ -6,15 +6,16 @@
                 <h1 class="flex justify-center text-2xl text-gray-800 dark:text-white">Tiempo Extra de {{ $elemento->name }}</h1>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mt-8">
-                                    <div class="flex items-center space-x-4 mb-4">
-                                        <img src="{{ $foto ?: url('images/default-user.jpg') }}" alt="Foto de {{ $elemento->name }}" class="w-16 h-16 rounded-full object-cover border border-gray-300 dark:border-gray-600">
-                                        <div>
-                                            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">{{ $elemento->name }}</h2>
-                                            <p class="text-sm text-gray-600 dark:text-gray-300">{{ $elemento->empresa }} - {{ $elemento->punto }}</p>
-                                            <p class="text-sm text-gray-600 dark:text-gray-300">{{ $elemento->rol }}</p>
-                                        </div>
-                                    </div>
+                    <div class="flex items-center space-x-4 mb-4">
+                        <img src="{{ $foto ?: url('images/default-user.jpg') }}" alt="Foto de {{ $elemento->name }}" class="w-16 h-16 rounded-full object-cover border border-gray-300 dark:border-gray-600">
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-800 dark:text-white">{{ $elemento->name }}</h2>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">{{ $elemento->empresa }} - {{ $elemento->punto }}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">{{ $elemento->rol }}</p>
+                        </div>
                     </div>
+                </div>
+                @if($extraHoy == null)
                     <form action="{{route('sup.guardarTiempoExtra', $elemento->id)}}" method="POST" class="space-y-4">
                         @csrf
                         <input type="hidden" name="user_id" value="{{ $elemento->id }}">
@@ -42,11 +43,19 @@
                             <button type="submit" class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 mr-2 mb-2">
                                 Registrar horario
                             </button>
-                            <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                            <a href="{{ route('sup.tiemposExtras') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
                                 Regresar
                             </a>
                         </div>
                     </form>
+                @else
+                <p class="flex justify-center">Ya registraste un tiempo extra para este usuario hoy.</p>
+                <div class="flex justify-center mt-6">
+                        <a href="{{ route('sup.tiemposExtras') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                            Regresar
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

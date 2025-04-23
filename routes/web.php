@@ -4,6 +4,7 @@ use App\Exports\AltasSpreadsheetExport;
 use App\Exports\BajasSpreadsheetExport;
 use App\Exports\VacacionesSpreadsheetExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SupervisorController;
@@ -27,6 +28,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/users', [ProfileController::class, 'mostrarUsuarios'])->name('admin.verUsuarios');
     Route::get('/users/registrarUsuario', [UserController::class, 'crearUsuario'])->name('crearUsuario');
     Route::post('/guardarUsuario', [UserController::class, 'registrarUsuario'])->name('registrarUsuario');
+
+    Route::get('/ver_usuarios', [AdminController::class, 'verUsuarios'])->name('admin.verUsuarios');
 
     //Usuario Supervisor
     Route::get('/nuevoUsuario', [SupervisorController::class, 'nuevoUsuarioForm'])->name('sup.nuevoUsuarioForm');
@@ -54,6 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tiempos_extras/{id}', [SupervisorController::class, 'tiemposExtrasForm'])->name('sup.tiemposExtrasForm');
     Route::post('/guardar_tiempo_extra/{id}', [SupervisorController::class, 'guardarTiempoExtra'])->name('sup.guardarTiempoExtra');
     Route::get('/historial_tiempos_extras', [SupervisorController::class, 'historialTiemposExtras'])->name('sup.historialTiemposExtras');
+    Route::get('/gestion_usuarios', [SupervisorController::class, 'gestionUsuarios'])->name('sup.gestionUsuarios');
 
     //usuario Recuersos Humanos
     Route::get('/solicitudes_altas', [RhController::class,'solicitudesAltas'])->name('rh.solicitudesAltas');
