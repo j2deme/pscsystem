@@ -8,6 +8,7 @@ use App\Models\SolicitudBajas;
 use App\Models\SolicitudVacaciones;
 use App\Models\User;
 use App\Models\Asistencia;
+use App\Models\TiemposExtra;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -449,6 +450,75 @@ class SupervisorController extends Controller
         $solicitudAlta = SolicitudAlta::findOrFail($user->sol_alta_id);
 
         return view('supervisor.detalleBaja', compact('user','solicitudAlta', 'solicitudBaja'));
+    }
+
+    public function tiemposExtras(){
+        $user = Auth::user();
+        $elementos = User::where('punto', Auth::user()->punto)
+            ->where('empresa', Auth::user()->empresa)
+            ->where('estatus', 'Activo')
+            ->where('rol', '!=', 'Supervisor')
+            ->with('solicitudAlta.documentacion')
+            ->get();
+        return view('supervisor.tiemposExtras', compact('elementos'));
+    }
+
+    public function tiemposExtrasForm($id){
+        $supervisor = Auth::user();
+        $elemento = User::where('id', $id)
+            ->with('solicitudAlta.documentacion')
+            ->firstOrFail();
+
+        $foto = optional($elemento->solicitudAlta->documentacion)->arch_foto;
+        $foto = $foto ? asset($foto) : null;
+        $solicitud = SolicitudAlta::where('id', $elemento->sol_alta_id)->first();
+
+        return view('supervisor.tiemposExtrasForm', compact('supervisor', 'elemento','solicitud', 'foto'));
+    }
+
+    public function guardarTiempoExtra(Request $request, $id){
+        $request->validate([
+            'user_id',
+            'fecha',
+            'hora_inicio',
+            'hora_fin',
+            'observaciones',
+        ]);
+
+        $horaInicio = Carbon::createFromFormat('H:i', $request->hora_inicio);
+        $horaFin = Carbon::createFromFormat('H:i', $request->hora_fin);
+
+        $diferenciaSegundos = abs($horaFin->floatDiffInSeconds($horaInicio));
+        $totalHoras = gmdate('H:i:s', $diferenciaSegundos);
+
+        $tiempoExtra = new TiemposExtra();
+        $tiempoExtra->user_id = $request->user_id;
+        $tiempoExtra->fecha = $request->fecha;
+        $tiempoExtra->hora_inicio = $horaInicio;
+        $tiempoExtra->hora_fin = $horaFin;
+        $tiempoExtra->total_horas = $totalHoras;
+        $tiempoExtra->autorizado_por = Auth::user()->name;
+        if($request->observaciones){
+            $tiempoExtra->observaciones = $request->observaciones;
+        }else{
+            $tiempoExtra->observaciones = 'Ninguna';
+        }
+        $tiempoExtra->save();
+
+        return redirect()->route('sup.tiemposExtras')->with('success', 'Tiempo extra registrado correctamente.');
+    }
+
+    public function historialTiemposExtras(){
+        $supervisor = Auth::user();
+        $tiemposExtras = TiemposExtra::whereHas('user', function ($query) use ($supervisor) {
+            $query->where('empresa', $supervisor->empresa)
+                ->where('punto', $supervisor->punto);
+        })
+        ->with('user')
+        ->orderBy('fecha', 'desc')
+        ->get();
+
+        return view('supervisor.historialTiemposExtras', compact('tiemposExtras'));
     }
 
 }
