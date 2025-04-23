@@ -30,7 +30,6 @@
                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                                         <td class="px-4 py-2">
                                             {{ $solicitud->user->name }}<br>
-                                            <span class="text-xs text-gray-500">{{ $solicitud->user->email }}</span>
                                         </td>
                                         <td class="px-4 py-2">{{ $solicitud->user->punto }}</td>
                                         <td class="px-4 py-2">{{ \Carbon\Carbon::parse($solicitud->fecha_inicio)->format('d/m/Y') }}</td>

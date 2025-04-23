@@ -16,7 +16,7 @@
                 ],
                 [
                     'titulo' => 'Solicitar Baja',
-                    'ruta' => route('user.solicitarBajaForm'),
+                    'ruta' => '#',
                     'icono' => '🚫',
                     'color' => 'bg-red-100 dark:bg-red-700'
                 ],

@@ -53,7 +53,7 @@
                 ],
                 [
                     'titulo' => 'Mi Historial de Vacaciones',
-                    'ruta' => '#',
+                    'ruta' => route('user.historialVacaciones'),
                     'icono' => '📅',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],

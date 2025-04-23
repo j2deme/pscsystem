@@ -347,12 +347,22 @@ class SupervisorController extends Controller
     public function guardarAsistencias(Request $request){
         $user = Auth::user();
         $now = Carbon::now('America/Mexico_City');
+        $asistencias = $request->input('asistencias', []);
+        $todosUsuarios = User::where('punto', $user->punto)
+                            ->where('empresa', $user->empresa)
+                            ->where('estatus', 'Activo')
+                            ->where('rol', '!=', 'Supervisor')
+                            ->pluck('id')
+                            ->toArray();
+
+        $faltas = array_values(array_diff($todosUsuarios, $asistencias));
 
         $asistencia = new Asistencia();
         $asistencia->user_id = $user->id;
         $asistencia->fecha = $now->toDateString();
         $asistencia->hora_asistencia = $now->toTimeString();
-        $asistencia->elementos_enlistados =  json_encode($request->input('asistencias', []));
+        $asistencia->elementos_enlistados = json_encode($asistencias);
+        $asistencia->faltas = json_encode($faltas);
         $asistencia->observaciones = $request->input('observaciones') ?: 'Ninguna';
         $asistencia->punto = $user->punto;
         $asistencia->empresa = $user->empresa;
@@ -416,6 +426,7 @@ class SupervisorController extends Controller
         $solicitud = SolicitudVacaciones::find($id);
         $solicitud->estatus = 'Aceptada';
         $solicitud->observaciones = 'Solicitud de vacaciones aceptada';
+        $solicitud->autorizado_por = Auth::user()->name;
 
         $solicitud->save();
 
@@ -426,7 +437,6 @@ class SupervisorController extends Controller
         $solicitud = SolicitudVacaciones::find($id);
         $solicitud->estatus = 'Rechazada';
         $solicitud->observaciones = 'Solicitud de vacaciones rechazada';
-
 
         $solicitud->save();
 
