@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/guardarUsuario', [UserController::class, 'registrarUsuario'])->name('registrarUsuario');
     Route::get('/ver_usuarios', [AdminController::class, 'verUsuarios'])->name('admin.verUsuarios');
     Route::get('/tablero_supervisores', [AdminController::class, 'tableroSupervisores'])->name('admin.verTableroSupervisores');
+    Route::get('/admin_solicitudes_altas', [AdminController::class, 'verSolicitudesAltas'])->name('admi.verSolicitudesAltas');
 
     //Usuario Supervisor
     Route::get('/nuevoUsuario', [SupervisorController::class, 'nuevoUsuarioForm'])->name('sup.nuevoUsuarioForm');

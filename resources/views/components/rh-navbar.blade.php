@@ -2,7 +2,9 @@
     use App\Models\SolicitudAlta;
     use App\Models\SolicitudBajas;
 
-    $altasEnProceso = SolicitudAlta::where('status', 'En Proceso')->count();
+    $altasEnProceso = SolicitudAlta::where('status', 'En Proceso')
+                    ->where('observaciones', '!=', 'Solicitud enviada a Administrador.')
+                    ->count();
     $bajasEnProceso = SolicitudBajas::where('estatus', 'En Proceso')
                     ->where('por', 'Renuncia')
                     ->count();

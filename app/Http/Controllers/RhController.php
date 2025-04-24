@@ -13,7 +13,9 @@ use Hash;
 class RhController extends Controller
 {
     public function solicitudesAltas(){
-        $solicitudes = SolicitudAlta::where('status', 'En Proceso')->get();
+        $solicitudes = SolicitudAlta::where('status', 'En Proceso')
+            ->where('Observaciones', '!=', 'Solicitud enviada a Administrador.')
+            ->get();
         return view('rh.solicitudesAltas', compact('solicitudes'));
     }
 
@@ -25,11 +27,12 @@ class RhController extends Controller
 
     public function aceptarSolicitud($id){
         $solicitud = SolicitudAlta::find($id);
-        $solicitud->status = 'Aceptada';
-        $solicitud->observaciones = 'Alta Aprobada';
+        $solicitud->status = 'En Proceso';
+        $solicitud->observaciones = 'Solicitud enviada a Administrador.';
         $solicitud->save();
 
-        $docs = DocumentacionAltas::where('solicitud_id', $id)->first();
+        //Mover todo esto a funcion de aceptar del administrador
+        /*$docs = DocumentacionAltas::where('solicitud_id', $id)->first();
 
         $idDocs = $docs->id;
         $idSol= $solicitud->id;
@@ -45,7 +48,7 @@ class RhController extends Controller
         $user->rol = $solicitud->rol;
         $user->estatus = 'Activo';
         $user->empresa = $solicitud->empresa;
-        $user->save();
+        $user->save();*/
 
 
         return redirect()->route('rh.solicitudesAltas')->with('success', 'Solicitud respondida correctamente.');
