@@ -1,3 +1,20 @@
+@php
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use App\Models\SolicitudAlta;
+use App\Models\SolicitudBajas;
+
+    $user = Auth::user();
+    $rhnotificaciones = 0;
+    $rhSolicitudesAltas = SolicitudAlta::where('status', 'En Proceso')
+        ->count();
+    $rhSolicitudesBajas = SolicitudBajas::where('estatus', 'En Proceso')
+        ->where('por', 'Renuncia')
+        ->count();
+
+    $rhnotificaciones = $rhSolicitudesAltas + $rhSolicitudesBajas;
+@endphp
+
 <div class="col-span-full">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @php
@@ -12,13 +29,20 @@
                     'titulo' => 'Recursos Humanos',
                     'ruta' => '#',
                     'icono' => '👨‍👩‍👧‍👦',
-                    'color' => 'bg-indigo-100 dark:bg-indigo-700'
+                    'color' => 'bg-indigo-100 dark:bg-indigo-700',
+                    'notificaciones' => $rhnotificaciones
                 ],
                 [
                     'titulo' => 'Monitoreo',
                     'ruta' => '#',
                     'icono' => '📈',
                     'color' => 'bg-red-100 dark:bg-red-700'
+                ],
+                [
+                    'titulo' => 'Supervisores',
+                    'ruta' => '#',
+                    'icono' => '👨‍💻',
+                    'color' => 'bg-green-100 dark:bg-green-700'
                 ],
                 [
                     'titulo' => 'Gestión de Usuarios',
@@ -30,9 +54,22 @@
         @endphp
 
         @foreach($cards as $card)
-            <a href="{{ $card['ruta'] }}" class="transition-transform transform hover:scale-105">
+            <a
+                @if($card['titulo'] === 'Recursos Humanos')
+                    href="#"
+                    @click.prevent="$dispatch('cambiar-menu', { menu: 'rh' })"
+                @else
+                    href="{{ $card['ruta'] }}"
+                @endif
+                class="transition-transform transform hover:scale-105"
+            >
                 <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between">
                     <div class="flex items-center space-x-3">
+                        @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)
+                            <span class="absolute top-2 right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                                {{ $card['notificaciones'] }}
+                            </span>
+                        @endif
                         <div class="text-3xl">
                             {{ $card['icono'] }}
                         </div>

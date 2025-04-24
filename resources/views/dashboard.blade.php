@@ -1,13 +1,11 @@
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-</head>
+<script src="https://unpkg.com/alpinejs" defer></script>
 <x-app-layout>
     <x-navbar />
     <div class="py-4 px-2 sm:py-6 sm:px-4">
         <div class="mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-                <div class="space-y-4">
+                <div x-data="{ menu: 'admin' }" x-on:cambiar-menu.window="menu = $event.detail.menu" class="space-y-4">
+
                     @if (session('success'))
                         <div class="bg-green-200 text-gray-700 p-2 mb-4 rounded-md">
                             {{ session('success') }}
@@ -17,9 +15,15 @@
                         Tablero de Opciones
                     </p>
 
-                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="">
                         @if(Auth::user()->rol == 'admin')
-                            <x-admin-navbar></x-admin-navbar>
+                            <div x-show="menu === 'admin'" x-cloak>
+                                <x-admin-navbar />
+                            </div>
+
+                            <div x-show="menu === 'rh'" x-cloak>
+                                <x-rh-navbar />
+                            </div>
                         @elseif (Auth::user()->rol == 'Supervisor')
                             <x-supervisor-navbar></x-supervisor-navbar>
                         @elseif (Auth::user()->rol == 'Recursos Humanos')
