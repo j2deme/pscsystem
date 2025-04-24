@@ -38,7 +38,7 @@
                                     <td class="py-2 px-4">{{ $solicitud->user->solicitudAlta->empresa }}</td>
                                     <td class="py-2 px-4">{{ $solicitud->por }}</td>
                                     <td class="py-2 px-4">{{ $solicitud->motivo }}</td>
-                                    <td class="py-2 px-4">{{ \Carbon\Carbon::parse($solicitud->fecha_solicitud)->format('d/m/Y') }}</td>
+                                    <td class="py-2 px-4">{{ $solicitud->fecha_solicitud }}</td>
                                     <td class="py-2 px-4">
                                         @if($solicitud->estatus == 'En Proceso')
                                             <span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none text-gray-800 bg-yellow-300 rounded-full">
@@ -54,11 +54,12 @@
                                             </span>
                                         @endif
                                     </td>
+
                                     <td class="py-2 px-4">
-                                            <a href="{{route('rh.detalleSolicitudBaja', $solicitud->id)}}" class="inline-block bg-blue-300 text-gray-800 py-2 px-4 rounded-md hover:bg-blue-400 mr-2 mb-2">
+                                            <a href="{{route('sup.verSolicitudBaja', $solicitud->id)}}" class="inline-block text-blue-500 py-2 px-4 rounded-md hover:bg-blue-200 mr-2 mb-2">
                                                 Ver Más
                                             </a>
-                                    </td>
+                                        </td>
                                 </tr>
                             @endforeach
                         </tbody>

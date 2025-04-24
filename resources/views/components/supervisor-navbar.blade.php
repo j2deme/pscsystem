@@ -9,7 +9,10 @@
     $tieneAsistenciaHoy = Asistencia::where('user_id', $user->id)->where('fecha', Carbon::today())->exists();
     $notificacionAsistencia = $tieneAsistenciaHoy ? 0 : 1;
 
-    $vacaciones = SolicitudVacaciones::where('supervisor_id', $user->id)
+    $vacacionesAdmin = SolicitudVacaciones::where('estatus', 'En Proceso')
+        ->where('tipo', 'Disfrutadas')
+        ->count();
+    $vacacionesSup = SolicitudVacaciones::where('supervisor_id', $user->id)
         ->where('estatus', 'En Proceso')
         ->where('tipo', 'Disfrutadas')
         ->count();
@@ -17,6 +20,7 @@
 <div class="col-span-full">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @php
+        $vacaciones = Auth::user()->rol == 'admin' ? $vacacionesAdmin : $vacacionesSup;
             $cards = [
                 [
                     'titulo' => 'Alta de Usuarios',

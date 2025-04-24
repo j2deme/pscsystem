@@ -138,11 +138,16 @@ class SupervisorController extends Controller
 
     public function historialSolicitudes()
     {
-        $usuario = auth()->user()->name;
-        $solicitudes = SolicitudAlta::where('solicitante', $usuario)
-        ->orderBy('created_at', 'desc')
-        ->get();
-
+        $usuario = Auth::user();
+        if($usuario->rol == 'Supervisor')
+        {
+            $solicitudes = SolicitudAlta::where('solicitante', $usuario)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        }else{
+            $solicitudes = SolicitudAlta::orderBy('created_at', 'desc')
+            ->get();
+        }
         return view('supervisor.historialSolicitudes', compact('solicitudes'));
     }
 
@@ -320,11 +325,11 @@ class SupervisorController extends Controller
     }
 
     public function historialBajas(){
-        $authUser = Auth::user();
+        $user = Auth::user();
 
-    $solicitudes = SolicitudBajas::whereHas('user', function ($query) use ($authUser) {
-        $query->where('empresa', $authUser->empresa)
-            ->where('punto', $authUser->punto)
+    $solicitudes = SolicitudBajas::whereHas('user', function ($query) use ($user) {
+        $query->where('empresa', $user->empresa)
+            ->where('punto', $user->punto)
             ->where('por','Renuncia');
             })->with('user')->get();
 

@@ -56,5 +56,8 @@
                 </a></center>
             </div>
         @endif
+        <div class="mt-4">
+            {{ $solicitudes->links() }}
+        </div>
         </div>
 </div>

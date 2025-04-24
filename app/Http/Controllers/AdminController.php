@@ -11,4 +11,8 @@ class AdminController extends Controller
         $users = User::all();
         return view('admi.verUsuarios', compact('users'));
     }
+
+    public function tableroSupervisores(){
+        return view('admi.tableroSupervisores');
+    }
 }

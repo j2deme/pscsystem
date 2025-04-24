@@ -3,16 +3,31 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SolicitudAlta;
 use App\Models\SolicitudBajas;
+use App\Models\SolicitudVacaciones;
+use App\Models\Asistencia;
+use Carbon\Carbon;
 
     $user = Auth::user();
-    $rhnotificaciones = 0;
+    $supervisores = User::where('rol', 'Supervisor')
+    ->where('estatus', 'Activo')
+    ->get();
+    $supervisoresCount = $supervisores->count();
+
     $rhSolicitudesAltas = SolicitudAlta::where('status', 'En Proceso')
         ->count();
     $rhSolicitudesBajas = SolicitudBajas::where('estatus', 'En Proceso')
         ->where('por', 'Renuncia')
         ->count();
-
     $rhnotificaciones = $rhSolicitudesAltas + $rhSolicitudesBajas;
+
+    $solicitudesVacaciones = SolicitudVacaciones::where('estatus', 'En Proceso')->count();
+    foreach ($supervisores as $supervisor) {
+    $asistenciasHoy = Asistencia::where('user_id', $supervisor->id)
+        ->whereDate('fecha', Carbon::today())
+        ->count();
+    }
+    $asistenciasFaltantes = $supervisoresCount - $asistenciasHoy;
+    $supNotificaciones = $asistenciasFaltantes+$solicitudesVacaciones;
 @endphp
 
 <div class="col-span-full">
@@ -40,9 +55,10 @@ use App\Models\SolicitudBajas;
                 ],
                 [
                     'titulo' => 'Supervisores',
-                    'ruta' => '#',
+                    'ruta' => route('admin.verTableroSupervisores'),
                     'icono' => '👨‍💻',
-                    'color' => 'bg-green-100 dark:bg-green-700'
+                    'color' => 'bg-green-100 dark:bg-green-700',
+                    'notificaciones' => $supNotificaciones
                 ],
                 [
                     'titulo' => 'Gestión de Usuarios',

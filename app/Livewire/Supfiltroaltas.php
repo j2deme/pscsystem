@@ -22,13 +22,23 @@ class Supfiltroaltas extends Component
 
     public function render()
     {
+        $user = auth()->user();
         $usuario = auth()->user()->name;
-        $solicitudes = SolicitudAlta::where('solicitante', $usuario)
+        if($user->rol == 'Supervisor'){
+            $solicitudes = SolicitudAlta::where('solicitante', $usuario)
             ->when($this->search, function ($query) {
                 return $query->where('nombre', 'like', '%'.$this->search.'%');
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
+        }else{
+            $solicitudes = SolicitudAlta::when($this->search, function ($query) {
+                return $query->where('nombre', 'like', '%'.$this->search.'%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        }
+
 
         return view('livewire.supfiltroaltas', [
             'solicitudes' => $solicitudes

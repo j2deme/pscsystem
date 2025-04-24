@@ -11,7 +11,10 @@
         </div>
     </div>
     @if($solicitudes->isEmpty())
-                <p>No has realizado ninguna solicitud aún.</p>
+                <p>No has realizado ninguna solicitud aún.</p><br>
+                <center><br><a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                    Regresar
+                </a></center>
             @else
                 <div class="overflow-x-auto bg-white rounded-lg shadow">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -19,7 +22,11 @@
                             <tr>
                                 <th class="px-6 py-3">No.</th>
                                 <th class="px-6 py-3">Nombre</th>
-                                <th class="px-6 py-3">CURP</th>
+                                @if(Auth::user()->rol =='admin')
+                                    <th class="px-6 py-3">Solicitante</th>
+                                @else
+                                    <th class="px-6 py-3">CURP</th>
+                                @endif
                                 <th class="px-6 py-3">Fecha</th>
                                 <th class="px-6 py-3">Estado</th>
                                 <th class="px-6 py-3">Acciones</th>
@@ -32,7 +39,11 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         {{ $solicitud->nombre }} {{ $solicitud->apellido_paterno }} {{ $solicitud->apellido_materno }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $solicitud->curp }}</td>
+                                    @if(Auth::user()->rol =='admin')
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $solicitud->solicitante }}</td>
+                                    @else
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $solicitud->curp }}</td>
+                                    @endif
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $solicitud->created_at->format('d/m/Y') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
@@ -54,4 +65,7 @@
                     </a></center>
                 </div>
             @endif
+            <div class="mt-4">
+                {{ $solicitudes->links() }}
+            </div>
 </div>
