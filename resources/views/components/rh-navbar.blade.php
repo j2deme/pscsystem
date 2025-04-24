@@ -1,3 +1,13 @@
+@php
+    use App\Models\SolicitudAlta;
+    use App\Models\SolicitudBajas;
+
+    $altasEnProceso = SolicitudAlta::where('status', 'En Proceso')->count();
+    $bajasEnProceso = SolicitudBajas::where('estatus', 'En Proceso')
+                    ->where('por', 'Renuncia')
+                    ->count();
+@endphp
+
 <div class="col-span-full">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @php
@@ -6,13 +16,15 @@
                     'titulo' => 'Solicitudes de Altas',
                     'ruta' => route('rh.solicitudesAltas'),
                     'icono' => '📈',
-                    'color' => 'bg-blue-100 dark:bg-blue-700'
+                    'color' => 'bg-blue-100 dark:bg-blue-700',
+                    'notificaciones' => $altasEnProceso,
                 ],
                 [
                     'titulo' => 'Solicitudes de Bajas',
                     'ruta' => route('rh.solicitudesBajas'),
                     'icono' => '📉',
-                    'color' => 'bg-red-100 dark:bg-red-700'
+                    'color' => 'bg-red-100 dark:bg-red-700',
+                    'notificaciones' => $bajasEnProceso,
                 ],
                 [
                     'titulo' => 'Historial de Altas',
@@ -51,6 +63,11 @@
             <a href="{{ $card['ruta'] }}" class="transition-transform transform hover:scale-105">
                 <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between">
                     <div class="flex items-center space-x-3">
+                        @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)
+                            <span class="absolute top-2 right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                                {{ $card['notificaciones'] }}
+                            </span>
+                        @endif
                         <div class="text-3xl">
                             {{ $card['icono'] }}
                         </div>

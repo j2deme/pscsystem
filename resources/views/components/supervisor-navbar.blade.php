@@ -1,3 +1,19 @@
+@php
+    use App\Models\User;
+    use App\Models\Asistencia;
+    use App\Models\SolicitudVacaciones;
+    use Carbon\Carbon;
+    use Illuminate\Support\Facades\Auth;
+
+    $user = User::find(Auth::user()->id);
+    $tieneAsistenciaHoy = Asistencia::where('user_id', $user->id)->where('fecha', Carbon::today())->exists();
+    $notificacionAsistencia = $tieneAsistenciaHoy ? 0 : 1;
+
+    $vacaciones = SolicitudVacaciones::where('supervisor_id', $user->id)
+        ->where('estatus', 'En Proceso')
+        ->where('tipo', 'Disfrutadas')
+        ->count();
+@endphp
 <div class="col-span-full">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @php
@@ -18,7 +34,8 @@
                     'titulo' => 'Listas de Asistencia',
                     'ruta' => route('sup.listaAsistencia'),
                     'icono' => '📋',
-                    'color' => 'bg-green-100 dark:bg-green-700'
+                    'color' => 'bg-green-100 dark:bg-green-700',
+                    'notificaciones' => $notificacionAsistencia
                 ],
                 [
                     'titulo' => 'Historial de Altas',
@@ -43,7 +60,8 @@
                     'titulo' => 'Solicitudes de Vacaciones',
                     'ruta' => route('sup.solicitudesVacaciones'),
                     'icono' => '🏖️',
-                    'color' => 'bg-blue-100 dark:bg-blue-700'
+                    'color' => 'bg-blue-100 dark:bg-blue-700',
+                    'notificaciones' => $vacaciones
                 ],
                 [
                     'titulo' => 'Solicitar Vacaciones',
@@ -82,6 +100,11 @@
             <a href="{{ $card['ruta'] }}" class="transition-transform transform hover:scale-105">
                 <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between">
                     <div class="flex items-center space-x-3">
+                        @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)
+                            <span class="absolute top-2 right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                                {{ $card['notificaciones'] }}
+                            </span>
+                        @endif
                         <div class="text-3xl">
                             {{ $card['icono'] }}
                         </div>

@@ -28,6 +28,7 @@
                             <x-user-navbar></x-user-navbar>
                         @endif
                     </div>
+
                 </div>
             </div>
         </div>

@@ -144,10 +144,20 @@ class UserController extends Controller
         ]);
 
         $user = User::findorFail($id);
+        if(Auth::user()->rol == 'Patrullero' || Auth::user()->rol == 'Cortador' || Auth::user()->rol == 'Chofer' || Auth::user()->rol == 'Escolta')
+        {
+            $supervisor = User::where('rol', 'Supervisor')
+                ->where('empresa', Auth::user()->empresa)
+                ->where('punto', Auth::user()->punto)
+                ->first();
+        }else{
+            $supervisor = 'Desconocido';
+        }
         $solicitud = new SolicitudVacaciones();
         $solicitud->user_id = $user->id;
         $solicitud->tipo = $request->tipo;
         $solicitud->fecha_inicio = $request->fecha_inicio;
+        $solicitud->supervisor_id = $supervisor->id;
         $solicitud->fecha_fin = $request->fecha_fin;
         $solicitud->dias_solicitados = $request->dias_solicitados;
         $solicitud->dias_ya_utlizados = $request->dias_utilizados;
