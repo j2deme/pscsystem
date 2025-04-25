@@ -461,11 +461,15 @@ class SupervisorController extends Controller
     public function solicitudesVacaciones(){
         $punto = Auth::user()->punto;
 
-        $solicitudes = SolicitudVacaciones::whereHas('user', function ($query) use ($punto) {
-            $query->where('punto', $punto);
-        })->with('user')
-        ->orderBy('created_at', 'desc')
-        ->get();
+        if(Auth::user()->rol == 'admin'){
+            $solicitudes = SolicitudVacaciones::where('estatus', 'En Proceso')->get();
+        }else{
+            $solicitudes = SolicitudVacaciones::whereHas('user', function ($query) use ($punto) {
+                $query->where('punto', $punto);
+            })->with('user')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        }
         return view('supervisor.solicitudesVacaciones', compact('solicitudes'));
     }
 

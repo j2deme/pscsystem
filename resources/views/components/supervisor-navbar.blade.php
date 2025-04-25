@@ -7,10 +7,10 @@
 
     $user = User::find(Auth::user()->id);
     $totalAsistenciasHoy = 0;
-    $conteoSupervisores = User::where('rol', 'Supervisor')->count(); // este es el entero
+    $conteoSupervisores = User::where('rol', 'Supervisor')->count();
 
     if(Auth::user()->rol == 'admin'){
-        $supervisores = User::where('rol', 'Supervisor')->get(); // esta es la colección
+        $supervisores = User::where('rol', 'Supervisor')->get();
         foreach ($supervisores as $supervisor) {
             $asistenciasHoy = Asistencia::where('user_id', $supervisor->id)
                 ->whereDate('fecha', Carbon::today())
@@ -34,6 +34,8 @@
         ->where('estatus', 'En Proceso')
         ->where('tipo', 'Disfrutadas')
         ->count();
+
+
 @endphp
 <div class="col-span-full">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
