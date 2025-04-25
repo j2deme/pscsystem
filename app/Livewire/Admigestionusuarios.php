@@ -20,12 +20,24 @@ class Admigestionusuarios extends Component
 
     public function render()
     {
-        $users = User::query()
+        if(Auth()->user()->role == 'admin'){
+            $users = User::query()
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%'.$this->search.'%');
             })
             ->orderBy('name')
             ->paginate(10);
+        }else{
+            $users = User::where('punto', Auth()->user()->punto)
+            ->where('empresa', Auth()->user()->empresa)
+            ->where('rol', '!=', 'Supervisor')
+            ->when($this->search, function ($query) {
+                $query->where('name', 'like', '%'.$this->search.'%');
+            })
+            ->orderBy('name')
+            ->paginate(10);
+        }
+
 
         return view('livewire.admigestionusuarios', [
             'users' => $users

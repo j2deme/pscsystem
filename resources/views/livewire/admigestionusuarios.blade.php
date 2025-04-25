@@ -75,9 +75,11 @@
             </tbody>
         </table>
         <center>
+            @if(Auth::user()->rol == 'admin')
             <a href="{{ route('admin.crearUsuarioForm') }}" class="inline-block bg-blue-300 text-gray-800 py-2 px-4 rounded-md hover:bg-blue-400 mr-2">
                 Nuevo Usuario
             </a>
+            @endif
             <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
                 Regresar
             </a></center>

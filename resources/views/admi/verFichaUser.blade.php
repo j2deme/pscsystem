@@ -98,6 +98,7 @@
             </div>
             <div class="flex flex-wrap justify-center gap-4 mt-4">
                 @if($user->estatus != 'Inactivo')
+                    @if(Auth::user()->rol == 'Administrador')
                     <a href="{{ route('admin.editarUsuarioForm', $user->id) }}"
                         class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 transition">
                         Editar
@@ -106,6 +107,7 @@
                     <a href="#" class="inline-block bg-red-300 text-gray-800 py-2 px-4 rounded-md hover:bg-red-400 transition" onclick="confirmarBaja({{ $user->id }})">
                         Dar de Baja
                     </a>
+                    @endif
                 @endif
 
                 <a href="{{ route('admin.verUsuarios') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
