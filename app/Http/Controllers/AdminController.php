@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\SolicitudAlta;
+use App\Models\SolicitudBajas;
 use App\Models\User;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -29,5 +32,25 @@ class AdminController extends Controller
     public function editarUsuarioForm($id){
         $user = User::find($id);
         return view('admi.editarUsuarioForm', compact('user'));
+    }
+
+    public function bajaUsuario($id){
+        $user = User::find($id);
+        $user->estatus = 'Inactivo';
+        $user->save();
+
+        $solicitud = new SolicitudBajas();
+        $solicitud->user_id = $id;
+        $solicitud->fecha_solicitud = Carbon::today();
+        $solicitud->motivo = 'Desconocido';
+        $solicitud->por = 'Desconocido';
+        $solicitud->incapacidad = '';
+        $solicitud->fecha_baja = Carbon::today();
+        $solicitud->observaciones = 'Baja realizada por Administrador.';
+        $solicitud->autoriza = Auth::user()->name;
+        $solicitud->estatus = 'Aceptada';
+        $solicitud->save();
+
+        return redirect()->back()->with('success', 'El usuario ha sido dado de baja correctamente.');
     }
 }

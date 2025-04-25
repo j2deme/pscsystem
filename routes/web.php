@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/ver_usuarios', [AdminController::class, 'verUsuarios'])->name('admin.verUsuarios');
     Route::get('/tablero_supervisores', [AdminController::class, 'tableroSupervisores'])->name('admin.verTableroSupervisores');
     Route::get('/admin_solicitudes_altas', [AdminController::class, 'verSolicitudesAltas'])->name('admi.verSolicitudesAltas');
+    Route::get('/admin/baja_usuario/{id}', [AdminController::class, 'bajaUsuario'])->name('admin.darDeBajaUsuario');
+
 
     //Usuario Supervisor
     Route::get('/nuevoUsuario', [SupervisorController::class, 'nuevoUsuarioForm'])->name('sup.nuevoUsuarioForm');
@@ -100,6 +102,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/solicitar_vacaciones_form', [UserController::class,'solicitarVacacionesForm'])->name('user.solicitarVacacionesForm');
     Route::post('/solicitar_vacaciones/{id}', [UserController::class,'solicitarVacaciones'])->name('user.solicitarVacaciones');
     Route::get('/historial_solicitudes_vacaciones', [UserController::class, 'historialVacaciones'])->name('user.historialVacaciones');
+    Route::get('/ver_ficha/{id}', [UserController::class,'verFicha'])->name('user.verFicha');
 });
 
 require __DIR__.'/auth.php';

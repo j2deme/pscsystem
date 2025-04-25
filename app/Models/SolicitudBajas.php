@@ -18,6 +18,7 @@ class SolicitudBajas extends Model
         'estatus',
         'fecha_baja',
         'observaciones',
+        'autoriza',
     ];
 
     public function user() {

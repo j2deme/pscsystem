@@ -178,4 +178,12 @@ class UserController extends Controller
             ->paginate(10);
         return view('users.historialVacaciones', compact('vacaciones'));
     }
+
+    public function verFicha($id){
+        $user = User::findorFail($id);
+        $solicitud = SolicitudAlta::where('id', $user->sol_alta_id)->first();
+        $documentacion = DocumentacionAltas::where('solicitud_id', $user->sol_alta_id)->first();
+
+        return view('admi.verFichaUser', compact('user','solicitud', 'documentacion'));
+    }
 }

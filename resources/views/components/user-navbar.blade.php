@@ -14,12 +14,6 @@
                     'icono' => '📅',
                     'color' => 'bg-green-100 dark:bg-green-700'
                 ],
-                [
-                    'titulo' => 'Solicitar Baja',
-                    'ruta' => '#',
-                    'icono' => '🚫',
-                    'color' => 'bg-red-100 dark:bg-red-700'
-                ],
             ];
         @endphp
 

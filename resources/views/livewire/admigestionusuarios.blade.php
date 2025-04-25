@@ -68,7 +68,7 @@
                         @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <a href="{{route('admin.editarUsuarioForm', $user->id)}}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-500 mr-3">Editar</a>
+                        <a href="{{route('user.verFicha', $user->id)}}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-500 mr-3">Ver Ficha</a>
                     </td>
                 </tr>
                 @endforeach
