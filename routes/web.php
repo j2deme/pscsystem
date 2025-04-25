@@ -26,8 +26,9 @@ Route::middleware('auth')->group(function () {
 
     //Usuario Admnistrador
     Route::get('/users', [ProfileController::class, 'mostrarUsuarios'])->name('admin.verUsuarios');
-    Route::get('/users/registrarUsuario', [UserController::class, 'crearUsuario'])->name('crearUsuario');
+    Route::get('/users/registrarUsuario', [UserController::class, 'crearUsuario'])->name('admin.crearUsuarioForm');
     Route::post('/guardarUsuario', [UserController::class, 'registrarUsuario'])->name('registrarUsuario');
+    Route::get('/editar_usuario/{id}', [AdminController::class, 'editarUsuario'])->name('admin.editarUsuarioForm');
     Route::get('/ver_usuarios', [AdminController::class, 'verUsuarios'])->name('admin.verUsuarios');
     Route::get('/tablero_supervisores', [AdminController::class, 'tableroSupervisores'])->name('admin.verTableroSupervisores');
     Route::get('/admin_solicitudes_altas', [AdminController::class, 'verSolicitudesAltas'])->name('admi.verSolicitudesAltas');

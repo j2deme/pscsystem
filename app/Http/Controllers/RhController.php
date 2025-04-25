@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\SolicitudAlta;
 use App\Models\DocumentacionAltas;
@@ -27,30 +28,33 @@ class RhController extends Controller
 
     public function aceptarSolicitud($id){
         $solicitud = SolicitudAlta::find($id);
-        $solicitud->status = 'En Proceso';
-        $solicitud->observaciones = 'Solicitud enviada a Administrador.';
-        $solicitud->save();
+        if(Auth::user()->rol == 'Recursos Humanos'){
+            $solicitud->status = 'En Proceso';
+            $solicitud->observaciones = 'Solicitud enviada a Administrador.';
+            $solicitud->save();
+        }else{
+            $docs = DocumentacionAltas::where('solicitud_id', $id)->first();
 
-        //Mover todo esto a funcion de aceptar del administrador
-        /*$docs = DocumentacionAltas::where('solicitud_id', $id)->first();
+            $idDocs = $docs->id;
+            $idSol= $solicitud->id;
 
-        $idDocs = $docs->id;
-        $idSol= $solicitud->id;
+            $user = new User();
+            $user->sol_alta_id = $idSol;
+            $user->sol_docs_id = $idDocs;
+            $user->name = $solicitud->nombre . " " . $solicitud->apellido_paterno . " " . $solicitud->apellido_materno;
+            $user->email = $solicitud->email;
+            $user->password = Hash::make($solicitud->rfc);
+            $user-> fecha_ingreso = Carbon::now();
+            $user->punto = $solicitud->punto;
+            $user->rol = $solicitud->rol;
+            $user->estatus = 'Activo';
+            $user->empresa = $solicitud->empresa;
+            $user->save();
 
-        $user = new User();
-        $user->sol_alta_id = $idSol;
-        $user->sol_docs_id = $idDocs;
-        $user->name = $solicitud->nombre . " " . $solicitud->apellido_paterno . " " . $solicitud->apellido_materno;
-        $user->email = $solicitud->email;
-        $user->password = Hash::make($solicitud->rfc);
-        $user-> fecha_ingreso = Carbon::now();
-        $user->punto = $solicitud->punto;
-        $user->rol = $solicitud->rol;
-        $user->estatus = 'Activo';
-        $user->empresa = $solicitud->empresa;
-        $user->save();*/
-
-
+            $solicitud->status = 'Aceptada';
+            $solicitud->observaciones = 'Solicitud Aceptada.';
+            $solicitud->save();
+        }
         return redirect()->route('rh.solicitudesAltas')->with('success', 'Solicitud respondida correctamente.');
     }
 

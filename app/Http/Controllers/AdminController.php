@@ -25,4 +25,9 @@ class AdminController extends Controller
 
         return view('admi.verSolicitudesAltas', compact('solicitudes'));
     }
+
+    public function editarUsuarioForm($id){
+        $user = User::find($id);
+        return view('admi.editarUsuarioForm', compact('user'));
+    }
 }

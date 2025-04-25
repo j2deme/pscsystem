@@ -50,8 +50,12 @@
                         {{ $user->punto }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                        {{ $user->rol }}
-                    </td>
+                        @if($user->rol == 'admin')
+                            Administrador
+                        @else
+                            {{ $user->rol }}
+                        @endif
+                        </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         @if($user->estatus == 'Activo')
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
@@ -64,14 +68,18 @@
                         @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <a href="#" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-500 mr-3">Editar</a>
+                        <a href="{{route('admin.editarUsuarioForm', $user->id)}}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-500 mr-3">Editar</a>
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
-        <center><a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
-            Regresar
-        </a></center>
+        <center>
+            <a href="{{ route('admin.crearUsuarioForm') }}" class="inline-block bg-blue-300 text-gray-800 py-2 px-4 rounded-md hover:bg-blue-400 mr-2">
+                Nuevo Usuario
+            </a>
+            <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
+                Regresar
+            </a></center>
     </div>
 </div>

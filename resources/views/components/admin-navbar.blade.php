@@ -8,7 +8,8 @@ use App\Models\Asistencia;
 use Carbon\Carbon;
 
     $user = Auth::user();
-
+    $asistenciasHoy = 0;
+    $solicitudesAdmin = 0;
     $solicitudesAdmin = SolicitudAlta::where('status', 'En Proceso')
         ->where('observaciones', 'Solicitud enviada a Administrador.')
         ->count();
@@ -48,7 +49,7 @@ use Carbon\Carbon;
                 ],
                 [
                     'titulo' => 'Nóminas',
-                    'ruta' => '#',
+                    'ruta' => "#",
                     'icono' => '💵',
                     'color' => 'bg-blue-100 dark:bg-blue-700'
                 ],

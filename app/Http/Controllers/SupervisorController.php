@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class SupervisorController extends Controller
 {
@@ -132,6 +133,33 @@ class SupervisorController extends Controller
 
         $documentacion->solicitud_id = $solicitudId;
         $documentacion->save();
+
+
+        $solicitud = SolicitudAlta::find($solicitudId);
+
+        if(Auth::user()->rol == 'admin'){
+            $docs = DocumentacionAltas::where('solicitud_id', $id)->first();
+
+            $idDocs = $docs->id;
+            $idSol= $solicitud->id;
+
+            $user = new User();
+            $user->sol_alta_id = $idSol;
+            $user->sol_docs_id = $idDocs;
+            $user->name = $solicitud->nombre . " " . $solicitud->apellido_paterno . " " . $solicitud->apellido_materno;
+            $user->email = $solicitud->email;
+            $user->password = Hash::make($solicitud->rfc);
+            $user-> fecha_ingreso = Carbon::now();
+            $user->punto = $solicitud->punto;
+            $user->rol = $solicitud->rol;
+            $user->estatus = 'Activo';
+            $user->empresa = $solicitud->empresa;
+            $user->save();
+
+            $solicitud->status = 'Aceptada';
+            $solicitud->observaciones = 'Solicitud Aceptada.';
+            $solicitud->save();
+        }
 
         return redirect()->route('sup.nuevoUsuarioForm')->with('success', 'Documentación subida correctamente');
     }

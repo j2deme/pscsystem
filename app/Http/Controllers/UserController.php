@@ -34,7 +34,7 @@ class UserController extends Controller
             'rol' => $request->rol,
             'punto' => $request->punto,
             'empresa' => $request->empresa,
-            'estatus' => 'activo',
+            'estatus' => 'Activo',
             'fecha_ingreso' => date('Y-m-d'),
         ]);
 
