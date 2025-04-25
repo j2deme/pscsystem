@@ -3,8 +3,11 @@
 
     <div class="container mx-auto px-4 py-6">
         <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Solicitud de Alta de Usuario</h2>
-
+            @if(Auth::user()->rol == 'Supervisor')
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Solicitud de Alta de Usuario</h2>
+            @else
+                <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Editar Documentos de Usuario</h2>
+            @endif
             <form action="{{ route('sup.guardarArchivosEditados', $id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
@@ -69,10 +72,15 @@
                 <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
                     Guardar Cambios
                 </button>
-
-                <a href="{{ route('sup.solicitud.detalle', $id) }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
-                    Regresar
-                </a>
+                @if(Auth::user()->rol == 'Supervisor')
+                    <a href="{{ route('sup.solicitud.detalle', $id) }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
+                        Regresar
+                    </a>
+                @else
+                    <a href="{{ route('admin.editarUsuarioForm',$user->id) }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
+                        Regresar
+                    </a>
+                @endif
             </form>
         </div>
     </div>

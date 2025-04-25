@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SolicitudAlta;
 use App\Models\SolicitudBajas;
+use App\Models\DocumentacionAltas;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -52,5 +53,15 @@ class AdminController extends Controller
         $solicitud->save();
 
         return redirect()->back()->with('success', 'El usuario ha sido dado de baja correctamente.');
+    }
+
+    public function editarUsuario($id){
+        $user = User::find($id);
+        $solicitudId = $user->sol_alta_id;
+        $solicitud = SolicitudAlta::find($solicitudId);
+        $docsId = $solicitud->sol_docs_id;
+        $documentacion = DocumentacionAltas::find($docsId);
+
+        return view('admi.admiEditarUsuarioForm', compact('user','solicitud', 'documentacion'));
     }
 }

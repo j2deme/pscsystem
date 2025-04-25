@@ -199,7 +199,7 @@ class SupervisorController extends Controller
                 'apellido_materno' => 'required|string|max:255',
                 'fecha_nacimiento' => 'required|date',
                 'curp' => 'required|string|max:255',
-                'nss' => ['required|string|digits:11'],
+                'nss' => ['required', 'digits:11'],
                 'edo_civil' => 'required|string',
                 'rfc' => 'required|string|max:255',
                 'telefono' => 'required|string|max:255',
@@ -238,13 +238,28 @@ class SupervisorController extends Controller
             $solicitud->email = $request->email;
             $solicitud->estatura = '0.0';
             $solicitud->peso = '0.0';
-            $solicitud->status = 'En Proceso';
-            $solicitud->observaciones = 'Cambios realizados, en espera de revisión.';
-
+            if(Auth::user()->rol == 'admin'){
+                $solicitud->status = 'Aceptada';
+                $solicitud->observaciones = 'Solicitud Aceptada.';
+            }else{
+                $solicitud->status = 'En Proceso';
+                $solicitud->observaciones = 'Cambios realizados, en espera de revisión.';
+            }
             $solicitud->save();
-            $documentacion = DocumentacionAltas::where('solicitud_id', $id)->first();
+            $user = User::where('sol_alta_id', $id)->first();
 
-            return view('supervisor.editarArchivosForm', compact('solicitud','id' ,'documentacion'));
+            $documentacion = DocumentacionAltas::where('solicitud_id', $id)->first();
+            if(Auth()->user()->rol == 'admin'){
+                $user = User::where('sol_alta_id', $id)->first();
+                $user->name = $solicitud->nombre . " " . $solicitud->apellido_paterno . " " . $solicitud->apellido_materno;
+                $user->email = $solicitud->email;
+                $user->punto = $solicitud->punto;
+                $user->rol = $solicitud->rol;
+                $user->empresa = $solicitud->empresa;
+
+                $user->save();
+            }
+            return view('supervisor.editarArchivosForm', compact('solicitud','id' ,'documentacion', 'user'));
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al actualizar la solicitud: ' . $e->getMessage());
@@ -255,6 +270,7 @@ class SupervisorController extends Controller
     {
         $solicitudId = $id;
         $sol = SolicitudAlta::find($solicitudId);
+        $user = User::where('sol_alta_id', $solicitudId)->first();
         $documentacion = DocumentacionAltas::firstOrNew(['solicitud_id' => $solicitudId]);
         $carpeta = 'solicitudesAltas/' . $solicitudId;
 
@@ -300,8 +316,10 @@ class SupervisorController extends Controller
 
         $sol->observaciones = 'Documentación actualizada, en espera de revisión.';
         $sol->save();
-
-        return redirect()->route('sup.solicitud.detalle', $solicitudId)->with('success', 'Documentos actualizados correctamente.');
+        if(Auth()->user()->rol == 'admin')
+            return redirect()->route('user.verFicha', $user->id)->with('success', 'Documentos actualizados correctamente.');
+        else
+            return redirect()->route('sup.solicitud.detalle', $solicitudId)->with('success', 'Documentos actualizados correctamente.');
     }
 
     public function solicitarBajaForm()
