@@ -6,12 +6,30 @@
     use Illuminate\Support\Facades\Auth;
 
     $user = User::find(Auth::user()->id);
-    $tieneAsistenciaHoy = Asistencia::where('user_id', $user->id)->where('fecha', Carbon::today())->exists();
+    $totalAsistenciasHoy = 0;
+    $conteoSupervisores = User::where('rol', 'Supervisor')->count(); // este es el entero
+
+    if(Auth::user()->rol == 'admin'){
+        $supervisores = User::where('rol', 'Supervisor')->get(); // esta es la colección
+        foreach ($supervisores as $supervisor) {
+            $asistenciasHoy = Asistencia::where('user_id', $supervisor->id)
+                ->whereDate('fecha', Carbon::today())
+                ->count();
+            $totalAsistenciasHoy += $asistenciasHoy;
+        }
+    }
+
+    $tieneAsistenciaHoy = Asistencia::where('user_id', $user->id)
+        ->whereDate('fecha', Carbon::today())
+        ->exists();
+
     $notificacionAsistencia = $tieneAsistenciaHoy ? 0 : 1;
+    $asistenciasTotalesSup = $conteoSupervisores - $totalAsistenciasHoy;
 
     $vacacionesAdmin = SolicitudVacaciones::where('estatus', 'En Proceso')
         ->where('tipo', 'Disfrutadas')
         ->count();
+
     $vacacionesSup = SolicitudVacaciones::where('supervisor_id', $user->id)
         ->where('estatus', 'En Proceso')
         ->where('tipo', 'Disfrutadas')
@@ -21,25 +39,28 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @php
         $vacaciones = Auth::user()->rol == 'admin' ? $vacacionesAdmin : $vacacionesSup;
+        $asistencia = Auth::user()->rol == 'admin' ? $asistenciasTotalesSup : $notificacionAsistencia;
             $cards = [
                 [
                     'titulo' => 'Alta de Usuarios',
                     'ruta' => route('sup.nuevoUsuarioForm'),
                     'icono' => '👨‍👩‍👧‍👦',
-                    'color' => 'bg-blue-100 dark:bg-blue-700'
+                    'color' => 'bg-blue-100 dark:bg-blue-700',
+                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Solicitar Baja de Elemento',
                     'ruta' => route('sup.solicitarBajaForm'),
                     'icono' => '⬇️',
-                    'color' => 'bg-red-100 dark:bg-red-700'
+                    'color' => 'bg-red-100 dark:bg-red-700',
+                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Listas de Asistencia',
                     'ruta' => route('sup.listaAsistencia'),
                     'icono' => '📋',
                     'color' => 'bg-green-100 dark:bg-green-700',
-                    'notificaciones' => $notificacionAsistencia
+                    'notificaciones' => $asistencia
                 ],
                 [
                     'titulo' => 'Historial de Altas',
@@ -71,19 +92,22 @@
                     'titulo' => 'Solicitar Vacaciones',
                     'ruta' => route('user.solicitarVacacionesForm'),
                     'icono' => '🎉',
-                    'color' => 'bg-green-100 dark:bg-green-700'
+                    'color' => 'bg-green-100 dark:bg-green-700',
+                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Mi Historial de Vacaciones',
                     'ruta' => route('user.historialVacaciones'),
                     'icono' => '📅',
-                    'color' => 'bg-yellow-100 dark:bg-yellow-700'
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700',
+                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Tiempos Extras',
                     'ruta' => route('sup.tiemposExtras'),
                     'icono' => '🕑',
-                    'color' => 'bg-green-100 dark:bg-green-700'
+                    'color' => 'bg-green-100 dark:bg-green-700',
+                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Historial de Tiempos Extras',
@@ -95,20 +119,22 @@
                     'titulo' => 'Gestión de Usuarios',
                     'ruta' => route('sup.gestionUsuarios'),
                     'icono' => '👨‍👩‍👧‍👦',
-                    'color' => 'bg-indigo-100 dark:bg-indigo-700'
+                    'color' => 'bg-indigo-100 dark:bg-indigo-700',
+                    'disabled' => Auth::user()->rol == 'admin'
                 ],
             ];
         @endphp
 
         @foreach($cards as $card)
-            <a href="{{ $card['ruta'] }}" class="transition-transform transform hover:scale-105">
-                <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between">
+        <div class="{{ $card['disabled'] ?? false ? 'pointer-events-none opacity-50' : '' }}">
+            <a href="{{ $card['ruta'] }}" class="transition-transform transform hover:scale-105 block">
+                <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between relative">
+                    @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)
+                        <span class="absolute top-2 right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                            {{ $card['notificaciones'] }}
+                        </span>
+                    @endif
                     <div class="flex items-center space-x-3">
-                        @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)
-                            <span class="absolute top-2 right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
-                                {{ $card['notificaciones'] }}
-                            </span>
-                        @endif
                         <div class="text-3xl">
                             {{ $card['icono'] }}
                         </div>
@@ -119,6 +145,7 @@
                     <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Haz clic para ver más detalles</p>
                 </div>
             </a>
+        </div>
         @endforeach
     </div>
 </div>

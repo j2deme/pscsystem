@@ -11,6 +11,9 @@
                 <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Solicitudes de vacaciones</h1>
                 @if($solicitudes->isEmpty())
                     <p class="text-gray-500">No hay solicitudes registradas.</p>
+                    <center><br><a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                        Regresar
+                    </a></center>
                 @else
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">

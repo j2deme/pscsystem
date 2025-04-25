@@ -50,26 +50,29 @@
                     'titulo' => 'Generar Nueva Alta',
                     'ruta' => route('rh.generarNuevaAltaForm'),
                     'icono' => '📈',
-                    'color' => 'bg-green-100 dark:bg-green-700'
+                    'color' => 'bg-green-100 dark:bg-green-700',
+                    'disabled' => Auth::user()->rol=='admin'
                 ],
                 [
                     'titulo' => 'Generar Nueva Baja',
                     'ruta' => route('rh.generarNuevaBajaForm'),
                     'icono' => '📉',
-                    'color' => 'bg-red-100 dark:bg-red-700'
+                    'color' => 'bg-red-100 dark:bg-red-700',
+                    'disabled' => Auth::user()->rol=='admin'
                 ],
             ];
         @endphp
 
         @foreach($cards as $card)
-            <a href="{{ $card['ruta'] }}" class="transition-transform transform hover:scale-105">
-                <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between">
+        <div class="{{ $card['disabled'] ?? false ? 'pointer-events-none opacity-50' : '' }}">
+            <a href="{{ $card['ruta'] }}" class="transition-transform transform hover:scale-105 block">
+                <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between relative">
+                    @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)
+                        <span class="absolute top-2 right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                            {{ $card['notificaciones'] }}
+                        </span>
+                    @endif
                     <div class="flex items-center space-x-3">
-                        @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)
-                            <span class="absolute top-2 right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
-                                {{ $card['notificaciones'] }}
-                            </span>
-                        @endif
                         <div class="text-3xl">
                             {{ $card['icono'] }}
                         </div>
@@ -80,7 +83,9 @@
                     <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Haz clic para ver más detalles</p>
                 </div>
             </a>
+        </div>
         @endforeach
+
     </div>
     @if(Auth::user()->rol=='admin')
         <center><br><a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">

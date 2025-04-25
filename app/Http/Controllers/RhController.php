@@ -138,6 +138,7 @@ class RhController extends Controller
     public function generarNuevaAltaForm(){
         return view('rh.generarAlta');
     }
+
     public function guardarAlta(Request $request){
         try {
             $validated = $request->validate([
@@ -247,11 +248,11 @@ class RhController extends Controller
         $documentacion->solicitud_id = $solicitudId;
         $documentacion->save();
 
-        $solicitud->status = 'Aceptada';
-        $solicitud->observaciones = 'Alta Aprobada';
+        $solicitud->status = 'En Proceso';
+        $solicitud->observaciones = 'Solicitud enviada a Administrador.';
         $solicitud->save();
 
-        $idDocs = $documentacion->id;
+        /*$idDocs = $documentacion->id;
 
         $user = new User();
         $user->sol_alta_id = $solicitudId;
@@ -264,9 +265,7 @@ class RhController extends Controller
         $user->rol = $solicitud->rol;
         $user->estatus = 'Activo';
         $user->empresa = $solicitud->empresa;
-        $user->save();
-
-
+        $user->save();*/
         return redirect()->route('rh.generarNuevaAltaForm')->with('success', 'Documentación subida correctamente');
     }
 

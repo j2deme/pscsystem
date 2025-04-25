@@ -5,16 +5,21 @@
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
                 <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Formulario de Alta de Usuario</h2>
 
-            @if(session('success'))
-                <div class="alert alert-success bg-green-200 text-green-800 p-4 rounded mb-4">
-                    {{ session('success') }}
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="alert alert-error bg-red-200 text-red-800 p-4 rounded mb-4">
-                    {{ session('error') }}
-                </div>
-            @endif
+                @if(session('success'))
+                    <div class="bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-4 py-3 shadow-md" role="alert">
+                        <div class="flex">
+                            <div>
+                                <p class="text-sm">{{ session('success') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    @else
+                @endif
+                @if(session('error'))
+                    <div class="alert alert-error bg-red-200 text-red-800 p-4 rounded mb-4">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
             <form action="{{route('rh.guardarAlta')}}" method="POST">
                 @csrf

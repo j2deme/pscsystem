@@ -15,8 +15,8 @@ use Carbon\Carbon;
         ->count();
 
     $supervisores = User::where('rol', 'Supervisor')
-    ->where('estatus', 'Activo')
-    ->get();
+        ->where('estatus', 'Activo')
+        ->get();
     $supervisoresCount = $supervisores->count();
 
     $rhSolicitudesAltas = SolicitudAlta::where('status', 'En Proceso')
@@ -27,13 +27,16 @@ use Carbon\Carbon;
     $rhnotificaciones = $rhSolicitudesAltas + $rhSolicitudesBajas;
 
     $solicitudesVacaciones = SolicitudVacaciones::where('estatus', 'En Proceso')->count();
+    $totalAsistenciasHoy = 0;
+
     foreach ($supervisores as $supervisor) {
-    $asistenciasHoy = Asistencia::where('user_id', $supervisor->id)
-        ->whereDate('fecha', Carbon::today())
-        ->count();
+        $asistenciasHoy = Asistencia::where('user_id', $supervisor->id)
+            ->whereDate('fecha', Carbon::today())
+            ->count();
+        $totalAsistenciasHoy += $asistenciasHoy;
     }
-    $asistenciasFaltantes = $supervisoresCount - $asistenciasHoy;
-    $supNotificaciones = $asistenciasFaltantes+$solicitudesVacaciones;
+    $asistenciasFaltantes = $supervisoresCount - $totalAsistenciasHoy;
+    $supNotificaciones = $asistenciasFaltantes + $solicitudesVacaciones;
 @endphp
 
 <div class="col-span-full">

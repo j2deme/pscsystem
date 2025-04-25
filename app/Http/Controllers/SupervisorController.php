@@ -366,16 +366,29 @@ class SupervisorController extends Controller
 
     public function listaAsistencia(){
         $user = Auth::user();
+
+        $asistenciasHoy = 0;
+        $supervisores = User::where('rol', 'Supervisor')->get();
+
+        $supervisores->map(function ($supervisor) {
+            $supervisor->envio_asistencia = Asistencia::where('user_id', $supervisor->id)
+                ->whereDate('fecha', Carbon::today())
+                ->exists() ? 'Sí' : 'No';
+
+            return $supervisor;
+        });
+
         $asistencia_hoy = Asistencia::where('fecha', Carbon::now()->toDateString())
                         ->where('user_id', $user->id)
                         ->get();
+
         $elementos = User::where('punto', $user->punto)
             ->where('empresa', $user->empresa)
             ->where('estatus', 'Activo')
             ->where('rol', '!=', 'Supervisor')
             ->with('solicitudAlta.documentacion')
             ->get();
-        return view('supervisor.listaAsistencia', compact('elementos', 'asistencia_hoy'));
+        return view('supervisor.listaAsistencia', compact('elementos', 'asistencia_hoy', 'supervisores'));
     }
 
     public function guardarAsistencias(Request $request){
