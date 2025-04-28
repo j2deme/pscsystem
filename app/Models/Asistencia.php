@@ -13,6 +13,7 @@ class Asistencia extends Model
         'hora_asistencia',
         'elementos_enlistados',
         'faltas',
+        'fotos_asistentes',
         'observaciones',
         'punto',
         'empresa',

@@ -24,6 +24,7 @@
                         <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
                             Asistencia del {{ \Carbon\Carbon::parse($asistencia->fecha)->format('d/m/Y') }} a las {{ $asistencia->hora_asistencia }}
                         </h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Supervisor: </p>
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Observaciones: {{ $asistencia->observaciones }}</p>
 
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-3">
@@ -32,8 +33,23 @@
                                     <img src="{{ $usuario->solicitudAlta?->documentacion?->arch_foto ? asset($usuario->solicitudAlta->documentacion->arch_foto) . '?v=' . now()->timestamp : asset('images/default-user.jpg') }}" class="w-16 h-16 rounded-full mx-auto object-cover mb-2 border border-gray-300 dark:border-gray-600">
                                     <p class="text-gray-800 dark:text-white font-medium">{{ $usuario->name }}</p>
                                     <p class="text-sm text-gray-500 dark:text-gray-400">{{ $usuario->punto }} - {{ $usuario->empresa }}</p>
+                                    @if(isset($asistencia->fotos_asistentes[$usuario->id]))
+                                    <div class="mt-2">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">Evidencia</span>
+                                        <img src="{{ $asistencia->fotos_asistentes[$usuario->id] }}"
+                                            class="w-24 h-16 object-cover mx-auto rounded-lg cursor-pointer border border-gray-300 dark:border-gray-600"
+                                            alt="Foto de evidencia"
+                                            data-img="{{ $asistencia->fotos_asistentes[$usuario->id] }}"
+                                            onclick="openImageModal(this)">
+                                    </div>
+                                @endif
                                 </div>
+
                             @endforeach
+                            <div id="imageModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden z-50">
+                                <span class="absolute top-4 right-4 text-white text-2xl cursor-pointer" onclick="closeImageModal()">×</span>
+                                <img id="modalImage" src="" class="max-w-3xl max-h-3xl">
+                            </div>
                         </div>
                     </div>
                 @endforeach
@@ -47,3 +63,18 @@
         </div>
     </div>
 </x-app-layout>
+<script>
+    function openImageModal(imgElement) {
+        const imageSrc = imgElement.getAttribute('data-img');
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+
+        modalImage.src = imageSrc;
+        modal.classList.remove('hidden');
+    }
+
+    function closeImageModal() {
+        const modal = document.getElementById('imageModal');
+        modal.classList.add('hidden');
+    }
+</script>
