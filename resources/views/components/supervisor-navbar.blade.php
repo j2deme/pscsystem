@@ -112,7 +112,7 @@
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
-                    'titulo' => 'Historial de Tiempos Extras',
+                    'titulo' => 'Historial de Tiempos Extras y Coberturas',
                     'ruta' => route('sup.historialTiemposExtras'),
                     'icono' => '📅',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'

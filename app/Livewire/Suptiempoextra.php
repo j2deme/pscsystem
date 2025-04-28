@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\User;
 use App\Models\TiemposExtra;
+use App\Models\CubrirTurno;
 
 class Suptiempoextra extends Component
 {

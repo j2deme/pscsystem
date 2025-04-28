@@ -15,29 +15,29 @@
             @else
                 <div class="overflow-x-auto bg-white rounded-lg shadow">
                     <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-100 text-gray-700 text-left text-sm uppercase tracking-wider">
+                        <thead class="bg-gray-100 text-gray-700 text-left text-sm tracking-wider">
                             <tr>
-                                <th class="px-6 py-3">No.</th>
-                                <th class="px-6 py-3">Nombre</th>
-                                <th class="px-6 py-3">Fecha</th>
-                                <th class="px-6 py-3">Hora de Inicio</th>
-                                <th class="px-6 py-3">Hora de Fin</th>
-                                <th class="px-6 py-3">Tiempo Extra (H-m-s)</th>
-                                <th class="px-6 py-3">Autorizado por</th>
+                                <th class="px-4 py-2 text-center font-normal">No.</th>
+                                <th class="px-6 py-3 text-center font-normal">Nombre</th>
+                                <th class="px-6 py-3 text-center font-normal">Fecha</th>
+                                <th class="px-6 py-3 text-center font-normal">Hora de Inicio</th>
+                                <th class="px-6 py-3 text-center font-normal">Hora de Fin</th>
+                                <th class="px-6 py-3 text-center font-normal">Tiempo Extra (H-m-s)</th>
+                                <th class="px-6 py-3 text-center font-normal">Autorizado por</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200 text-sm font-medium text-gray-700">
                             @foreach($tiemposExtras as $tiempoExtra)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                <tr class="border-t dark:border-gray-700">
+                                    <td class="px-4 py-2 text-center">{{ $loop->iteration }}</td>
+                                    <td class="px-4 py-2 text-center">
                                         {{ $tiempoExtra->user->name }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::parse($tiempoExtra->fecha)->format('d/m/Y') }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $tiempoExtra->hora_inicio }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $tiempoExtra->hora_fin }}</td>
-                                    <td classs="px-6 py-4 whitespace-nowrap"><center>{{ $tiempoExtra->total_horas }}</center></td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $tiempoExtra->autorizado_por }}</td>
+                                    <td class="px-4 py-2 text-center">{{ \Carbon\Carbon::parse($tiempoExtra->fecha)->format('d/m/Y') }}</td>
+                                    <td class="px-4 py-2 text-center">{{ $tiempoExtra->hora_inicio }}</td>
+                                    <td class="px-4 py-2 text-center">{{ $tiempoExtra->hora_fin }}</td>
+                                    <td classs="px-4 py-2 text-center"><center>{{ $tiempoExtra->total_horas }}</center></td>
+                                    <td class="px-4 py-2 text-center">{{ $tiempoExtra->autorizado_por }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

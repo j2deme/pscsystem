@@ -14,4 +14,9 @@ class CubrirTurno extends Model
         'hora_fin',
         'id_persona_cubierta'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
