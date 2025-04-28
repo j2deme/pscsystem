@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('solicitud_altas', function (Blueprint $table) {
             $table->string('solicitante')->nullable()->after('id');
-            $table->foreign('solicitante')->references('name')->on('users')->onDelete('set null');
+            $table->foreign('solicitante')->references('name')->on('users')->onDelete('cascade');
         });
     }
 

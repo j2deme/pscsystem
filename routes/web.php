@@ -60,6 +60,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/tiempos_extras', [SupervisorController::class, 'tiemposExtras'])->name('sup.tiemposExtras');
     Route::get('/tiempos_extras/{id}', [SupervisorController::class, 'tiemposExtrasForm'])->name('sup.tiemposExtrasForm');
     Route::post('/guardar_tiempo_extra/{id}', [SupervisorController::class, 'guardarTiempoExtra'])->name('sup.guardarTiempoExtra');
+    Route::get('/cobertura_turno_form/{id}', [SupervisorController::class, 'coberturaTurnoForm'])->name('sup.coberturaTurnoForm');
+    Route::post('/guardar_cobertura_turno/{id}', [SupervisorController::class, 'guardarCoberturaTurno'])->name('sup.guardarCoberturaTurno');
     Route::get('/historial_tiempos_extras', [SupervisorController::class, 'historialTiemposExtras'])->name('sup.historialTiemposExtras');
     Route::get('/gestion_usuarios', [SupervisorController::class, 'gestionUsuarios'])->name('sup.gestionUsuarios');
 

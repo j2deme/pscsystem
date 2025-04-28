@@ -9,6 +9,7 @@ use App\Models\SolicitudVacaciones;
 use App\Models\User;
 use App\Models\Asistencia;
 use App\Models\TiemposExtra;
+use App\Models\CubrirTurno;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -666,6 +667,48 @@ class SupervisorController extends Controller
             ->get();
 
         return view('supervisor.gestionUsuarios', compact('usuarios'));
+    }
+
+    public function coberturaTurnoForm($id){
+        $elemento = User::find($id);
+        $hoy = Carbon::now('America/Mexico_City')->toDateString();
+        $solicitud = SolicitudAlta::where('id', $elemento->sol_alta_id)->first();
+        $coberturaHoy = CubrirTurno::where('user_id', $id)
+            ->where('fecha',$hoy)->first();
+        $cobertura = 0;
+        $coberturaHoy ? $cobertura = 1 : $cobertura = 0;
+
+        return view('supervisor.coberturaTurnoForm', compact('elemento','solicitud', 'cobertura'));
+    }
+
+    public function guardarCoberturaTurno(Request $request, $id){
+        $request->validate([
+            'user_id',
+            'fecha',
+            'hora_inicio',
+            'hora_fin',
+            'punto_procedencia',
+            'punto_cobertura',
+            'observaciones',
+        ]);
+
+        $user_cubre = User::find($id);
+        $fecha = Carbon::createFromFormat('Y-m-d', $request->fecha);
+        $horaInicio = Carbon::createFromFormat('H:i', $request->hora_inicio);
+        $horaFin = Carbon::createFromFormat('H:i', $request->hora_fin);
+
+        $turno = new CubrirTurno();
+        $turno->user_id = $user_cubre->id;
+        $turno->fecha = $fecha;
+        $turno->hora_inicio = $horaInicio;
+        $turno->hora_fin = $horaFin;
+        $turno->punto_procedencia = $request->punto_procedencia;
+        $turno->punto_cobertura = $request->punto_cobertura;
+        $turno->autorizado_por = Auth::user()->id;
+        $turno->observaciones = $request->observaciones;
+        $turno->save();
+
+        return redirect()->route('sup.tiemposExtras')->with('success', 'Cobertura de turno registrada correctamente.');
     }
 
 }

@@ -54,7 +54,8 @@ use Carbon\Carbon;
                     'titulo' => 'Nóminas',
                     'ruta' => "#",
                     'icono' => '💵',
-                    'color' => 'bg-blue-100 dark:bg-blue-700'
+                    'color' => 'bg-blue-100 dark:bg-blue-700',
+                    'disabled' =>true
                 ],
                 [
                     'titulo' => 'Recursos Humanos',
@@ -67,7 +68,8 @@ use Carbon\Carbon;
                     'titulo' => 'Monitoreo',
                     'ruta' => '#',
                     'icono' => '📈',
-                    'color' => 'bg-red-100 dark:bg-red-700'
+                    'color' => 'bg-red-100 dark:bg-red-700',
+                    'disabled' =>true
                 ],
                 [
                     'titulo' => 'Supervisores',
@@ -95,7 +97,7 @@ use Carbon\Carbon;
                 @endif
                 class="transition-transform transform hover:scale-105"
             >
-                <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between">
+                <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between {{ $card['disabled'] ?? false ? 'pointer-events-none opacity-50' : '' }}">
                     <div class="flex items-center space-x-3">
                         @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)
                             <span class="absolute top-2 right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
