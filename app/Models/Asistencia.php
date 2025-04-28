@@ -18,4 +18,9 @@ class Asistencia extends Model
         'punto',
         'empresa',
     ];
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 }

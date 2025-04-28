@@ -79,7 +79,7 @@
                 ],
                 [
                     'titulo' => 'Historial de Asistencias',
-                    'ruta' => route('sup.verAsistencias'),
+                    'ruta' => route('sup.verAsistencias', Auth::user()->id),
                     'icono' => '📋',
                     'color' => 'bg-blue-100 dark:bg-blue-700'
                 ],

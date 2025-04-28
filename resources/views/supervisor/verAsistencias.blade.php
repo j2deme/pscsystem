@@ -24,7 +24,7 @@
                         <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
                             Asistencia del {{ \Carbon\Carbon::parse($asistencia->fecha)->format('d/m/Y') }} a las {{ $asistencia->hora_asistencia }}
                         </h3>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Supervisor: </p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Supervisor: {{$asistencia->usuario->name}}</p>
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Observaciones: {{ $asistencia->observaciones }}</p>
 
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-3">

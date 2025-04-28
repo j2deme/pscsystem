@@ -51,7 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/historial_bajas', [SupervisorController::class,'historialBajas'])->name('sup.historialBajas');
     Route::get('/lista_asistencia', [SupervisorController::class, 'listaAsistencia'])->name('sup.listaAsistencia');
     Route::post('/guardar_asistencias', [SupervisorController::class, 'guardarAsistencias'])->name('sup.guardarAsistencias');
-    Route::get('/ver_asistencias', [SupervisorController::class,'verAsistencias'])->name('sup.verAsistencias');
+    Route::get('/ver_asistencias/{id}', [SupervisorController::class,'verAsistencias'])->name('sup.verAsistencias');
     Route::get('/supervisor/ver_fecha_sistencias', [SupervisorController::class, 'verFechaAsistencias'])->name('sup.verFechaAsistencias');
     Route::get('/solicitudes_vacaciones', [SupervisorController::class,'solicitudesVacaciones'])->name('sup.solicitudesVacaciones');
     Route::get('/aceptar_solicitud_vacaciones/{id}', [SupervisorController::class, 'aceptarSolicitudVacaciones'])->name('sup.aceptarSolicitudVacaciones');

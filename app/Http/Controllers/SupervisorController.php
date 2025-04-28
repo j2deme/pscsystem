@@ -477,16 +477,19 @@ class SupervisorController extends Controller
         }
     }
 
-    public function verAsistencias(){
-        $user = Auth::user();
+    public function verAsistencias($id){
+        $user = User::find($id);
 
         if($user->rol == 'Supervisor')
         {
             $asistencias = Asistencia::where('user_id', $user->id)
+                ->with('usuario')
                 ->orderBy('fecha', 'desc')
                 ->get();
         }else{
-            $asistencias = Asistencia::orderBy('fecha', 'desc')->get();
+            $asistencias = Asistencia::orderBy('fecha', 'desc')
+                ->with('usuario')
+                ->get();
         }
                 $asistenciasElementos = $asistencias->map(function ($asistencia) {
                     $ids = json_decode($asistencia->elementos_enlistados, true);
@@ -503,7 +506,7 @@ class SupervisorController extends Controller
                     return $asistencia;
                 });
 
-        return view('supervisor.verAsistencias', compact('asistencias', 'asistenciasElementos'));
+        return view('supervisor.verAsistencias', compact('asistencias', 'asistenciasElementos', 'user'));
     }
 
     public function verFechaAsistencias(Request $request)
