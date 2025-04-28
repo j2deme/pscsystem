@@ -98,7 +98,7 @@
             </div>
             <div class="flex flex-wrap justify-center gap-4 mt-4">
                 @if($user->estatus != 'Inactivo')
-                    @if(Auth::user()->rol == 'Administrador')
+                    @if(Auth::user()->rol == 'admin')
                     <a href="{{ route('admin.editarUsuarioForm', $user->id) }}"
                         class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 transition">
                         Editar

@@ -313,8 +313,10 @@ class SupervisorController extends Controller
 
         $documentacion->solicitud_id = $solicitudId;
         $documentacion->save();
-
-        $sol->observaciones = 'Documentación actualizada, en espera de revisión.';
+        if(Auth()->user()->rol == 'admin')
+            $sol->observaciones = 'Solicitud Aceptada.';
+        else
+            $sol->observaciones = 'Documentación actualizada, en espera de revisión.';
         $sol->save();
         if(Auth()->user()->rol == 'admin')
             return redirect()->route('user.verFicha', $user->id)->with('success', 'Documentos actualizados correctamente.');

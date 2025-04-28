@@ -20,7 +20,7 @@ class Admigestionusuarios extends Component
 
     public function render()
     {
-        if(Auth()->user()->role == 'admin'){
+        if(Auth()->user()->rol == 'admin'){
             $users = User::query()
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%'.$this->search.'%');
