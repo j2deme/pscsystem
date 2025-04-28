@@ -21,15 +21,28 @@ class Supcoberturaturno extends Component
 
     public function render()
     {
-        $user = Auth::user();
+        if(Auth::user()->rol == 'Supervisor'){
+            $user = Auth::user();
 
-        $coberturas = CubrirTurno::where('autorizado_por', $user->id)
-            ->whereHas('user', function($q) {
-                $q->where('name', 'like', '%' . $this->search . '%');
-            })
-            ->with('user')
-            ->orderBy('fecha', 'desc')
-            ->paginate(10);
+            $coberturas = CubrirTurno::where('autorizado_por', $user->id)
+                ->whereHas('user', function($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%');
+                })
+                ->with('user')
+                ->orderBy('fecha', 'desc')
+                ->paginate(10);
+        }else{
+            $coberturas = CubrirTurno::query()
+                ->when($this->search, function($query) {
+                    $query->whereHas('user', function($q) {
+                        $q->where('name', 'like', '%' . $this->search . '%');
+                    });
+                })
+                ->with('user')
+                ->orderBy('fecha', 'desc')
+                ->paginate(10);
+
+        }
 
         return view('livewire.supcoberturaturno', compact('coberturas'));
     }

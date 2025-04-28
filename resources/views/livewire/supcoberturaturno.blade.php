@@ -15,6 +15,7 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-100 text-gray-700 text-left text-sm tracking-wider">
                 <tr>
+                    <th class="px-4 py-2 text-center font-normal">No.</th>
                     <th class="px-4 py-2 text-center font-normal">Nombre</th>
                     <th class="px-4 py-2 text-center font-normal">Fecha</th>
                     <th class="px-4 py-2 text-center font-normal">Hora Inicio</th>
@@ -24,9 +25,10 @@
                     <th class="px-4 py-2 text-center font-normal">Observaciones</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="bg-white divide-y divide-gray-200 text-sm font-medium text-gray-700">
                 @forelse ($coberturas as $cobertura)
                     <tr class="border-t dark:border-gray-700">
+                        <td class="px-4 py-2 text-center">{{$loop->iteration}}</td>
                         <td class="px-4 py-2 text-center">{{ $cobertura->user->name ?? '-' }}</td>
                         <td class="px-4 py-2 text-center">{{ \Carbon\Carbon::parse($cobertura->fecha)->format('d/m/Y') }}</td>
                         <td class="px-4 py-2 text-center">{{ \Carbon\Carbon::parse($cobertura->hora_inicio)->format('H:i') }}</td>

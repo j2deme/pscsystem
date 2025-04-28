@@ -23,17 +23,26 @@ class Suptiempoextra extends Component
 
     public function render()
     {
-        $supervisor = Auth::user();
+        if(Auth::user()->rol == 'Supervisor')
+        {
+            $supervisor = Auth::user();
 
-        $tiemposExtras = TiemposExtra::whereHas('user', function ($query) use ($supervisor) {
-        $query->where('empresa', $supervisor->empresa)
-            ->where('punto', $supervisor->punto)
-            ->where('name', 'like', '%' . $this->search . '%');
-        })
-        ->with('user')
-        ->orderBy('fecha', 'desc')
-        ->paginate(10);
-
+            $tiemposExtras = TiemposExtra::whereHas('user', function ($query) use ($supervisor) {
+            $query->where('empresa', $supervisor->empresa)
+                ->where('punto', $supervisor->punto)
+                ->where('name', 'like', '%' . $this->search . '%');
+            })
+            ->with('user')
+            ->orderBy('fecha', 'desc')
+            ->paginate(10);
+        }else{
+            $tiemposExtras = TiemposExtra::whereHas('user', function ($query) {
+                $query->where('name', 'like', '%' . $this->search . '%');
+            })
+            ->with('user')
+            ->orderBy('fecha', 'desc')
+            ->paginate(10);
+        }
         return view('livewire.suptiempoextra', compact('tiemposExtras'));
     }
 }
