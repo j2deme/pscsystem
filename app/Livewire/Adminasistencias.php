@@ -11,6 +11,8 @@ class Adminasistencias extends Component
 {
     use WithPagination;
     public $search = '';
+    public $fecha = null;
+
     public $userId;
     protected $queryString = ['search' => ['except' => '']];
 
@@ -19,28 +21,44 @@ class Adminasistencias extends Component
         $this->resetPage();
     }
 
-    public function render()
+    public function updatingDate()
     {
-        $userId = Auth::user()->id;
-        if(Auth::user()->rol == 'admin'){
-            $asistencias = Asistencia::with('usuario')
-                ->whereHas('usuario', function ($query) {
-                    $query->where('name', 'like', '%' . $this->search . '%');
-                })
-                ->orderBy('fecha', 'desc')
-                ->paginate(10);
-        }else{
-            $asistencias = Asistencia::with('usuario')
-                ->where('user_id', $userId)
-                ->where(function ($query) {
-                    $query->whereHas('usuario', function ($q) {
-                        $q->where('name', 'like', '%' . $this->search . '%');
-                    })->orWhere('fecha', 'like', '%' . $this->search . '%');
-                })
-                ->orderBy('fecha', 'desc')
-                ->paginate(10);
-        }
-
-        return view('livewire.adminasistencias', compact('asistencias'));
+        $this->resetPage();
     }
+
+
+    public function render()
+{
+    $userId = Auth::user()->id;
+
+    if (Auth::user()->rol == 'admin') {
+        $asistencias = Asistencia::with('usuario')
+            ->when($this->search, function ($query) {
+                $query->whereHas('usuario', function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->when($this->fecha, function ($query) {
+                $query->whereDate('fecha', $this->fecha);
+            })
+            ->orderBy('fecha', 'desc')
+            ->paginate(10);
+    } else {
+        $asistencias = Asistencia::with('usuario')
+            ->where('user_id', $userId)
+            ->where(function ($query) {
+                $query->whereHas('usuario', function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%');
+                })->orWhere('fecha', 'like', '%' . $this->search . '%');
+            })
+            ->when($this->fecha, function ($query) {
+                $query->whereDate('fecha', $this->fecha);
+            })
+            ->orderBy('fecha', 'desc')
+            ->paginate(10);
+    }
+
+    return view('livewire.adminasistencias', compact('asistencias'));
+}
+
 }

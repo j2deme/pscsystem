@@ -1,14 +1,20 @@
 <div>
-    <div class="mb-6">
+    <div class="mb-6 justify-between">
         <input
             type="text"
             wire:model.live.debounce.300ms="search"
             placeholder="Buscar por nombre o fecha"
-            class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-1/3 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
         >
+        <input
+            type="date"
+            wire:model.live="fecha"
+            class="w-1/3 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
         <div wire:loading class="text-sm text-gray-500 mt-1">
             Buscando...
         </div>
+
     </div>
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -82,5 +88,6 @@
                 @endforeach
             </tbody>
         </table>
+        {{$asistencias->links()}}
     </div>
 </div>
