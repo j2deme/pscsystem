@@ -20,6 +20,7 @@ use Carbon\Carbon;
     $supervisoresCount = $supervisores->count();
 
     $rhSolicitudesAltas = SolicitudAlta::where('status', 'En Proceso')
+        ->where('observaciones','!=', 'Solicitud enviada a Administrador.')
         ->count();
     $rhSolicitudesBajas = SolicitudBajas::where('estatus', 'En Proceso')
         ->where('por', 'Renuncia')

@@ -492,7 +492,7 @@ class SupervisorController extends Controller
                 ->with('usuario')
                 ->get();
         }
-                $asistenciasElementos = $asistencias->map(function ($asistencia) {
+                /*$asistenciasElementos = $asistencias->map(function ($asistencia) {
                     $ids = json_decode($asistencia->elementos_enlistados, true);
                     $fotos = json_decode($asistencia->fotos_asistentes, true);
                     $usuarios = User::whereIn('id', $ids ?: [])->with('solicitudAlta.documentacion')->get();
@@ -505,9 +505,31 @@ class SupervisorController extends Controller
                     }
                     $asistencia->fotos_asistentes = $fotos;
                     return $asistencia;
-                });
+                });*/
 
-        return view('supervisor.verAsistencias', compact('asistencias', 'asistenciasElementos', 'user'));
+        return view('supervisor.verAsistencias', compact('asistencias', 'user'));
+    }
+
+    public function detalleAsistencia($id){
+
+        $asistencia = Asistencia::find($id);
+        $idsAsistieron = json_decode($asistencia->elementos_enlistados, true) ?? [];
+        $idsFaltaron = json_decode($asistencia->faltas, true) ?? [];
+
+        $usuariosAsistieron = User::whereIn('id', $idsAsistieron)->with('solicitudAlta.documentacion')->get();
+        $usuariosFaltaron = User::whereIn('id', $idsFaltaron)->with('solicitudAlta.documentacion')->get();
+
+        $fotos = json_decode($asistencia->fotos_asistentes, true) ?? [];
+        if (is_array($fotos)) {
+            foreach ($fotos as $id => $path) {
+                $fotos[$id] = asset('storage/' . $path);
+            }
+        }
+        $asistencia->usuarios_enlistados = $usuariosAsistieron;
+        $asistencia->usuarios_faltantes = $usuariosFaltaron;
+        $asistencia->fotos_asistentes = $fotos;
+
+        return view('supervisor.detalleAsistencia', compact('asistencia'));
     }
 
     public function verFechaAsistencias(Request $request)

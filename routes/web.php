@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/guardar_asistencias', [SupervisorController::class, 'guardarAsistencias'])->name('sup.guardarAsistencias');
     Route::get('/ver_asistencias/{id}', [SupervisorController::class,'verAsistencias'])->name('sup.verAsistencias');
     Route::get('/supervisor/ver_fecha_sistencias', [SupervisorController::class, 'verFechaAsistencias'])->name('sup.verFechaAsistencias');
+    Route::get('/detalle_asistencia/{id}', [SupervisorController::class, 'detalleAsistencia'])->name('sup.detalleAsistencia');
     Route::get('/solicitudes_vacaciones', [SupervisorController::class,'solicitudesVacaciones'])->name('sup.solicitudesVacaciones');
     Route::get('/aceptar_solicitud_vacaciones/{id}', [SupervisorController::class, 'aceptarSolicitudVacaciones'])->name('sup.aceptarSolicitudVacaciones');
     Route::get('/rechazar_solicitud_vacaciones/{id}', [SupervisorController::class,'rechazarSolicitudVacaciones'])->name('sup.rechazarSolicitudVacaciones');
@@ -65,7 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/historial_tiempos_extras', [SupervisorController::class, 'historialTiemposExtras'])->name('sup.historialTiemposExtras');
     Route::get('/gestion_usuarios', [SupervisorController::class, 'gestionUsuarios'])->name('sup.gestionUsuarios');
 
-    //usuario Recuersos Humanos
+    //usuario Recursos Humanos
     Route::get('/solicitudes_altas', [RhController::class,'solicitudesAltas'])->name('rh.solicitudesAltas');
     Route::get('/solicitudes_altas/{id}', [RhController::class, 'detalleSolicitud'])->name('rh.detalleSolicitud');
     Route::get('/aceptar_solicitud/{id}', [RhController::class, 'aceptarSolicitud'])->name('rh.aceptarSolicitud');
