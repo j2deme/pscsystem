@@ -4,7 +4,7 @@
         <div class="container mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Registro de Asistencias</h2>
-                <div class="mb-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col md:flex-row md:items-center md:justify-between">
+                <!--<div class="mb-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col md:flex-row md:items-center md:justify-between">
                     <form action="{{ route('sup.verFechaAsistencias') }}" method="GET" class="flex items-center gap-4">
                         <label for="fecha" class="text-gray-700 dark:text-gray-300 font-semibold">Seleccionar Fecha:</label>
                         <input type="date" id="fecha" name="fecha" value="{{ $fechaSeleccionada ?? '' }}" class="rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
@@ -12,7 +12,7 @@
                             Buscar
                         </button>
                     </form>
-                </div>
+                </div> -->
                             <div class="mb-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
                                     Asistencia del {{ \Carbon\Carbon::parse($asistencia->fecha)->format('d/m/Y') }} a las {{ $asistencia->hora_asistencia }}

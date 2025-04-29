@@ -122,9 +122,19 @@
                             <td class="px-4 py-2 font-semibold {{ $user->envio_asistencia === 'Sí' ? 'text-green-600' : 'text-red-600' }}">
                                 {{ $user->envio_asistencia }}
                             </td>
+                            @if($user->envio_asistencia === 'No')
+                            @else
+                            @php
+                                if($user->envio_asistencia === 'Sí') {
+                                    $asistHoy = \App\Models\Asistencia::where('user_id', $user->id)
+                                        ->where('fecha', \Carbon\Carbon::today())
+                                        ->first();
+                                }
+                            @endphp
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a href="{{route('sup.verAsistencias', $user->id)}}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-500 mr-3">Ver Detalles</a>
+                                <a href="{{route('sup.detalleAsistencia', $asistHoy)}}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-500 mr-3">Ver Detalles</a>
                             </td>
+                            @endif
                         </tr>
                         @endforeach
                     </tbody>
