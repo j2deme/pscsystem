@@ -492,26 +492,11 @@ class SupervisorController extends Controller
                 ->with('usuario')
                 ->get();
         }
-                /*$asistenciasElementos = $asistencias->map(function ($asistencia) {
-                    $ids = json_decode($asistencia->elementos_enlistados, true);
-                    $fotos = json_decode($asistencia->fotos_asistentes, true);
-                    $usuarios = User::whereIn('id', $ids ?: [])->with('solicitudAlta.documentacion')->get();
-                    $asistencia->usuarios_enlistados = $usuarios;
-
-                    if (is_array($fotos)) {
-                        foreach ($fotos as $id => $path) {
-                            $fotos[$id] = asset('storage/' . $path);
-                        }
-                    }
-                    $asistencia->fotos_asistentes = $fotos;
-                    return $asistencia;
-                });*/
 
         return view('supervisor.verAsistencias', compact('asistencias', 'user'));
     }
 
     public function detalleAsistencia($id){
-
         $asistencia = Asistencia::find($id);
         $idsAsistieron = json_decode($asistencia->elementos_enlistados, true) ?? [];
         $idsFaltaron = json_decode($asistencia->faltas, true) ?? [];
