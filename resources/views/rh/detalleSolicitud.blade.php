@@ -117,48 +117,50 @@
             </div>
             <div class="flex flex-wrap justify-center gap-4 mt-4">
                 @if($solicitud->status == 'En Proceso')
-                <a href="{{ route('rh.aceptarSolicitud', $solicitud->id) }}"
-                    class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 transition">
-                    Aceptar
-                </a>
+                    @if((Auth::user()->rol == 'admin' && $solicitud->observaciones == 'Solicitud enviada a Administrador.')||(Auth::user()->rol == 'Recursos Humanos'&&$solicitud->observaciones != 'Solicitud enviada a Administrador.'))
+                        <a href="{{ route('rh.aceptarSolicitud', $solicitud->id) }}"
+                            class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 transition">
+                            Aceptar
+                        </a>
 
-                <a href="{{route('rh.rechazarSolicitud', $solicitud->id)}}"
-                    class="inline-block bg-red-300 text-gray-800 py-2 px-4 rounded-md hover:bg-red-400 transition">
-                    Rechazar
-                </a>
+                        <a href="{{route('rh.rechazarSolicitud', $solicitud->id)}}"
+                            class="inline-block bg-red-300 text-gray-800 py-2 px-4 rounded-md hover:bg-red-400 transition">
+                            Rechazar
+                        </a>
 
-                <div x-data="{ open: false }" class="relative">
-                    <a href="#" role="button" @click.prevent="open = true"
-                        class="inline-block bg-yellow-300 text-gray-800 py-2 px-4 rounded-md hover:bg-yellow-400 transition">
-                        Observaciones
-                    </a>
+                        <div x-data="{ open: false }" class="relative">
+                            <a href="#" role="button" @click.prevent="open = true"
+                                class="inline-block bg-yellow-300 text-gray-800 py-2 px-4 rounded-md hover:bg-yellow-400 transition">
+                                Observaciones
+                            </a>
 
-                    <div x-show="open" x-cloak
-                            class="absolute z-10 mt-2 w-80 bg-white border border-gray-300 rounded p-4 shadow">
-                        <form action="{{ route('rh.observacion_solicitud', $solicitud->id) }}" method="POST">
-                            @csrf
+                            <div x-show="open" x-cloak
+                                    class="absolute z-10 mt-2 w-80 bg-white border border-gray-300 rounded p-4 shadow">
+                                <form action="{{ route('rh.observacion_solicitud', $solicitud->id) }}" method="POST">
+                                    @csrf
 
-                            <label for="observacion" class="block text-sm font-medium text-gray-700 mb-1">
-                                Escribe una observación:
-                            </label>
-                            <textarea name="observacion" id="observacion" rows="4" class="w-full border border-gray-300 rounded p-2 mb-3 focus:ring focus:ring-blue-200"required></textarea>
+                                    <label for="observacion" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Escribe una observación:
+                                    </label>
+                                    <textarea name="observacion" id="observacion" rows="4" class="w-full border border-gray-300 rounded p-2 mb-3 focus:ring focus:ring-blue-200"required></textarea>
 
-                            <div class="flex justify-end gap-2">
-                                <button type="submit"
-                                        class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-                                    Enviar
-                                </button>
-                                <a href="#" @click.prevent="open = false"
-                                    class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
-                                    Cancelar
-                                </a>
+                                    <div class="flex justify-end gap-2">
+                                        <button type="submit"
+                                                class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                                            Enviar
+                                        </button>
+                                        <a href="#" @click.prevent="open = false"
+                                            class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
+                                            Cancelar
+                                        </a>
+                                    </div>
+                                </form>
                             </div>
-                        </form>
-                    </div>
-                </div>
-                <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
-                    Regresar
-                </a>
+                        </div>
+                        @endif
+                        <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
+                            Regresar
+                        </a>
                 @else
                 <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
                     Regresar

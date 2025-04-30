@@ -2,66 +2,100 @@
 
 namespace App\Exports;
 
+use App\Models\User;
 use App\Models\SolicitudBajas;
-use OpenSpout\Writer\XLSX\Writer;
-use OpenSpout\Writer\XLSX\Options;
-use OpenSpout\Common\Entity\Row;
-use OpenSpout\Common\Entity\Style\Style;
-use OpenSpout\Common\Entity\Style\CellAlignment;
-use OpenSpout\Common\Entity\Style\Color;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BajasSpreadsheetExport
 {
     public function generateFile(): BinaryFileResponse
+    {
+        $fileName = 'ARCHIVOROJO_' . now()->format('d-m-Y') . '.xlsx';
+        $tempFilePath = storage_path("app/public/{$fileName}");
+
+        $this->createExcelFile($tempFilePath);
+
+        return response()->download(
+            $tempFilePath,
+            $fileName,
+            ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+        )->deleteFileAfterSend(true);
+    }
+
+    private function createExcelFile(string $filePath): void
 {
-    $fileName = 'bajas_aceptadas_' . now()->format('Y-m-d') . '.xlsx';
+    $spreadsheet = new Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
 
-    $tempFilePath = sys_get_temp_dir() . '/' . uniqid('bajas_', true) . '.xlsx';
+    $headers = ['CODIGO', 'NOMBRE', 'DEPARTAMENTO', 'CURP', 'RFC', 'NSS', 'ALTA', 'SUELDO', 'MOTIVO', 'FECHA BAJA', 'MOTIVO DE BAJA', 'TELEFONO'];
+    $sheet->fromArray($headers, null, 'A1');
 
-    $this->createExcelFile($tempFilePath);
+    $headerStyle = [
+        'font' => [
+            'bold' => true,
+            'size' => 13,
+            'color' => ['rgb' => '000000'],
+        ],
+        'fill' => [
+            'fillType' => Fill::FILL_SOLID,
+            'startColor' => ['rgb' => 'ABB2B9'],
+        ],
+        'alignment' => [
+            'horizontal' => Alignment::HORIZONTAL_CENTER,
+        ],
+    ];
+    $sheet->getStyle('A1:L1')->applyFromArray($headerStyle);
 
-    return response()->download(
-        $tempFilePath,
-        $fileName,
-        ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-    )->deleteFileAfterSend(true);
-}
+    $row = 2;
 
-private function createExcelFile(string $filePath): void
-{
-    $writer = new Writer(new Options());
-    $writer->openToFile($filePath);
-
-    // Estilo para encabezados
-    $headerStyle = (new Style())
-        ->setFontBold()
-        ->setFontSize(12)
-        ->setFontColor(Color::WHITE)
-        ->setBackgroundColor('004080')
-        ->setCellAlignment(CellAlignment::CENTER);
-
-    // Encabezados
-    $writer->addRow(
-        Row::fromValues(['ID', 'NOMBRE', 'EMAIL', 'ROL', 'FECHA BAJA', 'MOTIVO'])
-            ->setStyle($headerStyle)
-    );
-
-    // Datos
-    SolicitudBajas::with('user')
-        ->where('estatus', 'Aceptada')
+    User::with(['solicitudAlta', 'solicitudBaja'])
+        ->orderBy('id')
         ->cursor()
-        ->each(function ($baja) use ($writer) {
-            $writer->addRow(Row::fromValues([
-                $baja->id,
-                $baja->user->name,
-                $baja->user->email,
-                $baja->user->rol,
-                $baja->created_at->format('d/m/Y'),
-                $baja->motivo
-            ]));
+        ->each(function ($user) use ($sheet, &$row) {
+            $baja = $user->estatus === 'Inactivo' ? $user->solicitudBajas->sortByDesc('created_at')->first() : null;
+
+            $sheet->fromArray([
+                $user->id,
+                $user->name,
+                $user->punto,
+                $user->solicitudAlta->curp ?? 'N/A',
+                $user->solicitudAlta->rfc ?? 'N/A',
+                $user->solicitudAlta->nss ?? 'N/A',
+                $user->fecha_ingreso ? \Carbon\Carbon::parse($user->fecha_ingreso)->format('d/m/Y') : 'N/A',
+                '',
+                $baja->por ?? '',
+                $baja && $baja->fecha_baja ? \Carbon\Carbon::parse($user->fecha_baja)->format('d/m/Y') : 'N/A',
+                $baja->motivo ?? '',
+                $user->solicitudAlta->telefono ?? 'N/A',
+            ], null, "A{$row}");
+
+            if ($user->estatus === 'Inactivo') {
+                $sheet->getStyle("A{$row}:L{$row}")->applyFromArray([
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => ['rgb' => 'FE0000'],
+                    ],
+                    'font' => [
+                        'bold' => true,
+                        'size' => 12,
+                        'color' => ['rgb' => '000000'],
+                    ],
+                ]);
+            }
+
+            $row++;
         });
 
-    $writer->close();
+    foreach (range('A', 'L') as $col) {
+        $sheet->getColumnDimension($col)->setAutoSize(true);
+    }
+
+    $writer = new Xlsx($spreadsheet);
+    $writer->save($filePath);
 }
 }

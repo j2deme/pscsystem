@@ -40,12 +40,9 @@
                                             {{ $elemento->punto ?? 'No disponible' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
-                                            <a href="{{route('sup.validarSolicitudBaja', $elemento->id)}}" class="inline-block mb-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-1.5 px-3 rounded-md shadow-md transition w-40">
+                                            <a href="{{route('sup.validarSolicitudBaja', $elemento->id)}}" class="mb-2 text-red-500 font-semibold py-1.5 px-3 transition w-40">
                                                 Solicitar Baja
                                             </a><br>
-                                            <a href="#" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1.5 px-3 rounded-md shadow-md transition w-40">
-                                                Ver Ficha Técnica
-                                            </a>
                                         </td>
                                     </tr>
                                     @endif

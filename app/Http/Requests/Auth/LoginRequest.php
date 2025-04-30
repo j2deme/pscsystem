@@ -39,6 +39,14 @@ class LoginRequest extends FormRequest
      */
     public function authenticate(): void
     {
+        $user = \App\Models\User::where('email', $this->email)->first();
+
+        if ($user && $user->estatus === 'Inactivo') {
+            throw ValidationException::withMessages([
+                'email' => 'Tu cuenta está inactiva. Contacta al administrador.',
+            ]);
+        }
+
         $this->ensureIsNotRateLimited();
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
