@@ -29,6 +29,12 @@
                     'notificaciones' => $bajasEnProceso,
                 ],
                 [
+                    'titulo' => 'Archivos',
+                    'ruta' => route('rh.archivos'),
+                    'icono' => '📁',
+                    'color' => 'bg-green-100 dark:bg-green-700'
+                ],
+                [
                     'titulo' => 'Historial de Altas',
                     'ruta' => route('rh.historialSolicitudesAltas'),
                     'icono' => '🗂️',
@@ -39,12 +45,6 @@
                     'ruta' => route('rh.historialSolicitudesBajas'),
                     'icono' => '📜',
                     'color' => 'bg-pink-100 dark:bg-pink-700'
-                ],
-                [
-                    'titulo' => 'Archivos',
-                    'ruta' => route('rh.archivos'),
-                    'icono' => '📁',
-                    'color' => 'bg-green-100 dark:bg-green-700'
                 ],
                 [
                     'titulo' => 'Generar Nueva Alta',
@@ -64,7 +64,7 @@
         @endphp
 
         @foreach($cards as $card)
-        <div class="{{ $card['disabled'] ?? false ? 'pointer-events-none opacity-50' : '' }}">
+        <div class="{{ $card['disabled'] ?? false ? 'pointer-events-none opacity-50' : '' }}" style="{{ ($card['disabled'] ?? false) ? 'opacity: 0.5; pointer-events: none; cursor: default;' : '' }}">
             <a href="{{ $card['ruta'] }}" class="transition-transform transform hover:scale-105 block">
                 <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between relative">
                     @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)

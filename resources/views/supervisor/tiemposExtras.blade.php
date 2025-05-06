@@ -27,8 +27,8 @@
                                 </div>
                             </div>
                             <div class="flex justify-center">
-                                <a href="{{ route('sup.tiemposExtrasForm', $elemento->id) }}" class="inline-block w-1/3 bg-blue-400 text-white py-1 px-4 rounded-md hover:bg-blue-500 ">Tiempo Extra</a>
-                                <a href="{{ route('sup.coberturaTurnoForm', $elemento->id) }}" class="inline-block w-1/3 bg-green-400 text-white py-1 px-4 rounded-md hover:bg-green-500 mx-4">Cobertura de Turno</a>
+                                <a href="{{ route('sup.tiemposExtrasForm', $elemento->id) }}" class="inline-block w-1/3 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 mr-2">Tiempo Extra</a>
+                                <a href="{{ route('sup.coberturaTurnoForm', $elemento->id) }}" class="inline-block w-1/3 bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 mx-4">Cobertura de Turno</a>
                             </div>
                         </div>
 

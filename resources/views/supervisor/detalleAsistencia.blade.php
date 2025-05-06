@@ -4,15 +4,6 @@
         <div class="container mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Registro de Asistencias</h2>
-                <!--<div class="mb-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col md:flex-row md:items-center md:justify-between">
-                    <form action="{{ route('sup.verFechaAsistencias') }}" method="GET" class="flex items-center gap-4">
-                        <label for="fecha" class="text-gray-700 dark:text-gray-300 font-semibold">Seleccionar Fecha:</label>
-                        <input type="date" id="fecha" name="fecha" value="{{ $fechaSeleccionada ?? '' }}" class="rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
-                            Buscar
-                        </button>
-                    </form>
-                </div> -->
                             <div class="mb-6 p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white">
                                     Asistencia del {{ \Carbon\Carbon::parse($asistencia->fecha)->format('d/m/Y') }} a las {{ $asistencia->hora_asistencia }}
@@ -60,13 +51,10 @@
                             </div>
                             <div id="imageModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden z-50">
                                 <span class="absolute top-4 right-4 text-white text-2xl cursor-pointer" onclick="closeImageModal()">×</span>
-                                <img id="modalImage" src="" class="max-w-full max-h-[90vh] rounded-lg shadow-lg">
+                                <img id="modalImage" src="" class="rounded-lg shadow-lg object-contain" style="max-width: 90vw; max-height: 80vh;">
                             </div>
 
-                <div id="imageModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden z-50">
-                    <span class="absolute top-4 right-4 text-white text-2xl cursor-pointer" onclick="closeImageModal()">×</span>
-                    <img id="modalImage" src="" class="max-w-full max-h-[90vh] rounded-lg shadow-lg">
-                </div>
+
                 <center><br>
                     <a href="{{ route('sup.verAsistencias', Auth()->user()->id) }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
                         Regresar

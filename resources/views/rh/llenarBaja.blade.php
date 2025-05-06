@@ -21,7 +21,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label for="fecha_hoy" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fecha</label>
-                                    <input type="date" name="fecha_hoy" id="fecha_hoy" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500" readonly>
+                                    <input type="date" name="fecha_hoy" id="fecha_hoy" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                 </div>
 
                                 <div>

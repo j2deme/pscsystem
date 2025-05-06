@@ -13,9 +13,15 @@ class Supfiltroaltas extends Component
     use WithPagination;
 
     public $search = '';
-    protected $queryString = ['search'];
+    public $searchDate = null;
+    protected $queryString = ['search' => ['except' => '']];
 
     public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+    
+    public function updatingSearchDate()
     {
         $this->resetPage();
     }
@@ -23,25 +29,29 @@ class Supfiltroaltas extends Component
     public function render()
     {
         $user = auth()->user();
-        $usuario = auth()->user()->name;
-        if($user->rol == 'Supervisor'){
-            $solicitudes = SolicitudAlta::where('solicitante', $usuario)
-            ->when($this->search, function ($query) {
-                return $query->where('nombre', 'like', '%'.$this->search.'%');
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-        }else{
-            $solicitudes = SolicitudAlta::when($this->search, function ($query) {
-                return $query->where('nombre', 'like', '%'.$this->search.'%');
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $usuario = $user->name;
+        
+        $query = SolicitudAlta::query();
+    
+        if ($user->rol == 'Supervisor') {
+            $query->where('solicitante', $usuario);
         }
-
-
+    
+        if ($this->search) {
+            $query->where('nombre', 'like', '%' . $this->search . '%');
+        }
+    
+        if ($this->searchDate) {
+            $query->whereDate('created_at', $this->searchDate);
+        }
+    
+        $solicitudes = $query->orderBy('created_at', 'desc')->paginate(10);
+        //dd($this->searchDate);
+    
         return view('livewire.supfiltroaltas', [
             'solicitudes' => $solicitudes
         ]);
     }
+
+
 }

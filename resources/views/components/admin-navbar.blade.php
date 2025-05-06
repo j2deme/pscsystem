@@ -89,32 +89,58 @@ use Carbon\Carbon;
         @endphp
 
         @foreach($cards as $card)
-            <a
-                @if($card['titulo'] === 'Recursos Humanos')
-                    href="#"
-                    @click.prevent="$dispatch('cambiar-menu', { menu: 'rh' })"
-                @else
-                    href="{{ $card['ruta'] }}"
-                @endif
-                class="transition-transform transform hover:scale-105"
-            >
-                <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between {{ $card['disabled'] ?? false ? 'pointer-events-none opacity-50' : '' }}">
-                    <div class="flex items-center space-x-3">
-                        @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)
-                            <span class="absolute top-2 right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
-                                {{ $card['notificaciones'] }}
-                            </span>
-                        @endif
-                        <div class="text-3xl">
-                            {{ $card['icono'] }}
+            @php
+                $isDisabled = $card['disabled'] ?? false;
+            @endphp
+        
+            @if($isDisabled)
+                <div class="transition-transform transform opacity-50 cursor-not-allowed" style="{{ ($card['disabled'] ?? false) ? 'opacity: 0.5; pointer-events: none; cursor: default;' : '' }}">
+                    <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} h-full flex flex-col justify-between">
+                        <div class="flex items-center space-x-3">
+                            @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)
+                                <span class="absolute top-2 right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                                    {{ $card['notificaciones'] }}
+                                </span>
+                            @endif
+                            <div class="text-3xl">
+                                {{ $card['icono'] }}
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 dark:text-white">
+                                {{ $card['titulo'] }}
+                            </h3>
                         </div>
-                        <h3 class="text-base font-semibold text-gray-800 dark:text-white">
-                            {{ $card['titulo'] }}
-                        </h3>
+                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Opción no disponible</p>
                     </div>
-                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Haz clic para ver más detalles</p>
                 </div>
-            </a>
+            @else
+                <a
+                    @if($card['titulo'] === 'Recursos Humanos')
+                        href="#"
+                        @click.prevent="$dispatch('cambiar-menu', { menu: 'rh' })"
+                    @else
+                        href="{{ $card['ruta'] }}"
+                    @endif
+                    class="transition-transform transform hover:scale-105"
+                >
+                    <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between">
+                        <div class="flex items-center space-x-3">
+                            @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)
+                                <span class="absolute top-2 right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                                    {{ $card['notificaciones'] }}
+                                </span>
+                            @endif
+                            <div class="text-3xl">
+                                {{ $card['icono'] }}
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 dark:text-white">
+                                {{ $card['titulo'] }}
+                            </h3>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">Haz clic para ver más detalles</p>
+                    </div>
+                </a>
+            @endif
         @endforeach
+
     </div>
 </div>

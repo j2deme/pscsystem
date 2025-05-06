@@ -52,21 +52,15 @@
                         {{ $loop->iteration }}
                     </td>
                     @if(Auth::user()->rol == 'admin')
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900 dark:text-gray-200">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm dark:text-gray-300">
                                 {{ $asistencia->usuario->name }}
-                            </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900 dark:text-gray-200">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                 {{ $asistencia->usuario->punto }}
-                            </div>
                         </td>
                     @endif
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900 dark:text-gray-200">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                             {{ \Carbon\Carbon::parse($asistencia->fecha)->format('d-m-Y') }}
-                        </div>
                     </td>
                     @php
                         $asistentes = json_decode($asistencia->elementos_enlistados, true);
@@ -75,13 +69,13 @@
                         $faltantes = json_decode($asistencia->faltas, true);
                         $faltas = is_array($faltantes) ? count($faltantes) : 0;
                     @endphp
-                    <td class="px-4 py-2 font-semibold">
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         {{ $asistenciasDia }}
                     </td>
-                    <td class="px-4 py-2 font-semibold">
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         {{ $faltas }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm ">
                         <a href="{{route('sup.detalleAsistencia', $asistencia->id)}}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-500 mr-3">Ver Detalles</a>
                     </td>
                 </tr>

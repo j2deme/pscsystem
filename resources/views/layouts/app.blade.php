@@ -8,8 +8,6 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Preload CSS -->
-        <link rel="preload" href="{{ mix('css/app.css') }}" as="style">
-        <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 

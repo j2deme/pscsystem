@@ -128,9 +128,12 @@
         @endphp
 
         @foreach($cards as $card)
-        <div class="{{ $card['disabled'] ?? false ? 'pointer-events-none opacity-50' : '' }}">
-            <a href="{{ $card['ruta'] }}" class="transition-transform transform hover:scale-105 block">
-                <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between relative">
+        <div>
+            <a {{ ($card['disabled'] ?? false) ? '' : 'href=' . $card['ruta'] }} class="transition-transform transform {{ ($card['disabled'] ?? false) ? '' : 'hover:scale-105' }} block">
+
+                <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} h-full flex flex-col justify-between relative {{ !($card['disabled'] ?? false) ? 'hover:shadow-lg' : '' }}"
+                    style="{{ ($card['disabled'] ?? false) ? 'opacity: 0.5; pointer-events: none; cursor: default;' : '' }}">
+
                     @if (!empty($card['notificaciones']) && $card['notificaciones'] > 0)
                         <span class="absolute top-2 right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
                             {{ $card['notificaciones'] }}

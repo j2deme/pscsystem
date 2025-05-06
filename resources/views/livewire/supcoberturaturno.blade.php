@@ -12,30 +12,30 @@
     </div>
 
     <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-100 text-gray-700 text-left text-sm tracking-wider">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                    <th class="px-4 py-2 text-center font-normal">No.</th>
-                    <th class="px-4 py-2 text-center font-normal">Nombre</th>
-                    <th class="px-4 py-2 text-center font-normal">Fecha</th>
-                    <th class="px-4 py-2 text-center font-normal">Hora Inicio</th>
-                    <th class="px-4 py-2 text-center font-normal">Hora Fin</th>
-                    <th class="px-4 py-2 text-center font-normal">Punto</th>
-                    <th class="px-4 py-2 text-center font-normal">Cobertura</th>
-                    <th class="px-4 py-2 text-center font-normal">Observaciones</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">No.</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nombre</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fecha</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Hora Inicio</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Hora Fin</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Punto</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Cobertura</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Observaciones</th>
                 </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200 text-sm font-medium text-gray-700">
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse ($coberturas as $cobertura)
                     <tr class="border-t dark:border-gray-700">
-                        <td class="px-4 py-2 text-center">{{$loop->iteration}}</td>
-                        <td class="px-4 py-2 text-center">{{ $cobertura->user->name ?? '-' }}</td>
-                        <td class="px-4 py-2 text-center">{{ \Carbon\Carbon::parse($cobertura->fecha)->format('d/m/Y') }}</td>
-                        <td class="px-4 py-2 text-center">{{ \Carbon\Carbon::parse($cobertura->hora_inicio)->format('H:i') }}</td>
-                        <td class="px-4 py-2 text-center">{{ \Carbon\Carbon::parse($cobertura->hora_fin)->format('H:i') }}</td>
-                        <td class="px-4 py-2 text-center">{{ $cobertura->punto_procedencia }}</td>
-                        <td class="px-4 py-2 text-center">{{ $cobertura->punto_cobertura }}</td>
-                        <td class="px-4 py-2 text-center">{{ $cobertura->observaciones }}</td>
+                        <td class="px-4 py-2 whitespace-nowrap">{{$loop->iteration}}</td>
+                        <td class="px-4 py-2 whitespace-nowrap">{{ $cobertura->user->name ?? '-' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ \Carbon\Carbon::parse($cobertura->fecha)->format('d/m/Y') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ \Carbon\Carbon::parse($cobertura->hora_inicio)->format('H:i') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ \Carbon\Carbon::parse($cobertura->hora_fin)->format('H:i') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $cobertura->punto_procedencia }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $cobertura->punto_cobertura }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $cobertura->observaciones }}</td>
                     </tr>
                 @empty
                     <tr>
@@ -46,6 +46,11 @@
                 @endforelse
             </tbody>
         </table>
+        <div class="flex justify-center mt-6">
+            <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                Regresar
+            </a>
+        </div>
     </div>
 
     <div class="mt-4">
