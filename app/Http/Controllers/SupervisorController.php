@@ -346,13 +346,17 @@ class SupervisorController extends Controller
         return view('supervisor.vistaSolicitarBaja', compact('user','solicitud','solicitudpendiente'));
     }
 
-    public function guardarBajaNueva(Request $request, $id){
+    public function guardarBajaNueva(Request $request, $id)
+    {
         $request->validate([
             'fecha_hoy' => 'required|date',
             'incapacidad' => 'nullable|string|max:255',
             'por' => 'required|in:Ausentismo,Separación Voluntaria,Renuncia',
             'ultima_asistencia' => 'nullable|date',
             'motivo' => 'nullable|string',
+            'descuento' => 'nullable|integer',
+            'archivo_baja' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'arch_equipo_entregado' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
         $user = User::findOrFail($id);
@@ -364,16 +368,40 @@ class SupervisorController extends Controller
         $solicitud->incapacidad = $request->incapacidad;
         $solicitud->por = $request->por;
         $solicitud->ultima_asistencia = $request->ultima_asistencia;
+        $solicitud->archivo_baja = ' ';
+        $solicitud->arch_equipo_entregado = ' ';
+        $solicitud->descuento = $request->descuento;
         $solicitud->estatus = 'En Proceso';
         $solicitud->observaciones = 'Solicitud de baja en proceso';
 
         try {
             $solicitud->save();
-        } catch (\Exception $e) {
-            return redirect()->route('dashboard')->with('error', 'Error al enviar la solicitud: ' . $e->getMessage());
-        }
 
-        return redirect()->route('dashboard')->with('success', 'Solicitud de baja enviada correctamente');
+            $carpeta = 'solicitudesBajas/' . $solicitud->id;
+
+            Storage::disk('public')->makeDirectory($carpeta);
+
+            $archivos = [
+                'archivo_baja',
+                'arch_equipo_entregado',
+            ];
+
+            foreach ($archivos as $campo) {
+                if ($request->hasFile($campo)) {
+                    $archivo = $request->file($campo);
+                    $nombreArchivo = $campo . '_' . time() . '.' . $archivo->getClientOriginalExtension();
+                    $ruta = $archivo->storeAs($carpeta, $nombreArchivo, 'public');
+
+                    $solicitud->$campo = $ruta;
+                }
+            }
+
+            $solicitud->save();
+
+            return redirect()->route('dashboard')->with('success', 'Solicitud de baja enviada correctamente');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al enviar la solicitud: ' . $e->getMessage());
+        }
     }
 
     public function historialBajas(){

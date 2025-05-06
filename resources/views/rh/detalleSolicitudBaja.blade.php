@@ -8,7 +8,7 @@
                 <div>
                     <p class="text-gray-500">Fecha</p>
                     <p class="font-medium text-gray-900 dark:text-white">
-                        {{ \Carbon\Carbon::now()->format('Y-m-d') }}
+                        {{ \Carbon\Carbon::now()->format('d-m-Y') }}
                     </p>
                 </div>
                 <div>
@@ -23,7 +23,7 @@
                 <div>
                     <p class="text-gray-500">Fecha de Ingreso</p>
                     <p class="font-medium text-gray-900 dark:text-white">
-                        {{ $user->fecha_ingreso }}
+                        {{ \Carbon\Carbon::parse($user->fecha_ingreso)->format('d-m-Y') }}
                     </p>
                 </div>
                 <div>
@@ -59,7 +59,7 @@
                 <div>
                     <p class="text-gray-500">Última Asistencia</p>
                     <p class="font-medium text-gray-900 dark:text-white">
-                        {{ $solicitud->ultima_asistencia ?? 'No especificado' }}
+                        {{ \Carbon\Carbon::parse($solicitud->ultima_asistencia)->format('d-m-Y') ?? 'No especificado' }}
                     </p>
                 </div>
                 <div>
@@ -78,6 +78,28 @@
                                 {{ $solicitud->estatus }}
                             </span>
                         @endif
+                    </p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Descuento de no devolución de equipo/material</p>
+                    <p class="font-medium text-gray-900 dark:text-white">
+                        {{ $solicitud->descuento ?? 'No se ha aplicado descuento' }}
+                    </p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Archivo de Baja</p>
+                    <p class="font-medium text-blue-500 dark:text-white">
+                        <a href="{{ asset('storage/' . $solicitud->archivo_baja) }}" target="_blank">
+                            Ver documento
+                        </a>
+                    </p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Archivo de Entrega de Equipo:</p>
+                    <p class="font-medium text-blue-500 dark:text-white">
+                        <a href="{{ asset('storage/' . $solicitud->arch_equipo_entregado) }}" target="_blank">
+                            Ver documento
+                        </a>
                     </p>
                 </div>
                 <div class="md:col-span-2">

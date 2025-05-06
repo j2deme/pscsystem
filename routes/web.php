@@ -3,6 +3,7 @@
 use App\Exports\AltasSpreadsheetExport;
 use App\Exports\BajasSpreadsheetExport;
 use App\Exports\VacacionesSpreadsheetExport;
+use App\Exports\VacacionesCortesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
@@ -98,6 +99,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/descargar-vacaciones', function () {
         return (new VacacionesSpreadsheetExport())->generateFile();
     })->name('exportar.vacaciones');
+
+    Route::get('/descargar-vacaciones-cortes', function () {
+        $inicio = request()->query('inicio');
+        $fin = request()->query('fin');
+        return (new App\Exports\VacacionesCortesExport())->generateFile($inicio, $fin);
+    })->name('exportar.vacacionesCortes');
 
     //Usuario 'User'
     Route::get('/solicitar_baja', [UserController::class,'solicitarBajaForm'])->name('user.solicitarBajaForm');

@@ -14,7 +14,7 @@
                             Regresar
                         </a></center>
                     @else
-                    <form action="{{ route('sup.guardarBajaNueva', $user->id) }}" method="POST" class="space-y-6">
+                    <form action="{{ route('sup.guardarBajaNueva', $user->id) }}" method="POST" class="space-y-6" enctype="multipart/form-data">
                         @csrf
 
                         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
@@ -22,7 +22,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label for="fecha_hoy" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Fecha</label>
-                                    <input type="date" name="fecha_hoy" id="fecha_hoy" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500" readonly>
+                                    <input type="date" name="fecha_hoy" id="fecha_hoy" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                 </div>
 
                                 <div>
@@ -84,8 +84,20 @@
                                     <input type="date" name="ultima_asistencia" id="ultima_asistencia" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                 </div>
                                 <div>
+                                    <label for="descuento" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descuento por equipo/material no decuelto</label>
+                                    <input type="text" name="descuento" id="descuento" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="archivo_baja" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Archivo de Baja</label>
+                                    <input type="file" name="archivo_baja" id="archivo_baja" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label for="arch_equipo_entregado" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Archivo de equipo entregado</label>
+                                    <input type="file" name="arch_equipo_entregado" id="arch_equipo_entregado" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div>
                                     <label for="motivo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Motivo (opcional)</label>
-                                    <textarea name="motivo" id="motivo" rows="4"class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500"placeholder="Escribe cualquier detalle relevante sobre la baja..."></textarea>
+                                    <textarea name="motivo" id="motivo" rows="4"class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
                                 </div>
                             </div>
                         </div>

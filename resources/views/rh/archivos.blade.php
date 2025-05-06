@@ -53,8 +53,21 @@
                                     </a>
                                 </td>
                             </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">4</td>
+                                <td class="px-6 py-4 whitespace-nowrap">Archivo de Vacaciones por Corte</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <button onclick="abrirModalFechas()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded inline-flex items-center">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        Exportar Excel
+                                    </button>
+                                </td>
+                            </tr>
                     </tbody>
                 </table>
+
                 <center><br><a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
                     Regresar
                 </a></center>
@@ -62,3 +75,28 @@
         </div>
     </div>
 </x-app-layout>
+<script>
+    function abrirModalFechas() {
+        Swal.fire({
+            title: 'Selecciona el rango de fechas',
+            html:
+                `<input type="date" id="fechaInicio" class="swal2-input" placeholder="Fecha inicio">
+                <input type="date" id="fechaFin" class="swal2-input" placeholder="Fecha fin">`,
+            showCancelButton: true,
+            confirmButtonText: 'Generar Excel',
+            cancelButtonText: 'Cancelar',
+            preConfirm: () => {
+                const inicio = document.getElementById('fechaInicio').value;
+                const fin = document.getElementById('fechaFin').value;
+
+                if (!inicio || !fin) {
+                    Swal.showValidationMessage('Ambas fechas son requeridas');
+                    return false;
+                }
+
+                const url = `{{ route('exportar.vacacionesCortes') }}?inicio=${inicio}&fin=${fin}`;
+                window.location.href = url;
+            }
+        });
+    }
+</script>

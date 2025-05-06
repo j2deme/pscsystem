@@ -4,7 +4,7 @@
             type="text"
             wire:model.live.debounce.300ms="search"
             placeholder="Buscar por nombre..."
-            class="w-1/4 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-1/3 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
         >
         <input
             type="date"

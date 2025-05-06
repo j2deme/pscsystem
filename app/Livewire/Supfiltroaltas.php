@@ -40,8 +40,8 @@ class Supfiltroaltas extends Component
         if ($this->search) {
             $query->where(function($q) {
                 $q->where('nombre', 'like', '%'.$this->search.'%')
-                  ->orWhere('apellido_paterno', 'like', '%'.$this->search.'%')
-                  ->orWhere('apellido_materno', 'like', '%'.$this->search.'%');
+                    ->orWhere('apellido_paterno', 'like', '%'.$this->search.'%')
+                    ->orWhere('apellido_materno', 'like', '%'.$this->search.'%');
             });
         }
 
