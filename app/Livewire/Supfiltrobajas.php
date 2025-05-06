@@ -12,7 +12,7 @@ class Supfiltrobajas extends Component
     use WithPagination;
 
     public $search = '';
-    public $por = 'Renuncia'; // Filtro fijo para "Renuncia"
+    public $por = 'Renuncia';
     protected $queryString = ['search' => ['except' => ''], 'por'];
 
     public function updatingSearch()

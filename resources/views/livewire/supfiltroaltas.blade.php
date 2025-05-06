@@ -8,7 +8,7 @@
         >
         <input
             type="date"
-            wire:model.debounce.300ms="searchDate"
+            wire:model.live.debounce.300ms="searchDate"
             class="w-1/4 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
         >
         <div wire:loading class="text-sm text-gray-500 mt-1">
