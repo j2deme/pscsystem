@@ -90,6 +90,7 @@ Route::middleware('auth')->group(function () {
     Route::post('almacenar_baja/{id}', [RhController::class, 'almacenarBaja'])->name('rh.almacenarBajaNueva');
     Route::get('/archivos', [RhController::class, 'verArchivos'])->name('rh.archivos');
     Route::get('/vista_vacaciones', [RhController::class, 'vistaVacaciones'])->name('rh.vistaVacaciones');
+    Route::get('/historial_vacaciones', [RhController::class, 'historialVacaciones'])->name('rh.historialVacaciones');
 
     Route::get('/descargar-bajas', function () {
         return (new BajasSpreadsheetExport())->generateFile();

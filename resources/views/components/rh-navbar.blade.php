@@ -66,6 +66,12 @@
                     'color' => 'bg-red-100 dark:bg-red-700',
                     'disabled' => Auth::user()->rol=='admin'
                 ],
+                [
+                    'titulo' => 'Historial de Vacaciones',
+                    'ruta' => route('rh.historialVacaciones'),
+                    'icono' => '📜',
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700',
+                ],
             ];
         @endphp
 

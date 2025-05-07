@@ -336,4 +336,10 @@ class RhController extends Controller
             ->paginate(10);
         return view('rh.vistaVacaciones', compact('solicitudes'));
     }
+
+    public function historialVacaciones(){
+        $solicitudes = SolicitudVacaciones::orderBy('fecha_inicio', 'desc')
+            ->paginate(10);
+        return view('rh.historialVacaciones', compact('solicitudes'));
+    }
 }
