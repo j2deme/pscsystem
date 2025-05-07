@@ -32,7 +32,7 @@
                     'titulo' => 'Archivos',
                     'ruta' => route('rh.archivos'),
                     'icono' => '📁',
-                    'color' => 'bg-green-100 dark:bg-green-700'
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
                 [
                     'titulo' => 'Historial de Altas',
@@ -47,10 +47,16 @@
                     'color' => 'bg-pink-100 dark:bg-pink-700'
                 ],
                 [
+                    'titulo' => 'Vacaciones',
+                    'ruta' => route('rh.vistaVacaciones'),
+                    'icono' => '🎉',
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700',
+                ],
+                [
                     'titulo' => 'Generar Nueva Alta',
                     'ruta' => route('rh.generarNuevaAltaForm'),
                     'icono' => '📈',
-                    'color' => 'bg-green-100 dark:bg-green-700',
+                    'color' => 'bg-blue-100 dark:bg-blue-700',
                     'disabled' => Auth::user()->rol=='admin'
                 ],
                 [

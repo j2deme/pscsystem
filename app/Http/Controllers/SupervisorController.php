@@ -18,6 +18,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SupervisorController extends Controller
 {
@@ -585,13 +586,13 @@ class SupervisorController extends Controller
 
     public function aceptarSolicitudVacaciones($id){
         $solicitud = SolicitudVacaciones::find($id);
-        $solicitud->estatus = 'Aceptada';
-        $solicitud->observaciones = 'Solicitud de vacaciones aceptada';
+        $solicitud->estatus = 'En Proceso';
+        $solicitud->observaciones = 'Solicitud aceptada, falta subir archivo de solicitud.';
         $solicitud->autorizado_por = Auth::user()->name;
 
         $solicitud->save();
 
-        return redirect()->route('sup.solicitudesVacaciones')->with('success', 'Solicitud de vacaciones aceptada correctamente.');
+        return redirect()->route('sup.solicitudesVacaciones')->with('success', 'Solicitud de vacaciones respondida correctamente, a la espera del archivo de solicitud.');
     }
 
     public function rechazarSolicitudVacaciones($id){
@@ -745,5 +746,65 @@ class SupervisorController extends Controller
 
         return redirect()->route('sup.tiemposExtras')->with('success', 'Cobertura de turno registrada correctamente.');
     }
+
+    public function descargarSolicitudVacaciones($id)
+    {
+        $solicitud = SolicitudVacaciones::with('user')->findOrFail($id);
+        $user = $solicitud->user;
+
+        $inicioPeriodo = $user->fecha_ingreso;
+        $finPeriodo = Carbon::parse($inicioPeriodo)->addYear();
+        if (floor(Carbon::parse($user->fecha_ingreso)->floatDiffInYears(now())) != 1)
+            $anio = 'AÑOS';
+        else
+            $anio = 'AÑO';
+        $antiguedad = floor(Carbon::parse($user->fecha_ingreso)->floatDiffInYears(now())) . ' '. $anio;
+        if($antiguedad == '0 AÑOS' || $antiguedad == '1 AÑO')
+            $periodo = 1;
+        else
+            $periodo = floor(Carbon::parse($user->fecha_ingreso)->floatDiffInYears(now()));
+        $pdf = Pdf::loadView('pdf.formatoVacaciones', compact('user', 'solicitud', 'inicioPeriodo', 'finPeriodo', 'antiguedad', 'periodo'));
+        return $pdf->download('SOLICITUD DE VACACIONES.pdf');
+    }
+
+    public function subirArchivo(Request $request, $id)
+{
+    $request->validate([
+        'archivo' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',
+    ]);
+
+    try {
+        $solicitud = SolicitudVacaciones::findOrFail($id);
+
+        if ($solicitud->archivo_solicitud && Storage::exists($solicitud->archivo_solicitud)) {
+            Storage::delete($solicitud->archivo_solicitud);
+        }
+
+        if ($request->hasFile('archivo')) {
+            $archivo = $request->file('archivo');
+            $ruta = 'solicitudesVacaciones/' . $solicitud->id;
+            $extension = $archivo->getClientOriginalExtension();
+
+            $nombreArchivo = 'arch_vacaciones.' . $extension;
+
+            $rutaArchivo = $archivo->storeAs($ruta, $nombreArchivo, 'public');
+
+            $solicitud->archivo_solicitud = $rutaArchivo;
+            $solicitud->save();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Archivo subido correctamente',
+            'file_path' => Storage::url($rutaArchivo)
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error al subir archivo: ' . $e->getMessage()
+        ], 500);
+    }
+}
 
 }

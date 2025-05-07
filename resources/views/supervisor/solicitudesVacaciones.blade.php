@@ -25,7 +25,6 @@
                                 <thead class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
                                     <tr>
                                         <th class="px-4 py-2 text-left">Empleado</th>
-                                        <th class="px-4 py-2 text-left">Punto</th>
                                         <th class="px-4 py-2 text-left">Inicio</th>
                                         <th class="px-4 py-2 text-left">Fin</th>
                                         <th class="px-4 py-2 text-left">Días</th>
@@ -39,7 +38,6 @@
                                             <td class="px-4 py-2">
                                                 {{ $solicitud->user->name }}<br>
                                             </td>
-                                            <td class="px-4 py-2">{{ $solicitud->user->punto }}</td>
                                             <td class="px-4 py-2">{{ \Carbon\Carbon::parse($solicitud->fecha_inicio)->format('d/m/Y') }}</td>
                                             <td class="px-4 py-2">{{ \Carbon\Carbon::parse($solicitud->fecha_fin)->format('d/m/Y') }}</td>
                                             <td class="px-4 py-2 text-center">{{ $solicitud->dias_solicitados }}</td>
@@ -57,8 +55,10 @@
                                                 </span>
                                             </td>
                                             <td class="px-4 py-2">
-                                                @if($solicitud->estatus != 'En Proceso')
-                                                @else
+                                                @if($solicitud->estatus === 'En Proceso' && $solicitud->observaciones === 'Solicitud aceptada, falta subir archivo de solicitud.')
+                                                    <a href="{{ route('sup.descargarSolicitudVacaciones', $solicitud->id) }}" class="text-blue-500 hover:text-blue-700">Descargar Formato</a>
+                                                    <a href="#" onclick="abrirModalArchivo({{ $solicitud->id }})" class="ml-2 text-green-700 hover:text-green-800">Subir Archivo</a>
+                                                @elseif ($solicitud->estatus === 'En Proceso' && $solicitud->observaciones === 'Solicitud de vacaciones en proceso')
                                                     <a href="{{ route('sup.aceptarSolicitudVacaciones', $solicitud->id) }}" class="text-blue-500 hover:text-blue-700">Aceptar</a>
                                                     <a href="{{ route('sup.rechazarSolicitudVacaciones', $solicitud->id) }}" class="ml-2 text-red-500 hover:text-red-700">Rechazar</a>
                                                 @endif
@@ -67,6 +67,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            <p>Nota: Al aceptar una solicitud, se deberá descargae el archivo PDF con el formato de solicitud de vacaciones, el cual deberá ser firmado por el elemento, para después ser subido nuevamente al sistema y que la solicitud sea aceptada correctamente.</p>
                             <center><br><a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
                                 Regresar
                             </a></center>
@@ -76,3 +77,79 @@
         </div>
     </div>
 </x-app-layout>
+<script>
+    function abrirModalArchivo(solicitudId) {
+        Swal.fire({
+            title: 'Subir Archivo',
+            html: `
+                <input type="file" id="archivo" class="swal2-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                <p style="font-size:12px; color:#888">Formatos permitidos: PDF, DOC, JPG, PNG (Máx. 5MB)</p>
+                <div id="progress-container" style="margin-top:10px; display:none;">
+                    <progress id="upload-progress" value="0" max="100" style="width:100%"></progress>
+                    <p id="progress-text" style="text-align:center; font-size:12px;">0% completado</p>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Subir',
+            cancelButtonText: 'Cancelar',
+            didOpen: () => {
+                const fileInput = document.getElementById('archivo');
+                fileInput.addEventListener('change', (e) => {
+                    if(e.target.files[0].size > 5 * 1024 * 1024) {
+                        Swal.showValidationMessage('El archivo no puede exceder los 5MB');
+                    }
+                });
+            },
+            preConfirm: () => {
+                const archivo = document.getElementById('archivo').files[0];
+                if (!archivo) {
+                    Swal.showValidationMessage('Debes seleccionar un archivo');
+                    return false;
+                }
+
+                const formData = new FormData();
+                formData.append('archivo', archivo);
+                formData.append('_token', '{{ csrf_token() }}');
+
+                document.getElementById('progress-container').style.display = 'block';
+                const progressBar = document.getElementById('upload-progress');
+                const progressText = document.getElementById('progress-text');
+
+                return fetch(`/solicitud-vacaciones/${solicitudId}/subir-archivo`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw new Error(err.message || 'Error al subir el archivo') });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.message);
+                    }
+                    return data;
+                })
+                .catch(error => {
+                    Swal.showValidationMessage(`Error: ${error.message}`);
+                    return false;
+                });
+            }
+        }).then(result => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: '¡Éxito!',
+                    text: result.value.message,
+                    icon: 'success'
+                }).then(() => {
+                    window.location.reload();
+                });
+            }
+        });
+    }
+</script>

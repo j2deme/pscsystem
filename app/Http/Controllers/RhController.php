@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\SolicitudAlta;
+use App\Models\SolicitudVacaciones;
 use App\Models\DocumentacionAltas;
 use App\Models\SolicitudBajas;
 use App\Models\User;
@@ -327,5 +328,12 @@ class RhController extends Controller
 
     public function verArchivos(){
         return view('rh.archivos');
+    }
+
+    public function vistaVacaciones(){
+        $solicitudes = SolicitudVacaciones::where('estatus', 'En Proceso')
+            ->where('observaciones', 'Pendiente de subir archivo firmado.')
+            ->paginate(10);
+        return view('rh.vistaVacaciones', compact('solicitudes'));
     }
 }
