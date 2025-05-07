@@ -121,7 +121,7 @@
 
     <div class="bloque">
         <p><strong>PARA USO EXCLUSIVO DE RECURSOS HUMANOS</strong></p>
-        <p style="margin-top: 40px; text-decoration: underline;"><strong>ANTIGÜEDAD:</strong> {{ $antiguedad }}</p><br>
+        <p style="margin-top: 40px; text-decoration: underline;"><strong>ANTIGÜEDAD:</strong> {{ $antiguedad }}</p><br><br><br>
     </div>
 
     <table style="width: 100%; text-align: center;">

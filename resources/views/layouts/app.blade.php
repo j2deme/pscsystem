@@ -6,6 +6,32 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 40px;
+            }
+            .titulo-con-logo {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .titulo-con-logo td {
+                vertical-align: middle;
+            }
+
+            .logo {
+                width: 80px;
+            }
+            .titulo {
+                text-align: center;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+            .seccion {
+                margin-top: 20px;
+            }
+        </style>
 
         <!-- Preload CSS -->
 

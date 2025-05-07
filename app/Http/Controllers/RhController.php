@@ -332,7 +332,7 @@ class RhController extends Controller
 
     public function vistaVacaciones(){
         $solicitudes = SolicitudVacaciones::where('estatus', 'En Proceso')
-            ->where('observaciones', 'Pendiente de subir archivo firmado.')
+            ->where('observaciones', 'Solicitud aceptada, falta subir archivo de solicitud.')
             ->paginate(10);
         return view('rh.vistaVacaciones', compact('solicitudes'));
     }

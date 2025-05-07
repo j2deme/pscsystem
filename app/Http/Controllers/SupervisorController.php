@@ -790,6 +790,8 @@ class SupervisorController extends Controller
             $rutaArchivo = $archivo->storeAs($ruta, $nombreArchivo, 'public');
 
             $solicitud->archivo_solicitud = $rutaArchivo;
+            $solicitud->estatus = 'Aceptada';
+            $solicitud->observaciones = 'Solicitud de vacaciones aceptada';
             $solicitud->save();
         }
 
