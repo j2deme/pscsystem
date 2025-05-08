@@ -12,9 +12,15 @@ class Rhfiltroaltas extends Component
     use WithPagination;
 
     public $search = '';
-    protected $queryString = ['search'];
+    public $fecha = null;
+    protected $queryString = ['search' => ['except' => '']];
 
     public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingDate()
     {
         $this->resetPage();
     }
@@ -24,6 +30,9 @@ class Rhfiltroaltas extends Component
         $usuario = auth()->user()->name;
         $solicitudes = SolicitudAlta::when($this->search, function ($query) {
             return $query->where('nombre', 'like', '%'.$this->search.'%');
+        })
+        ->when($this->fecha, function ($query) {
+            $query->whereDate('created_at', $this->fecha);
         })
         ->orderBy('created_at', 'desc')
         ->paginate(10);

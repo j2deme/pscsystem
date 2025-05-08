@@ -12,10 +12,16 @@ class Supfiltrobajas extends Component
     use WithPagination;
 
     public $search = '';
+    public $fecha = null;
     public $por = 'Renuncia';
     protected $queryString = ['search' => ['except' => ''], 'por'];
 
     public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingDate()
     {
         $this->resetPage();
     }
@@ -38,6 +44,9 @@ class Supfiltrobajas extends Component
                     ->orWhere('motivo', 'like', '%'.$this->search.'%');
                 });
             })
+            ->when($this->fecha, function ($query) {
+                $query->whereDate('fecha_solicitud', $this->fecha);
+            })
             ->with('user')
             ->orderBy('fecha_solicitud', 'desc')
             ->paginate(10);
@@ -51,6 +60,9 @@ class Supfiltrobajas extends Component
                         ->orWhere('motivo', 'like', '%'.$this->search.'%')
                         ->orWhere('por', 'like', '%'.$this->search.'%');
                     });
+                })
+                ->when($this->fecha, function ($query) {
+                    $query->whereDate('fecha_solicitud', $this->fecha);
                 })
                 ->with('user')
                 ->orderBy('fecha_solicitud', 'desc')

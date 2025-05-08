@@ -14,9 +14,15 @@ class Suptiempoextra extends Component
     use WithPagination;
 
     public $search = '';
-    protected $queryString = ['search'];
+    public $fecha = null;
+    protected $queryString = ['search' => ['except' => '']];
 
     public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingDate()
     {
         $this->resetPage();
     }
@@ -32,12 +38,18 @@ class Suptiempoextra extends Component
                 ->where('punto', $supervisor->punto)
                 ->where('name', 'like', '%' . $this->search . '%');
             })
+            ->when($this->fecha, function ($query) {
+                $query->whereDate('fecha', $this->fecha);
+            })
             ->with('user')
             ->orderBy('fecha', 'desc')
             ->paginate(10);
         }else{
             $tiemposExtras = TiemposExtra::whereHas('user', function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
+            })
+            ->when($this->fecha, function ($query) {
+                $query->whereDate('fecha', $this->fecha);
             })
             ->with('user')
             ->orderBy('fecha', 'desc')

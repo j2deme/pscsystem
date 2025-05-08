@@ -12,9 +12,15 @@ class Supcoberturaturno extends Component
     use WithPagination;
 
     public $search = '';
-    protected $queryString = ['search'];
+    public $fecha = null;
+    protected $queryString = ['search' => ['except' => '']];
 
     public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingDate()
     {
         $this->resetPage();
     }
@@ -28,6 +34,9 @@ class Supcoberturaturno extends Component
                 ->whereHas('user', function($q) {
                     $q->where('name', 'like', '%' . $this->search . '%');
                 })
+                ->when($this->fecha, function ($query) {
+                    $query->whereDate('fecha', $this->fecha);
+                })
                 ->with('user')
                 ->orderBy('fecha', 'desc')
                 ->paginate(10);
@@ -37,6 +46,9 @@ class Supcoberturaturno extends Component
                     $query->whereHas('user', function($q) {
                         $q->where('name', 'like', '%' . $this->search . '%');
                     });
+                })
+                ->when($this->fecha, function ($query) {
+                    $query->whereDate('fecha', $this->fecha);
                 })
                 ->with('user')
                 ->orderBy('fecha', 'desc')
