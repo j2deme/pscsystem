@@ -1,5 +1,5 @@
-<div class="w-full h-32 mx-auto px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
-    <div class="flex justify-between items-center h-24">
+<div class="w-full h-auto mx-auto px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800 py-4">
+    <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:h-24">
 
         <div class="flex-shrink-0">
             @if(Auth::user()->empresa === 'PSC')

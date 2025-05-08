@@ -1,6 +1,7 @@
 @php
     use App\Models\SolicitudAlta;
     use App\Models\SolicitudBajas;
+    use App\Models\SolicitudVacaciones;
 
     $altasEnProceso = SolicitudAlta::where('status', 'En Proceso')
                     ->where('observaciones', '!=', 'Solicitud enviada a Administrador.')
@@ -8,6 +9,9 @@
     $bajasEnProceso = SolicitudBajas::where('estatus', 'En Proceso')
                     ->where('por', 'Renuncia')
                     ->count();
+    $vacacionesEnProceso = SolicitudVacaciones::where('estatus', 'En Proceso')
+                            ->where('observaciones', 'Solicitud aceptada, falta subir archivo de solicitud.')
+                            ->count();
 @endphp
 
 <div class="col-span-full">
@@ -51,6 +55,7 @@
                     'ruta' => route('rh.vistaVacaciones'),
                     'icono' => '🎉',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700',
+                    'notificaciones' => $vacacionesEnProceso,
                 ],
                 [
                     'titulo' => 'Generar Nueva Alta',
