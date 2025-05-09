@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin_solicitudes_altas', [AdminController::class, 'verSolicitudesAltas'])->name('admi.verSolicitudesAltas');
     Route::get('/admin/baja_usuario/{id}', [AdminController::class, 'bajaUsuario'])->name('admin.darDeBajaUsuario');
     Route::get('/editar_usuario/{id}', [AdminController::class, 'editarUsuario'])->name('admin.editarUsuarioForm');
+    Route::get('/ver_buzon', [AdminController::class, 'verBuzon'])->name('admin.verBuzon');
 
     //Usuario Supervisor
     Route::get('/nuevoUsuario', [SupervisorController::class, 'nuevoUsuarioForm'])->name('sup.nuevoUsuarioForm');
@@ -117,6 +118,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/solicitar_vacaciones/{id}', [UserController::class,'solicitarVacaciones'])->name('user.solicitarVacaciones');
     Route::get('/historial_solicitudes_vacaciones', [UserController::class, 'historialVacaciones'])->name('user.historialVacaciones');
     Route::get('/ver_ficha/{id}', [UserController::class,'verFicha'])->name('user.verFicha');
+    Route::get('/buzon', [UserController::class, 'buzon'])->name('user.buzon');
+    Route::post('/enviar_sugerencia/{id}', [UserController::class, 'enviarSugerencia'])->name('user.enviarSugerencia');
 });
 
 require __DIR__.'/auth.php';

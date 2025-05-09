@@ -12,6 +12,7 @@ use App\Models\SolicitudAlta;
 use App\Models\SolicitudBajas;
 use App\Models\SolicitudVacaciones;
 use App\Models\DocumentacionAltas;
+use App\Models\BuzonQueja;
 use Carbon\Carbon;
 
 class UserController extends Controller
@@ -185,5 +186,27 @@ class UserController extends Controller
         $documentacion = DocumentacionAltas::where('solicitud_id', $user->sol_alta_id)->first();
 
         return view('admi.verFichaUser', compact('user','solicitud', 'documentacion'));
+    }
+
+    public function buzon(){
+        return view('users.buzon');
+    }
+
+    public function enviarSugerencia(Request $request, $id){
+        $user = User::findorFail($id);
+        $request->validate([
+            'fecha' => 'required|date',
+            'asunto' => 'required|string|max:255',
+            'mensaje' => 'required|string|max:1024'
+        ]);
+
+        $mensaje = new BuzonQueja();
+        $mensaje->user_id = $user->id;
+        $mensaje->fecha = Carbon::parse($request->fecha);
+        $mensaje->asunto = $request->asunto;
+        $mensaje->mensaje = $request->mensaje;
+        $mensaje->save();
+
+        return redirect()->route('user.buzon')->with('success', 'Mensaje enviado correctamente');
     }
 }

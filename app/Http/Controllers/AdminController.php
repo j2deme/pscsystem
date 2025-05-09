@@ -8,6 +8,7 @@ use App\Models\SolicitudAlta;
 use App\Models\SolicitudBajas;
 use App\Models\DocumentacionAltas;
 use App\Models\User;
+use App\Models\BuzonQueja;
 use Carbon\Carbon;
 
 class AdminController extends Controller
@@ -63,5 +64,12 @@ class AdminController extends Controller
         $documentacion = DocumentacionAltas::find($docsId);
 
         return view('admi.admiEditarUsuarioForm', compact('user','solicitud', 'documentacion'));
+    }
+
+    public function verBuzon(){
+        $quejas = BuzonQueja::orderBy('created_at', 'desc')
+                ->paginate(10);
+
+        return view ('admi.verBuzon', compact('quejas'));
     }
 }

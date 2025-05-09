@@ -85,6 +85,12 @@ use Carbon\Carbon;
                     'icono' => '👨‍💻',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
+                [
+                    'titulo' => 'Buzón de Quejas y Sugerencias',
+                    'ruta' => route('admin.verBuzon'),
+                    'icono' => '💬',
+                    'color' => 'bg-purple-100 dark:bg-purple-700'
+                ],
             ];
         @endphp
 
@@ -92,7 +98,7 @@ use Carbon\Carbon;
             @php
                 $isDisabled = $card['disabled'] ?? false;
             @endphp
-        
+
             @if($isDisabled)
                 <div class="transition-transform transform opacity-50 cursor-not-allowed" style="{{ ($card['disabled'] ?? false) ? 'opacity: 0.5; pointer-events: none; cursor: default;' : '' }}">
                     <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} h-full flex flex-col justify-between">

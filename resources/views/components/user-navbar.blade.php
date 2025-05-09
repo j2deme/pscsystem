@@ -20,6 +20,12 @@
                     'icono' => '📝',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
+                [
+                    'titulo' => 'Buzón de Quejas y Sugerencias',
+                    'ruta' => route('user.buzon'),
+                    'icono' => '💬',
+                    'color' => 'bg-purple-100 dark:bg-purple-700'
+                ],
             ];
         @endphp
 

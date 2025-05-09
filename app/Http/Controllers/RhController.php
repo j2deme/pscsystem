@@ -29,11 +29,11 @@ class RhController extends Controller
 
     public function aceptarSolicitud($id){
         $solicitud = SolicitudAlta::find($id);
-        if(Auth::user()->rol == 'Recursos Humanos'){
-            $solicitud->status = 'En Proceso';
-            $solicitud->observaciones = 'Solicitud enviada a Administrador.';
-            $solicitud->save();
-        }else{
+
+        $solicitud->status = 'Aceptada';
+        $solicitud->observaciones = 'Solicitud Aceptada.';
+        $solicitud->save();
+
             $docs = DocumentacionAltas::where('solicitud_id', $id)->first();
 
             $idDocs = $docs->id;
@@ -52,10 +52,6 @@ class RhController extends Controller
             $user->empresa = $solicitud->empresa;
             $user->save();
 
-            $solicitud->status = 'Aceptada';
-            $solicitud->observaciones = 'Solicitud Aceptada.';
-            $solicitud->save();
-        }
         return redirect()->route('rh.solicitudesAltas')->with('success', 'Solicitud respondida correctamente.');
     }
 
