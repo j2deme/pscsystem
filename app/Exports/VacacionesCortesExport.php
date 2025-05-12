@@ -31,7 +31,7 @@ class VacacionesCortesExport
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
 
-    $titulo = "ALTAS DEL " . Carbon::parse($inicio)->format('d/m/Y') . " A " . Carbon::parse($fin)->format('d/m/Y');
+    $titulo = "VACACIONES DEL " . Carbon::parse($inicio)->format('d/m/Y') . " A " . Carbon::parse($fin)->format('d/m/Y');
     $sheet->mergeCells('A1:I1');
     $sheet->setCellValue('A1', $titulo);
     $sheet->getStyle('A1')->applyFromArray([

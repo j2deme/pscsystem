@@ -27,37 +27,37 @@
 
                 <div class="mb-4">
                     <label class="block font-medium">Acta de Nacimiento *</label>
-                    <input type="file" name="arch_acta_nacimiento" required class="block mt-1">
+                    <input type="file" name="arch_acta_nacimiento"  class="block mt-1">
                 </div>
 
                 <div class="mb-4">
                     <label class="block font-medium">CURP *</label>
-                    <input type="file" name="arch_curp" required class="block mt-1">
+                    <input type="file" name="arch_curp"  class="block mt-1">
                 </div>
 
                 <div class="mb-4">
                     <label class="block font-medium">INE *</label>
-                    <input type="file" name="arch_ine" required class="block mt-1">
+                    <input type="file" name="arch_ine"  class="block mt-1">
                 </div>
 
                 <div class="mb-4">
                     <label class="block font-medium">Comprobante de Domicilio *</label>
-                    <input type="file" name="arch_comprobante_domicilio" required class="block mt-1">
+                    <input type="file" name="arch_comprobante_domicilio"  class="block mt-1">
                 </div>
 
                 <div class="mb-4">
                     <label class="block font-medium">RFC *</label>
-                    <input type="file" name="arch_rfc" required class="block mt-1">
+                    <input type="file" name="arch_rfc"  class="block mt-1">
                 </div>
 
                 <div class="mb-4">
                     <label class="block font-medium">Comprobante de Estudios *</label>
-                    <input type="file" name="arch_comprobante_estudios" required class="block mt-1">
+                    <input type="file" name="arch_comprobante_estudios"  class="block mt-1">
                 </div>
 
                 <div class="mb-4">
                     <label class="block font-medium">Fotografía (Reciente) *</label>
-                    <input type="file" name="arch_foto" required class="block mt-1">
+                    <input type="file" name="arch_foto"  class="block mt-1">
                 </div>
 
                 <h2 class="text-lg font-semibold mt-6 mb-4">Documentos Opcionales</h2>

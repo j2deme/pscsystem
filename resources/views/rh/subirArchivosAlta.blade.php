@@ -28,7 +28,7 @@
                                 <label class="block text-gray-700 dark:text-gray-300 font-medium mb-1">
                                     {{ $doc['label'] }} <span class="text-red-500">*</span>
                                 </label>
-                                <input type="file" name="{{ $doc['name'] }}" required class="w-full text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm file:py-1 file:px-2 file:border file:border-gray-300 file:rounded file:bg-gray-100 dark:file:bg-gray-600 file:text-gray-700 dark:file:text-gray-200">
+                                <input type="file" name="{{ $doc['name'] }}" class="w-full text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm file:py-1 file:px-2 file:border file:border-gray-300 file:rounded file:bg-gray-100 dark:file:bg-gray-600 file:text-gray-700 dark:file:text-gray-200">
                             </div>
                         @endforeach
                     </div>

@@ -44,13 +44,13 @@ use Carbon\Carbon;
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @php
             $cards = [
-                [
+                /*[
                     'titulo' => 'Solicitudes de Altas',
                     'ruta' => route('admi.verSolicitudesAltas'),
                     'icono' => '👨‍👩‍👧‍👦',
                     'color' => 'bg-green-100 dark:bg-green-700',
                     'notificaciones' => $solicitudesAdmin
-                ],
+                ],*/
                 [
                     'titulo' => 'Nóminas',
                     'ruta' => "#",

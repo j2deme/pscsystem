@@ -197,74 +197,70 @@ class RhController extends Controller
         return view('rh.subirArchivosAlta', compact('solicitud'));
     }
 
-    public function guardarArchivosAlta(Request $request, $id){
-        $request->validate([
-            'arch_acta_nacimiento' => 'required|file',
-            'arch_curp' => 'required|file',
-            'arch_ine' => 'required|file',
-            'arch_comprobante_domicilio' => 'required|file',
-            'arch_rfc' => 'required|file',
-            'arch_comprobante_estudios' => 'required|file',
-            'arch_foto' => 'required|file',
-        ]);
-        $solicitud = SolicitudAlta::find($id);
-        $solicitudId = $id;
-        $documentacion = DocumentacionAltas::firstOrNew(['solicitud_id' => $solicitudId]);
+    public function guardarArchivosAlta(Request $request, $id)
+{
+    $request->validate([
+        'arch_acta_nacimiento' => 'nullable|file',
+        'arch_curp' => 'nullable|file',
+        'arch_ine' => 'nullable|file',
+        'arch_comprobante_domicilio' => 'nullable|file',
+        'arch_rfc' => 'nullable|file',
+        'arch_comprobante_estudios' => 'nullable|file',
+        'arch_carta_rec_laboral' => 'nullable|file',
+        'arch_carta_rec_personal' => 'nullable|file',
+        'arch_cartilla_militar' => 'nullable|file',
+        'arch_infonavit' => 'nullable|file',
+        'arch_fonacot' => 'nullable|file',
+        'arch_licencia_conducir' => 'nullable|file',
+        'arch_carta_no_penales' => 'nullable|file',
+        'arch_foto' => 'nullable|file',
+        'visa' => 'nullable|file',
+        'pasaporte' => 'nullable|file',
+    ]);
 
-        $carpeta = 'solicitudesAltas/' . $solicitudId;
+    $solicitud = SolicitudAlta::find($id);
+    $solicitudId = $id;
+    $documentacion = DocumentacionAltas::firstOrNew(['solicitud_id' => $solicitudId]);
+    $carpeta = 'solicitudesAltas/' . $solicitudId;
 
-        $archivos = [
-            'arch_acta_nacimiento',
-            'arch_curp',
-            'arch_ine',
-            'arch_comprobante_domicilio',
-            'arch_rfc',
-            'arch_comprobante_estudios',
-            'arch_carta_rec_laboral',
-            'arch_carta_rec_personal',
-            'arch_cartilla_militar',
-            'arch_infonavit',
-            'arch_fonacot',
-            'arch_licencia_conducir',
-            'arch_carta_no_penales',
-            'arch_foto',
-            'visa',
-            'pasaporte',
-        ];
+    $archivos = [
+        'arch_acta_nacimiento',
+        'arch_curp',
+        'arch_ine',
+        'arch_comprobante_domicilio',
+        'arch_rfc',
+        'arch_comprobante_estudios',
+        'arch_carta_rec_laboral',
+        'arch_carta_rec_personal',
+        'arch_cartilla_militar',
+        'arch_infonavit',
+        'arch_fonacot',
+        'arch_licencia_conducir',
+        'arch_carta_no_penales',
+        'arch_foto',
+        'visa',
+        'pasaporte',
+    ];
 
-        foreach ($archivos as $campo) {
-            if ($request->hasFile($campo)) {
-                $archivo = $request->file($campo);
-                $nombreArchivo = $campo . '.' . $archivo->getClientOriginalExtension();
-                $ruta = $archivo->storeAs($carpeta, $nombreArchivo, 'public');
-
-                $documentacion->$campo = 'storage/' . $ruta;
-            }
+    foreach ($archivos as $campo) {
+        if ($request->hasFile($campo)) {
+            $archivo = $request->file($campo);
+            $nombreArchivo = $campo . '.' . $archivo->getClientOriginalExtension();
+            $ruta = $archivo->storeAs($carpeta, $nombreArchivo, 'public');
+            $documentacion->$campo = 'storage/' . $ruta;
         }
-
-        $documentacion->solicitud_id = $solicitudId;
-        $documentacion->save();
-
-        $solicitud->status = 'En Proceso';
-        $solicitud->observaciones = 'Solicitud enviada a Administrador.';
-        $solicitud->save();
-
-        /*$idDocs = $documentacion->id;
-
-        $user = new User();
-        $user->sol_alta_id = $solicitudId;
-        $user->sol_docs_id = $idDocs;
-        $user->name = $solicitud->nombre . " " . $solicitud->apellido_paterno . " " . $solicitud->apellido_materno;
-        $user->email = $solicitud->email;
-        $user->password = Hash::make($solicitud->rfc);
-        $user-> fecha_ingreso = Carbon::now();
-        $user->punto = $solicitud->punto;
-        $user->rol = $solicitud->rol;
-        $user->estatus = 'Activo';
-        $user->empresa = $solicitud->empresa;
-        $user->save();*/
-        return redirect()->route('rh.generarNuevaAltaForm')->with('success', 'Documentación subida correctamente');
     }
+
+    $documentacion->solicitud_id = $solicitudId;
+    $documentacion->save();
+
+    $solicitud->status = 'Activo';
+    $solicitud->observaciones = 'Solicitud Aceptada.';
+    $solicitud->save();
+
+    return redirect()->route('rh.generarNuevaAltaForm')->with('success', 'Documentación subida correctamente');
+}
+
 
     public function generarNuevaBajaForm(Request $request){
         $busqueda = $request->input('busqueda');

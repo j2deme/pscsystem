@@ -11,7 +11,11 @@
                     {{ Auth::user()->name }}
                 </h2>
                 <h3 class="text-sm text-gray-600 dark:text-gray-400">
-                    {{ Auth::user()->rol }}
+                    @if(Auth::user()->rol == 'admin')
+                        Administrador
+                    @else
+                        {{ Auth::user()->rol }}
+                    @endif
                 </h3>
             </div>
         </div>
