@@ -44,6 +44,7 @@ class SupervisorController extends Controller
                 'colonia' => 'required|string|max:255',
                 'ciudad' => 'required|string|max:255',
                 'estado' => 'required|string|max:255',
+                'departamento' => 'nullable|string|max:255',
                 'rol' => 'required|string|max:255',
                 'punto' => 'required|string|max:255',
                 'empresa' => 'required|string',
@@ -66,6 +67,7 @@ class SupervisorController extends Controller
             $solicitud->domicilio_colonia = $request->colonia;
             $solicitud->domicilio_ciudad = $request->ciudad;
             $solicitud->domicilio_estado = $request->estado;
+            $solicitud->departamento = $request->departamento;
             $solicitud->rol = $request->rol;
             $solicitud->punto = $request->punto;
             $solicitud->empresa = $request->empresa;

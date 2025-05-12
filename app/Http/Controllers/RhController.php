@@ -153,6 +153,7 @@ class RhController extends Controller
                 'colonia' => 'required|string|max:255',
                 'ciudad' => 'required|string|max:255',
                 'estado' => 'required|string|max:255',
+                'departamento' => 'nullable|string|max:255',
                 'rol' => 'required|string|max:255',
                 'punto' => 'required|string|max:255',
                 'empresa' => 'required|string',

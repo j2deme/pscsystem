@@ -106,8 +106,24 @@
                 <input type="text" id="estado" name="estado" placeholder="Estado" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
             </div>
 
+            @if (Auth::user()->rol == 'Recursos Humanos' || Auth::user()->departamento == 'Recursos Humanos' || Auth::user()->rol == 'Administrador' )
+                <div class="form-group mb-6">
+                    <label for="departamento" class="block text-sm font-semibold text-gray-600">Departamento</label>
+                    <select id="departamento" name="departamento" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                        <option value="" disabled selected>Selecciona una opción</option>
+                        <option value="Recursos Humanos">Recursos Humanos</option>
+                        <option value="Nóminas">Nóminas</option>
+                        <option value="Jurídico">Jurídico</option>
+                        <option value="IMSS">IMSS</option>
+                        <option value="Monitoreo">Monitoreo</option>
+                        <option value="Custodios">Custodios</option>
+                        <option value="Tesorería">Compras</option>
+                    </select>
+                </div>
+            @endif
+
             <div class="form-group mb-6">
-                <label for="rol" class="block text-sm font-semibold text-gray-600">Rol/Puesto/Departamento</label>
+                <label for="rol" class="block text-sm font-semibold text-gray-600">Rol/Puesto</label>
                 <input type="rol" id="rol" name="rol" placeholder="Rol" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
             </div>
 
