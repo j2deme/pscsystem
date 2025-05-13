@@ -7,58 +7,69 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Hash;
+use Exception;
 
 class ImportController extends Controller
 {
     public function importarExcel(Request $request)
     {
-        $file = $request->file('excel');
-        $spreadsheet = IOFactory::load($file->getRealPath());
-        $sheet = $spreadsheet->getActiveSheet();
-        $rows = $sheet->toArray();
+        DB::beginTransaction();
 
-        foreach (array_slice($rows, 3) as $row) {
+        try {
+            $file = $request->file('excel');
+            $spreadsheet = IOFactory::load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray();
 
-            $nombre = ucwords(mb_strtolower(trim($row[3]), 'UTF-8'));
-            $apellidoPaterno = ucwords(mb_strtolower(trim($row[4]), 'UTF-8'));
-            $apellidoMaterno = ucwords(mb_strtolower(trim($row[5]), 'UTF-8'));
+            foreach (array_slice($rows, 3) as $row) {
 
-            $fechaNacimiento = Carbon::parse($row[6])->format('Y-m-d');
-            $fechaIngreso = Carbon::now('America/Mexico_City')->format('Y-m-d');
+                $nombre = ucwords(mb_strtolower(preg_replace('/\s+/', ' ', trim($row[3])), 'UTF-8'));
+                $apellidoPaterno = ucwords(mb_strtolower(preg_replace('/\s+/', ' ', trim($row[4])), 'UTF-8'));
+                $apellidoMaterno = ucwords(mb_strtolower(preg_replace('/\s+/', ' ', trim($row[5])), 'UTF-8'));
 
-            $solicitudAltaId = DB::table('solicitud_altas')->insertGetId([
-                'nss' => $row[0],
-                'rfc' => $row[1],
-                'curp' => $row[2],
-                'nombre' => $nombre,
-                'apellido_paterno' => $apellidoPaterno,
-                'apellido_materno' => $apellidoMaterno,
-                'fecha_nacimiento' => $fechaNacimiento,
-                'rol' => $row[7],
-                'empresa' => $row[8],
-                'email' => $row[9],
-                'status' => 'Aceptada',
-                'departamento' => $row[10],
-                'observaciones' => 'Solicitud Aceptada.'
-            ]);
+                $fechaNacimiento = Carbon::parse($row[6])->format('Y-m-d');
+                $fechaIngreso = Carbon::now('America/Mexico_City')->format('Y-m-d');
 
-            $solDocsId = DB::table('documentacion_altas')->insertGetId([
-                'solicitud_id' => $solicitudAltaId,
-            ]);
+                $solicitudAltaId = DB::table('solicitud_altas')->insertGetId([
+                    'nss' => $row[0],
+                    'rfc' => $row[1],
+                    'curp' => $row[2],
+                    'nombre' => $nombre,
+                    'apellido_paterno' => $apellidoPaterno,
+                    'apellido_materno' => $apellidoMaterno,
+                    'fecha_nacimiento' => $fechaNacimiento,
+                    'rol' => $row[7],
+                    'empresa' => $row[8],
+                    'email' => $row[9],
+                    'status' => 'Aceptada',
+                    'departamento' => $row[10],
+                    'observaciones' => 'Solicitud Aceptada.'
+                ]);
 
-            DB::table('users')->insert([
-                'name' => $nombre.' '.$apellidoPaterno.' '.$apellidoMaterno,
-                'sol_alta_id' => $solicitudAltaId,
-                'sol_docs_id' => $solDocsId,
-                'email' => $row[9],
-                'password' => Hash::make($row[1]),
-                'fecha_ingreso' => $fechaIngreso,
-                'rol' => $row[7],
-                'empresa' => $row[8],
-                'estatus' => 'Activo'
-            ]);
+                $solDocsId = DB::table('documentacion_altas')->insertGetId([
+                    'solicitud_id' => $solicitudAltaId,
+                ]);
+
+                DB::table('users')->insert([
+                    'name' => $nombre.' '.$apellidoPaterno.' '.$apellidoMaterno,
+                    'sol_alta_id' => $solicitudAltaId,
+                    'sol_docs_id' => $solDocsId,
+                    'email' => $row[9],
+                    'password' => Hash::make($row[1]),
+                    'fecha_ingreso' => $fechaIngreso,
+                    'rol' => $row[7],
+                    'empresa' => $row[8],
+                    'estatus' => 'Activo'
+                ]);
+            }
+
+            DB::commit();
+
+            return back()->with('success', 'Importación completada.');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Error al importar el archivo: ' . $e->getMessage());
         }
-
-        return back()->with('success', 'Importación completada.');
     }
 }
