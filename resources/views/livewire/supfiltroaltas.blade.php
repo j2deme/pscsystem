@@ -41,36 +41,94 @@
                             @foreach($solicitudes as $solicitud)
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
+
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        {{ $solicitud->nombre }} {{ $solicitud->apellido_paterno }} {{ $solicitud->apellido_materno }}
+                                        {{ trim(($solicitud->nombre ?? '') . ' ' . ($solicitud->apellido_paterno ?? '') . ' ' . ($solicitud->apellido_materno ?? '')) ?: 'N/D' }}
                                     </td>
-                                    @if(Auth::user()->rol =='admin')
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $solicitud->solicitante }}</td>
+
+                                    @if(Auth::user()->rol == 'admin')
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                            {{ $solicitud->solicitante ?? 'N/D' }}
+                                        </td>
                                     @else
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $solicitud->curp }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                            {{ $solicitud->curp ?? 'N/D' }}
+                                        </td>
                                     @endif
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $solicitud->created_at->format('d/m/Y') }}</td>
+
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                        {{ optional($solicitud->created_at)->format('d/m/Y') ?? 'Sin fecha' }}
+                                    </td>
+
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                            {{ $solicitud->status == 'En Proceso' ? 'bg-yellow-100 text-yellow-800' :
-                                                ($solicitud->status == 'Aceptada' ? 'bg-green-100 text-green-800' :
-                                                'bg-red-100 text-red-800') }}">
-                                            {{ $solicitud->status }}
+                                        @php
+                                            $status = $solicitud->status ?? 'Desconocido';
+                                            $statusClasses = match($status) {
+                                                'En Proceso' => 'bg-yellow-100 text-yellow-800',
+                                                'Aceptada'   => 'bg-green-100 text-green-800',
+                                                'Rechazada'  => 'bg-red-100 text-red-800',
+                                                default      => 'bg-gray-200 text-gray-800',
+                                            };
+                                        @endphp
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClasses }}">
+                                            {{ $status }}
                                         </span>
                                     </td>
+
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <a href="{{route('sup.solicitud.detalle', $solicitud->id)}}" class="text-blue-600 hover:text-blue-900">Ver Más</a>
+                                        <a href="{{ route('sup.solicitud.detalle', $solicitud->id) }}" class="text-blue-600 hover:text-blue-900">Ver Más</a>
                                     </td>
                                 </tr>
                             @endforeach
+
                         </tbody>
                     </table>
-                    <center><br><a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
-                        Regresar
-                    </a></center>
+                    @if($solicitudes->hasPages())
+                        <div class="mt-4">
+                            <nav role="navigation">
+                                <ul class="flex justify-center space-x-2">
+                                    @if($solicitudes->onFirstPage())
+                                        <li class="px-3 py-1 text-gray-500" aria-disabled="true">
+                                            <span>&laquo;</span>
+                                        </li>
+                                    @else
+                                        <li>
+                                            <button wire:click="previousPage" class="px-3 py-1 text-blue-600 hover:text-blue-800" rel="prev">
+                                                &laquo;
+                                            </button>
+                                        </li>
+                                    @endif
+
+                                    @foreach(range(1, $solicitudes->lastPage()) as $page)
+                                        <li>
+                                            @if($page == $solicitudes->currentPage())
+                                                <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ $page }}</span>
+                                            @else
+                                                <button wire:click="gotoPage({{ $page }})" class="px-3 py-1 text-blue-600 hover:text-blue-800">
+                                                    {{ $page }}
+                                                </button>
+                                            @endif
+                                        </li>
+                                    @endforeach
+
+                                    @if($solicitudes->hasMorePages())
+                                        <li>
+                                            <button wire:click="nextPage" class="px-3 py-1 text-blue-600 hover:text-blue-800" rel="next">
+                                                &raquo;
+                                            </button>
+                                        </li>
+                                    @else
+                                        <li class="px-3 py-1 text-gray-500" aria-disabled="true">
+                                            <span>&raquo;</span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </nav>
+                        </div>
+                    @endif
                 </div>
+                <center><br><a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                    Regresar
+                </a></center>
             @endif
-            <div class="mt-4">
-                {{ $solicitudes->links() }}
-            </div>
 </div>

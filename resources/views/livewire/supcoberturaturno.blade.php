@@ -51,14 +51,53 @@
                 @endforelse
             </tbody>
         </table>
+        @if($coberturas->hasPages())
+                        <div class="mt-4">
+                            <nav role="navigation">
+                                <ul class="flex justify-center space-x-2">
+                                    @if($coberturas->onFirstPage())
+                                        <li class="px-3 py-1 text-gray-500" aria-disabled="true">
+                                            <span>&laquo;</span>
+                                        </li>
+                                    @else
+                                        <li>
+                                            <button wire:click="previousPage" class="px-3 py-1 text-blue-600 hover:text-blue-800" rel="prev">
+                                                &laquo;
+                                            </button>
+                                        </li>
+                                    @endif
+
+                                    @foreach(range(1, $coberturas->lastPage()) as $page)
+                                        <li>
+                                            @if($page == $coberturas->currentPage())
+                                                <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ $page }}</span>
+                                            @else
+                                                <button wire:click="gotoPage({{ $page }})" class="px-3 py-1 text-blue-600 hover:text-blue-800">
+                                                    {{ $page }}
+                                                </button>
+                                            @endif
+                                        </li>
+                                    @endforeach
+
+                                    @if($coberturas->hasMorePages())
+                                        <li>
+                                            <button wire:click="nextPage" class="px-3 py-1 text-blue-600 hover:text-blue-800" rel="next">
+                                                &raquo;
+                                            </button>
+                                        </li>
+                                    @else
+                                        <li class="px-3 py-1 text-gray-500" aria-disabled="true">
+                                            <span>&raquo;</span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </nav>
+                        </div>
+                    @endif
+    </div>
         <div class="flex justify-center mt-6">
             <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
                 Regresar
             </a>
         </div>
-    </div>
-
-    <div class="mt-4">
-        {{ $coberturas->links() }}
-    </div>
 </div>

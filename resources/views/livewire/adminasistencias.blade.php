@@ -82,6 +82,48 @@
                 @endforeach
             </tbody>
         </table>
-        {{$asistencias->links()}}
+        @if($asistencias->hasPages())
+            <div class="mt-4">
+                <nav role="navigation">
+                    <ul class="flex justify-center space-x-2">
+                        @if($asistencias->onFirstPage())
+                            <li class="px-3 py-1 text-gray-500" aria-disabled="true">
+                                <span>&laquo;</span>
+                            </li>
+                        @else
+                            <li>
+                                <button wire:click="previousPage" class="px-3 py-1 text-blue-600 hover:text-blue-800" rel="prev">
+                                    &laquo;
+                                </button>
+                            </li>
+                        @endif
+
+                        @foreach(range(1, $asistencias->lastPage()) as $page)
+                            <li>
+                                @if($page == $asistencias->currentPage())
+                                    <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ $page }}</span>
+                                @else
+                                    <button wire:click="gotoPage({{ $page }})" class="px-3 py-1 text-blue-600 hover:text-blue-800">
+                                        {{ $page }}
+                                    </button>
+                                @endif
+                            </li>
+                        @endforeach
+
+                        @if($asistencias->hasMorePages())
+                            <li>
+                                <button wire:click="nextPage" class="px-3 py-1 text-blue-600 hover:text-blue-800" rel="next">
+                                    &raquo;
+                                </button>
+                            </li>
+                        @else
+                            <li class="px-3 py-1 text-gray-500" aria-disabled="true">
+                                <span>&raquo;</span>
+                            </li>
+                        @endif
+                    </ul>
+                </nav>
+            </div>
+        @endif
     </div>
 </div>

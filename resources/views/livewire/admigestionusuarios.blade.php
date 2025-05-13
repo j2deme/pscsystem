@@ -74,6 +74,51 @@
                 @endforeach
             </tbody>
         </table>
+        @if($users->hasPages())
+            <div class="mt-4">
+                <nav role="navigation">
+                    <ul class="flex justify-center space-x-2">
+                        @if($users->onFirstPage())
+                            <li class="px-3 py-1 text-gray-500" aria-disabled="true">
+                                <span>&laquo;</span>
+                            </li>
+                        @else
+                            <li>
+                                <button wire:click="previousPage" class="px-3 py-1 text-blue-600 hover:text-blue-800" rel="prev">
+                                    &laquo;
+                                </button>
+                            </li>
+                        @endif
+
+                        @foreach(range(1, $users->lastPage()) as $page)
+                            <li>
+                                @if($page == $users->currentPage())
+                                    <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ $page }}</span>
+                                @else
+                                    <button wire:click="gotoPage({{ $page }})" class="px-3 py-1 text-blue-600 hover:text-blue-800">
+                                        {{ $page }}
+                                    </button>
+                                @endif
+                            </li>
+                        @endforeach
+
+                        @if($users->hasMorePages())
+                            <li>
+                                <button wire:click="nextPage" class="px-3 py-1 text-blue-600 hover:text-blue-800" rel="next">
+                                    &raquo;
+                                </button>
+                            </li>
+                        @else
+                            <li class="px-3 py-1 text-gray-500" aria-disabled="true">
+                                <span>&raquo;</span>
+                            </li>
+                        @endif
+                    </ul>
+                </nav>
+            </div>
+        @endif
+
+    </div><br>
         <center>
             @if(Auth::user()->rol == 'admin')
             <a href="{{ route('admin.crearUsuarioForm') }}" class="inline-block bg-blue-300 text-gray-800 py-2 px-4 rounded-md hover:bg-blue-400 mr-2">
@@ -83,10 +128,4 @@
             <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2">
                 Regresar
             </a></center>
-            <div>
-                {{ $users->links() }}
-            </div>
-
-    </div>
-
 </div>

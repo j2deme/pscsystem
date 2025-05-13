@@ -29,7 +29,9 @@ class Rhfiltroaltas extends Component
     {
         $usuario = auth()->user()->name;
         $solicitudes = SolicitudAlta::when($this->search, function ($query) {
-            return $query->where('nombre', 'like', '%'.$this->search.'%');
+            return $query->where('nombre', 'like', '%'.$this->search.'%')
+                ->orWhere('apellido_paterno', 'like', '%'.$this->search.'%')
+                ->orWhere('apellido_materno', 'like', '%'.$this->search.'%');
         })
         ->when($this->fecha, function ($query) {
             $query->whereDate('created_at', $this->fecha);
