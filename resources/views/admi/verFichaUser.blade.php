@@ -123,10 +123,15 @@
                             </a>
                         @endif
                     @endif
-
-                    <a href="{{ route('admin.verUsuarios') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
-                        Regresar
-                    </a>
+                    @if (Auth::user()->rol == 'admin')
+                        <a href="{{ route('admin.verUsuarios') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
+                            Regresar
+                        </a>
+                    @else
+                        <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
+                            Regresar
+                        </a>
+                    @endif
                 </div>
         </div>
     </div>

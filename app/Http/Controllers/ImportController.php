@@ -19,12 +19,12 @@ class ImportController extends Controller
 
         foreach (array_slice($rows, 3) as $row) {
 
-            $nombre = ucwords(strtolower($row[3]));
-            $apellidoPaterno = ucwords(strtolower($row[4]));
-            $apellidoMaterno = ucwords(strtolower($row[5]));
+            $nombre = ucwords(mb_strtolower(trim($row[3]), 'UTF-8'));
+            $apellidoPaterno = ucwords(mb_strtolower(trim($row[4]), 'UTF-8'));
+            $apellidoMaterno = ucwords(mb_strtolower(trim($row[5]), 'UTF-8'));
 
             $fechaNacimiento = Carbon::parse($row[6])->format('Y-m-d');
-            $fechaIngreso = Carbon::now()->format('Y-m-d');
+            $fechaIngreso = Carbon::now('America/Mexico_City')->format('Y-m-d');
 
             $solicitudAltaId = DB::table('solicitud_altas')->insertGetId([
                 'nss' => $row[0],
@@ -38,6 +38,7 @@ class ImportController extends Controller
                 'empresa' => $row[8],
                 'email' => $row[9],
                 'status' => 'Aceptada',
+                'departamento' => $row[10],
                 'observaciones' => 'Solicitud Aceptada.'
             ]);
 
@@ -46,7 +47,7 @@ class ImportController extends Controller
             ]);
 
             DB::table('users')->insert([
-                'name' => $nombre . ' ' . $apellidoPaterno . ' ' . $apellidoMaterno,
+                'name' => $nombre.' '.$apellidoPaterno.' '.$apellidoMaterno,
                 'sol_alta_id' => $solicitudAltaId,
                 'sol_docs_id' => $solDocsId,
                 'email' => $row[9],
