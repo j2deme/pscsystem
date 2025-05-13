@@ -82,6 +82,7 @@ class ImportController extends Controller
 
     public function importarArchivoRosa(Request $request)
     {
+        ini_set('max_execution_time', 300);
         DB::beginTransaction();
 
         try {
