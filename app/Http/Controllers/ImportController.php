@@ -102,6 +102,7 @@ class ImportController extends Controller
                     continue;
                 }
 
+                $punto = ucwords(mb_strtolower(preg_replace('/\s+/', ' ', trim($row[0])), 'UTF-8'));
                 $nombre = ucwords(mb_strtolower(preg_replace('/\s+/', ' ', trim($row[1])), 'UTF-8'));
                 $apellidoPaterno = ucwords(mb_strtolower(preg_replace('/\s+/', ' ', trim($row[2])), 'UTF-8'));
                 $apellidoMaterno = ucwords(mb_strtolower(preg_replace('/\s+/', ' ', trim($row[3])), 'UTF-8'));
