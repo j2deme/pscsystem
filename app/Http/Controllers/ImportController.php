@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Hash;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 use Exception;
 
 class ImportController extends Controller
@@ -175,4 +176,117 @@ class ImportController extends Controller
             return back()->with('error', 'Error al importar el archivo: ' . $e->getMessage());
         }
     }
+
+public function importarBajas(Request $request)
+{
+    ini_set('max_execution_time', 600);
+    DB::beginTransaction();
+
+    try {
+        if (!$request->hasFile('excel')) {
+            return back()->with('error', 'No se ha subido ningún archivo.');
+        }
+
+        $file = $request->file('excel');
+        \Log::info("Iniciando importación del archivo: ".$file->getClientOriginalName());
+
+        $spreadsheet = IOFactory::load($file->getRealPath());
+        $sheet = $spreadsheet->getSheet(0);
+        $rows = $sheet->toArray();
+
+        $processed = 0;
+        $skipped = 0;
+        $fechaReferencia = Carbon::create(2023, 1, 1);
+
+        foreach ($rows as $index => $row) {
+            $fila = $index + 1;
+            $nombreOriginal = trim($row[0] ?? '');
+
+            if (empty($nombreOriginal) || str_starts_with(strtoupper($nombreOriginal), 'BAJAS') || str_contains(strtoupper($nombreOriginal), 'TOTAL')) {
+                \Log::info("Fila {$fila} omitida (encabezado o vacía): {$nombreOriginal}");
+                $skipped++;
+                continue;
+            }
+
+            $partes = explode(' ', mb_convert_case($nombreOriginal, MB_CASE_TITLE, 'UTF-8'));
+
+            if (count($partes) < 3) {
+                \Log::warning("Nombre con estructura inesperada en fila {$fila}: {$nombreOriginal}");
+                $skipped++;
+                continue;
+            }
+
+            $apellidos = array_slice($partes, 0, 2);
+            $nombres = array_slice($partes, 2);
+            $nombreFormateado = implode(' ', $nombres).' '.implode(' ', $apellidos);
+
+
+            try {
+                $fechaIngreso = $row[2];
+                $fechaBaja = $row[3];
+
+                if (!$fechaIngreso || !$fechaBaja) {
+                    \Log::warning("Fila {$fila} omitida - fechas inválidas: Ingreso=".($row[2] ?? 'NULL')." Baja=".($row[3] ?? 'NULL'));
+                    $skipped++;
+                    continue;
+                }
+            } catch (\Exception $e) {
+                \Log::error("Error procesando fechas fila {$fila}: ".$e->getMessage());
+                $skipped++;
+                continue;
+            }
+
+            $descuento = isset($row[5]) ? floatval(str_replace(['$', ',', ' '], '', $row[5])) : 0;
+            $nuevoRebaje = isset($row[6]) ? floatval(str_replace(['$', ',', ' '], '', $row[6])) : 0;
+
+            $user = User::whereRaw('LOWER(TRIM(name)) = ?', [strtolower(trim($nombreFormateado))])
+                      ->first();
+
+            if (!$user) {
+                \Log::warning("Usuario no encontrado - Fila {$fila}: {$nombreFormateado}");
+                $skipped++;
+                continue;
+            }
+
+            try {
+                DB::table('solicitud_bajas')->insert([
+                    'user_id' => $user->id,
+                    'fecha_solicitud' => date('Y-m-d', strtotime($fechaBaja)),
+                    'fecha_baja' => date('Y-m-d', strtotime($fechaBaja)),
+                    'por' => trim($row[4] ?? ''),
+                    'descuento' => $descuento,
+                    'nuevorebajefiniquito' => $nuevoRebaje,
+                    'estatus' => 'Aceptada',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                $user->estatus = 'Inactivo';
+                $user->save();
+
+                $processed++;
+                \Log::info("Registro insertado - Fila {$fila}: {$user->id} - {$nombreFormateado}");
+
+            } catch (\Exception $e) {
+                \Log::error("Error insertando fila {$fila}: ".$e->getMessage());
+                $skipped++;
+                continue;
+            }
+        }
+
+        DB::commit();
+
+        $message = "Importación completada. {$processed} registros procesados, {$skipped} filas omitidas.";
+        \Log::info($message);
+
+        return back()->with('success', $message);
+
+    } catch (Exception $e) {
+        DB::rollBack();
+        \Log::error("Error general en importación: ".$e->getMessage());
+        return back()->with('error', 'Error al importar: '.$e->getMessage());
+    }
+}
+
+
 }

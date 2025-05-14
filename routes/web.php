@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/baja_usuario/{id}', [AdminController::class, 'bajaUsuario'])->name('admin.darDeBajaUsuario');
     Route::get('/editar_usuario/{id}', [AdminController::class, 'editarUsuario'])->name('admin.editarUsuarioForm');
     Route::get('/ver_buzon', [AdminController::class, 'verBuzon'])->name('admin.verBuzon');
-    Route::post('/importar-excel', [ImportController::class, 'importarArchivoRosa'])->name('importar.excel');
+    Route::post('/importar-excel', [ImportController::class, 'importarBajas'])->name('importar.excel');
 
     //Usuario Supervisor
     Route::get('/nuevoUsuario', [SupervisorController::class, 'nuevoUsuarioForm'])->name('sup.nuevoUsuarioForm');

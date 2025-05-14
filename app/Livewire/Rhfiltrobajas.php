@@ -12,9 +12,15 @@ class Rhfiltrobajas extends Component
     use WithPagination;
 
     public $search = '';
+    public $fecha = null;
     protected $queryString = ['search'];
 
     public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingDate()
     {
         $this->resetPage();
     }
@@ -25,8 +31,11 @@ class Rhfiltrobajas extends Component
         $solicitudes = SolicitudBajas::whereHas('user', function ($query) {
             $query->where('name', 'like', '%' . $this->search . '%');
         })
+        ->when($this->fecha, function ($query) {
+            $query->whereDate('fecha_baja', $this->fecha);
+        })
         ->with('user')
-        ->orderBy('created_at', 'desc')
+        ->orderBy('fecha_baja', 'desc')
         ->paginate(10);
 
         return view('livewire.rhfiltrobajas', [
