@@ -1,3 +1,7 @@
+@php
+    $currentPage = $solicitudes->currentPage();
+    $lastPage = $solicitudes->lastPage();
+@endphp
 <div>
     <div class="mb-6 justify-between">
         <input
@@ -29,7 +33,7 @@
             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 @foreach ($solicitudes as $solicitud)
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                        <td class="px-4 py-2">{{ $loop->iteration }}</td>
+                        <td class="px-4 py-2">{{ ($solicitudes->currentPage() - 1) * $solicitudes->perPage() + $loop->iteration }}</td>
                         <td class="px-4 py-2">{{ $solicitud->user->name ?? 'N/A' }}</td>
                         <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">{{ $solicitud->dias_solicitados }}</td>
                         <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">{{ \Carbon\Carbon::parse($solicitud->fecha_inicio)->format('d/m/Y') }}</td>
@@ -47,11 +51,55 @@
                 @endforeach
             </tbody>
         </table>
+        <ul class="flex justify-center space-x-2">
+                        @if ($solicitudes->onFirstPage())
+                            <li class="px-3 py-1 text-gray-500" aria-disabled="true">&laquo;</li>
+                        @else
+                            <li>
+                                <button wire:click="previousPage" class="px-3 py-1 text-blue-600 hover:text-blue-800">&laquo;</button>
+                            </li>
+                        @endif
 
-        <div class="mt-4 flex justify-center">
-            <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400">
-                Regresar
-            </a>
-        </div>
+                        @if ($currentPage > 2)
+                            <li>
+                                <button wire:click="gotoPage(1)" class="px-3 py-1 text-blue-600 hover:text-blue-800">1</button>
+                            </li>
+                            @if ($currentPage > 3)
+                                <li class="px-3 py-1 text-gray-500">...</li>
+                            @endif
+                        @endif
+
+                        @for ($i = max(1, $currentPage - 1); $i <= min($lastPage, $currentPage + 1); $i++)
+                            <li>
+                                @if ($i == $currentPage)
+                                    <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ $i }}</span>
+                                @else
+                                    <button wire:click="gotoPage({{ $i }})" class="px-3 py-1 text-blue-600 hover:text-blue-800">{{ $i }}</button>
+                                @endif
+                            </li>
+                        @endfor
+
+                        @if ($currentPage < $lastPage - 1)
+                            @if ($currentPage < $lastPage - 2)
+                                <li class="px-3 py-1 text-gray-500">...</li>
+                            @endif
+                            <li>
+                                <button wire:click="gotoPage({{ $lastPage }})" class="px-3 py-1 text-blue-600 hover:text-blue-800">{{ $lastPage }}</button>
+                            </li>
+                        @endif
+
+                        @if ($solicitudes->hasMorePages())
+                            <li>
+                                <button wire:click="nextPage" class="px-3 py-1 text-blue-600 hover:text-blue-800">&raquo;</button>
+                            </li>
+                        @else
+                            <li class="px-3 py-1 text-gray-500" aria-disabled="true">&raquo;</li>
+                        @endif
+                    </ul>
+    </div>
+    <div class="mt-4 flex justify-center">
+        <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400">
+            Regresar
+        </a>
     </div>
 </div>

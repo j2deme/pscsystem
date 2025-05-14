@@ -81,7 +81,8 @@ $cards = [
         'titulo' => 'Importar Datos',
         'ruta' => route('importar.excel'),
         'icono' => '📂',
-        'color' => 'bg-gray-100 dark:bg-gray-700'
+        'color' => 'bg-gray-100 dark:bg-gray-700',
+        'disabled' => true,
     ],
 ];
 @endphp

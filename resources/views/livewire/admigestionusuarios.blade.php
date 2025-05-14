@@ -1,3 +1,8 @@
+@php
+    $currentPage = $users->currentPage();
+    $lastPage = $users->lastPage();
+@endphp
+
 <div>
     <div class="mb-6">
         <input
@@ -39,7 +44,7 @@
                 @foreach($users as $user)
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                        {{ $loop->iteration }}
+                        {{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm font-medium text-gray-900 dark:text-gray-200">
@@ -47,7 +52,7 @@
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                        {{ $user->solicitudAlta->punto }}
+                        {{ $user->solicitudAlta?->punto ?? 'No Disponible' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         @if($user->rol == 'admin')
@@ -74,49 +79,51 @@
                 @endforeach
             </tbody>
         </table>
-        @if($users->hasPages())
-            <div class="mt-4">
-                <nav role="navigation">
-                    <ul class="flex justify-center space-x-2">
-                        @if($users->onFirstPage())
-                            <li class="px-3 py-1 text-gray-500" aria-disabled="true">
-                                <span>&laquo;</span>
-                            </li>
-                        @else
-                            <li>
-                                <button wire:click="previousPage" class="px-3 py-1 text-blue-600 hover:text-blue-800" rel="prev">
-                                    &laquo;
-                                </button>
-                            </li>
-                        @endif
+        <ul class="flex justify-center space-x-2">
+            @if ($users->onFirstPage())
+                <li class="px-3 py-1 text-gray-500" aria-disabled="true">&laquo;</li>
+            @else
+                <li>
+                    <button wire:click="previousPage" class="px-3 py-1 text-blue-600 hover:text-blue-800">&laquo;</button>
+                </li>
+            @endif
 
-                        @foreach(range(1, $users->lastPage()) as $page)
-                            <li>
-                                @if($page == $users->currentPage())
-                                    <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ $page }}</span>
-                                @else
-                                    <button wire:click="gotoPage({{ $page }})" class="px-3 py-1 text-blue-600 hover:text-blue-800">
-                                        {{ $page }}
-                                    </button>
-                                @endif
-                            </li>
-                        @endforeach
+            @if ($currentPage > 2)
+                <li>
+                    <button wire:click="gotoPage(1)" class="px-3 py-1 text-blue-600 hover:text-blue-800">1</button>
+                </li>
+                @if ($currentPage > 3)
+                    <li class="px-3 py-1 text-gray-500">...</li>
+                @endif
+            @endif
 
-                        @if($users->hasMorePages())
-                            <li>
-                                <button wire:click="nextPage" class="px-3 py-1 text-blue-600 hover:text-blue-800" rel="next">
-                                    &raquo;
-                                </button>
-                            </li>
-                        @else
-                            <li class="px-3 py-1 text-gray-500" aria-disabled="true">
-                                <span>&raquo;</span>
-                            </li>
-                        @endif
-                    </ul>
-                </nav>
-            </div>
-        @endif
+            @for ($i = max(1, $currentPage - 1); $i <= min($lastPage, $currentPage + 1); $i++)
+                <li>
+                    @if ($i == $currentPage)
+                        <span class="px-3 py-1 bg-blue-500 text-white rounded">{{ $i }}</span>
+                    @else
+                        <button wire:click="gotoPage({{ $i }})" class="px-3 py-1 text-blue-600 hover:text-blue-800">{{ $i }}</button>
+                    @endif
+                </li>
+            @endfor
+
+            @if ($currentPage < $lastPage - 1)
+                @if ($currentPage < $lastPage - 2)
+                    <li class="px-3 py-1 text-gray-500">...</li>
+                @endif
+                <li>
+                    <button wire:click="gotoPage({{ $lastPage }})" class="px-3 py-1 text-blue-600 hover:text-blue-800">{{ $lastPage }}</button>
+                </li>
+            @endif
+
+            @if ($users->hasMorePages())
+                <li>
+                    <button wire:click="nextPage" class="px-3 py-1 text-blue-600 hover:text-blue-800">&raquo;</button>
+                </li>
+            @else
+                <li class="px-3 py-1 text-gray-500" aria-disabled="true">&raquo;</li>
+            @endif
+        </ul>
 
     </div><br>
         <center>
