@@ -41,22 +41,22 @@
 
                 <div class="form-group mb-4">
                     <label for="fecha_nacimiento" class="block text-sm font-semibold text-gray-600">Fecha de Nacimiento</label>
-                    <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="fecha de nacimiento" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="fecha de nacimiento" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="curp" class="block text-sm font-semibold text-gray-600" minlength="18" maxlength="18">CURP</label>
-                    <input type="text" id="curp" name="curp" placeholder="CURP" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="curp" name="curp" placeholder="CURP" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="nss" class="block text-sm font-semibold text-gray-600" minlength="11" maxlength="11">NSS</label>
-                    <input type="text" id="nss" name="nss" placeholder="NSS" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="nss" name="nss" placeholder="NSS" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-6">
                     <label for="edo_civil" class="block text-sm font-semibold text-gray-600">Estado Civil</label>
-                    <select id="edo_civil" name="edo_civil" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <select id="edo_civil" name="edo_civil" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                         <option value="" disabled selected>Selecciona una opción</option>
                         <option value="Soltero">Soltero/a</option>
                         <option value="Casado">Casado/a</option>
@@ -68,42 +68,60 @@
 
                 <div class="form-group mb-4">
                     <label for="rfc" class="block text-sm font-semibold text-gray-600" minlength="13" maxlength="13">RFC</label>
-                    <input type="text" id="rfc" name="rfc" placeholder="RFC" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="rfc" name="rfc" placeholder="RFC" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
                 <div class="form-group mb-4">
                     <label for="telefono" class="block text-sm font-semibold text-gray-600">Teléfono</label>
-                    <input type="text" id="telefono" name="telefono" placeholder="Telefono" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="telefono" name="telefono" placeholder="Telefono" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                </div>
+                <div class="form-group mb-4">
+                    <label for="calle" class="block text-sm font-semibold text-gray-600">Domicilio Fiscal (Calle)</label>
+                    <input type="text" id="calle" name="calle" placeholder="Calle" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="calle" class="block text-sm font-semibold text-gray-600">Domicilio (Calle)</label>
-                    <input type="text" id="calle" name="calle" placeholder="Calle" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <label for="num_ext" class="block text-sm font-semibold text-gray-600">Domicilio Fiscal(Numero)</label>
+                    <input type="number" id="num_ext" name="num_ext" placeholder="Numero" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="num_ext" class="block text-sm font-semibold text-gray-600">Domicilio (Numero)</label>
-                    <input type="number" id="num_ext" name="num_ext" placeholder="Numero" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
-                </div>
-
-                <div class="form-group mb-4">
-                    <label for="colonia" class="block text-sm font-semibold text-gray-600">Domicilio (Colonia)</label>
-                    <input type="text" id="colonia" name="colonia" placeholder="Colonia" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <label for="colonia" class="block text-sm font-semibold text-gray-600">Domicilio Fiscal(Colonia)</label>
+                    <input type="text" id="colonia" name="colonia" placeholder="Colonia" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="ciudad" class="block text-sm font-semibold text-gray-600">Ciudad</label>
-                    <input type="text" id="ciudad" name="ciudad" placeholder="Ciudad" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="ciudad" name="ciudad" placeholder="Ciudad" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="estado" class="block text-sm font-semibold text-gray-600">Estado</label>
-                    <input type="text" id="estado" name="estado" placeholder="Estado" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="estado" name="estado" placeholder="Estado" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
+                <div class="form-group mb-4">
+                    <label for="domicilio_comprobante" class="block text-sm font-semibold text-gray-600">Domicilio de Comprobante</label>
+                    <input type="text" id="domicilio_comprobante" name="domicilio_comprobante" placeholder="Domicilio de Comprobante" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="imss" class="block text-sm font-semibold text-gray-600">IMSS</label>
+                    <input type="text" id="imss" name="imss" placeholder="Imss" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="infonavit" class="block text-sm font-semibold text-gray-600">Infonavit (Opcional)</label>
+                    <input type="text" id="infonavit" name="infonavit" placeholder="Infonavit" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="fonacot" class="block text-sm font-semibold text-gray-600">Fonacot (Opcional)</label>
+                    <input type="text" id="fonacot" name="fonacot" placeholder="Fonacot" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                </div>
                 @if (Auth::user()->rol == 'Recursos Humanos' || Auth::user()->departamento == 'Recursos Humanos' || Auth::user()->rol == 'Administrador' )
                 <div class="form-group mb-6">
                     <label for="departamento" class="block text-sm font-semibold text-gray-600">Departamento</label>
-                    <select id="departamento" name="departamento" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <select id="departamento" name="departamento" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                         <option value="" disabled selected>Selecciona una opción</option>
                         <option value="Recursos Humanos">Recursos Humanos</option>
                         <option value="Nóminas">Nóminas</option>
@@ -118,12 +136,12 @@
 
                 <div class="form-group mb-6">
                     <label for="rol" class="block text-sm font-semibold text-gray-600">Rol/Puesto</label>
-                    <input type="rol" id="rol" name="rol" placeholder="Rol" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="rol" id="rol" name="rol" placeholder="Rol" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-6">
                     <label for="punto" class="block text-sm font-semibold text-gray-600">Punto</label>
-                    <input type="punto" id="punto" name="punto" placeholder="Punto" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="punto" id="punto" name="punto" placeholder="Punto" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-6">
@@ -140,7 +158,7 @@
 
                 <div class="form-group mb-4">
                     <label for="email" class="block text-sm font-semibold text-gray-600">Correo Electrónico</label>
-                    <input type="email" id="email" name="email" placeholder="Correo electrónico" value="{{ old('email') }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2"required>
+                    <input type="email" id="email" name="email" placeholder="Correo electrónico" value="{{ old('email') }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                     @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
