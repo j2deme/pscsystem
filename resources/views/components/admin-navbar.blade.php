@@ -37,7 +37,7 @@ $asistenciasFaltantes = $supervisoresCount - $totalAsistenciasHoy;
 $supNotificaciones = $asistenciasFaltantes + $solicitudesVacaciones;
 
 $cards = array_filter([
-    Auth::user()->email == 'gini@spyt.com.mx' ? [
+    Auth::user()->email == 'gino@spyt.com.mx' ? [
         'titulo' => 'Nuevas Altas',
         'ruta' => route('admi.verSolicitudesAltas'),
         'icono' => '👨‍🌾',
