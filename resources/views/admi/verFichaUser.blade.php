@@ -111,16 +111,18 @@
 
                 <div class="flex flex-wrap justify-center gap-4 mt-4">
                     @if($user->estatus != 'Inactivo')
-                        @if(Auth::user()->rol == 'admin')
+                        @if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH')
                             <a href="{{ route('admin.editarUsuarioForm', $user->id) }}"
-                               class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 transition">
+                                class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 transition">
                                 Editar
                             </a>
 
-                            <a href="#" class="inline-block bg-red-300 text-gray-800 py-2 px-4 rounded-md hover:bg-red-400 transition"
-                               onclick="confirmarBaja({{ $user->id }})">
-                                Dar de Baja
-                            </a>
+                            @if (Auth::user()->rol == 'admin' )
+                                <a href="#" class="inline-block bg-red-300 text-gray-800 py-2 px-4 rounded-md hover:bg-red-400 transition"
+                                onclick="confirmarBaja({{ $user->id }})">
+                                    Dar de Baja
+                                </a>
+                            @endif
                         @endif
                     @endif
                     @if (Auth::user()->rol == 'admin')

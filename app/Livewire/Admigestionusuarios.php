@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class Admigestionusuarios extends Component
 {
@@ -20,7 +21,7 @@ class Admigestionusuarios extends Component
 
     public function render()
     {
-        if(Auth()->user()->rol == 'admin'){
+        if(Auth()->user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH'){
             $users = User::query()
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%'.$this->search.'%');

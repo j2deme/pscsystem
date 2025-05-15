@@ -23,11 +23,9 @@ class AdminController extends Controller
     }
 
     public function verSolicitudesAltas(){
-
-        $solicitudes = SolicitudAlta::where('status', 'En Proceso')
-            ->where('observaciones', 'Solicitud enviada a Administrador.')
+        $solicitudes = SolicitudAlta::where('status', 'Aceptada')
+            ->whereDate('updated_at', Carbon::today('America/Mexico_City'))
             ->get();
-
         return view('admi.verSolicitudesAltas', compact('solicitudes'));
     }
 

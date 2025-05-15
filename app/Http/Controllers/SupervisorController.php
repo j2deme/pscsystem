@@ -247,9 +247,11 @@ class SupervisorController extends Controller
             $solicitud->punto = $request->punto;
             $solicitud->empresa = $request->empresa;
             $solicitud->email = $request->email;
+            $solicitud->ultima_edicion = Auth::user()->name;
+            $solicitud->updated_at = Carbon::now('America/Mexico_City');
             $solicitud->estatura = '0.0';
             $solicitud->peso = '0.0';
-            if(Auth::user()->rol == 'admin'){
+            if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH'){
                 $solicitud->status = 'Aceptada';
                 $solicitud->observaciones = 'Solicitud Aceptada.';
             }else{
@@ -260,7 +262,7 @@ class SupervisorController extends Controller
             $user = User::where('sol_alta_id', $id)->first();
 
             $documentacion = DocumentacionAltas::where('solicitud_id', $id)->first();
-            if(Auth()->user()->rol == 'admin'){
+            if(Auth()->user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH'){
                 $user = User::where('sol_alta_id', $id)->first();
                 $user->name = $solicitud->nombre . " " . $solicitud->apellido_paterno . " " . $solicitud->apellido_materno;
                 $user->email = $solicitud->email;
@@ -324,12 +326,13 @@ class SupervisorController extends Controller
 
         $documentacion->solicitud_id = $solicitudId;
         $documentacion->save();
-        if(Auth()->user()->rol == 'admin')
+        if(Auth()->user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH')
             $sol->observaciones = 'Solicitud Aceptada.';
         else
             $sol->observaciones = 'Documentación actualizada, en espera de revisión.';
         $sol->save();
-        if(Auth()->user()->rol == 'admin')
+
+        if(Auth()->user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH')
             return redirect()->route('user.verFicha', $user->id)->with('success', 'Documentos actualizados correctamente.');
         else
             return redirect()->route('sup.solicitud.detalle', $solicitudId)->with('success', 'Documentos actualizados correctamente.');

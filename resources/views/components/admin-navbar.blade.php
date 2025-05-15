@@ -9,8 +9,8 @@ use Carbon\Carbon;
 
 $user = Auth::user();
 $asistenciasHoy = 0;
-$solicitudesAdmin = SolicitudAlta::where('status', 'En Proceso')
-    ->where('observaciones', 'Solicitud enviada a Administrador.')
+$solicitudesAdmin = SolicitudAlta::where('status', 'Aceptada')
+    ->whereDate('updated_at', Carbon::today('America/Mexico_City'))
     ->count();
 
 $supervisores = User::where('rol', 'Supervisor')->where('estatus', 'Activo')->get();
@@ -36,7 +36,14 @@ foreach ($supervisores as $supervisor) {
 $asistenciasFaltantes = $supervisoresCount - $totalAsistenciasHoy;
 $supNotificaciones = $asistenciasFaltantes + $solicitudesVacaciones;
 
-$cards = [
+$cards = array_filter([
+    Auth::user()->email == 'gini@spyt.com.mx' ? [
+        'titulo' => 'Nuevas Altas',
+        'ruta' => route('admi.verSolicitudesAltas'),
+        'icono' => '👨‍🌾',
+        'color' => 'bg-green-100 dark:bg-green-700',
+        'notificaciones' => $solicitudesAdmin,
+    ] : null,
     [
         'titulo' => 'Nóminas',
         'ruta' => "#",
@@ -84,7 +91,7 @@ $cards = [
         'color' => 'bg-gray-100 dark:bg-gray-700',
         'disabled' => true,
     ],
-];
+]);
 @endphp
 
 <div class="col-span-full">
