@@ -81,14 +81,14 @@
                     'titulo' => 'Buzón de Quejas y Sugerencias',
                     'ruta' => route('user.buzon'),
                     'icono' => '💬',
-                    'color' => 'bg-purple-100 dark:bg-purple-700',
+                    'color' => 'bg-blue-100 dark:bg-blue-700',
                     'disabled' => Auth::user()->rol=='admin'
                 ],
                 [
                     'titulo' => 'Gestión de Usuarios',
                     'ruta' => route('admin.verUsuarios'),
                     'icono' => '👨‍💻',
-                    'color' => 'bg-yellow-100 dark:bg-yellow-700'
+                    'color' => 'bg-pink-100 dark:bg-pink-700'
                 ],
             ];
         @endphp
