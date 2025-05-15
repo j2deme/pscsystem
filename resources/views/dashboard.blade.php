@@ -31,7 +31,7 @@
                             </div>
                         @elseif (Auth::user()->rol == 'Supervisor')
                             <x-supervisor-navbar></x-supervisor-navbar>
-                        @elseif (Auth::user()->solicitudAlta->departamento == 'Recursos Humanos')
+                        @elseif (Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH')
                             <x-rh-navbar></x-rh-navbar>
                         @else
                             <x-user-navbar></x-user-navbar>
