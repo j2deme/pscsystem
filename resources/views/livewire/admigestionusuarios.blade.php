@@ -3,6 +3,45 @@
     $lastPage = $users->lastPage();
 @endphp
 
+@php
+    function calcularProgresoDocumentos($tipoEmpleado, $documentacion) {
+        $documentosBase = [
+            'arch_ine', 'arch_solicitud_empleo', 'arch_curp', 'arch_rfc', 'arch_nss',
+            'arch_acta_nacimiento', 'arch_comprobante_estudios', 'arch_comprobante_domicilio',
+            'arch_carta_rec_laboral', 'arch_carta_rec_personal',
+        ];
+
+        $documentosExtraArmado = [
+            'arch_cartilla_militar', 'arch_carta_no_penales', 'arch_antidoping',
+        ];
+
+        if ($tipoEmpleado === 'armado') {
+            $documentos = array_merge($documentosBase, $documentosExtraArmado);
+        } else {
+            $documentos = $documentosBase;
+        }
+
+        $completados = 0;
+        foreach ($documentos as $campo) {
+            if (!empty($documentacion?->$campo)) {
+                $completados++;
+            }
+        }
+
+        $total = count($documentos);
+        return $total > 0 ? round(($completados / $total) * 100) : 0;
+    }
+
+    function claseBarraProgreso($porcentaje) {
+        return match(true) {
+            $porcentaje >= 75 => 'bg-blue-600',
+            $porcentaje >= 50 => 'bg-yellow-500',
+            default => 'bg-red-500',
+        };
+    }
+@endphp
+
+
 <div>
     <div class="mb-6">
         <input
@@ -33,6 +72,9 @@
                         Rol
                     </th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Progreso Docs.
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                         Estatus
                     </th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -61,6 +103,20 @@
                             {{ $user->rol }}
                         @endif
                         </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                        @php
+                            $tipoEmpleado = $user->solicitudAlta?->tipo_empleado;
+                            $documentacion = $user->solicitudAlta?->documentacion;
+                            $porcentaje = calcularProgresoDocumentos($tipoEmpleado, $documentacion);
+                            $colorBarra = claseBarraProgreso($porcentaje);
+                        @endphp
+                        @if($user->estatus == 'Activo')
+                        <div class="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-700">
+                            <div class="{{ $colorBarra }} h-4 rounded-full transition-all duration-500" style="width: {{ $porcentaje }}%"></div>
+                        </div>
+                        <div class="text-xs mt-1 text-gray-600 dark:text-gray-400">{{ $porcentaje }}%</div>
+                        @endif
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         @if($user->estatus == 'Activo')
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
