@@ -156,7 +156,7 @@ class RhController extends Controller
                 'rfc' => 'nullable|string|max:255',
                 'telefono' => 'nullable|string|max:255',
                 'calle' => 'nullable|string|max:255',
-                'num_ext' => 'nullable|integer',
+                'num_ext' => 'nullable|string|max:255',
                 'colonia' => 'nullable|string|max:255',
                 'ciudad' => 'nullable|string|max:255',
                 'estado' => 'nullable|string|max:255',
@@ -206,7 +206,7 @@ class RhController extends Controller
             return redirect()->route('rh.subirArchivosAltaForm', ['id' => $solicitud->id, 'tipo' => $tipoSeleccionado]);
 
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error al guardar la solicitud, intente nuevamente.');
+            return redirect()->back()->with('error', 'Error al guardar la solicitud, intente nuevamente.'. $e->getMessage());
         }
     }
     public function subirArchivosAltaForm($id){

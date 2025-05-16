@@ -69,17 +69,17 @@
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="calle" class="block text-sm font-semibold text-gray-600">Domicilio (Calle)</label>
+                    <label for="calle" class="block text-sm font-semibold text-gray-600">Domicilio Fiscal (Calle)</label>
                     <input type="text" id="calle" name="calle" placeholder="Calle" value="{{ $solicitud->domicilio_calle }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="num_ext" class="block text-sm font-semibold text-gray-600">Domicilio (Numero)</label>
+                    <label for="num_ext" class="block text-sm font-semibold text-gray-600">Domicilio Fiscal(Numero)</label>
                     <input type="number" id="num_ext" name="num_ext" placeholder="Numero" value="{{ $solicitud->domicilio_numero }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="colonia" class="block text-sm font-semibold text-gray-600">Domicilio (Colonia)</label>
+                    <label for="colonia" class="block text-sm font-semibold text-gray-600">Domicilio Fiscal(Colonia)</label>
                     <input type="text" id="colonia" name="colonia" placeholder="Colonia" value="{{ $solicitud->domicilio_colonia }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
                 </div>
 
@@ -93,8 +93,40 @@
                     <input type="text" id="estado" name="estado" placeholder="Estado" value="{{ $solicitud->domicilio_estado }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
                 </div>
 
+                <div class="form-group mb-4">
+                    <label for="domicilio_comprobante" class="block text-sm font-semibold text-gray-600">Domicilio de Comprobante</label>
+                    <input type="text" id="domicilio_comprobante" name="domicilio_comprobante" value="{{$solicitud->domicilio_comprobante}}" placeholder="Domicilio de Comprobante" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="infonavit" class="block text-sm font-semibold text-gray-600">Infonavit (Opcional)</label>
+                    <input type="text" id="infonavit" name="infonavit" placeholder="Infonavit" value="{{ $solicitud->infonavit }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="fonacot" class="block text-sm font-semibold text-gray-600">Fonacot (Opcional)</label>
+                    <input type="text" id="fonacot" name="fonacot" placeholder="Fonacot" value="{{ $solicitud->fonacot }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                </div>
+
+                @if (Auth::user()->rol != 'Supervisor' && $solicitud->tipo_empleado == 'oficina')
+
+                    <div class="form-group mb-6">
+                        <label for="departamento" class="block text-sm font-semibold text-gray-600">Departamento</label>
+                        <select id="departamento" name="departamento" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
+                            <option value="" disabled selected>Selecciona una opción</option>
+                            <option value="Recursos Humanos">Recursos Humanos</option>
+                            <option value="Nóminas">Nóminas</option>
+                            <option value="Jurídico">Jurídico</option>
+                            <option value="IMSS">IMSS</option>
+                            <option value="Monitoreo">Monitoreo</option>
+                            <option value="Custodios">Custodios</option>
+                            <option value="Tesorería">Compras</option>
+                        </select>
+                    </div>
+                @endif
+
                 <div class="form-group mb-6">
-                    <label for="rol" class="block text-sm font-semibold text-gray-600">Rol/Puesto/Departamento</label>
+                    <label for="rol" class="block text-sm font-semibold text-gray-600">Rol/Puesto</label>
                     <input type="rol" id="rol" name="rol" placeholder="Rol" value="{{ $solicitud->rol }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
                 </div>
 
