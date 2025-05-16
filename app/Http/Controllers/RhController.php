@@ -135,6 +135,12 @@ class RhController extends Controller
     public function generarNuevaAltaForm(){
         return view('rh.generarAlta');
     }
+    public function formAlta(Request $request)
+    {
+        $tipo = $request->get('tipo', 'oficina');
+        return view('rh.generarAlta', compact('tipo'));
+    }
+
 
     public function guardarAlta(Request $request){
         try {
@@ -142,23 +148,27 @@ class RhController extends Controller
                 'name' => 'required|string|max:255',
                 'apellido_paterno' => 'required|string|max:255',
                 'apellido_materno' => 'required|string|max:255',
-                'fecha_nacimiento' => 'required|date',
-                'curp' => 'required|string|max:255',
+                'fecha_nacimiento' => 'nullable|date',
+                'curp' => 'nullable|string|max:255',
                 'nss' => 'required|string|max:255',
-                'edo_civil' => 'required|string',
-                'rfc' => 'required|string|max:255',
-                'telefono' => 'required|string|max:255',
-                'calle' => 'required|string|max:255',
-                'num_ext' => 'required|integer',
-                'colonia' => 'required|string|max:255',
-                'ciudad' => 'required|string|max:255',
-                'estado' => 'required|string|max:255',
+                'edo_civil' => 'nullable|string',
+                'rfc' => 'nullable|string|max:255',
+                'telefono' => 'nullable|string|max:255',
+                'calle' => 'nullable|string|max:255',
+                'num_ext' => 'nullable|integer',
+                'colonia' => 'nullable|string|max:255',
+                'ciudad' => 'nullable|string|max:255',
+                'estado' => 'nullable|string|max:255',
+                'infonavit' => 'nullable|string|max:255',
+                'fonacot' => 'nullable|string|max:255',
+                'domiclilio_comprobante' => 'nullable|string|max:255',
                 'departamento' => 'nullable|string|max:255',
-                'rol' => 'required|string|max:255',
-                'punto' => 'required|string|max:255',
-                'empresa' => 'required|string',
-                'email' => 'required|email|unique:solicitud_altas,email',
+                'rol' => 'nullable|string|max:255',
+                'punto' => 'nullable|string|max:255',
+                'empresa' => 'nullable|string',
+                'email' => 'nullable|email|unique:solicitud_altas,email',
             ]);
+            $tipoSeleccionado = $request->get('tipo', 'oficina');
 
             $solicitud = new SolicitudAlta();
             $solicitud->solicitante = auth()->user()->name;
@@ -176,26 +186,31 @@ class RhController extends Controller
             $solicitud->domicilio_colonia = $request->colonia;
             $solicitud->domicilio_ciudad = $request->ciudad;
             $solicitud->domicilio_estado = $request->estado;
+            $solicitud->infonavit = $request->infonavit;
+            $solicitud->fonacot = $request->fonacot;
+            $solicitud->domicilio_comprobante = $request->domiclilio_comprobante;
             $solicitud->rol = $request->rol;
             $solicitud->punto = $request->punto;
             $solicitud->empresa = $request->empresa;
             $solicitud->email = $request->email;
             $solicitud->estatura = '0.0';
             $solicitud->peso = '0.0';
-            $solicitud->status = 'En Proceso';
-            $solicitud->observaciones = 'Solicitud en revisión';
+            $solicitud->status = 'Aceptada';
+            $solicitud->observaciones = 'Solicitud Aceptada.';
+            $solicitud->created_at = Carbon::now('America/Mexico_City');
 
             $solicitud->save();
 
-            return redirect()->route('rh.subirArchivosAltaForm', ['id' => $solicitud->id]);
+            return redirect()->route('rh.subirArchivosAltaForm', ['id' => $solicitud->id, 'tipo' => $tipoSeleccionado]);
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al guardar la solicitud, intente nuevamente.');
         }
     }
     public function subirArchivosAltaForm($id){
+        $tipo = request('tipo');
         $solicitud = SolicitudAlta::find($id);
-        return view('rh.subirArchivosAlta', compact('solicitud'));
+        return view('rh.subirArchivosAlta', compact('solicitud', 'tipo'));
     }
 
     public function guardarArchivosAlta(Request $request, $id)
@@ -214,6 +229,9 @@ class RhController extends Controller
         'arch_fonacot' => 'nullable|file',
         'arch_licencia_conducir' => 'nullable|file',
         'arch_carta_no_penales' => 'nullable|file',
+        'arch_solicitud_empleo' => 'nullable|file',
+        'arch_nss' => 'nullable|file',
+        'arch_contrato' => 'nullable|file',
         'arch_foto' => 'nullable|file',
         'visa' => 'nullable|file',
         'pasaporte' => 'nullable|file',
@@ -239,6 +257,9 @@ class RhController extends Controller
         'arch_licencia_conducir',
         'arch_carta_no_penales',
         'arch_foto',
+        'arch_nss',
+        'arch_contrato',
+        'arch_solicitud_empleo',
         'visa',
         'pasaporte',
     ];
@@ -255,11 +276,28 @@ class RhController extends Controller
     $documentacion->solicitud_id = $solicitudId;
     $documentacion->save();
 
-    $solicitud->status = 'Activo';
+    $solicitud->status = 'Aceptada';
     $solicitud->observaciones = 'Solicitud Aceptada.';
     $solicitud->save();
 
-    return redirect()->route('rh.generarNuevaAltaForm')->with('success', 'Documentación subida correctamente');
+    if(Auth::user()->rol != 'Supervisor' || Auth::user()->rol != 'SUPERVISOR'){
+        $user = new User();
+        $user->sol_alta_id = $solicitudId;
+        $user->sol_docs_id = $documentacion->id;
+        $user->name = $solicitud->nombre . " " . $solicitud->apellido_paterno . " " . $solicitud->apellido_materno;
+        $user->email = $solicitud->email;
+        $user->password = Hash::make($solicitud->rfc);
+        $user-> fecha_ingreso = Carbon::now('America/Mexico_City');
+        $user->punto = $solicitud->punto;
+        $user->rol = $solicitud->rol;
+        $user->estatus = 'Activo';
+        $user->empresa = $solicitud->empresa;
+
+        $user->save();
+    }
+
+
+    return redirect()->route('dashboard')->with('success', 'Documentación subida correctamente');
 }
 
 

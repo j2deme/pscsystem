@@ -17,6 +17,7 @@
 <div class="col-span-full">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @php
+        $tipoSeleccionado='oficina';
             $cards = [
                 [
                     'titulo' => 'Solicitudes de Altas',
@@ -59,7 +60,7 @@
                 ],
                 [
                     'titulo' => 'Generar Nueva Alta',
-                    'ruta' => route('rh.generarNuevaAltaForm'),
+                    'ruta' => route('rh.formAlta', $tipoSeleccionado),
                     'icono' => '📈',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
                     'disabled' => Auth::user()->rol=='admin'

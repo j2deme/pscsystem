@@ -20,23 +20,41 @@
                         {{ session('error') }}
                     </div>
                 @endif
+            <div class="flex justify-center mb-6">
+                @php
+                    $tipoSeleccionado = request('tipo', 'oficina');
+                    $tabs = [
+                        'oficina' => 'Personal de Oficina',
+                        'armado' => 'Personal Armado',
+                        'noarmado' => 'Personal No Armado',
+                    ];
+                @endphp
+
+                @foreach ($tabs as $claveTipo => $label)
+                    <a href="{{ route('rh.formAlta', ['tipo' => $claveTipo]) }}"
+                    class="px-4 py-2 mx-1 rounded-t-lg border-b-2 {{ $tipoSeleccionado === $claveTipo ? 'border-blue-600 text-blue-600 font-semibold' : 'border-transparent text-gray-500 hover:text-blue-600' }}">
+                        {{ $label }}
+                    </a>
+                @endforeach
+            </div>
 
             <form action="{{route('rh.guardarAlta')}}" method="POST">
                 @csrf
+                <input type="hidden" name="tipo" value="{{ request('tipo') }}">
 
                 <div class="form-group mb-4">
                     <label for="name" class="block text-sm font-semibold text-gray-600">Nombre(s)</label>
-                    <input type="text" id="name" name="name" placeholder="Nombre completo" value="{{ old('name') }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="name" name="name" placeholder="Nombre completo" value="{{ old('name') }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                     @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="apellido_paterno" class="block text-sm font-semibold text-gray-600">Apellido Paterno</label>
-                    <input type="text" id="apellido_paterno" name="apellido_paterno"  placeholder="Apellido Paterno" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="apellido_paterno" name="apellido_paterno"  placeholder="Apellido Paterno" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
                 <div class="form-group mb-4">
                     <label for="apellido_materno" class="block text-sm font-semibold text-gray-600">Apellido Materno</label>
-                    <input type="text" id="apellido_materno" name="apellido_materno"  placeholder="Apellido Materno" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="apellido_materno" name="apellido_materno"  placeholder="Apellido Materno" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-4">
@@ -81,7 +99,7 @@
 
                 <div class="form-group mb-4">
                     <label for="num_ext" class="block text-sm font-semibold text-gray-600">Domicilio Fiscal(Numero)</label>
-                    <input type="number" id="num_ext" name="num_ext" placeholder="Numero" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                    <input type="text" id="num_ext" name="num_ext" placeholder="Numero" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-4">
@@ -105,11 +123,6 @@
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="imss" class="block text-sm font-semibold text-gray-600">IMSS</label>
-                    <input type="text" id="imss" name="imss" placeholder="Imss" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
-                </div>
-
-                <div class="form-group mb-4">
                     <label for="infonavit" class="block text-sm font-semibold text-gray-600">Infonavit (Opcional)</label>
                     <input type="text" id="infonavit" name="infonavit" placeholder="Infonavit" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
@@ -118,21 +131,22 @@
                     <label for="fonacot" class="block text-sm font-semibold text-gray-600">Fonacot (Opcional)</label>
                     <input type="text" id="fonacot" name="fonacot" placeholder="Fonacot" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
-                @if (Auth::user()->rol == 'Recursos Humanos' || Auth::user()->departamento == 'Recursos Humanos' || Auth::user()->rol == 'Administrador' )
-                <div class="form-group mb-6">
-                    <label for="departamento" class="block text-sm font-semibold text-gray-600">Departamento</label>
-                    <select id="departamento" name="departamento" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
-                        <option value="" disabled selected>Selecciona una opción</option>
-                        <option value="Recursos Humanos">Recursos Humanos</option>
-                        <option value="Nóminas">Nóminas</option>
-                        <option value="Jurídico">Jurídico</option>
-                        <option value="IMSS">IMSS</option>
-                        <option value="Monitoreo">Monitoreo</option>
-                        <option value="Custodios">Custodios</option>
-                        <option value="Tesorería">Compras</option>
-                    </select>
-                </div>
-            @endif
+                @if (Auth::user()->rol != 'Supervisor' && $tipoSeleccionado == 'oficina')
+
+                    <div class="form-group mb-6">
+                        <label for="departamento" class="block text-sm font-semibold text-gray-600">Departamento</label>
+                        <select id="departamento" name="departamento" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
+                            <option value="" disabled selected>Selecciona una opción</option>
+                            <option value="Recursos Humanos">Recursos Humanos</option>
+                            <option value="Nóminas">Nóminas</option>
+                            <option value="Jurídico">Jurídico</option>
+                            <option value="IMSS">IMSS</option>
+                            <option value="Monitoreo">Monitoreo</option>
+                            <option value="Custodios">Custodios</option>
+                            <option value="Tesorería">Compras</option>
+                        </select>
+                    </div>
+                @endif
 
                 <div class="form-group mb-6">
                     <label for="rol" class="block text-sm font-semibold text-gray-600">Rol/Puesto</label>
@@ -146,7 +160,7 @@
 
                 <div class="form-group mb-6">
                     <label for="empresa" class="block text-sm font-semibold text-gray-600">Empresa</label>
-                    <select id="empresa" name="empresa" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <select id="empresa" name="empresa" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                         <option value="" disabled selected>Selecciona una empresa</option>
                         <option value="CPKC">CPKC</option>
                         <option value="SPYT">SPYT</option>
