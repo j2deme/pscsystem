@@ -35,6 +35,7 @@
                             <div><strong>Empresa:</strong> {{ $solicitud->empresa }}</div>
                             <div><strong>Punto:</strong> {{ $solicitud->punto }}</div>
                             <div><strong>Fecha de Nacimiento:</strong> {{ $solicitud->fecha_nacimiento }}</div>
+                            <div><strong>Fecha de la Solicitud:</strong> {{ $solicitud->created_at->format('d-m-Y H:i') }}</div>
                             <div><strong>Estado de la Solicitud:</strong>
                                 @if($solicitud->status == 'En Proceso')
                                     <span class="inline-flex items-center px-2 py-1 text-sm text-gray-800 bg-yellow-300 rounded-full">

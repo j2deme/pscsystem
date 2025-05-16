@@ -128,7 +128,7 @@
     </div><br>
         <center>
             @if(Auth::user()->rol == 'admin')
-            <a href="{{ route('admin.crearUsuarioForm') }}" class="inline-block bg-blue-300 text-gray-800 py-2 px-4 rounded-md hover:bg-blue-400 mr-2">
+            <a href="{{ route('rh.generarNuevaAltaForm') }}" class="inline-block bg-blue-300 text-gray-800 py-2 px-4 rounded-md hover:bg-blue-400 mr-2">
                 Nuevo Usuario
             </a>
             @endif

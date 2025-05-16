@@ -145,6 +145,7 @@ class RhController extends Controller
     public function guardarAlta(Request $request){
         try {
             $validated = $request->validate([
+                'tipo' => 'required|string',
                 'name' => 'required|string|max:255',
                 'apellido_paterno' => 'required|string|max:255',
                 'apellido_materno' => 'required|string|max:255',
@@ -176,6 +177,7 @@ class RhController extends Controller
             $solicitud->apellido_paterno = $request->apellido_paterno;
             $solicitud->apellido_materno = $request->apellido_materno;
             $solicitud->fecha_nacimiento = $request->fecha_nacimiento;
+            $solicitud->tipo_empleado = $request->get('tipo', 'oficina');
             $solicitud->curp = $request->curp;
             $solicitud->nss = $request->nss;
             $solicitud->estado_civil = $request->edo_civil;
@@ -230,6 +232,7 @@ class RhController extends Controller
         'arch_licencia_conducir' => 'nullable|file',
         'arch_carta_no_penales' => 'nullable|file',
         'arch_solicitud_empleo' => 'nullable|file',
+        'arch_antidoping' => 'nullable|file',
         'arch_nss' => 'nullable|file',
         'arch_contrato' => 'nullable|file',
         'arch_foto' => 'nullable|file',
@@ -259,6 +262,7 @@ class RhController extends Controller
         'arch_foto',
         'arch_nss',
         'arch_contrato',
+        'arch_antidoping',
         'arch_solicitud_empleo',
         'visa',
         'pasaporte',
