@@ -12,6 +12,7 @@ use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\RhController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\MonitoreoController;
+use App\Http\Controllers\AuxadminController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -38,7 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/baja_usuario/{id}', [AdminController::class, 'bajaUsuario'])->name('admin.darDeBajaUsuario');
     Route::get('/editar_usuario/{id}', [AdminController::class, 'editarUsuario'])->name('admin.editarUsuarioForm');
     Route::get('/ver_buzon', [AdminController::class, 'verBuzon'])->name('admin.verBuzon');
-    Route::post('/importar-excel', [ImportController::class, 'importarBajas'])->name('importar.excel');
+    Route::post('/importar-excel', [ImportController::class, 'importarUnidades'])->name('importar.excel');
 
     //Usuario Supervisor
     Route::get('/nuevoUsuario', [SupervisorController::class, 'nuevoUsuarioForm'])->name('sup.nuevoUsuarioForm');
@@ -126,6 +127,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/enviar_sugerencia/{id}', [UserController::class, 'enviarSugerencia'])->name('user.enviarSugerencia');
 
     //Uusario Monitorista
+
+    //Usuario Aux Admin
+    Route::get('/nuevas_altas', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');
 
 });
 

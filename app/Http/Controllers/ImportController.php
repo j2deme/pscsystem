@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Hash;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use App\Models\Unidades;
 use Exception;
 
 class ImportController extends Controller
@@ -287,6 +288,48 @@ public function importarBajas(Request $request)
         return back()->with('error', 'Error al importar: '.$e->getMessage());
     }
 }
+
+    public function importarUnidades(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            if (!$request->hasFile('excel')) {
+                Log::error('No se subió ningún archivo.');
+                return back()->with('error', 'No se subió ningún archivo.');
+            }
+
+            $file = $request->file('excel');
+            $spreadsheet = IOFactory::load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray();
+
+            foreach (array_slice($rows, 1) as $row) {
+                if (empty($row[0])) continue;
+
+                Unidades::create([
+                    'nombre_propietario' => trim($row[0]),
+                    'zona'               => trim($row[1]),
+                    'marca'              => trim($row[2]),
+                    'modelo'             => trim($row[3]),
+                    'placas'             => trim($row[4]),
+                    'kms'                => trim($row[5]),
+                    'asignacion_punto'   => trim($row[6]),
+                    'estado_vehiculo'    => trim($row[7]),
+                    'observaciones'      => trim($row[8]),
+                ]);
+            }
+
+            DB::commit();
+
+            return back()->with('success', 'Unidades importadas correctamente.');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error al importar unidades: ' . $e->getMessage());
+            return back()->with('error', 'Error al importar el archivo: ' . $e->getMessage());
+        }
+    }
 
 
 }

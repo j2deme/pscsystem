@@ -218,7 +218,9 @@ class SupervisorController extends Controller
                 'num_ext' => 'nullable|integer',
                 'colonia' => 'nullable|string|max:255',
                 'ciudad' => 'nullable|string|max:255',
+                'cp_fiscal' => 'nullable|string|max:255',
                 'estado' => 'nullable|string|max:255',
+                'liga_rfc' => 'nullable|string|max:255',
                 'rol' => 'nullable|string|max:255',
                 'punto' => 'nullable|string|max:255',
                 'empresa' => 'nullable|string',
@@ -242,7 +244,9 @@ class SupervisorController extends Controller
             $solicitud->domicilio_numero = $request->num_ext;
             $solicitud->domicilio_colonia = $request->colonia;
             $solicitud->domicilio_ciudad = $request->ciudad;
+            $solicitud->cp_fiscal = $request->cp_fiscal;
             $solicitud->domicilio_estado = $request->estado;
+            $solicitud->liga_rfc = $request->liga_rfc;
             $solicitud->rol = $request->rol;
             $solicitud->punto = $request->punto;
             $solicitud->empresa = $request->empresa;

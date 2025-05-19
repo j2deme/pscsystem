@@ -3,7 +3,7 @@
     $cards = [
         [
             'titulo' => 'Nuevas Altas',
-            'ruta' => "#",
+            'ruta' => route('aux.nuevasAltas'),
             'icono' => '🆕',
             'color' => 'bg-green-100 dark:bg-green-700',
         ],

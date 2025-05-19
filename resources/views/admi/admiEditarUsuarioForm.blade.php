@@ -84,8 +84,18 @@
                 </div>
 
                 <div class="form-group mb-4">
+                    <label for="cp_fiscal"  class="block text-sm font-semibold text-gray-600">CP Fiscal</label>
+                    <input type="text" id="cp_fiscal" name="cp_fiscal" placeholder="CP Fiscal" value="{{ $solicitud->cp_fiscal }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
+                </div>
+
+                <div class="form-group mb-4">
                     <label for="ciudad" class="block text-sm font-semibold text-gray-600">Ciudad</label>
                     <input type="text" id="ciudad" name="ciudad" placeholder="Ciudad" value="{{ $solicitud->domicilio_ciudad }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="liga_rfc" class="block text-sm font-semibold text-gray-600">Liga RFC</label>
+                    <input type="text" id="liga_rfc" name="liga_rfc" placeholder="Liga RFC" value="{{ $solicitud->liga_rfc }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-4">
