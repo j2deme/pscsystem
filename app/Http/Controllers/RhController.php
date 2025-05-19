@@ -145,10 +145,10 @@ class RhController extends Controller
     public function guardarAlta(Request $request){
         try {
             $validated = $request->validate([
-                'tipo' => 'required|string',
-                'name' => 'required|string|max:255',
-                'apellido_paterno' => 'required|string|max:255',
-                'apellido_materno' => 'required|string|max:255',
+                'tipo' => 'required|in:oficina,armado,noarmado',
+                'name' => 'nullable|string|max:255',
+                'apellido_paterno' => 'nullable|string|max:255',
+                'apellido_materno' => 'nullable|string|max:255',
                 'fecha_nacimiento' => 'nullable|date',
                 'curp' => 'nullable|string|max:255',
                 'nss' => 'required|string|max:255',

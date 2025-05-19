@@ -40,7 +40,8 @@
 
             <form action="{{route('rh.guardarAlta')}}" method="POST">
                 @csrf
-                <input type="hidden" name="tipo" value="{{ request('tipo') }}">
+                <input type="hidden" name="tipo" value="{{ old('tipo', $tipoSeleccionado) }}">
+
 
                 <div class="form-group mb-4">
                     <label for="name" class="block text-sm font-semibold text-gray-600">Nombre(s)</label>

@@ -205,24 +205,24 @@ class SupervisorController extends Controller
     public function editarInformacionSolicitud(Request $request, $id){
         try {
             $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'apellido_paterno' => 'required|string|max:255',
-                'apellido_materno' => 'required|string|max:255',
-                'fecha_nacimiento' => 'required|date',
-                'curp' => 'required|string|max:255',
-                'nss' => ['required', 'digits:11'],
-                'edo_civil' => 'required|string',
-                'rfc' => 'required|string|max:255',
-                'telefono' => 'required|string|max:255',
-                'calle' => 'required|string|max:255',
-                'num_ext' => 'required|integer',
-                'colonia' => 'required|string|max:255',
-                'ciudad' => 'required|string|max:255',
-                'estado' => 'required|string|max:255',
-                'rol' => 'required|string|max:255',
-                'punto' => 'required|string|max:255',
-                'empresa' => 'required|string',
-                'email' => 'required|email|unique:solicitud_altas,email,' . $id . ',id',
+                'name' => 'nullable|string|max:255',
+                'apellido_paterno' => 'nullable|string|max:255',
+                'apellido_materno' => 'nullable|string|max:255',
+                'fecha_nacimiento' => 'nullable|date',
+                'curp' => 'nullable|string|max:255',
+                'nss' => ['nullable', 'digits:11'],
+                'edo_civil' => 'nullable|string',
+                'rfc' => 'nullable|string|max:255',
+                'telefono' => 'nullable|string|max:255',
+                'calle' => 'nullable|string|max:255',
+                'num_ext' => 'nullable|integer',
+                'colonia' => 'nullable|string|max:255',
+                'ciudad' => 'nullable|string|max:255',
+                'estado' => 'nullable|string|max:255',
+                'rol' => 'nullable|string|max:255',
+                'punto' => 'nullable|string|max:255',
+                'empresa' => 'nullable|string',
+                'email' => 'nullable|email|unique:solicitud_altas,email,' . $id . ',id',
 
             ]);
 
@@ -251,7 +251,7 @@ class SupervisorController extends Controller
             $solicitud->updated_at = Carbon::now('America/Mexico_City');
             $solicitud->estatura = '0.0';
             $solicitud->peso = '0.0';
-            if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH'){
+            if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS'){
                 $solicitud->status = 'Aceptada';
                 $solicitud->observaciones = 'Solicitud Aceptada.';
             }else{
@@ -272,7 +272,8 @@ class SupervisorController extends Controller
 
                 $user->save();
             }
-            return view('supervisor.editarArchivosForm', compact('solicitud','id' ,'documentacion', 'user'));
+            $tipo = $solicitud->tipo_empleado;
+            return view('supervisor.editarArchivosForm', compact('solicitud','id' ,'documentacion', 'user', 'tipo'));
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al actualizar la solicitud: ' . $e->getMessage());
@@ -326,7 +327,7 @@ class SupervisorController extends Controller
 
         $documentacion->solicitud_id = $solicitudId;
         $documentacion->save();
-        if(Auth()->user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH')
+        if(Auth()->user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS')
             $sol->observaciones = 'Solicitud Aceptada.';
         else
             $sol->observaciones = 'Documentación actualizada, en espera de revisión.';

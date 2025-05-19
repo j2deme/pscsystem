@@ -31,7 +31,7 @@
                             </div>
                         @elseif (Auth::user()->rol == 'Supervisor')
                             <x-supervisor-navbar></x-supervisor-navbar>
-                        @elseif (Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH')
+                        @elseif (Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' )
                             <x-rh-navbar></x-rh-navbar>
                         @elseif (Auth::user()->rol == 'AUXILIAR MONITORISTA' || Auth::user()->rol == 'MONITORISTA' || Auth::user()->rol == 'Auxiliar Monitorista' || Auth::user()->rol == 'Monitorista' || Auth::user()->solicitudAlta->departamento == 'Monitoreo')
                             <x-monitoreo-navbar></x-monitoreo-navbar>

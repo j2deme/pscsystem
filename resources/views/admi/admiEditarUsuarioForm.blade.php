@@ -19,37 +19,37 @@
                 @csrf
                 <div class="form-group mb-4">
                     <label for="name" class="block text-sm font-semibold text-gray-600">Nombre(s)</label>
-                    <input type="text" id="name" name="name" placeholder="Nombre completo" value="{{ $solicitud->nombre }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="name" name="name" placeholder="Nombre completo" value="{{ $solicitud->nombre }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                     @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="apellido_paterno" class="block text-sm font-semibold text-gray-600">Apellido Paterno</label>
-                    <input type="text" id="apellido_paterno" name="apellido_paterno"  placeholder="Apellido Paterno" value="{{ $solicitud->apellido_paterno }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="apellido_paterno" name="apellido_paterno"  placeholder="Apellido Paterno" value="{{ $solicitud->apellido_paterno }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
                 <div class="form-group mb-4">
                     <label for="apellido_materno" class="block text-sm font-semibold text-gray-600">Apellido Materno</label>
-                    <input type="text" id="apellido_materno" name="apellido_materno"  placeholder="Apellido Materno" value="{{ $solicitud->apellido_materno }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="apellido_materno" name="apellido_materno"  placeholder="Apellido Materno" value="{{ $solicitud->apellido_materno }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="fecha_nacimiento" class="block text-sm font-semibold text-gray-600">Fecha de Nacimiento</label>
-                    <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="fecha de nacimiento" value="{{ $solicitud->fecha_nacimiento }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="fecha de nacimiento" value="{{ $solicitud->fecha_nacimiento }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="curp" class="block text-sm font-semibold text-gray-600">CURP</label>
-                    <input type="text" id="curp" name="curp" placeholder="CURP" value="{{ $solicitud->curp }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="curp" name="curp" placeholder="CURP" value="{{ $solicitud->curp }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="nss" class="block text-sm font-semibold text-gray-600">NSS</label>
-                    <input type="text" id="nss" name="nss" placeholder="NSS" value="{{ $solicitud->nss }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="nss" name="nss" placeholder="NSS" value="{{ $solicitud->nss }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-6">
                     <label for="edo_civil" class="block text-sm font-semibold text-gray-600">Estado Civil</label>
-                    <select id="edo_civil" name="edo_civil" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <select id="edo_civil" name="edo_civil" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2"
                         <option value="" disabled {{ is_null($solicitud->estado_civil) ? 'selected' : '' }}>Selecciona una opción</option>
                         <option value="Soltero" {{ $solicitud->estado_civil === 'Soltero' ? 'selected' : '' }}>Soltero/a</option>
                         <option value="Casado" {{ $solicitud->estado_civil === 'Casado' ? 'selected' : '' }}>Casado/a</option>
@@ -61,36 +61,36 @@
 
                 <div class="form-group mb-4">
                     <label for="rfc" class="block text-sm font-semibold text-gray-600">RFC</label>
-                    <input type="text" id="rfc" name="rfc" placeholder="RFC" value="{{ $solicitud->rfc }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="rfc" name="rfc" placeholder="RFC" value="{{ $solicitud->rfc }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
                 <div class="form-group mb-4">
                     <label for="telefono" class="block text-sm font-semibold text-gray-600">Teléfono</label>
-                    <input type="text" id="telefono" name="telefono" placeholder="Telefono" value="{{ $solicitud->telefono }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="telefono" name="telefono" placeholder="Telefono" value="{{ $solicitud->telefono }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="calle" class="block text-sm font-semibold text-gray-600">Domicilio Fiscal (Calle)</label>
-                    <input type="text" id="calle" name="calle" placeholder="Calle" value="{{ $solicitud->domicilio_calle }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="calle" name="calle" placeholder="Calle" value="{{ $solicitud->domicilio_calle }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="num_ext" class="block text-sm font-semibold text-gray-600">Domicilio Fiscal(Numero)</label>
-                    <input type="number" id="num_ext" name="num_ext" placeholder="Numero" value="{{ $solicitud->domicilio_numero }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="number" id="num_ext" name="num_ext" placeholder="Numero" value="{{ $solicitud->domicilio_numero }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="colonia" class="block text-sm font-semibold text-gray-600">Domicilio Fiscal(Colonia)</label>
-                    <input type="text" id="colonia" name="colonia" placeholder="Colonia" value="{{ $solicitud->domicilio_colonia }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="colonia" name="colonia" placeholder="Colonia" value="{{ $solicitud->domicilio_colonia }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="ciudad" class="block text-sm font-semibold text-gray-600">Ciudad</label>
-                    <input type="text" id="ciudad" name="ciudad" placeholder="Ciudad" value="{{ $solicitud->domicilio_ciudad }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="ciudad" name="ciudad" placeholder="Ciudad" value="{{ $solicitud->domicilio_ciudad }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="estado" class="block text-sm font-semibold text-gray-600">Estado</label>
-                    <input type="text" id="estado" name="estado" placeholder="Estado" value="{{ $solicitud->domicilio_estado }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="text" id="estado" name="estado" placeholder="Estado" value="{{ $solicitud->domicilio_estado }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-4">
@@ -127,17 +127,17 @@
 
                 <div class="form-group mb-6">
                     <label for="rol" class="block text-sm font-semibold text-gray-600">Rol/Puesto</label>
-                    <input type="rol" id="rol" name="rol" placeholder="Rol" value="{{ $solicitud->rol }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="rol" id="rol" name="rol" placeholder="Rol" value="{{ $solicitud->rol }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-6">
                     <label for="punto" class="block text-sm font-semibold text-gray-600">Punto</label>
-                    <input type="punto" id="punto" name="punto" placeholder="Punto" value="{{ $solicitud->punto }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <input type="punto" id="punto" name="punto" placeholder="Punto" value="{{ $solicitud->punto }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
                 <div class="form-group mb-6">
                     <label for="empresa" class="block text-sm font-semibold text-gray-600">Empresa</label>
-                    <select id="empresa" name="empresa" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" required>
+                    <select id="empresa" name="empresa" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                         <option value="" disabled {{ is_null($solicitud->empresa) ? 'selected' : '' }}>Selecciona una empresa</option>
                         <option value="CPKC" {{ $solicitud->empresa === 'CPKC' ? 'selected' : '' }}>CPKC</option>
                         <option value="SPYT" {{ $solicitud->empresa === 'SPYT' ? 'selected' : '' }}>SPYT</option>
@@ -149,7 +149,7 @@
 
                 <div class="form-group mb-4">
                     <label for="email" class="block text-sm font-semibold text-gray-600">Correo Electrónico</label>
-                    <input type="email" id="email" name="email" placeholder="Correo electrónico" value="{{ $solicitud->email }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2"required>
+                    <input type="email" id="email" name="email" placeholder="Correo electrónico" value="{{ $solicitud->email }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2>
                     @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
