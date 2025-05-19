@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\SolicitudAlta;
@@ -280,10 +281,14 @@ public function guardarArchivosAlta(Request $request, $id)
 
         foreach ($archivos as $campo) {
             if ($request->hasFile($campo)) {
-                $archivo = $request->file($campo);
-                $nombreArchivo = $campo . '.' . $archivo->getClientOriginalExtension();
-                $ruta = $archivo->storeAs($carpeta, $nombreArchivo, 'public');
-                $documentacion->$campo = 'storage/' . $ruta;
+                try {
+                    $archivo = $request->file($campo);
+                    $nombreArchivo = $campo . '.' . $archivo->getClientOriginalExtension();
+                    $ruta = $archivo->storeAs($carpeta, $nombreArchivo, 'public');
+                    $documentacion->$campo = 'storage/' . $ruta;
+                } catch (\Exception $e) {
+                    Log::error("Error al guardar el archivo {$campo}: " . $e->getMessage());
+                }
             }
         }
 
@@ -294,7 +299,7 @@ public function guardarArchivosAlta(Request $request, $id)
         $solicitud->observaciones = 'Solicitud Aceptada.';
         $solicitud->save();
 
-        if (Auth::user()->rol !== 'Supervisor' && Auth::user()->rol !== 'SUPERVISOR') {
+        if(Auth::user()->rol != 'Supervisor' && Auth::user()->rol != 'SUPERVISOR'){
             $user = new User();
             $user->sol_alta_id = $solicitudId;
             $user->sol_docs_id = $documentacion->id;
@@ -306,18 +311,16 @@ public function guardarArchivosAlta(Request $request, $id)
             $user->rol = $solicitud->rol;
             $user->estatus = 'Activo';
             $user->empresa = $solicitud->empresa;
+
             $user->save();
         }
 
         return redirect()->route('dashboard')->with('success', 'Documentación subida correctamente');
-    } catch (\Exception $e) {
-        \Log::error('Error al guardar archivos de alta: ' . $e->getMessage(), [
-            'trace' => $e->getTraceAsString()
-        ]);
-        return redirect()->back()->with('error', 'Ocurrió un error al guardar los archivos. Verifica los datos e inténtalo nuevamente.');
+    } catch (\Throwable $e) {
+        Log::error("Error general en guardarArchivosAlta: " . $e->getMessage());
+        return redirect()->back()->with('error', 'Ocurrió un error al guardar los archivos. Verifica el log para más detalles.');
     }
 }
-
 
 
     public function generarNuevaBajaForm(Request $request){

@@ -55,8 +55,20 @@
 <x-app-layout>
     <x-navbar />
 
-    <div class="py-8 px-6">
-        <div class="max-w-5xl mx-auto">
+            <div class="py-8 px-6">
+                <div class="max-w-5xl mx-auto">
+                    @if(session('success'))
+            <div class="mt-4 text-green-600 font-semibold">
+                {{ session('success') }}
+            </div>
+            @endif
+
+            @if(session('error'))
+                <div class="mt-4 text-red-600 font-semibold">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-6">
                 <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-200">Archivos Para Alta de Usuario</h2>
                 <p><b>Nota:</b> Se pueden quedar campos de documentos obligatorios vacíos, pero posteriormente se deberán subir los archivos faltantes para completar la información mínima obligatoria requerida.</p>
