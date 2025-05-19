@@ -1,51 +1,40 @@
 @php
+    use App\Models\User;
     $cards = [
         [
-            'titulo' => 'Control de Gasolinas',
+            'titulo' => 'Nuevas Altas',
             'ruta' => "#",
-            'icono' => '🛢',
+            'icono' => '🆕',
             'color' => 'bg-green-100 dark:bg-green-700',
         ],
         [
-            'titulo' => 'Control de Vehículos',
-            'ruta' => "#",
-            'icono' => '🚗',
-            'color' => 'bg-blue-100 dark:bg-blue-700',
-        ],
-        [
-            'titulo' => 'Solicitar Vacaciones',
-            'ruta' => route('user.solicitarVacacionesForm'),
-            'icono' => '🎉',
-            'color' => 'bg-blue-100 dark:bg-blue-700',
-            'disabled' => Auth::user()->rol == 'admin'
-        ],
-        [
-            'titulo' => 'Mi Historial de Vacaciones',
-            'ruta' => route('user.historialVacaciones'),
-            'icono' => '📅',
-            'color' => 'bg-green-100 dark:bg-green-700',
-            'disabled' => Auth::user()->rol == 'admin'
-        ],
-        [
-            'titulo' => 'Ficha Técnica',
-            'ruta' => route('user.verFicha', auth()->user()->id),
-            'icono' => '📝',
-            'color' => 'bg-yellow-100 dark:bg-yellow-700',
-            'disabled' => Auth::user()->rol == 'admin'
-        ],
-        [
-            'titulo' => 'Buzón de Quejas y Sugerencias',
-            'ruta' => route('user.buzon'),
-            'icono' => '💬',
-            'color' => 'bg-purple-100 dark:bg-purple-700',
-            'disabled' => Auth::user()->rol == 'admin'
-        ],
-        [
-            'titulo' => 'Importar Datos',
-            'ruta' => route('importar.excel'),
-            'icono' => '📁',
-            'color' => 'bg-gray-100 dark:bg-gray-700',
-        ],
+                    'titulo' => 'Solicitar Vacaciones',
+                    'ruta' => route('user.solicitarVacacionesForm'),
+                    'icono' => '🎉',
+                    'color' => 'bg-blue-100 dark:bg-blue-700',
+                    'disabled' => Auth::user()->rol == 'admin'
+                ],
+                [
+                    'titulo' => 'Mi Historial de Vacaciones',
+                    'ruta' => route('user.historialVacaciones'),
+                    'icono' => '📅',
+                    'color' => 'bg-green-100 dark:bg-green-700',
+                    'disabled' => Auth::user()->rol == 'admin'
+                ],
+                [
+                    'titulo' => 'Ficha Técnica',
+                    'ruta' => route('user.verFicha', auth()->user()->id),
+                    'icono' => '📝',
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700',
+                    'disabled' => Auth::user()->rol == 'admin'
+                ],
+                [
+                    'titulo' => 'Buzón de Quejas y Sugerencias',
+                    'ruta' => route('user.buzon'),
+                    'icono' => '💬',
+                    'color' => 'bg-purple-100 dark:bg-purple-700',
+                    'disabled' => Auth::user()->rol == 'admin'
+                ],
 
     ];
 @endphp
