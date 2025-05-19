@@ -167,6 +167,8 @@ class RhController extends Controller
                 'rol' => 'nullable|string|max:255',
                 'punto' => 'nullable|string|max:255',
                 'empresa' => 'nullable|string',
+                'sueldo_mensual' => 'nullable|string',
+                'fecha_ingreso' => 'nullable|date',
                 'email' => 'nullable|email|unique:solicitud_altas,email',
             ]);
             $tipoSeleccionado = $request->get('tipo', 'oficina');
@@ -194,6 +196,8 @@ class RhController extends Controller
             $solicitud->rol = $request->rol;
             $solicitud->punto = $request->punto;
             $solicitud->empresa = $request->empresa;
+            $solicitud->fecha_ingreso = $request->fecha_ingreso;
+            $solicitud->sueldo_mensual = $request->sueldo_mensual;
             $solicitud->email = $request->email;
             $solicitud->estatura = '0.0';
             $solicitud->peso = '0.0';
@@ -212,7 +216,8 @@ class RhController extends Controller
     public function subirArchivosAltaForm($id){
         $tipo = request('tipo');
         $solicitud = SolicitudAlta::find($id);
-        return view('rh.subirArchivosAlta', compact('solicitud', 'tipo'));
+        $fecha_ingreso = request('fecha_ingreso');
+        return view('rh.subirArchivosAlta', compact('solicitud', 'tipo', 'fecha_ingreso'));
     }
 
     public function guardarArchivosAlta(Request $request, $id)
@@ -291,7 +296,7 @@ class RhController extends Controller
         $user->name = $solicitud->nombre . " " . $solicitud->apellido_paterno . " " . $solicitud->apellido_materno;
         $user->email = $solicitud->email;
         $user->password = Hash::make($solicitud->rfc);
-        $user-> fecha_ingreso = Carbon::now('America/Mexico_City');
+        $user-> fecha_ingreso = $solicitud->fecha_ingreso;
         $user->punto = $solicitud->punto;
         $user->rol = $solicitud->rol;
         $user->estatus = 'Activo';

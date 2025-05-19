@@ -6,6 +6,18 @@
             'icono' => '🛢',
             'color' => 'bg-green-100 dark:bg-green-700',
         ],
+        [
+            'titulo' => 'Control de Vehículos',
+            'ruta' => "#",
+            'icono' => '🚗',
+            'color' => 'bg-blue-100 dark:bg-blue-700',
+        ],
+        [
+            'titulo' => 'Importar Datos',
+            'ruta' => route('importar.excel'),
+            'icono' => '📁',
+            'color' => 'bg-gray-100 dark:bg-gray-700',
+        ],
 
     ];
 @endphp
@@ -54,7 +66,7 @@
                 </div>
             @elseif($card['titulo'] === 'Importar Datos')
                 <form
-                    action="{{ route('#') }}"
+                    action="{{ route('importar.excel') }}"
                     method="POST"
                     enctype="multipart/form-data"
                     class="transition-transform transform hover:scale-105"

@@ -11,6 +11,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\RhController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\MonitoreoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -123,6 +124,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/ver_ficha/{id}', [UserController::class,'verFicha'])->name('user.verFicha');
     Route::get('/buzon', [UserController::class, 'buzon'])->name('user.buzon');
     Route::post('/enviar_sugerencia/{id}', [UserController::class, 'enviarSugerencia'])->name('user.enviarSugerencia');
+
+    //Uusario Monitorista
+
 });
 
 require __DIR__.'/auth.php';

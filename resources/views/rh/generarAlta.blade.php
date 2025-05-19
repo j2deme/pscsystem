@@ -171,6 +171,16 @@
                     @error('empresa') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                 </div>
 
+                <div class="form-group mb-6">
+                    <label for="sueldo_mensual" class="block text-sm font-semibold text-gray-600">Sueldo Mensual</label>
+                    <input type="text" id="sueldo_mensual" name="sueldo_mensual" placeholder="Sueldo Mensual" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                </div>
+
+                <div class="form-group mb-6">
+                    <label for="fecha_ingreso" class="block text-sm font-semibold text-gray-600">Fecha de Ingreso</label>
+                    <input type="date" id="fecha_ingreso" name="fecha_ingreso" placeholder="Fecha de Ingreso" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                </div>
+
                 <div class="form-group mb-4">
                     <label for="email" class="block text-sm font-semibold text-gray-600">Correo Electrónico</label>
                     <input type="email" id="email" name="email" placeholder="Correo electrónico" value="{{ old('email') }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">

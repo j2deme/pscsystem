@@ -38,7 +38,8 @@
                                 {{ $solicitud?->domicilio_estado }}
                             </div>
                             <div><strong>Estado Civil:</strong> {{ $solicitud?->estado_civil }}</div>
-                            <div><strong>Puesto Solicitado:</strong> {{ $solicitud?->rol }}</div>
+                            <div><strong>Puesto:</strong> {{ $solicitud?->rol }}</div>
+                            <div><strong>Sueldo:</strong> {{ $solicitud?->sueldo_mensual }}</div>
                             <div><strong>Empresa:</strong> {{ $solicitud?->empresa }}</div>
                             <div><strong>Punto:</strong> {{ $solicitud?->punto }}</div>
                             <div><strong>Fecha de Nacimiento:</strong> {{ $solicitud?->fecha_nacimiento }}</div>
