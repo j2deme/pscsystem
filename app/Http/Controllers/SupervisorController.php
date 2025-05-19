@@ -266,7 +266,7 @@ class SupervisorController extends Controller
             $user = User::where('sol_alta_id', $id)->first();
 
             $documentacion = DocumentacionAltas::where('solicitud_id', $id)->first();
-            if(Auth()->user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH'){
+            if(Auth()->user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS'){
                 $user = User::where('sol_alta_id', $id)->first();
                 $user->name = $solicitud->nombre . " " . $solicitud->apellido_paterno . " " . $solicitud->apellido_materno;
                 $user->email = $solicitud->email;
@@ -302,6 +302,9 @@ class SupervisorController extends Controller
             'arch_carta_rec_laboral',
             'arch_carta_rec_personal',
             'arch_cartilla_militar',
+            'arch_contrato',
+            'arch_nss',
+            'arch_antidoping',
             'arch_infonavit',
             'arch_fonacot',
             'arch_licencia_conducir',

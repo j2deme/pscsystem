@@ -82,6 +82,8 @@
                             'arch_comprobante_domicilio' => 'Comprobante de Domicilio',
                             'arch_rfc' => 'RFC',
                             'arch_comprobante_estudios' => 'Comprobante de Estudios',
+                            'arch_nss' => 'NSS',
+                            'arch_contrato' => 'Contrato',
                             'arch_carta_rec_laboral' => 'Carta Recomendación Laboral',
                             'arch_carta_rec_personal' => 'Carta Recomendación Personal',
                             'arch_cartilla_militar' => 'Cartilla Militar',

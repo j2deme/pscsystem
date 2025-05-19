@@ -167,7 +167,7 @@
                     <button type="submit" class="inline-block bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
                         Continuar
                     </button>
-                    <a href="{{ route('user.verFicha', $solicitud->id) }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 ml-4">
+                    <a href="{{ route('user.verFicha', $user->id) }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 ml-4">
                         Regresar
                     </a>
                 </div>
