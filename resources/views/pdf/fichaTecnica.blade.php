@@ -256,29 +256,5 @@
         <tr class="section-title"><td>Señas particulares</td></tr>
         <tr><td style="height: 40px;"></td></tr>
     </table>
-@php
-    $curpPath = public_path($docs->arch_curp);
-    $extension = strtolower(pathinfo($curpPath, PATHINFO_EXTENSION));
-@endphp
-
-<div style="page-break-before: always;"></div> {{-- Salto de página para iniciar el anexo --}}
-
-<h3 style="text-align: center;">Anexo: CURP</h3>
-
-@if(file_exists($curpPath))
-    @if(in_array($extension, ['jpg', 'jpeg', 'png']))
-        <div style="text-align: center;">
-            <img src="{{ $curpPath }}" style="max-width: 100%; max-height: 900px;">
-        </div>
-    @elseif($extension === 'pdf')
-        {{-- Mostrar una nota porque DOMPDF no puede incrustar otro PDF dentro --}}
-        <p>El documento CURP es un archivo PDF y no puede visualizarse directamente dentro de este documento. Por favor, revisa el archivo adjunto o incluye manualmente este PDF como anexo si lo necesitas impreso.</p>
-    @else
-        <p>Tipo de archivo no compatible para visualización.</p>
-    @endif
-@else
-    <p>No se encontró el archivo CURP.</p>
-@endif
-
 </body>
 </html>
