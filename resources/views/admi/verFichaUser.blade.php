@@ -30,7 +30,8 @@
                             <div><strong>RFC:</strong> {{ $solicitud?->rfc }}</div>
                             <div><strong>Email:</strong> {{ $solicitud?->email }}</div>
                             <div><strong>Teléfono:</strong> {{ $solicitud?->telefono }}</div>
-                            <div><strong>Dirección:</strong>
+                            <div><strong>Domicilio (Comprobante):</strong>{{$solicitud?->domicilio_comprobante }}</div>
+                            <div><strong>Dirección Fiscal:</strong>
                                 {{ $solicitud?->domicilio_calle }}
                                 #{{ $solicitud?->domicilio_numero }},
                                 {{ $solicitud?->domicilio_colonia }},
@@ -42,6 +43,7 @@
                             <div><strong>Sueldo:</strong> {{ $solicitud?->sueldo_mensual }}</div>
                             <div><strong>Empresa:</strong> {{ $solicitud?->empresa }}</div>
                             <div><strong>Punto:</strong> {{ $solicitud?->punto }}</div>
+                            <div><strong>Fecha de Ingreso:</strong> {{ $solicitud?->fecha_ingreso }}</div>
                             <div><strong>Fecha de Nacimiento:</strong> {{ $solicitud?->fecha_nacimiento }}</div>
                             <div><strong>Estatus:</strong>
                                 @if($user->estatus == 'Reingreso')

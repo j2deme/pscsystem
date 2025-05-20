@@ -47,17 +47,15 @@
                     <input type="text" id="nss" name="nss" placeholder="NSS" value="{{ $solicitud->nss }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                 </div>
 
-                <div class="form-group mb-6">
-                    <label for="edo_civil" class="block text-sm font-semibold text-gray-600">Estado Civil</label>
-                    <select id="edo_civil" name="edo_civil" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2"
-                        <option value="" disabled {{ is_null($solicitud->estado_civil) ? 'selected' : '' }}>Selecciona una opción</option>
-                        <option value="Soltero" {{ $solicitud->estado_civil === 'Soltero' ? 'selected' : '' }}>Soltero/a</option>
-                        <option value="Casado" {{ $solicitud->estado_civil === 'Casado' ? 'selected' : '' }}>Casado/a</option>
-                        <option value="Divorciado" {{ $solicitud->estado_civil === 'Divorciado' ? 'selected' : '' }}>Divorciado/a</option>
-                        <option value="Viudo" {{ $solicitud->estado_civil === 'Viudo' ? 'selected' : '' }}>Viudo/a</option>
-                        <option value="Union Civil" {{ $solicitud->estado_civil === 'Union Civil' ? 'selected' : '' }}>Unión civil</option>
-                    </select>
-                </div>
+                <select id="edo_civil" name="edo_civil" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
+                    <option value="" disabled {{ is_null($solicitud->estado_civil) ? 'selected' : '' }}>Selecciona una opción</option>
+                    <option value="Soltero" {{ $solicitud->estado_civil === 'Soltero' ? 'selected' : '' }}>Soltero/a</option>
+                    <option value="Casado" {{ $solicitud->estado_civil === 'Casado' ? 'selected' : '' }}>Casado/a</option>
+                    <option value="Divorciado" {{ $solicitud->estado_civil === 'Divorciado' ? 'selected' : '' }}>Divorciado/a</option>
+                    <option value="Viudo" {{ $solicitud->estado_civil === 'Viudo' ? 'selected' : '' }}>Viudo/a</option>
+                    <option value="Union Civil" {{ $solicitud->estado_civil === 'Union Civil' ? 'selected' : '' }}>Unión civil</option>
+                </select>
+
 
                 <div class="form-group mb-4">
                     <label for="rfc" class="block text-sm font-semibold text-gray-600">RFC</label>
@@ -155,6 +153,11 @@
                         <option value="PSC" {{ $solicitud->empresa === 'PSC' ? 'selected' : '' }}>PSC</option>
                     </select>
                     @error('empresa') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="form-group mb-6">
+                    <label for="sueldo_mensual" class="block text-sm font-semibold text-gray-600">Sueldo Mensual</label>
+                    <input type="text" id="sueldo_mensual" name="sueldo_mensual" placeholder="Sueldo Mensual" value="{{ $solicitud->sueldo_mensual }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-4">

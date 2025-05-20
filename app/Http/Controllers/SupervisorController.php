@@ -224,6 +224,7 @@ class SupervisorController extends Controller
                 'rol' => 'nullable|string|max:255',
                 'punto' => 'nullable|string|max:255',
                 'empresa' => 'nullable|string',
+                'sueldo_mensual' => 'nullable|string',
                 'email' => 'nullable|email|unique:solicitud_altas,email,' . $id . ',id',
 
             ]);
@@ -250,6 +251,7 @@ class SupervisorController extends Controller
             $solicitud->rol = $request->rol;
             $solicitud->punto = $request->punto;
             $solicitud->empresa = $request->empresa;
+            $solicitud->sueldo_mensual = $request->sueldo_mensual;
             $solicitud->email = $request->email;
             $solicitud->ultima_edicion = Auth::user()->name;
             $solicitud->updated_at = Carbon::now('America/Mexico_City');

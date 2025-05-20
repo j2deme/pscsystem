@@ -308,7 +308,12 @@ public function guardarArchivosAlta(Request $request, $id)
             $user->sol_docs_id = $documentacion->id;
             $user->name = $solicitud->nombre . " " . $solicitud->apellido_paterno . " " . $solicitud->apellido_materno;
             $user->email = $solicitud->email;
-            $user->password = Hash::make($solicitud->rfc);
+            if(!empty($solicitud->rfc))
+                $user->password = Hash::make($solicitud->rfc);
+            else
+                $user->password = Hash::make($solicitud->curp);
+
+            $user->fecha_ingreso = $solicitud->fecha_ingreso;
             $user->fecha_ingreso = $solicitud->fecha_ingreso;
             $user->punto = $solicitud->punto;
             $user->rol = $solicitud->rol;
