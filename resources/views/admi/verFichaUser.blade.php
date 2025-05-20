@@ -1,3 +1,6 @@
+@php
+    use Carbon\Carbon;
+@endphp
 <x-app-layout>
     <x-navbar></x-navbar>
     <div class="py-4 px-2 sm:py-6 sm:px-4">
@@ -43,8 +46,8 @@
                             <div><strong>Sueldo:</strong> {{ $solicitud?->sueldo_mensual }}</div>
                             <div><strong>Empresa:</strong> {{ $solicitud?->empresa }}</div>
                             <div><strong>Punto:</strong> {{ $solicitud?->punto }}</div>
-                            <div><strong>Fecha de Ingreso:</strong> {{ $solicitud?->fecha_ingreso }}</div>
-                            <div><strong>Fecha de Nacimiento:</strong> {{ $solicitud?->fecha_nacimiento }}</div>
+                            <div><strong>Fecha de Ingreso:</strong> {{ Carbon::parse($solicitud?->fecha_ingreso)->format('d/m/Y') }}</div>
+                            <div><strong>Fecha de Nacimiento:</strong> {{ Carbon::parse($solicitud?->fecha_nacimiento)->format('d/m/Y') }}</div>
                             <div><strong>Estatus:</strong>
                                 @if($user->estatus == 'Reingreso')
                                     <span class="inline-flex items-center px-2 py-1 text-sm text-gray-800 bg-yellow-300 rounded-full">

@@ -168,7 +168,7 @@ class RhController extends Controller
                 'liga_rfc' => 'nullable|string|max:255',
                 'infonavit' => 'nullable|string|max:255',
                 'fonacot' => 'nullable|string|max:255',
-                'domiclilio_comprobante' => 'nullable|string|max:255',
+                'domicilio_comprobante' => 'nullable|string|max:255',
                 'departamento' => 'nullable|string|max:255',
                 'rol' => 'nullable|string|max:255',
                 'punto' => 'nullable|string|max:255',
@@ -200,7 +200,7 @@ class RhController extends Controller
             $solicitud->domicilio_estado = $request->estado;
             $solicitud->infonavit = $request->infonavit;
             $solicitud->fonacot = $request->fonacot;
-            $solicitud->domicilio_comprobante = $request->domiclilio_comprobante;
+            $solicitud->domicilio_comprobante = $request->domicilio_comprobante;
             $solicitud->rol = $request->rol;
             $solicitud->punto = $request->punto;
             $solicitud->empresa = $request->empresa;
