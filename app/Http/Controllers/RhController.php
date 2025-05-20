@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use setasign\Fpdi\Fpdi;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\SolicitudAlta;
 use App\Models\SolicitudVacaciones;
@@ -395,4 +397,13 @@ public function guardarArchivosAlta(Request $request, $id)
             ->paginate(10);
         return view('rh.historialVacaciones', compact('solicitudes'));
     }
+
+public function exportFichaTecnica($id)
+{
+    $user = User::findOrFail($id);
+    $docs = DocumentacionAltas::where('solicitud_id', $user->sol_alta_id)->first();
+    $pdf = Pdf::loadView('pdf.fichaTecnica', ['user' => $user], ['docs' => $docs]);
+
+    return $pdf->download('ficha_tecnica_' . $user->id . '.pdf');
+}
 }

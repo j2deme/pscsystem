@@ -97,6 +97,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/vista_vacaciones', [RhController::class, 'vistaVacaciones'])->name('rh.vistaVacaciones');
     Route::get('/historial_vacaciones', [RhController::class, 'historialVacaciones'])->name('rh.historialVacaciones');
     Route::get('/alta-usuario', [RhController::class, 'formAlta'])->name('rh.formAlta');
+    Route::get('/descargar_ficha/{id}', [RhController::class, 'exportFichaTecnica'])->name('rh.descargarFicha');
 
     Route::get('/descargar-bajas', function () {
         return (new BajasSpreadsheetExport())->generateFile();
