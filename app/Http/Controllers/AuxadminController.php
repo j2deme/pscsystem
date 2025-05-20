@@ -12,11 +12,11 @@ class AuxadminController extends Controller
 {
     public function nuevasAltas(){
         $solicitudes = SolicitudAlta::where('status', 'Aceptada')
-    ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))
-    ->whereHas('documentacion', function ($q) {
-        $q->whereNull('arch_acuse_imss');
-    })
-    ->get();
+            ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))
+            ->whereHas('documentacion', function ($q) {
+                $q->whereNull('arch_acuse_imss');
+            })
+            ->get();
 
         return view('auxadmin.nuevasAltas', compact('solicitudes'));
     }

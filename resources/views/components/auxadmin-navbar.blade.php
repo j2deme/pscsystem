@@ -1,11 +1,22 @@
 @php
     use App\Models\User;
+    use APP\Models\SolicitudAlta;
+    use Carbon\Carbon;
+
+    $conteoAltas = SolicitudAlta::where('status', 'Aceptada')
+    ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))
+    ->whereHas('documentacion', function ($q) {
+        $q->whereNull('arch_acuse_imss');
+    })
+    ->count();
+
     $cards = [
         [
             'titulo' => 'Nuevas Altas',
             'ruta' => route('aux.nuevasAltas'),
             'icono' => '🆕',
             'color' => 'bg-green-100 dark:bg-green-700',
+            'notificaciones' => $conteoAltas,
         ],
         [
                     'titulo' => 'Solicitar Vacaciones',
