@@ -74,21 +74,18 @@ class AdminController extends Controller
     public function darReingreso($id){
         $user = User::find($id);
         $user->estatus = 'Activo';
-        $fechaHoy = Carbon::today('America/Mexico_City')->toDateString();
+        $fechaHoy = \Carbon\Carbon::today('America/Mexico_City')->toDateString();
 
-        if (($user->solicitudAlta->reingreso == null) || ($user->solicitudAlta->reingreso == 'NO')) {
+        $reingresoTexto = $user->solicitudAlta->reingreso;
+
+        if (is_null($reingresoTexto) || trim($reingresoTexto) === '' || $reingresoTexto === 'NO') {
             $user->solicitudAlta->reingreso = "Reingreso 1: $fechaHoy";
-        } elseif (str_contains($user->solicitudAlta->reingreso, 'Reingreso 1:') &&
-                !str_contains($user->solicitudAlta->reingreso, 'Reingreso 2:')) {
-            $user->solicitudAlta->reingreso .= " Reingreso 2: $fechaHoy";
-        } elseif (str_contains($user->solicitudAlta->reingreso, 'Reingreso 2:') &&
-                !str_contains($user->solicitudAlta->reingreso, 'Reingreso 3:')) {
-            $user->solicitudAlta->reingreso .= " Reingreso 3: $fechaHoy";
-        } elseif (str_contains($user->solicitudAlta->reingreso, 'Reingreso 3:') &&
-                !str_contains($user->solicitudAlta->reingreso, 'Reingreso 4:')) {
-            $user->solicitudAlta->reingreso .= " Reingreso 4: $fechaHoy";
         } else {
-            $user->solicitudAlta->reingreso .= " Reingreso 5: $fechaHoy";
+            preg_match_all('/Reingreso \d+:/', $reingresoTexto, $coincidencias);
+            $reingresosHechos = count($coincidencias[0]);
+
+            $nuevoNumero = $reingresosHechos + 1;
+            $user->solicitudAlta->reingreso .= " Reingreso $nuevoNumero: $fechaHoy";
         }
         $user->solicitudAlta->save();
         $user->save();

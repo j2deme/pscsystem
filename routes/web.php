@@ -132,6 +132,7 @@ Route::middleware('auth')->group(function () {
 
     //Usuario Aux Admin
     Route::get('/nuevas_altas', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');
+    Route::post('/subida_documentacion/{id}', [AuxadminController::class, 'guardarAcuses'])->name('documentacion.subir');
 
 });
 

@@ -62,8 +62,8 @@
                                         {{ $user->estatus }}
                                     </span>
                                 @endif
-                                @if($user->solicitudAlta->reingreso != null)
-                                    <div><strong>Reingreso:</strong> {{$user->solicitudAlta->reingreso }}</div>
+                                @if($user->solicitudAlta->reingreso != null && $user->solicitudAlta->reingreso != 'NO')
+                                    <div class="mt-2"><strong>Reingreso:</strong> {{$user->solicitudAlta->reingreso }}</div>
                                 @endif
                             </div>
                         </div>
@@ -141,10 +141,12 @@
                             @endif
                         @endif
                     @elseif($user->estatus == 'Inactivo')
-                        <a href="#" class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 transition"
-                            onclick="confirmarReingreso({{ $user->id }})">
-                            Reingreso
-                        </a>
+                        @if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'Auxiliar recursos humanos')
+                            <a href="#" class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 transition"
+                                onclick="confirmarReingreso({{ $user->id }})">
+                                Reingreso
+                            </a>
+                        @endif
                     @endif
                     @if (Auth::user()->rol == 'admin')
                         <a href="{{ route('admin.verUsuarios') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
