@@ -35,7 +35,7 @@
                             <x-rh-navbar></x-rh-navbar>
                         @elseif (Auth::user()->rol == 'AUXILIAR MONITORISTA' || Auth::user()->rol == 'MONITORISTA' || Auth::user()->rol == 'Auxiliar Monitorista' || Auth::user()->rol == 'Monitorista' || Auth::user()->solicitudAlta->departamento == 'Monitoreo')
                             <x-monitoreo-navbar></x-monitoreo-navbar>
-                        @elseif (Auth::user()->rol == 'Auxiliar Administrativo' || Auth::user()->rol == 'AUXILIAR ADMINISTRATIVO' || Auth::user()->rol == 'Auxiliar administrativo' Auth::user()->solicitudAlta->rol == 'Auxiliar administrativo')
+                        @elseif (Auth::user()->rol == 'Auxiliar Administrativo' || Auth::user()->rol == 'AUXILIAR ADMINISTRATIVO' || Auth::user()->rol == 'Auxiliar administrativo' || Auth::user()->solicitudAlta->rol == 'Auxiliar administrativo')
                             <x-auxadmin-navbar></x-auxadmin-navbar>
                         @else
                             <x-user-navbar></x-user-navbar>
