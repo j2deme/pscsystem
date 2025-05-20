@@ -62,6 +62,9 @@
                                         {{ $user->estatus }}
                                     </span>
                                 @endif
+                                @if($user->solicitudAlta->reingreso != null)
+                                    <div><strong>Reingreso:</strong> {{$user->solicitudAlta->reingreso }}</div>
+                                @endif
                             </div>
                         </div>
 

@@ -76,7 +76,7 @@ class AdminController extends Controller
         $user->estatus = 'Activo';
         $fechaHoy = Carbon::today('America/Mexico_City')->toDateString();
 
-        if (is_null($user->solicitudAlta->reingreso)) {
+        if (($user->solicitudAlta->reingreso == null) || ($user->solicitudAlta->reingreso == 'NO')) {
             $user->solicitudAlta->reingreso = "Reingreso 1: $fechaHoy";
         } elseif (str_contains($user->solicitudAlta->reingreso, 'Reingreso 1:') &&
                 !str_contains($user->solicitudAlta->reingreso, 'Reingreso 2:')) {
