@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use setasign\Fpdi\Fpdi;
+use Mpdf\Mpdf;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use App\Models\SolicitudAlta;
@@ -398,12 +399,92 @@ public function guardarArchivosAlta(Request $request, $id)
         return view('rh.historialVacaciones', compact('solicitudes'));
     }
 
-public function exportFichaTecnica($id)
-{
-    $user = User::findOrFail($id);
-    $docs = DocumentacionAltas::where('solicitud_id', $user->sol_alta_id)->first();
-    $pdf = Pdf::loadView('pdf.fichaTecnica', ['user' => $user], ['docs' => $docs]);
+    public function exportFichaTecnica($id)
+    {
+        $user = User::findOrFail($id);
+        $docs = DocumentacionAltas::where('solicitud_id', $user->sol_alta_id)->first();
 
-    return $pdf->download('ficha_tecnica_' . $user->id . '.pdf');
-}
+    $tipo = $user->solicitudAlta->tipo_empleado ?? 'oficina';
+
+        if ($tipo === 'armado') {
+            $documentosObligatorios = [
+                ['label' => 'Solicitud/CV', 'name' => 'arch_solicitud_empleo'],
+                ['label' => 'INE', 'name' => 'arch_ine'],
+                ['label' => 'NSS', 'name' => 'arch_nss'],
+                ['label' => 'CURP', 'name' => 'arch_curp'],
+                ['label' => 'RFC', 'name' => 'arch_rfc'],
+                ['label' => 'Acta de Nacimiento', 'name' => 'arch_acta_nacimiento'],
+                ['label' => 'Comprobante de Estudios', 'name' => 'arch_comprobante_estudios'],
+                ['label' => 'Comprobante de Domicilio', 'name' => 'arch_comprobante_domicilio'],
+                ['label' => 'Carta de Recomendación Laboral', 'name' => 'arch_carta_rec_laboral'],
+                ['label' => 'Carta de Recomendación Personal', 'name' => 'arch_carta_rec_personal'],
+                ['label' => 'Cartilla Militar', 'name' => 'arch_cartilla_militar'],
+                ['label' => 'Antidoping', 'name' => 'arch_antidoping'],
+                ['label' => 'Carta de No Antecedentes Penales', 'name' => 'arch_carta_no_penales'],
+                ['label' => 'Contrato', 'name' => 'arch_contrato'],
+                ['label' => 'Fotografía (Reciente)', 'name' => 'arch_foto'],
+            ];
+        } else {
+            $documentosObligatorios = [
+                ['label' => 'Solicitud/CV', 'name' => 'arch_solicitud_empleo'],
+                ['label' => 'INE', 'name' => 'arch_ine'],
+                ['label' => 'NSS', 'name' => 'arch_nss'],
+                ['label' => 'CURP', 'name' => 'arch_curp'],
+                ['label' => 'RFC', 'name' => 'arch_rfc'],
+                ['label' => 'Acta de Nacimiento', 'name' => 'arch_acta_nacimiento'],
+                ['label' => 'Comprobante de Estudios', 'name' => 'arch_comprobante_estudios'],
+                ['label' => 'Comprobante de Domicilio', 'name' => 'arch_comprobante_domicilio'],
+                ['label' => 'Carta de Recomendación Laboral', 'name' => 'arch_carta_rec_laboral'],
+                ['label' => 'Carta de Recomendación Personal', 'name' => 'arch_carta_rec_personal'],
+                ['label' => 'Contrato', 'name' => 'arch_contrato'],
+                ['label' => 'Fotografía (Reciente)', 'name' => 'arch_foto'],
+            ];
+        }
+        $mpdf = new Mpdf();
+        $html = view('pdf.fichaTecnica', compact('user', 'docs', 'documentosObligatorios'))->render();
+        $mpdf->WriteHTML($html);
+
+        $tempFile = tempnam(sys_get_temp_dir(), 'ficha_') . '.pdf';
+        $mpdf->Output($tempFile);
+
+        $pdf = new Fpdi();
+
+        $pageCount = $pdf->setSourceFile($tempFile);
+        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+            $tplId = $pdf->importPage($pageNo);
+            $size = $pdf->getTemplateSize($tplId);
+
+            $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+            $pdf->useTemplate($tplId);
+        }
+
+        foreach ($documentosObligatorios as $doc) {
+            $archivo = $docs ? ($docs->{$doc['name']} ?? null) : null;
+
+            if ($archivo && file_exists(public_path($archivo))) {
+                $rutaArchivo = public_path($archivo);
+                $ext = strtolower(pathinfo($rutaArchivo, PATHINFO_EXTENSION));
+
+                if (in_array($ext, ['jpg', 'jpeg', 'png'])) {
+                    $pdf->AddPage();
+                    $pdf->Image($rutaArchivo, 10, 10, 190);
+                } elseif ($ext === 'pdf') {
+                    $docPageCount = $pdf->setSourceFile($rutaArchivo);
+                    for ($i = 1; $i <= $docPageCount; $i++) {
+                        $tplId = $pdf->importPage($i);
+                        $size = $pdf->getTemplateSize($tplId);
+
+                        $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
+                        $pdf->useTemplate($tplId);
+                    }
+                }
+            }
+        }
+
+        unlink($tempFile);
+
+        return response($pdf->Output('ficha_tecnica_' . $user->id . '.pdf', 'S'))
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="ficha_tecnica_'.$user->id.'.pdf"');
+    }
 }
