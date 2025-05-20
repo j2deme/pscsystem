@@ -114,7 +114,7 @@
 
                 <div class="flex flex-wrap justify-center gap-4 mt-4">
                     @if($user->estatus != 'Inactivo')
-                        @if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS')
+                        @if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'Auxiliar recursos humanos')
                             <a href="{{ route('admin.editarUsuarioForm', $user->id) }}"
                                 class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 transition">
                                 Editar
@@ -132,6 +132,11 @@
                                 </a>
                             @endif
                         @endif
+                    @elseif($user->estatus == 'Inactivo')
+                        <a href="#" class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 transition"
+                            onclick="confirmarReingreso({{ $user->id }})">
+                            Reingreso
+                        </a>
                     @endif
                     @if (Auth::user()->rol == 'admin')
                         <a href="{{ route('admin.verUsuarios') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
@@ -161,6 +166,22 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 window.location.href = `/admin/baja_usuario/${userId}`;
+            }
+        });
+    }
+    function confirmarReingreso(userId) {
+        Swal.fire({
+            title: '¿Confirmas generar el reingreso?',
+            text: "Esto añadirá un nuevo reingreso para el usuario.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, generar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/reingreso/${userId}`;
             }
         });
     }

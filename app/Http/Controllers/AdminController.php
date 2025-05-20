@@ -70,4 +70,29 @@ class AdminController extends Controller
 
         return view ('admi.verBuzon', compact('quejas'));
     }
+
+    public function darReingreso($id){
+        $user = User::find($id);
+        $user->estatus = 'Activo';
+        $fechaHoy = Carbon::today('America/Mexico_City')->toDateString();
+
+        if (is_null($user->solicitudAlta->reingreso)) {
+            $user->solicitudAlta->reingreso = "Reingreso 1: $fechaHoy";
+        } elseif (str_contains($user->solicitudAlta->reingreso, 'Reingreso 1:') &&
+                !str_contains($user->solicitudAlta->reingreso, 'Reingreso 2:')) {
+            $user->solicitudAlta->reingreso .= " Reingreso 2: $fechaHoy";
+        } elseif (str_contains($user->solicitudAlta->reingreso, 'Reingreso 2:') &&
+                !str_contains($user->solicitudAlta->reingreso, 'Reingreso 3:')) {
+            $user->solicitudAlta->reingreso .= " Reingreso 3: $fechaHoy";
+        } elseif (str_contains($user->solicitudAlta->reingreso, 'Reingreso 3:') &&
+                !str_contains($user->solicitudAlta->reingreso, 'Reingreso 4:')) {
+            $user->solicitudAlta->reingreso .= " Reingreso 4: $fechaHoy";
+        } else {
+            $user->solicitudAlta->reingreso .= " Reingreso 5: $fechaHoy";
+        }
+        $user->solicitudAlta->save();
+        $user->save();
+
+        return redirect()->back()->with('success', 'El usuario ha sido dado de alta correctamente.');
+    }
 }
