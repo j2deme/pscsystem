@@ -171,6 +171,7 @@ class RhController extends Controller
                 'domicilio_comprobante' => 'nullable|string|max:255',
                 'departamento' => 'nullable|string|max:255',
                 'rol' => 'nullable|string|max:255',
+                'reingreso' => 'nullable|string',
                 'punto' => 'nullable|string|max:255',
                 'empresa' => 'nullable|string',
                 'sueldo_mensual' => 'nullable|string',
@@ -203,6 +204,7 @@ class RhController extends Controller
             $solicitud->domicilio_comprobante = $request->domicilio_comprobante;
             $solicitud->rol = $request->rol;
             $solicitud->punto = $request->punto;
+            $solicitud->reingreso = $request->reingreso;
             $solicitud->empresa = $request->empresa;
             $solicitud->fecha_ingreso = $request->fecha_ingreso;
             $solicitud->sueldo_mensual = $request->sueldo_mensual;

@@ -36,6 +36,13 @@ foreach ($supervisores as $supervisor) {
 $asistenciasFaltantes = $supervisoresCount - $totalAsistenciasHoy;
 $supNotificaciones = $asistenciasFaltantes + $solicitudesVacaciones;
 
+$conteoAltasAux = SolicitudAlta::where('status', 'Aceptada')
+    ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))
+    ->whereHas('documentacion', function ($q) {
+        $q->whereNull('arch_acuse_imss');
+    })
+    ->count();
+
 $cards = array_filter([
     Auth::user()->email == 'gino@spyt.com.mx' ? [
         'titulo' => 'Nuevas Altas',
@@ -50,6 +57,13 @@ $cards = array_filter([
         'icono' => '💵',
         'color' => 'bg-blue-100 dark:bg-blue-700',
         'disabled' => true
+    ],
+    [
+        'titulo' => 'IMSS',
+        'ruta' => "#",
+        'icono' => '💊',
+        'color' => 'bg-blue-100 dark:bg-blue-700',
+        'notificaciones' => $conteoAltasAux,
     ],
     [
         'titulo' => 'Recursos Humanos',

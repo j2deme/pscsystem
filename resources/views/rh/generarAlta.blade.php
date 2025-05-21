@@ -170,6 +170,11 @@
                 </div>
 
                 <div class="form-group mb-6">
+                    <label for="reingreso" class="block text-sm font-semibold text-gray-600">Reingreso</label>
+                    <input type="reingreso" id="reingreso" name="reingreso" placeholder="Reingreso" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                </div>
+
+                <div class="form-group mb-6">
                     <label for="empresa" class="block text-sm font-semibold text-gray-600">Empresa</label>
                     <select id="empresa" name="empresa" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                         <option value="" disabled selected>Selecciona una empresa</option>

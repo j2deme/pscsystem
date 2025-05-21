@@ -116,6 +116,10 @@
                     <input type="text" id="fonacot" name="fonacot" placeholder="Fonacot" value="{{ $solicitud->fonacot }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
+                <div class="form-group mb-4">
+                    <label for="fecha_ingreso" class="block text-sm font-semibold text-gray-600">Fecha de Ingreso</label>
+                    <input type="date" id="fecha_ingreso" name="fecha_ingreso" placeholder="fecha de ingreso" value="{{ $solicitud->fecha_ingreso }}" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
+                </div>
                 @if (Auth::user()->rol != 'Supervisor' && $solicitud->tipo_empleado == 'oficina')
 
                     <div class="form-group mb-6">

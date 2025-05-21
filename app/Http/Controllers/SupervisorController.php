@@ -222,6 +222,7 @@ class SupervisorController extends Controller
                 'estado' => 'nullable|string|max:255',
                 'liga_rfc' => 'nullable|string|max:255',
                 'rol' => 'nullable|string|max:255',
+                'fecha_ingreso' => 'nullable|date',
                 'punto' => 'nullable|string|max:255',
                 'empresa' => 'nullable|string',
                 'sueldo_mensual' => 'nullable|string',
@@ -248,6 +249,7 @@ class SupervisorController extends Controller
             $solicitud->cp_fiscal = $request->cp_fiscal;
             $solicitud->domicilio_estado = $request->estado;
             $solicitud->liga_rfc = $request->liga_rfc;
+            $solicitud->fecha_ingreso = $request->fecha_ingreso;
             $solicitud->rol = $request->rol;
             $solicitud->punto = $request->punto;
             $solicitud->empresa = $request->empresa;
@@ -274,6 +276,7 @@ class SupervisorController extends Controller
                 $user->email = $solicitud->email;
                 $user->punto = $solicitud->punto;
                 $user->rol = $solicitud->rol;
+
                 $user->empresa = $solicitud->empresa;
 
                 $user->save();
