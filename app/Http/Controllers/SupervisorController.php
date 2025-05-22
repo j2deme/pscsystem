@@ -255,8 +255,8 @@ class SupervisorController extends Controller
             $solicitud->empresa = $request->empresa;
             $solicitud->sueldo_mensual = $request->sueldo_mensual;
             $solicitud->email = $request->email;
-            $solicitud->ultima_edicion = Auth::user()->name;
-            $solicitud->updated_at = Carbon::now('America/Mexico_City');
+            $solicitud->ultima_edicion = Auth::user()->name . " " . Carbon::now('America/Mexico_City');
+            //$solicitud->updated_at = Carbon::now('America/Mexico_City');
             $solicitud->estatura = '0.0';
             $solicitud->peso = '0.0';
             if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS'){

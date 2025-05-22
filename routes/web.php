@@ -13,6 +13,7 @@ use App\Http\Controllers\RhController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\MonitoreoController;
 use App\Http\Controllers\AuxadminController;
+use App\Http\Controllers\NominasController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -133,6 +134,9 @@ Route::middleware('auth')->group(function () {
     //Usuario Aux Admin
     Route::get('/nuevas_altas', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');
     Route::post('/subida_documentacion/{id}', [AuxadminController::class, 'guardarAcuses'])->name('documentacion.subir');
+
+    //Usuario nominas
+    Route::get('/antiguedades', [NominasController::class, 'antiguedades'])->name('nominas.usersAntiguedades');
 
 });
 
