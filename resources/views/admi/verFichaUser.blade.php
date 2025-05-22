@@ -99,6 +99,8 @@
                             'arch_fonacot' => 'Fonacot',
                             'arch_licencia_conducir' => 'Licencia de Conducir',
                             'arch_carta_no_penales' => 'Carta No Penales',
+                            'arch_acuse_imss' => 'Acuse de IMSS',
+                            'arch_retencion_infonavit' => 'Retención de Infonavit',
                             'arch_foto' => 'Fotografía',
                             'visa' => 'Visa',
                             'pasaporte' => 'Pasaporte'

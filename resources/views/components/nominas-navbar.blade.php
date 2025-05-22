@@ -16,6 +16,13 @@
             'notificaciones' => $conteoAltas,
         ],
         [
+            'titulo' => 'Finiquitos',
+            'ruta' => '#',
+            'icono' => '💸',
+            'color' => 'bg-red-100 dark:bg-red-700',
+            'disabled' => true,
+        ],
+        [
             'titulo' => 'Antigüedad',
             'ruta' => route('nominas.usersAntiguedades'),
             'icono' => '📆',
