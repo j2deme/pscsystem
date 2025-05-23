@@ -70,7 +70,7 @@
                         <div class="flex flex-col items-center justify-start text-center space-y-2">
                             @if ($documentacion && $documentacion->arch_foto)
                                 <p class="font-semibold">Foto del solicitante:</p>
-                                <img src="{{ asset($documentacion->arch_foto) }}" alt="Foto del usuario" class="w-40 h-40 object-cover rounded-full shadow">
+                                <img src="{{ asset($documentacion->arch_foto) }}" alt="Foto del usuario" class="w-40 h-40 object-cover rounded shadow">
                                 <a href="{{ asset($documentacion->arch_foto) }}" target="_blank" class="text-blue-500 underline text-sm">Ver completa</a>
                             @else
                                 <p class="text-sm text-gray-500">No hay foto cargada.</p>
@@ -157,11 +157,11 @@
                                     </div>
                                 </form>
                             </div>
+                            @endif
+                            <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
+                                Regresar
+                            </a>
                         </div>
-                        @endif
-                        <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
-                            Regresar
-                        </a>
                 @else
                 <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
                     Regresar

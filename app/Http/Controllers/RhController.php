@@ -351,43 +351,66 @@ public function guardarArchivosAlta(Request $request, $id)
         return view('rh.llenarBaja', compact('user','solicitud','solicitudpendiente'));
     }
 
-    public function almacenarBaja(Request $request, $id){
-        $request->validate([
-            'fecha_hoy' => 'required|date',
-            'incapacidad' => 'nullable|string|max:255',
-            'por' => 'required|in:Ausentismo,Separación Voluntaria,Renuncia',
-            'ultima_asistencia' => 'nullable|date',
-            'motivo' => 'nullable|string',
-        ]);
+    public function almacenarBaja(Request $request, $id)
+{
+    $request->validate([
+        'fecha_hoy' => 'required|date',
+        'incapacidad' => 'nullable|string|max:255',
+        'por' => 'required|in:Ausentismo,Separación Voluntaria,Renuncia',
+        'ultima_asistencia' => 'nullable|date',
+        'motivo' => 'nullable|string',
+        'archivo_baja' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        'archivo_equipo_entregado' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        'archivo_renuncia' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+    ]);
 
-            $user = User::findOrFail($id);
+    $user = User::findOrFail($id);
 
-            $solicitud = new SolicitudBajas();
-            $solicitud->user_id = $user->id;
-            $solicitud->fecha_solicitud = $request->fecha_hoy;
-            $solicitud->motivo = $request->motivo;
-            $solicitud->incapacidad = $request->incapacidad;
-            $solicitud->por = $request->por;
-            $solicitud->ultima_asistencia = $request->ultima_asistencia;
-            if ($request->por == 'Renuncia') {
-            $solicitud->estatus = 'Aceptada';
-            $solicitud->observaciones = 'Baja de elemento Aprobada.';
-            $solicitud->fecha_baja = Carbon::now();
-            $user->estatus = 'Inactivo';
-            $user->save();
-            } else {
-                $solicitud->estatus = 'En Proceso';
-                $solicitud->observaciones = 'Solicitud en revisión';
-            }
+    $solicitud = new SolicitudBajas();
+    $solicitud->user_id = $user->id;
+    $solicitud->fecha_solicitud = $request->fecha_hoy;
+    $solicitud->motivo = $request->motivo;
+    $solicitud->incapacidad = $request->incapacidad;
+    $solicitud->por = $request->por;
+    $solicitud->ultima_asistencia = $request->ultima_asistencia;
+    $solicitud->estatus = 'En Proceso';
+    $solicitud->observaciones = 'Solicitud en revisión';
+    $solicitud->fecha_baja = Carbon::now('America/Mexico_City');
 
-            try {
-                $solicitud->save();
-            } catch (\Exception $e) {
-                return redirect()->route('dashboard')->with('error', 'Error al enviar la solicitud.');
-            }
-
-            return redirect()->route('dashboard')->with('success', 'Baja de usuario realizada correctamente.');
+    try {
+        $solicitud->save();
+    } catch (\Exception $e) {
+        return redirect()->route('dashboard')->with('error', 'Error al enviar la solicitud.');
     }
+
+    $carpeta = 'solicitudesBajas/' . $solicitud->id;
+    Storage::disk('public')->makeDirectory($carpeta);
+
+    $archivos = [
+        'archivo_baja',
+        'archivo_equipo_entregado',
+        'archivo_renuncia'
+    ];
+
+    foreach ($archivos as $campo) {
+        if ($request->hasFile($campo)) {
+            $archivo = $request->file($campo);
+            $nombre = $campo . '_' . time() . '.' . $archivo->getClientOriginalExtension();
+            $ruta = $archivo->storeAs($carpeta, $nombre, 'public');
+            $solicitud->$campo = $ruta;
+        }
+    }
+
+    if ($solicitud->arch_renuncia !== null) {
+        $user->estatus = 'Inactivo';
+        $user->save();
+    }
+
+    $solicitud->save();
+
+    return redirect()->route('dashboard')->with('success', 'Baja de usuario realizada correctamente.');
+}
+
 
     public function verArchivos(){
         return view('rh.archivos');

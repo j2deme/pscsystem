@@ -19,33 +19,39 @@
             'notificaciones' => $conteoAltas,
         ],
         [
-                    'titulo' => 'Solicitar Vacaciones',
-                    'ruta' => route('user.solicitarVacacionesForm'),
-                    'icono' => '🎉',
-                    'color' => 'bg-blue-100 dark:bg-blue-700',
-                    'disabled' => Auth::user()->rol == 'admin'
-                ],
-                [
-                    'titulo' => 'Mi Historial de Vacaciones',
-                    'ruta' => route('user.historialVacaciones'),
-                    'icono' => '📅',
-                    'color' => 'bg-green-100 dark:bg-green-700',
-                    'disabled' => Auth::user()->rol == 'admin'
-                ],
-                [
-                    'titulo' => 'Ficha Técnica',
-                    'ruta' => route('user.verFicha', auth()->user()->id),
-                    'icono' => '📝',
-                    'color' => 'bg-yellow-100 dark:bg-yellow-700',
-                    'disabled' => Auth::user()->rol == 'admin'
-                ],
-                [
-                    'titulo' => 'Buzón de Quejas y Sugerencias',
-                    'ruta' => route('user.buzon'),
-                    'icono' => '💬',
-                    'color' => 'bg-purple-100 dark:bg-purple-700',
-                    'disabled' => Auth::user()->rol == 'admin'
-                ],
+            'titulo' => 'Actualización de Archivos',
+            'ruta' => route('aux.usuariosList'),
+            'icono' => '📁',
+            'color' => 'bg-yellow-100 dark:bg-yellow-700',
+        ],
+        [
+            'titulo' => 'Solicitar Vacaciones',
+            'ruta' => route('user.solicitarVacacionesForm'),
+            'icono' => '🎉',
+            'color' => 'bg-blue-100 dark:bg-blue-700',
+            'disabled' => Auth::user()->rol == 'admin'
+        ],
+        [
+            'titulo' => 'Mi Historial de Vacaciones',
+            'ruta' => route('user.historialVacaciones'),
+            'icono' => '📅',
+            'color' => 'bg-green-100 dark:bg-green-700',
+            'disabled' => Auth::user()->rol == 'admin'
+        ],
+        [
+            'titulo' => 'Ficha Técnica',
+            'ruta' => route('user.verFicha', auth()->user()->id),
+            'icono' => '📝',
+            'color' => 'bg-yellow-100 dark:bg-yellow-700',
+            'disabled' => Auth::user()->rol == 'admin'
+        ],
+        [
+            'titulo' => 'Buzón de Quejas y Sugerencias',
+            'ruta' => route('user.buzon'),
+            'icono' => '💬',
+            'color' => 'bg-purple-100 dark:bg-purple-700',
+            'disabled' => Auth::user()->rol == 'admin'
+        ],
 
     ];
 @endphp

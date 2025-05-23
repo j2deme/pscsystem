@@ -43,6 +43,14 @@ $conteoAltasAux = SolicitudAlta::where('status', 'Aceptada')
     })
     ->count();
 
+    $conteoAltasNominas = SolicitudAlta::where('status', 'Aceptada')
+        ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))
+        ->count();
+    $conteoBajasNominas = SolicitudBajas::where('estatus', 'Aceptada')
+            ->whereDate('fecha_baja', '>=', Carbon::today('America/Mexico_City')->subDays(5))
+            ->count();
+    $conteoNominas = $conteoAltasNominas + $conteoBajasNominas;
+
 $cards = array_filter([
     Auth::user()->email == 'gino@spyt.com.mx' ? [
         'titulo' => 'Nuevas Altas',
@@ -56,7 +64,7 @@ $cards = array_filter([
         'ruta' => "#",
         'icono' => '💵',
         'color' => 'bg-blue-100 dark:bg-blue-700',
-        'disabled' => true
+        'notificaciones' => $conteoNominas,
     ],
     [
         'titulo' => 'IMSS',

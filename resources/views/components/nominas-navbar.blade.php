@@ -1,26 +1,36 @@
 @php
     use App\Models\User;
     use App\Models\SolicitudAlta;
+    use App\Models\SolicitudBajas;
     use Carbon\Carbon;
 
     $conteoAltas = SolicitudAlta::where('status', 'Aceptada')
-        ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(15))
+        ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))//si se requiere respetar a toda la quincena
         ->count();
+    $conteoBajas = SolicitudBajas::where('estatus', 'Aceptada')
+            ->whereDate('fecha_baja', '>=', Carbon::today('America/Mexico_City')->subDays(5))
+            ->count();
 
     $cards = [
         [
             'titulo' => 'Nuevas Altas',
-            'ruta' => '#',
+            'ruta' => route('nominas.nuevasAltas'),
             'icono' => '🆕',
             'color' => 'bg-green-100 dark:bg-green-700',
             'notificaciones' => $conteoAltas,
         ],
         [
             'titulo' => 'Finiquitos',
-            'ruta' => '#',
+            'ruta' => route('nominas.verBajas'),
             'icono' => '💸',
             'color' => 'bg-red-100 dark:bg-red-700',
-            'disabled' => true,
+            'notificaciones' => $conteoBajas,
+        ],
+        [
+            'titulo' => 'Archivos',
+            'ruta' => route('rh.archivos'),
+            'icono' => '📁',
+            'color' => 'bg-yellow-100 dark:bg-yellow-700',
         ],
         [
             'titulo' => 'Antigüedad',
@@ -41,6 +51,12 @@
             'icono' => '📅',
             'color' => 'bg-green-100 dark:bg-green-700',
             'disabled' => Auth::user()->rol == 'admin'
+        ],
+        [
+            'titulo' => 'Asistencias',
+            'ruta' => '#',
+            'icono' => '📝',
+            'color' => 'bg-green-100 dark:bg-green-700',
         ],
         [
             'titulo' => 'Ficha Técnica',

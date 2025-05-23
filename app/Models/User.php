@@ -53,7 +53,9 @@ class User extends Authenticatable
     public function solicitudBajas() {
         return $this->hasMany(SolicitudBajas::class);
     }
-
+    public function documentacionAltas(){
+        return $this->hasOne(DocumentacionAltas::class, 'id', 'sol_docs_id');
+    }
     public function solicitudAlta()
     {
         return $this->hasOne(SolicitudAlta::class, 'id', 'sol_alta_id');

@@ -132,12 +132,15 @@ Route::middleware('auth')->group(function () {
     //Uusario Monitorista
 
     //Usuario Aux Admin
-    Route::get('/nuevas_altas', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');
+    Route::get('/nuevas_altas_elementos', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');
     Route::post('/subida_documentacion/{id}', [AuxadminController::class, 'guardarAcuses'])->name('documentacion.subir');
+    Route::get('/listado_usuarios', [AuxadminController::class, 'listadoUsuarios'])->name('aux.usuariosList');
+    Route::post('/actualizacion_documentacion/{id}', [AuxadminController::class, 'actualizarAcuses'])->name('documentacion.actualizar');
 
     //Usuario nominas
     Route::get('/antiguedades', [NominasController::class, 'antiguedades'])->name('nominas.usersAntiguedades');
-
+    Route::get('/finiquitos', [NominasController::class, 'verBajas'])->name('nominas.verBajas');
+    Route::get('/nuevas_altas', [NominasController::class, 'nuevasAltas'])->name('nominas.nuevasAltas');
 });
 
 require __DIR__.'/auth.php';

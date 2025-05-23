@@ -84,8 +84,63 @@
                                     <input type="date" name="ultima_asistencia" id="ultima_asistencia" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                 </div>
                                 <div>
+                                    <label for="descuento" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descuento por equipo/material no decuelto</label>
+                                    <input type="text" name="descuento" id="descuento" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                </div>
+                                <div x-data="fileUpload()" class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Archivo de Baja</label>
+                                    <div
+                                        @dragover.prevent
+                                        @drop.prevent="handleDrop($event)"
+                                        class="flex items-center justify-center w-full p-4 border-2 border-dashed rounded-lg cursor-pointer transition bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:border-blue-500"
+                                        :class="{ 'border-blue-500': isDragging }"
+                                        @dragenter="isDragging = true"
+                                        @dragleave="isDragging = false"
+                                    >
+                                        <input type="file" name="archivo_baja" id="archivo_baja" class="hidden" @change="handleFile($event)" x-ref="inputFile">
+                                        <div class="text-center">
+                                            <p class="text-sm text-gray-600 dark:text-gray-300" x-text="fileName || 'Arrastra un archivo aquí o haz clic para seleccionarlo'"></p>
+                                            <button type="button" class="mt-2 text-blue-600 hover:underline" @click="$refs.inputFile.click()">Seleccionar archivo</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div x-data="fileUpload()" class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Archivo de Equipo Entregado</label>
+                                    <div
+                                        @dragover.prevent
+                                        @drop.prevent="handleDrop($event)"
+                                        class="flex items-center justify-center w-full p-4 border-2 border-dashed rounded-lg cursor-pointer transition bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:border-blue-500"
+                                        :class="{ 'border-blue-500': isDragging }"
+                                        @dragenter="isDragging = true"
+                                        @dragleave="isDragging = false"
+                                    >
+                                        <input type="file" name="archivo_equipo_entregado" id="archivo_equipo_entregado" class="hidden" @change="handleFile($event)" x-ref="inputFile">
+                                        <div class="text-center">
+                                            <p class="text-sm text-gray-600 dark:text-gray-300" x-text="fileName || 'Arrastra un archivo aquí o haz clic para seleccionarlo'"></p>
+                                            <button type="button" class="mt-2 text-blue-600 hover:underline" @click="$refs.inputFile.click()">Seleccionar archivo</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div x-data="fileUpload()" class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Renuncia Firmada</label>
+                                    <div
+                                        @dragover.prevent
+                                        @drop.prevent="handleDrop($event)"
+                                        class="flex items-center justify-center w-full p-4 border-2 border-dashed rounded-lg cursor-pointer transition bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:border-blue-500"
+                                        :class="{ 'border-blue-500': isDragging }"
+                                        @dragenter="isDragging = true"
+                                        @dragleave="isDragging = false"
+                                    >
+                                        <input type="file" name="archivo_renuncia" id="archivo_renuncia" class="hidden" @change="handleFile($event)" x-ref="inputFile">
+                                        <div class="text-center">
+                                            <p class="text-sm text-gray-600 dark:text-gray-300" x-text="fileName || 'Arrastra un archivo aquí o haz clic para seleccionarlo'"></p>
+                                            <button type="button" class="mt-2 text-blue-600 hover:underline" @click="$refs.inputFile.click()">Seleccionar archivo</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
                                     <label for="motivo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Motivo (opcional)</label>
-                                    <textarea name="motivo" id="motivo" rows="4"class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500"placeholder="Escribe cualquier detalle relevante sobre la baja..."></textarea>
+                                    <textarea name="motivo" id="motivo" rows="4"class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
                                 </div>
                             </div>
                         </div>
