@@ -44,6 +44,8 @@
                             <div><strong>Estado Civil:</strong> {{ $solicitud?->estado_civil }}</div>
                             <div><strong>Puesto:</strong> {{ $solicitud?->rol }}</div>
                             <div><strong>Sueldo:</strong> {{ $solicitud?->sueldo_mensual }}</div>
+                            <div><strong>SD:</strong>{{ $solicitud?->sd }}</div>
+                            <div><strong>SDI:</strong> {{ $solicitud?->sdi }}</div>
                             <div><strong>Empresa:</strong> {{ $solicitud?->empresa }}</div>
                             <div><strong>Punto:</strong> {{ $solicitud?->punto }}</div>
                             <div><strong>Fecha de Ingreso:</strong> {{ Carbon::parse($solicitud?->fecha_ingreso)->format('d/m/Y') }}</div>

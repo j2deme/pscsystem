@@ -1,3 +1,13 @@
+@php
+    $factorVacaciones = $diasDisponibles / 365 ;
+    $diasVacaciones = $diasTrabajadosAnio * $factorVacaciones;
+    $montoVacaciones = $diasVacaciones * $solicitudAlta->sd;
+    $primaVacacional = $montoVacaciones * 0.25;
+    $diasAguinaldo = (15/365) * $diasTrabajadosAnio;
+    $montoAguinaldo = $diasAguinaldo * $solicitudAlta->sd;
+    $primaAguinaldo = $montoAguinaldo * 0.25;
+
+@endphp
 <x-app-layout>
     <x-navbar></x-navbar>
     <div class="py-4 px-2 sm:py-6 sm:px-4">
@@ -111,7 +121,7 @@
             </div>
             <div class="text-center mt-6">
             @if(Auth::user()->rol == 'admin' || Auth::user()->rol == 'AUXILIAR NOMINAS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR NOMINAS' || Auth::user()->solicitudAlta->rol == 'Auxiliar Nominas' || Auth::user()->rol == 'Auxiliar Nominas')
-                <a href="" class="inline-block bg-red-300 text-gray-800 py-2 px-6 rounded-md hover:bg-red-400 transition-colors">
+                <a href="javascript:void(0);" onclick="mostrarFiniquito()" class="inline-block bg-red-300 text-gray-800 py-2 px-6 rounded-md hover:bg-red-400 transition-colors">
                     Finiquito
                 </a>
             @endif
@@ -137,3 +147,47 @@
     </div>
 
 </x-app-layout>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function mostrarFiniquito() {
+    Swal.fire({
+        title: 'Resumen de Finiquito',
+        html: `
+        <div class="text-left text-sm font-mono leading-5">
+            <p><strong>FECHA DE INGRESO:</strong> {{ \Carbon\Carbon::parse($user->fecha_ingreso)->format('d-m-Y') }}</p>
+                <p><strong>FECHA DE BAJA:</strong> {{ \Carbon\Carbon::parse($solicitud->fecha_baja)->format('d-m-Y') }}</p>
+                <p><strong>SALARIO DIARIO:</strong> ${{ number_format($user->solicitudAlta->sd, 2) }}</p>
+            <br>
+            <table style="width:100%; border-collapse: collapse;" border="1">
+                <thead style="background-color: #f2f2f2;">
+                    <tr>
+                        <th>Concepto</th>
+                        <th>Factor</th>
+                        <th>Días Trab.</th>
+                        <th>Días</th>
+                        <th>Salario</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Días trabajados</td><td>-</td><td>-</td><td>-</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>-</td></tr>
+                    <tr><td>Extras</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>Festivo</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                    <tr><td>Vacaciones 2025-2026</td><td>{{ number_format($factorVacaciones, 10) }}</td><td>{{$diasTrabajadosAnio}}</td><td>{{ number_format($diasVacaciones, 2)}}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($montoVacaciones, 2) }}</td></tr>
+                    <tr><td>Prima vacacional 2025-2026</td><td>-</td><td>-</td><td>-</td><td>25%</td><td>{{ number_format($primaVacacional, 2)}}</td><td>   </td></tr>
+                    <tr><td>Aguinaldo 2025</td><td>0.04109589</td><td>{{$diasTrabajadosAnio}}</td><td>{{ number_format($diasAguinaldo, 2)}}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($montoAguinaldo, 2) }}</td></tr>
+                    <tr><td colspan="5"><strong>SUBTOTAL</strong></td><td><strong>{{ number_format($montoVacaciones + $montoAguinaldo + $primaVacacional, 2) }}</strong></td></tr>
+                    <tr><td>Días pagados no laborados</td><td>-</td><td>-</td><td>0.00</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>-</td></tr>
+                    <tr><td>Deducción general</td><td colspan="4">-</td><td>-</td></tr>
+                    <tr><td>Anticipo</td><td colspan="4">-</td><td>-</td></tr>
+                    <tr><td colspan="5"><strong>TOTAL</strong></td><td><strong>{{ number_format($montoVacaciones + $montoAguinaldo + $primaVacacional, 2) }}</strong></td></tr>
+                </tbody>
+            </table>
+            <p>Nota: Favor de CORROBORAR la cantidad generada antes de continuar con el proceso de finiquito.</p>
+        </div>
+        `,
+        width: '60%',
+        confirmButtonText: 'Cerrar'
+    });
+}
+</script>
