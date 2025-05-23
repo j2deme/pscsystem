@@ -80,6 +80,8 @@
                         <a href="#"
                             onclick="abrirModalCarga({{ $user->sol_docs_id }}, {
                                 nombre: '{{ $user->name }}',
+                                sd: '{{ $user->solicitudAlta->sd ?? '' }}',
+                                sdi: '{{ $user->solicitudAlta->sdi ?? '' }}',
                                 imssNombre: '{{ optional($user->documentacionAltas)->arch_acuse_imss ? basename($user->documentacionAltas->arch_acuse_imss) : '' }}',
                                 infonavitNombre: '{{ optional($user->documentacionAltas)->arch_retencion_infonavit ? basename($user->documentacionAltas->arch_retencion_infonavit) : '' }}',
                                 imssUrl: '{{ optional($user->documentacionAltas)->arch_acuse_imss ? asset($user->documentacionAltas->arch_acuse_imss) : '' }}',
@@ -180,6 +182,18 @@ function abrirModalCarga(solicitudId, datos = {}) {
                     <p id="file-name-infonavit" class="mt-2 text-sm text-green-600">
                         ${datos.infonavitNombre ? `Archivo actual: <a href="${datos.infonavitUrl}" target="_blank" class="underline text-blue-600">${datos.infonavitNombre}</a>` : ''}
                     </p>
+                </div>
+                <div class="col-span-2 grid grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <label for="input-sd" class="block text-gray-700 font-semibold mb-1">SD</label>
+                        <input type="number" step="0.01" id="input-sd" value="${datos.sd || ''}"
+                            class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label for="input-sdi" class="block text-gray-700 font-semibold mb-1">SDI</label>
+                        <input type="number" step="0.01" id="input-sdi" value="${datos.sdi || ''}"
+                            class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
+                    </div>
                 </div>
             </div>
         `,

@@ -13,7 +13,7 @@
                             Regresar
                         </a></center>
                     @else
-                    <form action="{{ route('rh.almacenarBajaNueva', $user->id) }}" method="POST" class="space-y-6">
+                    <form action="{{ route('rh.almacenarBajaNueva', $user->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                         @csrf
 
                         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
@@ -114,7 +114,7 @@
                                         @dragenter="isDragging = true"
                                         @dragleave="isDragging = false"
                                     >
-                                        <input type="file" name="archivo_equipo_entregado" id="archivo_equipo_entregado" class="hidden" @change="handleFile($event)" x-ref="inputFile">
+                                        <input type="file" name="archivo_equipo_entregado" id="arch_equipo_entregado" class="hidden" @change="handleFile($event)" x-ref="inputFile">
                                         <div class="text-center">
                                             <p class="text-sm text-gray-600 dark:text-gray-300" x-text="fileName || 'Arrastra un archivo aquí o haz clic para seleccionarlo'"></p>
                                             <button type="button" class="mt-2 text-blue-600 hover:underline" @click="$refs.inputFile.click()">Seleccionar archivo</button>
@@ -131,7 +131,7 @@
                                         @dragenter="isDragging = true"
                                         @dragleave="isDragging = false"
                                     >
-                                        <input type="file" name="archivo_renuncia" id="archivo_renuncia" class="hidden" @change="handleFile($event)" x-ref="inputFile">
+                                        <input type="file" name="arch_renuncia" id="arch_renuncia" class="hidden" @change="handleFile($event)" x-ref="inputFile">
                                         <div class="text-center">
                                             <p class="text-sm text-gray-600 dark:text-gray-300" x-text="fileName || 'Arrastra un archivo aquí o haz clic para seleccionarlo'"></p>
                                             <button type="button" class="mt-2 text-blue-600 hover:underline" @click="$refs.inputFile.click()">Seleccionar archivo</button>
@@ -162,3 +162,27 @@
     </div>
 
 </x-app-layout>
+
+<script>
+    function fileUpload() {
+        return {
+            isDragging: false,
+            fileName: '',
+            handleFile(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.fileName = file.name;
+                }
+            },
+            handleDrop(event) {
+                const file = event.dataTransfer.files[0];
+                if (file) {
+                    this.$refs.inputFile.files = event.dataTransfer.files;
+                    this.fileName = file.name;
+                }
+                this.isDragging = false;
+            }
+        }
+    }
+</script>
+

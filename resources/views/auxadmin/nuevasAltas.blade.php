@@ -75,106 +75,111 @@
 <script>
     function abrirModalCarga(solicitudId) {
         Swal.fire({
-            title: 'Subir Documentos',
-            html: `
-                <div class="grid grid-cols-2 gap-4 text-left">
-                    <div id="drop-imss" class="border-dashed border-2 border-blue-400 rounded-md p-4">
-                        <label class="block text-gray-700 font-semibold mb-2">Acuse IMSS</label>
-                        <input type="file" id="file-imss" hidden>
-                        <button type="button"
-                                onclick="document.getElementById('file-imss').click()"
-                                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
-                            Seleccionar archivo
-                        </button>
-                        <p id="file-name-imss" class="mt-2 text-sm text-green-600"></p>
-                    </div>
+    title: 'Subir Documentos',
+    html: `
+        <div class="grid grid-cols-2 gap-4 text-left">
+            <div id="drop-imss" class="border-dashed border-2 border-blue-400 rounded-md p-4">
+                <label class="block text-gray-700 font-semibold mb-2">Acuse IMSS</label>
+                <input type="file" id="file-imss" hidden>
+                <button type="button"
+                        onclick="document.getElementById('file-imss').click()"
+                        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                    Seleccionar archivo
+                </button>
+                <p id="file-name-imss" class="mt-2 text-sm text-green-600"></p>
+            </div>
 
-                    <div id="drop-infonavit" class="border-dashed border-2 border-blue-400 rounded-md p-4">
-                        <label class="block text-gray-700 font-semibold mb-2">Retención INFONAVIT</label>
-                        <input type="file" id="file-infonavit" hidden>
-                        <button type="button"
-                                onclick="document.getElementById('file-infonavit').click()"
-                                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
-                            Seleccionar archivo
-                        </button>
-                        <p id="file-name-infonavit" class="mt-2 text-sm text-green-600"></p>
-                    </div>
-                </div>
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Subir',
-            cancelButtonText: 'Cancelar',
-            didOpen: () => {
-                const zonas = [
-                    { zona: 'drop-imss', input: 'file-imss', label: 'file-name-imss' },
-                    { zona: 'drop-infonavit', input: 'file-infonavit', label: 'file-name-infonavit' }
-                ];
+            <div id="drop-infonavit" class="border-dashed border-2 border-blue-400 rounded-md p-4">
+                <label class="block text-gray-700 font-semibold mb-2">Retención INFONAVIT</label>
+                <input type="file" id="file-infonavit" hidden>
+                <button type="button"
+                        onclick="document.getElementById('file-infonavit').click()"
+                        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                    Seleccionar archivo
+                </button>
+                <p id="file-name-infonavit" class="mt-2 text-sm text-green-600"></p>
+            </div>
+        </div>
 
-                zonas.forEach(({ zona, input, label }) => {
-                    const dropZone = document.getElementById(zona);
-                    const fileInput = document.getElementById(input);
-                    const fileLabel = document.getElementById(label);
+        <div class="mt-6">
+            <label class="block text-gray-700 font-semibold mb-1">SD</label>
+            <input type="number" id="input-sd" step="0.01" min="0" class="w-full border border-gray-300 rounded-md p-2">
 
-                    dropZone.addEventListener('dragover', e => e.preventDefault());
-                    dropZone.addEventListener('drop', e => {
-                        e.preventDefault();
-                        const file = e.dataTransfer.files[0];
-                        if (!file) return;
+            <label class="block text-gray-700 font-semibold mt-4 mb-1">SDI</label>
+            <input type="number" id="input-sdi" step="0.01" min="0" class="w-full border border-gray-300 rounded-md p-2">
+        </div>
+    `,
+    showCancelButton: true,
+    confirmButtonText: 'Subir',
+    cancelButtonText: 'Cancelar',
+    didOpen: () => {
+        const zonas = [
+            { zona: 'drop-imss', input: 'file-imss', label: 'file-name-imss' },
+            { zona: 'drop-infonavit', input: 'file-infonavit', label: 'file-name-infonavit' }
+        ];
 
-                        const dataTransfer = new DataTransfer();
-                        dataTransfer.items.add(file);
-                        fileInput.files = dataTransfer.files;
+        zonas.forEach(({ zona, input, label }) => {
+            const dropZone = document.getElementById(zona);
+            const fileInput = document.getElementById(input);
+            const fileLabel = document.getElementById(label);
 
-                        fileLabel.textContent = 'Archivo: ' + file.name;
-                    });
+            dropZone.addEventListener('dragover', e => e.preventDefault());
+            dropZone.addEventListener('drop', e => {
+                e.preventDefault();
+                const file = e.dataTransfer.files[0];
+                if (!file) return;
 
-                    fileInput.addEventListener('change', () => {
-                        if (fileInput.files[0]) {
-                            fileLabel.textContent = 'Archivo: ' + fileInput.files[0].name;
-                        }
-                    });
-                });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+
+                fileLabel.textContent = 'Archivo: ' + file.name;
+            });
+
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files[0]) {
+                    fileLabel.textContent = 'Archivo: ' + fileInput.files[0].name;
+                }
+            });
+        });
+    },
+    preConfirm: () => {
+        const fileImss = document.getElementById('file-imss').files[0];
+        const fileInfonavit = document.getElementById('file-infonavit').files[0];
+        const sd = document.getElementById('input-sd').value;
+        const sdi = document.getElementById('input-sdi').value;
+
+        if (!fileImss) {
+            Swal.showValidationMessage('Debes seleccionar el archivo de Acuse IMSS');
+            return false;
+        }
+
+        const formData = new FormData();
+        formData.append('solicitud_id', solicitudId);
+        formData.append('arch_acuse_imss', fileImss);
+        if (fileInfonavit) {
+            formData.append('arch_retencion_infonavit', fileInfonavit);
+        }
+        formData.append('sd', sd);
+        formData.append('sdi', sdi);
+
+        return fetch(`/subida_documentacion/${solicitudId}`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            preConfirm: () => {
-                const fileImss = document.getElementById('file-imss').files[0];
-                const fileInfonavit = document.getElementById('file-infonavit').files[0];
-
-                if (!fileImss) {
-                    Swal.showValidationMessage('Debes seleccionar el archivo de Acuse IMSS');
-                    return false
-                }
-
-                const formData = new FormData();
-                formData.append('solicitud_id', solicitudId);
-                formData.append('arch_acuse_imss', fileImss);
-                if (fileInfonavit) {
-                    formData.append('arch_retencion_infonavit', fileInfonavit);
-                }
-
-                return fetch(`/subida_documentacion/${solicitudId}`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Error al subir archivos');
-                    return response.json();
-                })
-                .catch(error => {
-                    Swal.showValidationMessage(`Error: ${error.message}`);
-                });
-            }
-        }).then(result => {
-            if (result.isConfirmed) {
-                Swal.fire('¡Listo!', 'Los archivos se subieron correctamente', 'success')
-                .then(() => {
-                    location.reload();
-                });
-            }
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Error al subir archivos');
+            return response.json();
+        })
+        .catch(error => {
+            Swal.showValidationMessage(`Error: ${error.message}`);
         });
     }
-</script>
+});
 
+    }
+</script>
 

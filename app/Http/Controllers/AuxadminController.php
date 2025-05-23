@@ -13,7 +13,9 @@ class AuxadminController extends Controller
 {
     public function nuevasAltas(){
         $solicitudes = SolicitudAlta::where('status', 'Aceptada')
-            ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))
+            ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(7))
+            ->whereNull('sd')
+            ->whereNull('sdi')
             ->whereHas('documentacion', function ($q) {
                 $q->whereNull('arch_acuse_imss');
             })
@@ -28,6 +30,8 @@ class AuxadminController extends Controller
             $request->validate([
                 'arch_acuse_imss' => 'nullable|file',
                 'arch_retencion_infonavit' => 'nullable|file',
+                'sd' => 'nullable|numeric',
+                'sdi' => 'nullable|numeric',
             ]);
 
             $solicitud = SolicitudAlta::findOrFail($id);
@@ -55,6 +59,10 @@ class AuxadminController extends Controller
 
             $documentacion->solicitud_id = $solicitudId;
             $documentacion->save();
+
+            $solicitud->sd = $request->sd;
+            $solicitud->sdi = $request->sdi;
+            $solicitud->save();
 
             return response()->json(['success' => true]);
 

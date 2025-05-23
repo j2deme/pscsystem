@@ -8,6 +8,7 @@ use setasign\Fpdi\Fpdi;
 use Mpdf\Mpdf;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\SolicitudAlta;
 use App\Models\SolicitudVacaciones;
 use App\Models\DocumentacionAltas;
@@ -388,8 +389,8 @@ public function guardarArchivosAlta(Request $request, $id)
 
     $archivos = [
         'archivo_baja',
-        'archivo_equipo_entregado',
-        'archivo_renuncia'
+        'arch_equipo_entregado',
+        'arch_renuncia'
     ];
 
     foreach ($archivos as $campo) {

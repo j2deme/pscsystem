@@ -4,11 +4,13 @@
     use Carbon\Carbon;
 
     $conteoAltas = SolicitudAlta::where('status', 'Aceptada')
-    ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))
-    ->whereHas('documentacion', function ($q) {
-        $q->whereNull('arch_acuse_imss');
-    })
-    ->count();
+        ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(7))
+        ->whereNull('sd')
+        ->whereNull('sdi')
+        ->whereHas('documentacion', function ($q) {
+            $q->whereNull('arch_acuse_imss');
+        })
+        ->count();
 
     $cards = [
         [
@@ -19,7 +21,7 @@
             'notificaciones' => $conteoAltas,
         ],
         [
-            'titulo' => 'Actualización de Archivos',
+            'titulo' => 'Actualización de Información',
             'ruta' => route('aux.usuariosList'),
             'icono' => '📁',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
