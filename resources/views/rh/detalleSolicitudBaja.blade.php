@@ -1,4 +1,10 @@
 @php
+    use Carbon\Carbon;
+    $ultimaAsistencia = Carbon::parse($solicitud->ultima_asistencia);
+    $fechaBaja = Carbon::parse($solicitud->fecha_baja ?? now());
+    $diasNoLaborados = $ultimaAsistencia->diffInDays($fechaBaja);
+    $descuentoNoLaborados = $diasNoLaborados * $solicitudAlta->sd;
+
     $factorVacaciones = $diasDisponibles / 365 ;
     $diasVacaciones = $diasTrabajadosAnio * $factorVacaciones;
     $montoVacaciones = $diasVacaciones * $solicitudAlta->sd;
@@ -7,6 +13,7 @@
     $montoAguinaldo = $diasAguinaldo * $solicitudAlta->sd;
     $primaAguinaldo = $montoAguinaldo * 0.25;
 
+    //añadir dias no laborados usando user->ultima_asistencia
 @endphp
 <x-app-layout>
     <x-navbar></x-navbar>
@@ -177,10 +184,10 @@ function mostrarFiniquito() {
                     <tr><td>Prima vacacional 2025-2026</td><td>-</td><td>-</td><td>-</td><td>25%</td><td>{{ number_format($primaVacacional, 2)}}</td><td>   </td></tr>
                     <tr><td>Aguinaldo 2025</td><td>0.04109589</td><td>{{$diasTrabajadosAnio}}</td><td>{{ number_format($diasAguinaldo, 2)}}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($montoAguinaldo, 2) }}</td></tr>
                     <tr><td colspan="5"><strong>SUBTOTAL</strong></td><td><strong>{{ number_format($montoVacaciones + $montoAguinaldo + $primaVacacional, 2) }}</strong></td></tr>
-                    <tr><td>Días pagados no laborados</td><td>-</td><td>-</td><td>0.00</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>-</td></tr>
+                    <tr><td>Días pagados no laborados</td><td>-</td><td>-</td><td>{{ number_format($diasNoLaborados, 2) }}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($descuentoNoLaborados, 2) }}</td></tr>
                     <tr><td>Deducción general</td><td colspan="4">-</td><td>-</td></tr>
                     <tr><td>Anticipo</td><td colspan="4">-</td><td>-</td></tr>
-                    <tr><td colspan="5"><strong>TOTAL</strong></td><td><strong>{{ number_format($montoVacaciones + $montoAguinaldo + $primaVacacional, 2) }}</strong></td></tr>
+                    <tr><td colspan="5"><strong>TOTAL</strong></td><td><strong>{{ number_format($montoVacaciones + $montoAguinaldo + $primaVacacional - $descuentoNoLaborados, 2) }}</strong></td></tr>
                 </tbody>
             </table>
             <p>Nota: Favor de CORROBORAR la cantidad generada antes de continuar con el proceso de finiquito.</p>
