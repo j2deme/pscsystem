@@ -115,11 +115,19 @@
                                     </a>
                                 </div>
                             @else
-                                @if((Auth::user()->rol == 'AUXILIAR NOMINAS' || Auth::user()->rol == 'Auxiliar Nominas' || Auth::user()->solicitudAlta->rol == 'AUXILIAR NOMINAS' || Auth::user()->solicitudAlta->rol == 'Auxiliar Nominas' || Auth::user()->solicitudAlta->rol == 'Auxiliar nominas') && $campo == 'arch_rfc')
+                                @php
+                                    $user = Auth::user();
+                                    $roles = ['AUXILIAR NOMINAS', 'Auxiliar Nominas', 'Auxiliar nominas'];
+                                    $rolUsuario = $user->rol ?? null;
+                                    $rolSolicitud = $user->solicitudAlta?->rol ?? null;
+                                @endphp
+                               @if (($rolUsuario && in_array($rolUsuario, $roles)) || ($rolSolicitud && in_array($rolSolicitud, $roles)))
+                                    @if ($campo == 'arch_rfc')
                                     <div class="flex items-center justify-between border rounded p-2 bg-red-200 text-red-700">
                                         <span>{{ $label }}</span>
                                         <span class="text-xs">No disponible</span>
                                     </div>
+                                    @endif
                                 @else
                                     <div class="flex items-center justify-between border rounded p-2 bg-red-50 text-red-700">
                                         <span>{{ $label }}</span>
