@@ -220,6 +220,7 @@ class SupervisorController extends Controller
                 'ciudad' => 'nullable|string|max:255',
                 'cp_fiscal' => 'nullable|string|max:255',
                 'estado' => 'nullable|string|max:255',
+                'domicilio_comprobante' => 'nullable|string|max:255',
                 'liga_rfc' => 'nullable|string|max:255',
                 'rol' => 'nullable|string|max:255',
                 'fecha_ingreso' => 'nullable|date',
@@ -248,6 +249,7 @@ class SupervisorController extends Controller
             $solicitud->domicilio_ciudad = $request->ciudad;
             $solicitud->cp_fiscal = $request->cp_fiscal;
             $solicitud->domicilio_estado = $request->estado;
+            $solicitud->domicilio_comprobante = $request->domicilio_comprobante;
             $solicitud->liga_rfc = $request->liga_rfc;
             $solicitud->fecha_ingreso = $request->fecha_ingreso;
             $solicitud->rol = $request->rol;

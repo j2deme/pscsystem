@@ -83,9 +83,14 @@
                             @if ($sortDirection === 'asc') ▲ @else ▼ @endif
                         @endif
                     </th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        wire:click="sortBy('progreso_documentos')">
                         Progreso Docs.
+                        @if ($sortField === 'progreso_documentos')
+                            @if ($sortDirection === 'asc') ▲ @else ▼ @endif
+                        @endif
                     </th>
+
                     <th scope="col" class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                         wire:click="sortBy('estatus')">
                         Estatus
