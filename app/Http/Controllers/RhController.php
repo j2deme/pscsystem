@@ -242,6 +242,8 @@ class RhController extends Controller
                 'num_ext' => 'nullable|string|max:255',
                 'colonia' => 'nullable|string|max:255',
                 'ciudad' => 'nullable|string|max:255',
+                'peso' => 'nullable|string|max:255',
+                'estatura' => 'nullable|string|max:255',
                 'cp_fiscal' => 'nullable|string|max:255',
                 'estado' => 'nullable|string|max:255',
                 'liga_rfc' => 'nullable|string|max:255',
@@ -276,6 +278,8 @@ class RhController extends Controller
             $solicitud->domicilio_colonia = $request->colonia;
             $solicitud->cp_fiscal = $request->cp_fiscal;
             $solicitud->domicilio_ciudad = $request->ciudad;
+            $solicitud->peso = $request->peso;
+            $solicitud->estatura = $request->estatura;
             $solicitud->liga_rfc = $request->liga_rfc;
             $solicitud->domicilio_estado = $request->estado;
             $solicitud->infonavit = $request->infonavit;
@@ -288,8 +292,6 @@ class RhController extends Controller
             $solicitud->fecha_ingreso = $request->fecha_ingreso;
             $solicitud->sueldo_mensual = $request->sueldo_mensual;
             $solicitud->email = $request->email;
-            $solicitud->estatura = '0.0';
-            $solicitud->peso = '0.0';
             $solicitud->status = 'Aceptada';
             $solicitud->observaciones = 'Solicitud Aceptada.';
             $solicitud->created_at = Carbon::now('America/Mexico_City');

@@ -8,6 +8,7 @@
         ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))//si se requiere respetar a toda la quincena
         ->count();
     $conteoBajas = SolicitudBajas::where('estatus', 'Aceptada')
+            ->where('por', 'Renuncia')
             ->whereDate('fecha_baja', '>=', Carbon::today('America/Mexico_City')->subDays(5))
             ->count();
 

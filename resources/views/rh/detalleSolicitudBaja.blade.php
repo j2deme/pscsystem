@@ -1,20 +1,25 @@
 @php
     use Carbon\Carbon;
+
+    $fechaIngreso = Carbon::parse($user->fecha_ingreso);
     $ultimaAsistencia = Carbon::parse($solicitud->ultima_asistencia);
     $fechaBaja = Carbon::parse($solicitud->fecha_baja ?? now());
+
+    $diasTrabajadosAnio = $fechaIngreso->diffInDays($fechaBaja);
     $diasNoLaborados = $ultimaAsistencia->diffInDays($fechaBaja);
+
     $descuentoNoLaborados = $diasNoLaborados * $solicitudAlta->sd;
 
     $factorVacaciones = $diasDisponibles / 365 ;
     $diasVacaciones = $diasTrabajadosAnio * $factorVacaciones;
     $montoVacaciones = $diasVacaciones * $solicitudAlta->sd;
     $primaVacacional = $montoVacaciones * 0.25;
-    $diasAguinaldo = (15/365) * $diasTrabajadosAnio;
+
+    $diasAguinaldo = (15 / 365) * $diasTrabajadosAnio;
     $montoAguinaldo = $diasAguinaldo * $solicitudAlta->sd;
     $primaAguinaldo = $montoAguinaldo * 0.25;
-
-    //añadir dias no laborados usando user->ultima_asistencia
 @endphp
+
 <x-app-layout>
     <x-navbar></x-navbar>
     <div class="py-4 px-2 sm:py-6 sm:px-4">
@@ -111,6 +116,16 @@
                         </a>
                     </p>
                 </div>
+                @if($solicitud->por == 'Renuncia')
+                <div>
+                    <p class="text-gray-500">Archivo de Renuncia</p>
+                    <p class="font-medium text-blue-500 dark:text-white">
+                        <a href="{{ asset('storage/' . $solicitud->arch_renuncia) }}" target="_blank">
+                            Ver documento
+                        </a>
+                    </p>
+                </div>
+                @endif
                 <div>
                     <p class="text-gray-500">Archivo de Entrega de Equipo:</p>
                     <p class="font-medium text-blue-500 dark:text-white">
@@ -125,6 +140,7 @@
                         {{ $solicitud->motivo ?? 'Sin detalles adicionales' }}
                     </p>
                 </div>
+
             </div>
             <div class="text-center mt-6">
             @if(Auth::user()->rol == 'admin' || Auth::user()->rol == 'AUXILIAR NOMINAS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR NOMINAS' || Auth::user()->solicitudAlta->rol == 'Auxiliar Nominas' || Auth::user()->rol == 'Auxiliar Nominas')
