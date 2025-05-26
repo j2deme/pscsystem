@@ -462,9 +462,21 @@ public function guardarArchivosAlta(Request $request, $id)
     $solicitud->incapacidad = $request->incapacidad;
     $solicitud->por = $request->por;
     $solicitud->ultima_asistencia = $request->ultima_asistencia;
-    $solicitud->estatus = 'En Proceso';
-    $solicitud->observaciones = 'Solicitud en revisión';
-    $solicitud->fecha_baja = Carbon::now('America/Mexico_City');
+    if((Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS') && $solicitud->por == 'Renuncia'){
+        $solicitud->estatus = 'Aceptada';
+        $solicitud->observaciones = 'Baja de elemento Aprobada.';
+        $solicitud->fecha_baja = Carbon::now('America/Mexico_City');
+        $solicitud->save();
+
+        $userId = $solicitud->user_id;
+        $user = User::find($userId);
+        $user->estatus = 'Inactivo';
+        $user->save();
+    }else{
+        $solicitud->estatus = 'En Proceso';
+        $solicitud->observaciones = 'Solicitud en revisión';
+        $solicitud->fecha_baja = Carbon::now('America/Mexico_City');
+    }
 
     try {
         $solicitud->save();

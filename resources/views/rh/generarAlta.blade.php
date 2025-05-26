@@ -124,16 +124,6 @@
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="peso" class="block text-sm font-semibold text-gray-600">Peso</label>
-                    <input type="text" id="peso" name="pesp" placeholder="Peso" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
-                </div>
-
-                <div class="form-group mb-4">
-                    <label for="estatura" class="block text-sm font-semibold text-gray-600">Estatura</label>
-                    <input type="text" id="estatura" name="estatura" placeholder="Estatura" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
-                </div>
-
-                <div class="form-group mb-4">
                     <label for="liga_rfc" class="block text-sm font-semibold text-gray-600">Liga RFC</label>
                     <input type="text" id="liga_rfc" name="liga_rfc" placeholder="Liga RFC" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
@@ -152,6 +142,17 @@
                     <label for="fonacot" class="block text-sm font-semibold text-gray-600">Fonacot (Opcional)</label>
                     <input type="text" id="fonacot" name="fonacot" placeholder="Fonacot" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
+
+                <div class="form-group mb-4">
+                    <label for="peso" class="block text-sm font-semibold text-gray-600">Peso</label>
+                    <input type="text" id="peso" name="pesp" placeholder="Peso" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                </div>
+
+                <div class="form-group mb-4">
+                    <label for="estatura" class="block text-sm font-semibold text-gray-600">Estatura</label>
+                    <input type="text" id="estatura" name="estatura" placeholder="Estatura" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                </div>
+
                 @if (Auth::user()->rol != 'Supervisor' && $tipoSeleccionado == 'oficina')
 
                     <div class="form-group mb-6">

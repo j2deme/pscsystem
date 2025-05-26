@@ -116,10 +116,10 @@
                                 </div>
                             @else
                                 @php
-                                    $user = Auth::user();
+                                    $usuario = Auth::user();
                                     $roles = ['AUXILIAR NOMINAS', 'Auxiliar Nominas', 'Auxiliar nominas'];
-                                    $rolUsuario = $user->rol ?? null;
-                                    $rolSolicitud = $user->solicitudAlta?->rol ?? null;
+                                    $rolUsuario = $usuario->rol ?? null;
+                                    $rolSolicitud = $usuario->solicitudAlta?->rol ?? null;
                                 @endphp
                                @if (($rolUsuario && in_array($rolUsuario, $roles)) || ($rolSolicitud && in_array($rolSolicitud, $roles)))
                                     @if ($campo == 'arch_rfc')
@@ -138,7 +138,6 @@
                         @endforeach
                     </div>
                 </div>
-
                 <div class="flex flex-wrap justify-center gap-4 mt-4">
                     @if($user->estatus != 'Inactivo')
                         @if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'Auxiliar recursos humanos')
@@ -152,7 +151,7 @@
                                 Descargar Ficha
                             </a>
 
-                            @if (Auth::user()->rol == 'admin' )
+                            @if (Auth::user()->rol == 'admin' && $user->estatus == 'Activo')
                                 <a href="#" class="inline-block bg-red-300 text-gray-800 py-2 px-4 rounded-md hover:bg-red-400 transition"
                                 onclick="confirmarBaja({{ $user->id }})">
                                     Dar de Baja

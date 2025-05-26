@@ -218,9 +218,13 @@ class SupervisorController extends Controller
                 'num_ext' => 'nullable|integer',
                 'colonia' => 'nullable|string|max:255',
                 'ciudad' => 'nullable|string|max:255',
+                'peso' => 'nullable|string|max:255',
+                'estatura' => 'nullable|string|max:255',
                 'cp_fiscal' => 'nullable|string|max:255',
                 'estado' => 'nullable|string|max:255',
                 'domicilio_comprobante' => 'nullable|string|max:255',
+                'fonacot' => 'nullable|string|max:255',
+                'infonavit' => 'nullable|string|max:255',
                 'liga_rfc' => 'nullable|string|max:255',
                 'rol' => 'nullable|string|max:255',
                 'fecha_ingreso' => 'nullable|date',
@@ -252,15 +256,15 @@ class SupervisorController extends Controller
             $solicitud->domicilio_comprobante = $request->domicilio_comprobante;
             $solicitud->liga_rfc = $request->liga_rfc;
             $solicitud->fecha_ingreso = $request->fecha_ingreso;
+            $solicitud->peso = $request->peso;
+            $solicitud->estatura = $request->estatura;
             $solicitud->rol = $request->rol;
             $solicitud->punto = $request->punto;
             $solicitud->empresa = $request->empresa;
             $solicitud->sueldo_mensual = $request->sueldo_mensual;
             $solicitud->email = $request->email;
             $solicitud->ultima_edicion = Auth::user()->name . " " . Carbon::now('America/Mexico_City');
-            //$solicitud->updated_at = Carbon::now('America/Mexico_City');
-            $solicitud->estatura = '0.0';
-            $solicitud->peso = '0.0';
+
             if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS'){
                 $solicitud->status = 'Aceptada';
                 $solicitud->observaciones = 'Solicitud Aceptada.';
