@@ -29,7 +29,7 @@
                                 <th class="px-6 py-3">Nombre</th>
                                 <th class="px-6 py-3">Empresa</th>
                                 <th class="px-6 py-3">Por</th>
-                                <th class="px-6 py-3">Detalles</th>
+                                <th class="px-6 py-3">Observaciones</th>
                                 <th class="px-6 py-3">Fecha de solicitud</th>
                                 <th class="px-6 py-3">Estado</th>
                                 <th class="px-6 py-3">Acciones</th>
@@ -42,7 +42,7 @@
                                     <td class="py-2 px-4">{{ $solicitud->user->name }}</td>
                                     <td class="py-2 px-4">{{ $solicitud->user->solicitudAlta->empresa }}</td>
                                     <td class="py-2 px-4">{{ $solicitud->por }}</td>
-                                    <td class="py-2 px-4">{{ $solicitud->motivo }}</td>
+                                    <td class="py-2 px-4">{{ $solicitud->observaciones }}</td>
                                     <td class="py-2 px-4">{{ $solicitud->fecha_solicitud }}</td>
                                     <td class="py-2 px-4">
                                         @if($solicitud->estatus == 'En Proceso')
@@ -60,9 +60,15 @@
                                         @endif
                                     </td>
                                     <td class="py-2 px-4">
-                                        <a href="{{route('rh.detalleSolicitudBaja', $solicitud->id)}}" class="text-blue-500 py-2 px-4 rounded-md mr-2 mb-2">
-                                            Ver Detalles
-                                        </a>
+                                        @if($solicitud->observaciones == 'Finiquito enviado a RH.')
+                                            <a href="{{ asset('storage/' . $solicitud->calculo_finiquito) }}" target="_blank" class="text-green-600 py-2 px-4 rounded-md mr-2 mb-2">
+                                                Ver Cálculo Finiquito
+                                            </a>
+                                        @else
+                                            <a href="{{route('rh.detalleSolicitudBaja', $solicitud->id)}}" class="text-blue-500 py-2 px-4 rounded-md mr-2 mb-2">
+                                                Ver Detalles
+                                            </a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

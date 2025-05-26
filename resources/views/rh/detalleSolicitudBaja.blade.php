@@ -19,7 +19,61 @@
     $montoAguinaldo = $diasAguinaldo * $solicitudAlta->sd;
     $primaAguinaldo = $montoAguinaldo * 0.25;
 @endphp
+<style>
+    .swal2-popup.custom-modal-width {
+        width: 900px !important;
+        max-width: 95vw;
+    }
+    #finiquitoContenido table {
+  border-collapse: collapse;
+  width: 100%;
+}
 
+#finiquitoContenido th,
+#finiquitoContenido td {
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: middle;
+  margin: 0;
+  line-height: 1.2;
+  border: 1px solid #ccc;
+  font-family: monospace, monospace;
+}
+
+#finiquitoContenido thead th {
+  background-color: #f2f2f2;
+  vertical-align: middle;
+}
+
+#finiquitoContenido table th:nth-child(1),
+#finiquitoContenido table td:nth-child(1) {
+  min-width: 150px;
+}
+
+#finiquitoContenido table th:nth-child(2),
+#finiquitoContenido table td:nth-child(2) {
+  min-width: 130px;
+}
+#finiquitoContenido table th:nth-child(3),
+#finiquitoContenido table td:nth-child(3) {
+  min-width: 130px;
+}
+
+#finiquitoContenido table th:nth-child(4),
+#finiquitoContenido table td:nth-child(4) {
+  min-width: 100px;
+}
+
+#finiquitoContenido table th:nth-child(5),
+#finiquitoContenido table td:nth-child(5) {
+  min-width: 100px;
+}
+#finiquitoContenido table th:nth-child(6),
+#finiquitoContenido table td:nth-child(6) {
+  min-width: 80px;
+}
+
+</style>
 <x-app-layout>
     <x-navbar></x-navbar>
     <div class="py-4 px-2 sm:py-6 sm:px-4">
@@ -144,7 +198,8 @@
             </div>
             <div class="text-center mt-6">
             @if(Auth::user()->rol == 'admin' || Auth::user()->rol == 'AUXILIAR NOMINAS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR NOMINAS' || Auth::user()->solicitudAlta->rol == 'Auxiliar Nominas' || Auth::user()->rol == 'Auxiliar Nominas')
-                <a href="javascript:void(0);" onclick="mostrarFiniquito()" class="inline-block bg-red-300 text-gray-800 py-2 px-6 rounded-md hover:bg-red-400 transition-colors">
+                <a href="javascript:void(0);" onclick="mostrarFiniquito({{ $solicitud->id }})"
+                    class="inline-block bg-red-300 text-gray-800 py-2 px-6 rounded-md hover:bg-red-400 transition-colors">
                     Finiquito
                 </a>
             @endif
@@ -171,46 +226,96 @@
 
 </x-app-layout>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
-function mostrarFiniquito() {
+function mostrarFiniquito(solicitudId) {
     Swal.fire({
         title: 'Resumen de Finiquito',
+        customClass: {
+            popup: 'custom-modal-width'
+        },
         html: `
-        <div class="text-left text-sm font-mono leading-5">
-            <p><strong>FECHA DE INGRESO:</strong> {{ \Carbon\Carbon::parse($user->fecha_ingreso)->format('d-m-Y') }}</p>
+            <div id="finiquitoContenido" class="text-left text-sm font-mono leading-5" style="width: 750px !important; max-width: 95vw; min-height: 300px; overflow: visible;">
+                <p><strong>FECHA DE INGRESO:</strong> {{ \Carbon\Carbon::parse($user->fecha_ingreso)->format('d-m-Y') }}</p>
                 <p><strong>FECHA DE BAJA:</strong> {{ \Carbon\Carbon::parse($solicitud->fecha_baja)->format('d-m-Y') }}</p>
                 <p><strong>SALARIO DIARIO:</strong> ${{ number_format($user->solicitudAlta->sd, 2) }}</p>
-            <br>
-            <table style="width:100%; border-collapse: collapse;" border="1">
-                <thead style="background-color: #f2f2f2;">
-                    <tr>
-                        <th>Concepto</th>
-                        <th>Factor</th>
-                        <th>Días Trab.</th>
-                        <th>Días</th>
-                        <th>Salario</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td>Días trabajados</td><td>-</td><td>-</td><td>-</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>-</td></tr>
-                    <tr><td>Extras</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                    <tr><td>Festivo</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                    <tr><td>Vacaciones 2025-2026</td><td>{{ number_format($factorVacaciones, 10) }}</td><td>{{$diasTrabajadosAnio}}</td><td>{{ number_format($diasVacaciones, 2)}}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($montoVacaciones, 2) }}</td></tr>
-                    <tr><td>Prima vacacional 2025-2026</td><td>-</td><td>-</td><td>-</td><td>25%</td><td>{{ number_format($primaVacacional, 2)}}</td><td>   </td></tr>
-                    <tr><td>Aguinaldo 2025</td><td>0.04109589</td><td>{{$diasTrabajadosAnio}}</td><td>{{ number_format($diasAguinaldo, 2)}}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($montoAguinaldo, 2) }}</td></tr>
-                    <tr><td colspan="5"><strong>SUBTOTAL</strong></td><td><strong>{{ number_format($montoVacaciones + $montoAguinaldo + $primaVacacional, 2) }}</strong></td></tr>
-                    <tr><td>Días pagados no laborados</td><td>-</td><td>-</td><td>{{ number_format($diasNoLaborados, 2) }}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($descuentoNoLaborados, 2) }}</td></tr>
-                    <tr><td>Deducción general</td><td colspan="4">-</td><td>-</td></tr>
-                    <tr><td>Anticipo</td><td colspan="4">-</td><td>-</td></tr>
-                    <tr><td colspan="5"><strong>TOTAL</strong></td><td><strong>{{ number_format($montoVacaciones + $montoAguinaldo + $primaVacacional - $descuentoNoLaborados, 2) }}</strong></td></tr>
-                </tbody>
-            </table>
-            <p>Nota: Favor de CORROBORAR la cantidad generada antes de continuar con el proceso de finiquito.</p>
-        </div>
+                <br>
+                <table style="width:100%; border-collapse: collapse;" border="1">
+                    <thead style="background-color: #f2f2f2;">
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Factor</th>
+                            <th>Días Trab.</th>
+                            <th>Días</th>
+                            <th>Salario</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Días trabajados</td><td>-</td><td>-</td><td>-</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>-</td></tr>
+                        <tr><td>Extras</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>Festivo</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>Vacaciones 2025-2026</td><td>{{ number_format($factorVacaciones, 10) }}</td><td>{{$diasTrabajadosAnio}}</td><td>{{ number_format($diasVacaciones, 2)}}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($montoVacaciones, 2) }}</td></tr>
+                        <tr><td>Prima vacacional 2025-2026</td><td>-</td><td>-</td><td>-</td><td>25%</td><td>{{ number_format($primaVacacional, 2)}}</td></tr>
+                        <tr><td>Aguinaldo 2025</td><td>0.04109589</td><td>{{$diasTrabajadosAnio}}</td><td>{{ number_format($diasAguinaldo, 2)}}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($montoAguinaldo, 2) }}</td></tr>
+                        <tr><td colspan="5"><strong>SUBTOTAL</strong></td><td><strong>{{ number_format($montoVacaciones + $montoAguinaldo + $primaVacacional, 2) }}</strong></td></tr>
+                        <tr><td>Días pagados no laborados</td><td>-</td><td>-</td><td>{{ number_format($diasNoLaborados, 2) }}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($descuentoNoLaborados, 2) }}</td></tr>
+                        <tr><td>Deducción general</td><td colspan="4">-</td><td>-</td></tr>
+                        <tr><td>Anticipo</td><td colspan="4">-</td><td>-</td></tr>
+                        <tr><td colspan="5"><strong>TOTAL</strong></td><td><strong>{{ number_format($montoVacaciones + $montoAguinaldo + $primaVacacional - $descuentoNoLaborados, 2) }}</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
         `,
-        width: '60%',
-        confirmButtonText: 'Cerrar'
+        showCancelButton: true,
+        confirmButtonText: 'Guardar cálculo',
+        cancelButtonText: 'Cerrar',
+        preConfirm: () => {
+    return new Promise((resolve) => {
+        const contenido = document.getElementById('finiquitoContenido');
+        contenido.style.overflow = 'visible';
+        contenido.style.maxHeight = 'none';
+        setTimeout(() => {
+            html2canvas(contenido, {
+                scrollY: -window.scrollY,
+                scale: 2,
+                useCORS: true,
+                backgroundColor: null
+            }).then(canvas => {
+                const imagenBase64 = canvas.toDataURL("image/png");
+
+                fetch("{{ route('guardar.calculo.finiquito') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({
+                        solicitud_id: solicitudId,
+                        imagen: imagenBase64
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Guardado', 'El cálculo de finiquito se guardó correctamente.', 'success');
+                    } else {
+                        Swal.fire('Error', data.error || 'Hubo un error al guardar.', 'error');
+                    }
+                    resolve();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error', 'Error al procesar la solicitud.', 'error');
+                    resolve();
+                });
+            });
+        }, 1000);
+    });
+}
+
     });
 }
 </script>
+
+

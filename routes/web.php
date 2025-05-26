@@ -141,6 +141,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/antiguedades', [NominasController::class, 'antiguedades'])->name('nominas.usersAntiguedades');
     Route::get('/finiquitos', [NominasController::class, 'verBajas'])->name('nominas.verBajas');
     Route::get('/nuevas_altas', [NominasController::class, 'nuevasAltas'])->name('nominas.nuevasAltas');
+    Route::post('/guardar-calculo-finiquito', [NominasController::class, 'guardarCalculoFiniquito'])->name('guardar.calculo.finiquito');
+
 });
 
 require __DIR__.'/auth.php';

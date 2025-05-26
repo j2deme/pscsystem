@@ -86,11 +86,19 @@ class RhController extends Controller
         return view('rh.historialSolicitudesAltas', compact('solicitudes'));
     }
 
-    public function solicitudesBajas(){
+    public function solicitudesBajas() {
         $solicitudes = SolicitudBajas::with('user.solicitudAlta')
-        ->where('estatus', 'En Proceso')
-        ->where('por', 'Renuncia')
-        ->get();
+            ->where(function ($query) {
+                $query->where(function ($q) {
+                    $q->where('estatus', 'En Proceso')
+                    ->where('por', 'Renuncia');
+                })->orWhere(function ($q) {
+                    $q->where('estatus', 'Aceptada')
+                    ->where('observaciones', 'Finiquito enviado a RH.');
+                });
+            })
+            ->get();
+
         return view('rh.solicitudesBajas', compact('solicitudes'));
     }
 
