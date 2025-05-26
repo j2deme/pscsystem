@@ -448,6 +448,8 @@ public function guardarArchivosAlta(Request $request, $id)
         'por' => 'required|in:Ausentismo,Separación Voluntaria,Renuncia',
         'ultima_asistencia' => 'nullable|date',
         'motivo' => 'nullable|string',
+        'adelanto_nomina' => 'nullable|string',
+        'descuento' => 'nullable|string',
         'archivo_baja' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         'archivo_equipo_entregado' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         'archivo_renuncia' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
@@ -459,13 +461,15 @@ public function guardarArchivosAlta(Request $request, $id)
     $solicitud->user_id = $user->id;
     $solicitud->fecha_solicitud = $request->fecha_hoy;
     $solicitud->motivo = $request->motivo;
+    $solicitud->adelanto_nomina = $request->adelanto_nomina;
+    $solicitud->descuento = $request->descuento;
     $solicitud->incapacidad = $request->incapacidad;
     $solicitud->por = $request->por;
     $solicitud->ultima_asistencia = $request->ultima_asistencia;
     if((Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS') && $solicitud->por == 'Renuncia'){
         $solicitud->estatus = 'Aceptada';
         $solicitud->observaciones = 'Baja de elemento Aprobada.';
-        $solicitud->fecha_baja = Carbon::now('America/Mexico_City');
+        $solicitud->fecha_baja = $request->fecha_hoy;
         $solicitud->save();
 
         $userId = $solicitud->user_id;

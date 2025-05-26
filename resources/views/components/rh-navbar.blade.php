@@ -6,9 +6,17 @@
     $altasEnProceso = SolicitudAlta::where('status', 'En Proceso')
                     ->where('observaciones', '!=', 'Solicitud enviada a Administrador.')
                     ->count();
-    $bajasEnProceso = SolicitudBajas::where('estatus', 'En Proceso')
-                    ->where('por', 'Renuncia')
-                    ->count();
+    $bajasEnProceso = SolicitudBajas::with('user.solicitudAlta')
+            ->where(function ($query) {
+                $query->where(function ($q) {
+                    $q->where('estatus', 'En Proceso')
+                    ->where('por', 'Renuncia');
+                })->orWhere(function ($q) {
+                    $q->where('estatus', 'Aceptada')
+                    ->where('observaciones', 'Finiquito enviado a RH.');
+                });
+            })
+            ->count();
     $vacacionesEnProceso = SolicitudVacaciones::where('estatus', 'En Proceso')
                             ->where('observaciones', 'Solicitud aceptada, falta subir archivo de solicitud.')
                             ->count();

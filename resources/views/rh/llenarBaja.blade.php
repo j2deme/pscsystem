@@ -87,6 +87,10 @@
                                     <label for="descuento" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descuento por equipo/material no decuelto</label>
                                     <input type="text" name="descuento" id="descuento" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                 </div>
+                                <div>
+                                    <label for="adelanto_nomina" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descuento por Adelanto de Nómina</label>
+                                    <input type="text" name="adelanto_nomina" id="adelanto_nomina" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                </div>
                                 <div x-data="fileUpload()" class="mb-4">
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Archivo de Baja</label>
                                     <div

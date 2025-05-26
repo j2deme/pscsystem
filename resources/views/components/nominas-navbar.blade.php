@@ -9,7 +9,7 @@
         ->count();
     $conteoBajas = SolicitudBajas::where('estatus', 'Aceptada')
             ->where('por', 'Renuncia')
-            ->whereDate('fecha_baja', '>=', Carbon::today('America/Mexico_City')->subDays(5))
+            ->whereDate('created_at', '>=', Carbon::today('America/Mexico_City')->subDays(5))
             ->count();
 
     $cards = [

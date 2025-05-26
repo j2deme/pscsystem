@@ -1,12 +1,25 @@
 @php
     use Carbon\Carbon;
 
+    $hoy = Carbon::now('America/Mexico_City');
+    $inicioAnio = now()->startOfYear();
+
     $fechaIngreso = Carbon::parse($user->fecha_ingreso);
     $ultimaAsistencia = Carbon::parse($solicitud->ultima_asistencia);
     $fechaBaja = Carbon::parse($solicitud->fecha_baja ?? now());
 
-    $diasTrabajadosAnio = $fechaIngreso->diffInDays($fechaBaja);
+    $inicioMes = $fechaBaja->copy()->startOfMonth();
+    $quincena = $fechaBaja->copy()->day(15);
+
+    if ($fechaBaja->lessThan($quincena)) {
+        $diasQuincena = $inicioMes->diffInDays($fechaBaja);
+    } else {
+        $diasQuincena = $quincena->diffInDays($fechaBaja);
+    }
+
+    $diasTrabajadosAnio = $fechaIngreso->diffInDays($fechaBaja)+1;//-1
     $diasNoLaborados = $ultimaAsistencia->diffInDays($fechaBaja);
+    $diasNoPagados = $diasQuincena * $solicitudAlta->sd;
 
     $descuentoNoLaborados = $diasNoLaborados * $solicitudAlta->sd;
 
@@ -15,7 +28,16 @@
     $montoVacaciones = $diasVacaciones * $solicitudAlta->sd;
     $primaVacacional = $montoVacaciones * 0.25;
 
-    $diasAguinaldo = (15 / 365) * $diasTrabajadosAnio;
+    $factorAguinaldo = (15 / 365);
+
+    $descuentoNoEntregados = $solicitud->descuento;
+
+    if ($fechaIngreso->greaterThanOrEqualTo($inicioAnio)) {
+        $diasTrabajAnio = $fechaIngreso->diffInDays($ultimaAsistencia)+1;
+    } else {
+        $diasTrabajAnio = $inicioAnio->diffInDays($ultimaAsistencia) +1 ;
+    }
+    $diasAguinaldo = $diasTrabajAnio * $factorAguinaldo;
     $montoAguinaldo = $diasAguinaldo * $solicitudAlta->sd;
     $primaAguinaldo = $montoAguinaldo * 0.25;
 @endphp
@@ -25,30 +47,30 @@
         max-width: 95vw;
     }
     #finiquitoContenido table {
-  border-collapse: collapse;
-  width: 100%;
-}
+    border-collapse: collapse;
+    width: 100%;
+    }
 
 #finiquitoContenido th,
-#finiquitoContenido td {
-  padding: 6px 8px;
-  text-align: left;
-  vertical-align: middle;
-  margin: 0;
-  line-height: 1.2;
-  border: 1px solid #ccc;
-  font-family: monospace, monospace;
-}
+    #finiquitoContenido td {
+    padding: 6px 8px;
+    text-align: left;
+    vertical-align: middle;
+    margin: 0;
+    line-height: 1.2;
+    border: 1px solid #ccc;
+    font-family: monospace, monospace;
+    }
 
 #finiquitoContenido thead th {
-  background-color: #f2f2f2;
-  vertical-align: middle;
-}
+    background-color: #f2f2f2;
+    vertical-align: middle;
+    }
 
 #finiquitoContenido table th:nth-child(1),
-#finiquitoContenido table td:nth-child(1) {
-  min-width: 150px;
-}
+    #finiquitoContenido table td:nth-child(1) {
+    min-width: 150px;
+    }
 
 #finiquitoContenido table th:nth-child(2),
 #finiquitoContenido table td:nth-child(2) {
@@ -84,7 +106,7 @@
                 <div>
                     <p class="text-gray-500">Fecha</p>
                     <p class="font-medium text-gray-900 dark:text-white">
-                        {{ \Carbon\Carbon::now()->format('d-m-Y') }}
+                        {{ \Carbon\Carbon::parse($solicitud->fecha_baja)->format('d-m-Y') }}
                     </p>
                 </div>
                 <div>
@@ -164,30 +186,45 @@
                 </div>
                 <div>
                     <p class="text-gray-500">Archivo de Baja</p>
-                    <p class="font-medium text-blue-500 dark:text-white">
-                        <a href="{{ asset('storage/' . $solicitud->archivo_baja) }}" target="_blank">
-                            Ver documento
-                        </a>
-                    </p>
+                    @if($solicitud->archivo_baja)
+                        <p class="font-medium text-blue-500 dark:text-white">
+                            <a href="{{ asset('storage/' . $solicitud->archivo_baja) }}" target="_blank">
+                                Ver documento
+                            </a>
+                        </p>
+                    @else
+                        <p class="text-sm text-red-500">No disponible</p>
+                    @endif
                 </div>
+
                 @if($solicitud->por == 'Renuncia')
-                <div>
-                    <p class="text-gray-500">Archivo de Renuncia</p>
-                    <p class="font-medium text-blue-500 dark:text-white">
-                        <a href="{{ asset('storage/' . $solicitud->arch_renuncia) }}" target="_blank">
-                            Ver documento
-                        </a>
-                    </p>
-                </div>
+                    <div>
+                        <p class="text-gray-500">Archivo de Renuncia</p>
+                        @if($solicitud->arch_renuncia)
+                            <p class="font-medium text-blue-500 dark:text-white">
+                                <a href="{{ asset('storage/' . $solicitud->arch_renuncia) }}" target="_blank">
+                                    Ver documento
+                                </a>
+                            </p>
+                        @else
+                            <p class="text-sm text-red-500">No disponible</p>
+                        @endif
+                    </div>
                 @endif
+
                 <div>
                     <p class="text-gray-500">Archivo de Entrega de Equipo:</p>
-                    <p class="font-medium text-blue-500 dark:text-white">
-                        <a href="{{ asset('storage/' . $solicitud->arch_equipo_entregado) }}" target="_blank">
-                            Ver documento
-                        </a>
-                    </p>
+                    @if($solicitud->arch_equipo_entregado)
+                        <p class="font-medium text-blue-500 dark:text-white">
+                            <a href="{{ asset('storage/' . $solicitud->arch_equipo_entregado) }}" target="_blank">
+                                Ver documento
+                            </a>
+                        </p>
+                    @else
+                        <p class="text-sm text-red-500">No disponible</p>
+                    @endif
                 </div>
+
                 <div class="md:col-span-2">
                     <p class="text-gray-500">Motivo</p>
                     <p class="font-medium text-gray-900 dark:text-white whitespace-pre-line">
@@ -253,17 +290,17 @@ function mostrarFiniquito(solicitudId) {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>Días trabajados</td><td>-</td><td>-</td><td>-</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>-</td></tr>
+                        <tr><td>Días trabajados</td><td>-</td><td>-</td><td>{{ number_format($diasQuincena) }}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{number_format($diasNoPagados, 2)}}</td></tr>
                         <tr><td>Extras</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
                         <tr><td>Festivo</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                        <tr><td>Vacaciones 2025-2026</td><td>{{ number_format($factorVacaciones, 10) }}</td><td>{{$diasTrabajadosAnio}}</td><td>{{ number_format($diasVacaciones, 2)}}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($montoVacaciones, 2) }}</td></tr>
+                        <tr><td>Vacaciones 2025-2026</td><td>{{ number_format($factorVacaciones, 9) }}</td><td>{{$diasTrabajadosAnio}}</td><td>{{ number_format($diasVacaciones, 2)}}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($montoVacaciones, 2) }}</td></tr>
                         <tr><td>Prima vacacional 2025-2026</td><td>-</td><td>-</td><td>-</td><td>25%</td><td>{{ number_format($primaVacacional, 2)}}</td></tr>
-                        <tr><td>Aguinaldo 2025</td><td>0.04109589</td><td>{{$diasTrabajadosAnio}}</td><td>{{ number_format($diasAguinaldo, 2)}}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($montoAguinaldo, 2) }}</td></tr>
-                        <tr><td colspan="5"><strong>SUBTOTAL</strong></td><td><strong>{{ number_format($montoVacaciones + $montoAguinaldo + $primaVacacional, 2) }}</strong></td></tr>
+                        <tr><td>Aguinaldo 2025</td><td>{{ number_format($factorAguinaldo, 8) }}</td><td>{{$diasTrabajAnio}}</td><td>{{ number_format($diasAguinaldo, 2)}}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($montoAguinaldo, 2) }}</td></tr>
+                        <tr><td colspan="5"><strong>SUBTOTAL</strong></td><td><strong>{{ number_format($diasNoPagados + $montoVacaciones + $montoAguinaldo + $primaVacacional, 2) }}</strong></td></tr>
                         <tr><td>Días pagados no laborados</td><td>-</td><td>-</td><td>{{ number_format($diasNoLaborados, 2) }}</td><td>{{ number_format($user->solicitudAlta->sd, 2) }}</td><td>{{ number_format($descuentoNoLaborados, 2) }}</td></tr>
-                        <tr><td>Deducción general</td><td colspan="4">-</td><td>-</td></tr>
-                        <tr><td>Anticipo</td><td colspan="4">-</td><td>-</td></tr>
-                        <tr><td colspan="5"><strong>TOTAL</strong></td><td><strong>{{ number_format($montoVacaciones + $montoAguinaldo + $primaVacacional - $descuentoNoLaborados, 2) }}</strong></td></tr>
+                        <tr><td>Deducción general</td><td colspan="4">-</td><td>{{ number_format($descuentoNoEntregados, 2) }}</td></tr>
+                        <tr><td>Adelanto de Nómina</td><td colspan="4">-</td><td>-</td></tr>
+                        <tr><td colspan="5"><strong>TOTAL</strong></td><td><strong>{{ number_format($diasNoPagados + $montoVacaciones + $montoAguinaldo + $primaVacacional - $descuentoNoLaborados - $descuentoNoEntregados, 2) }}</strong></td></tr>
                     </tbody>
                 </table>
             </div>

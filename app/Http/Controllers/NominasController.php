@@ -17,7 +17,7 @@ class NominasController extends Controller
     public function verBajas(){
         $bajas = SolicitudBajas::where('estatus', 'Aceptada')
             ->where('por', 'Renuncia')
-            ->whereDate('fecha_baja', '>=', Carbon::today('America/Mexico_City')->subDays(5))
+            ->whereDate('created_at', '>=', Carbon::today('America/Mexico_City')->subDays(5))
             ->paginate(10);
         return view('nominas.verBajas', compact('bajas'));
     }
@@ -44,20 +44,17 @@ public function guardarCalculoFiniquito(Request $request)
         $imagenBase64 = $request->input('imagen');
         $solicitudId = $request->input('solicitud_id');
 
-        // Buscar la solicitud
         $solicitud = SolicitudBajas::find($solicitudId);
         if (!$solicitud) {
             Log::error("Solicitud con ID {$solicitudId} no encontrada.");
             return response()->json(['success' => false, 'error' => 'Solicitud no encontrada.']);
         }
 
-        // Si ya existe un archivo de finiquito, eliminarlo
         if ($solicitud->calculo_finiquito && Storage::disk('public')->exists($solicitud->calculo_finiquito)) {
             Storage::disk('public')->delete($solicitud->calculo_finiquito);
             Log::info("Archivo anterior eliminado: {$solicitud->calculo_finiquito}");
         }
 
-        // Decodificar imagen
         $imagen = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imagenBase64));
         if (!$imagen) {
             Log::error('No se pudo decodificar la imagen.');
@@ -73,7 +70,6 @@ public function guardarCalculoFiniquito(Request $request)
         Storage::disk('public')->put($rutaCompleta, $imagen);
         Log::info("Imagen guardada correctamente en: {$rutaCompleta}");
 
-        // Guardar ruta en BD
         $solicitud->calculo_finiquito = $rutaCompleta;
         $solicitud->observaciones = "Finiquito enviado a RH.";
         $solicitud->save();
