@@ -48,7 +48,7 @@
                             <div><strong>SDI:</strong> {{ $solicitud?->sdi }}</div>
                             <div><strong>Empresa:</strong> {{ $solicitud?->empresa }}</div>
                             <div><strong>Punto:</strong> {{ $solicitud?->punto }}</div>
-                            <div><strong>Fecha de Ingreso:</strong> {{ Carbon::parse($solicitud?->fecha_ingreso)->format('d/m/Y') }}</div>
+                            <div><strong>Fecha de Ingreso:</strong> {{ Carbon::parse($user?->fecha_ingreso)->format('d/m/Y') }}</div>
                             <div><strong>Fecha de Nacimiento:</strong> {{ Carbon::parse($solicitud?->fecha_nacimiento)->format('d/m/Y') }}</div>
                             <div><strong>Estatus:</strong>
                                 @if($user->estatus == 'Reingreso')

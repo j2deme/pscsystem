@@ -28,6 +28,13 @@
             'notificaciones' => $conteoBajas,
         ],
         [
+            'titulo' => 'Nóminas',
+            'ruta' => '#',
+            'icono' => '💵',
+            'color' => 'bg-blue-100 dark:bg-blue-700',
+            'disabled' => true,
+        ],
+        [
             'titulo' => 'Archivos',
             'ruta' => route('rh.archivos'),
             'icono' => '📁',
@@ -55,7 +62,7 @@
         ],
         [
             'titulo' => 'Asistencias',
-            'ruta' => '#',
+            'ruta' => route('nominas.asistencias'),
             'icono' => '📝',
             'color' => 'bg-green-100 dark:bg-green-700',
         ],

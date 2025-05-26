@@ -84,6 +84,9 @@ public function guardarCalculoFiniquito(Request $request)
     }
 }
 
+    public function asistenciasNominas(){
+        return view('nominas.asistencias');
+    }
 
 
 }
