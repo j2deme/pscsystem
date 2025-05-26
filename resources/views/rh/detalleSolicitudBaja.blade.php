@@ -236,6 +236,7 @@ function mostrarFiniquito(solicitudId) {
         },
         html: `
             <div id="finiquitoContenido" class="text-left text-sm font-mono leading-5" style="width: 750px !important; max-width: 95vw; min-height: 300px; overflow: visible;">
+                <p><strong>Nombre:</strong> {{ $user->name }}</p>
                 <p><strong>FECHA DE INGRESO:</strong> {{ \Carbon\Carbon::parse($user->fecha_ingreso)->format('d-m-Y') }}</p>
                 <p><strong>FECHA DE BAJA:</strong> {{ \Carbon\Carbon::parse($solicitud->fecha_baja)->format('d-m-Y') }}</p>
                 <p><strong>SALARIO DIARIO:</strong> ${{ number_format($user->solicitudAlta->sd, 2) }}</p>
