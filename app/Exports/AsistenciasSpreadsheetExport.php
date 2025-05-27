@@ -3,10 +3,12 @@
 namespace App\Exports;
 
 use App\Models\User;
+use App\Models\Asistencia;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AsistenciasSpreadsheetExport
 {
@@ -24,6 +26,11 @@ class AsistenciasSpreadsheetExport
     public function generateFile()
     {
         $subpuntos = $this->getSubpuntosPorPunto($this->punto);
+
+        $asistencias = Asistencia::where('punto', $this->punto)
+            ->whereBetween('fecha', [$this->fechaInicio, $this->fechaFin])
+            ->get()
+            ->keyBy(fn($a) => Carbon::parse($a->fecha)->format('Y-m-d'));
 
         $usuarios = User::where('estatus', 'Activo')
             ->when($this->punto, function ($query) use ($subpuntos) {
@@ -46,7 +53,7 @@ class AsistenciasSpreadsheetExport
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $columnasBase = ['No.', 'Nombre','Sueldo Quincenal', 'T.Extra Horas' , 'Sueldo Quincenal', 'FJ', 'FALTAS', 'INC', 'VACACI', 'Punto'];
+        $columnasBase = ['No.', 'Nombre','Sueldo Quincenal', 'H.Extra' , 'Sueldo Quincenal', 'FJ', 'FALTAS', 'INC', 'VACACI', 'Punto'];
         $baseColumnCount = count($columnasBase);
 
         foreach ($columnasBase as $index => $title) {
@@ -82,7 +89,7 @@ class AsistenciasSpreadsheetExport
 
         for ($i = 0; $i < $interval; $i++) {
             $currentDate = clone $start;
-            $currentDate->modify("+$i day");
+            $currentDate->modify("+{$i} day");
 
             $diaIngles = $currentDate->format('l');
             $diaEspanol = $diasSemanaES[$diaIngles];
@@ -92,8 +99,10 @@ class AsistenciasSpreadsheetExport
             $col1 = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIndex);
             $col2 = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIndex + 1);
 
-            $sheet->setCellValue("{$col1}1", "{$diaEspanol}\n{$numeroDia}");
-            $sheet->mergeCells("{$col1}1:{$col2}2");
+            $sheet->mergeCells("{$col1}1:{$col2}1");
+            $sheet->setCellValue("{$col1}1", "$diaEspanol\n$numeroDia");
+            $sheet->setCellValue("{$col1}2", '');
+            $sheet->setCellValue("{$col2}2", '');
 
             $sheet->getStyle("{$col1}1:{$col2}2")->applyFromArray([
                 'font' => ['name' => 'Century Gothic', 'size' => 9, 'bold' => true],
@@ -114,19 +123,60 @@ class AsistenciasSpreadsheetExport
 
         $row = 3;
         foreach ($usuarios as $user) {
+            $totalHorasExtra = DB::table('tiempos_extras')
+                ->where('user_id', $user->id)
+                ->whereBetween('fecha', [$this->fechaInicio, $this->fechaFin])
+                ->select(DB::raw('SUM(HOUR(total_horas)) as horas'))
+                ->value('horas');
+            $totalHorasExtra = $totalHorasExtra ?? 0;
+
             $sheet->setCellValue("A{$row}", $user->id);
             $sheet->setCellValue("B{$row}", $user->name);
-            if($user->rol == 'Guardia' || $user->rol == 'GUARDIA')
-                $sheet->setCellValue("C{$row}", '$5000.00');
-            else
-                $sheet->setCellValue("C{$row}", '$5500.00'); //Patrullero
-            $sheet->setCellValue("D{$row}", '0');
-            $sheet->setCellValue("E{$row}", '$          -');
+            $sheet->setCellValue("C{$row}", ($this->normalize($user->rol) === 'guardia') ? '$5000.00' : '$5500.00');
+            $sheet->getStyle("C{$row}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('FFFF00');
+            $sheet->setCellValue("D{$row}", $totalHorasExtra);
+            if ($totalHorasExtra > 0) {
+                $valor = (940 / 24) * $totalHorasExtra;
+                $sheet->setCellValue("E{$row}", '$' . number_format($valor, 2));
+                $sheet->getStyle("E{$row}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('FFFF00'); // Amarillo
+            } else {
+                $sheet->setCellValue("E{$row}", '0');
+                $sheet->getStyle("E{$row}")->getFill()->setFillType(Fill::FILL_NONE);
+            }
             $sheet->setCellValue("F{$row}", '0');
             $sheet->setCellValue("G{$row}", '0');
             $sheet->setCellValue("H{$row}", '0');
             $sheet->setCellValue("I{$row}", '0');
             $sheet->setCellValue("J{$row}", $user->punto);
+
+            $colDia = $baseColumnCount + 1;
+            $current = clone $start;
+            for ($i = 0; $i < $interval; $i++) {
+                $fechaStr = $current->format('Y-m-d');
+                $asistencia = $asistencias->get($fechaStr);
+                $asistio = false;
+
+                if ($asistencia && $asistencia->elementos_enlistados) {
+                    $enlistados = json_decode($asistencia->elementos_enlistados, true);
+                    $asistio = in_array($user->id, $enlistados);
+                }
+
+                $valorCelda = $asistio ? 'A' : 'F';
+
+                $cellCol1 = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colDia);
+                $cellCol2 = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colDia + 1);
+
+                $sheet->setCellValue("{$cellCol1}{$row}", $valorCelda);
+                $sheet->setCellValue("{$cellCol2}{$row}", '');
+
+                if (!$asistio) {
+                    $sheet->getStyle("{$cellCol1}{$row}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('f5b7b1');
+                }
+
+                $colDia += 2;
+                $current->modify('+1 day');
+            }
+
             $row++;
         }
 
