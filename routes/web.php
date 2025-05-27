@@ -119,6 +119,14 @@ Route::middleware('auth')->group(function () {
         return (new App\Exports\VacacionesCortesExport())->generateFile($inicio, $fin);
     })->name('exportar.vacacionesCortes');
 
+    Route::get('/exportar-asistencias', function () {
+        return (new \App\Exports\AsistenciasSpreadsheetExport(
+            request('punto'),
+            request('fecha_inicio'),
+            request('fecha_fin')
+        ))->generateFile();
+    })->name('exportar.asistencias');
+
     //Usuario 'User'
     Route::get('/solicitar_baja', [UserController::class,'solicitarBajaForm'])->name('user.solicitarBajaForm');
     Route::post('/registrar_solicitud_baja/{id}', [UserController::class,'solicitarBaja'])->name('user.registrarSolicitudBaja');

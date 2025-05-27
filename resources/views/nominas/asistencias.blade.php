@@ -4,7 +4,7 @@
         <div class="container mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
                 <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Asistencias Totales de la Quincena</h1>
-                <form method="GET" action="#" class="mt-4 flex flex-col sm:flex-row sm:items-end gap-4 justify-center">
+                <form method="GET" action="{{ route('exportar.asistencias') }}" class="mt-4 flex flex-col sm:flex-row sm:items-end gap-4 justify-center">
                     <div>
                         <label for="punto" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Punto</label>
                         <select name="punto" id="punto" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500">
