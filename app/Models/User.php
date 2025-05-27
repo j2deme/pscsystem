@@ -64,4 +64,9 @@ class User extends Authenticatable
     public function solicitarVacacionesForm(){
         return view('user.solicitarVacacionesForm');
     }
+
+    public function subpunto()
+    {
+        return $this->belongsTo(Subpunto::class);
+    }
 }
