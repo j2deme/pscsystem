@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\User;
 use App\Models\Asistencia;
+use App\Models\TiemposExtra;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -167,7 +168,19 @@ class AsistenciasSpreadsheetExport
                 $cellCol2 = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colDia + 1);
 
                 $sheet->setCellValue("{$cellCol1}{$row}", $valorCelda);
-                $sheet->setCellValue("{$cellCol2}{$row}", '');
+                $horasExtraDelDia = TiemposExtra::where('user_id', $user->id)
+                    ->whereDate('fecha', $fechaStr)
+                    ->get()
+                    ->sum(function ($registro) {
+                        return (int) Carbon::parse($registro->total_horas)->format('H');
+                    });
+
+                if ($horasExtraDelDia > 0) {
+                    $sheet->setCellValue("{$cellCol2}{$row}", $horasExtraDelDia);
+                    $sheet->getStyle("{$cellCol2}{$row}")->getFont()->setBold(true);
+                } else {
+                    $sheet->setCellValue("{$cellCol2}{$row}", '');
+                }
 
                 if (!$asistio) {
                     $sheet->getStyle("{$cellCol1}{$row}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('f5b7b1');
