@@ -1,8 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\User;
+use App\Models\SolicitudVacaciones;
 use App\Models\SolicitudAlta;
 use App\Models\SolicitudBajas;
+use App\Models\Punto;
+use App\Models\Subpunto;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -90,5 +94,33 @@ class NominasController extends Controller
 
     public function vacacionesNominas(){
         return view('nominas.vacaciones');
+    }
+
+    public function vacacionesIndex(Request $request)
+    {
+        $query = SolicitudVacaciones::query()->where('estatus', 'Aceptada');
+
+        if ($request->filled('fecha_inicio')) {
+            $query->where('fecha_inicio', '>=', $request->fecha_inicio);
+        }
+
+        if ($request->filled('fecha_fin')) {
+            $query->where('fecha_fin', '<=', $request->fecha_fin);
+        }
+
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
+
+        if ($request->filled('punto')) {
+
+            $subpuntos = Subpunto::where('punto_id', $request->punto)->pluck('nombre');
+            $userIds = User::whereIn('punto', $subpuntos)->pluck('id');
+            $query->whereIn('user_id', $userIds);
+        }
+
+        $vacaciones = $query->with('user')->get();
+
+        return view('nominas.vacaciones', compact('vacaciones'));
     }
 }

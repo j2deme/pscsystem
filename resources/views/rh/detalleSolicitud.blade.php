@@ -23,19 +23,24 @@
                     </p>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
                         <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div><strong>Nombre:</strong> {{ $solicitud->nombre }} {{ $solicitud->apellido_paterno }} {{ $solicitud->apellido_materno }}</div>
-                            <div><strong>CURP:</strong> {{ $solicitud->curp }}</div>
-                            <div><strong>NSS:</strong> {{ $solicitud->nss }}</div>
-                            <div><strong>RFC:</strong> {{ $solicitud->rfc }}</div>
-                            <div><strong>Email:</strong> {{ $solicitud->email }}</div>
-                            <div><strong>Teléfono:</strong> {{ $solicitud->telefono }}</div>
-                            <div><strong>Dirección:</strong> {{ $solicitud->domicilio_calle }} #{{ $solicitud->domicilio_numero }}, {{ $solicitud->domicilio_colonia }}, {{ $solicitud->domicilio_ciudad }}, {{ $solicitud->domicilio_estado }}</div>
-                            <div><strong>Estado Civil:</strong> {{ $solicitud->estado_civil }}</div>
-                            <div><strong>Puesto Solicitado:</strong> {{ $solicitud->rol }}</div>
-                            <div><strong>Empresa:</strong> {{ $solicitud->empresa }}</div>
-                            <div><strong>Punto:</strong> {{ $solicitud->punto }}</div>
-                            <div><strong>Fecha de Nacimiento:</strong> {{ $solicitud->fecha_nacimiento }}</div>
-                            <div><strong>Fecha de la Solicitud:</strong> {{ $solicitud->created_at->format('d-m-Y H:i') }}</div>
+                            <div><strong>Nombre:</strong> {{ $solicitud->nombre ?? 'No disponible' }} {{ $solicitud->apellido_paterno ?? '' }} {{ $solicitud->apellido_materno ?? '' }}</div>
+                                <div><strong>CURP:</strong> {{ $solicitud->curp ?? 'No disponible' }}</div>
+                                <div><strong>NSS:</strong> {{ $solicitud->nss ?? 'No disponible' }}</div>
+                                <div><strong>RFC:</strong> {{ $solicitud->rfc ?? 'No disponible' }}</div>
+                                <div><strong>Email:</strong> {{ $solicitud->email ?? 'No disponible' }}</div>
+                                <div><strong>Teléfono:</strong> {{ $solicitud->telefono ?? 'No disponible' }}</div>
+                                <div><strong>Dirección:</strong>
+                                    {{ $solicitud->domicilio_calle ?? '' }} #{{ $solicitud->domicilio_numero ?? '' }},
+                                    {{ $solicitud->domicilio_colonia ?? '' }},
+                                    {{ $solicitud->domicilio_ciudad ?? '' }},
+                                    {{ $solicitud->domicilio_estado ?? '' }}
+                                </div>
+                                <div><strong>Estado Civil:</strong> {{ $solicitud->estado_civil ?? 'No disponible' }}</div>
+                                <div><strong>Puesto Solicitado:</strong> {{ $solicitud->rol ?? 'No disponible' }}</div>
+                                <div><strong>Empresa:</strong> {{ $solicitud->empresa ?? 'No disponible' }}</div>
+                                <div><strong>Punto:</strong> {{ $solicitud->punto ?? 'No disponible' }}</div>
+                                <div><strong>Fecha de Nacimiento:</strong> {{ $solicitud->fecha_nacimiento ?? 'No disponible' }}</div>
+                                <div><strong>Fecha de la Solicitud:</strong> {{ optional($solicitud->created_at)->format('d-m-Y H:i') ?? 'No disponible' }}</div>
                             <div><strong>Estado de la Solicitud:</strong>
                                 @if($solicitud->status == 'En Proceso')
                                     <span class="inline-flex items-center px-2 py-1 text-sm text-gray-800 bg-yellow-300 rounded-full">
@@ -52,18 +57,12 @@
                                 @endif
                             </div>
                             <div><strong>Observaciones:</strong>
-                                @if($solicitud->status == 'En Proceso')
-                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-900 bg-yellow-300 rounded-full">
+                                @if($solicitud->observaciones)
+                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-900 bg-gray-200 rounded-full">
                                         {{ $solicitud->observaciones }}
                                     </span>
-                                @elseif($solicitud->status == 'Aceptada')
-                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-900 bg-green-300 rounded-full">
-                                        {{ $solicitud->observaciones }}
-                                    </span>
-                                @elseif($solicitud->status == 'Rechazada')
-                                    <span class="inline-flex items-center px-2 py-1 text-sm text-gray-900 bg-red-300 rounded-full">
-                                        {{ $solicitud->observaciones }}
-                                    </span>
+                                @else
+                                    <span class="text-sm text-gray-500">Sin observaciones</span>
                                 @endif
                             </div>
                         </div>
