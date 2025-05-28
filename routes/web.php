@@ -153,7 +153,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/asistencias_nominas', [NominasController::class, 'asistenciasNominas'])->name('nominas.asistencias');
     Route::get('/vacaciones_nominas', [NominasController::class, 'vacacionesNominas'])->name('nominas.vacaciones');
     Route::get('/nominas_vacaciones', [NominasController::class, 'vacacionesIndex'])->name('nominas.vacaciones');
-
+    Route::get('/nominas', [NominasController::class, 'vistaNominas'])->name('vistaNominas');
+    Route::get('/calculos_nominas', [NominasController::class, 'calculosNominas'])->name('nominas.calculos');
 
 });
 

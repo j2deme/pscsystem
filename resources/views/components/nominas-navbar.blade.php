@@ -29,10 +29,9 @@
         ],
         [
             'titulo' => 'Nóminas',
-            'ruta' => '#',
+            'ruta' => route('vistaNominas'),
             'icono' => '💵',
             'color' => 'bg-blue-100 dark:bg-blue-700',
-            'disabled' => true,
         ],
         [
             'titulo' => 'Vacaciones',

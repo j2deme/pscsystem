@@ -265,6 +265,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
+    const tieneRenuncia = {{ $solicitud->arch_renuncia ? 'true' : 'false' }};
+
 function mostrarFiniquito(solicitudId) {
     Swal.fire({
         title: 'Resumen de Finiquito',
@@ -303,11 +305,19 @@ function mostrarFiniquito(solicitudId) {
                         <tr><td colspan="5"><strong>TOTAL</strong></td><td><strong>{{ number_format($diasNoPagados + $montoVacaciones + $montoAguinaldo + $primaVacacional - $descuentoNoLaborados - $descuentoNoEntregados, 2) }}</strong></td></tr>
                     </tbody>
                 </table>
+                ${!tieneRenuncia ? '<p class="text-red-600 font-semibold mb-2">No se puede enviar el finiquito porque falta el archivo de renuncia firmada.</p>' : ''}
             </div>
         `,
         showCancelButton: true,
         confirmButtonText: 'Guardar cálculo',
         cancelButtonText: 'Cerrar',
+        confirmButtonColor: tieneRenuncia ? '#3085d6' : '#aaa',
+        didOpen: () => {
+            if (!tieneRenuncia) {
+                const confirmBtn = Swal.getConfirmButton();
+                confirmBtn.disabled = true;
+            }
+        },
         preConfirm: () => {
     return new Promise((resolve) => {
         const contenido = document.getElementById('finiquitoContenido');

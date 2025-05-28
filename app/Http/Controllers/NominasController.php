@@ -99,7 +99,6 @@ class NominasController extends Controller
     public function vacacionesIndex(Request $request)
     {
         $query = SolicitudVacaciones::query()->where('estatus', 'Aceptada');
-
         if ($request->filled('fecha_inicio')) {
             $query->where('fecha_inicio', '>=', $request->fecha_inicio);
         }
@@ -113,14 +112,46 @@ class NominasController extends Controller
         }
 
         if ($request->filled('punto')) {
+            $userIdsDirectos = User::where('punto', $request->punto)->pluck('id');
 
-            $subpuntos = Subpunto::where('punto_id', $request->punto)->pluck('nombre');
-            $userIds = User::whereIn('punto', $subpuntos)->pluck('id');
-            $query->whereIn('user_id', $userIds);
+            if ($userIdsDirectos->isNotEmpty()) {
+                $query->whereIn('user_id', $userIdsDirectos);
+            } else {
+                $punto = Punto::where('nombre', $request->punto)->first();
+                if ($punto) {
+                    $subpuntos = Subpunto::where('punto_id', $punto->id)->pluck('nombre');
+                    $userIds = User::whereIn('punto', $subpuntos)->pluck('id');
+                    $query->whereIn('user_id', $userIds);
+                }
+            }
         }
-
         $vacaciones = $query->with('user')->get();
 
         return view('nominas.vacaciones', compact('vacaciones'));
     }
+
+    public function vistaNominas(){
+        return view('nominas.vistaNominas');
+    }
+
+    public function calculosNominas(Request $request)
+    {
+        $query = User::query()->where('estatus', 'Activo');
+
+        if ($request->filled('punto')) {
+            $punto = Punto::where('nombre', $request->punto)->first();
+
+            if ($punto) {
+                $subpuntos = Subpunto::where('punto_id', $punto->id)->pluck('nombre');
+                $query->whereIn('punto', $subpuntos);
+            } else {
+                $query->where('punto', $request->punto);
+            }
+        }
+
+        $usuarios = $query->get();
+
+        return view('nominas.vistaNominas', compact('usuarios'));
+    }
+
 }
