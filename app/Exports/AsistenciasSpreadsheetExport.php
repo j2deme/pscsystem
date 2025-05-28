@@ -73,6 +73,7 @@ class AsistenciasSpreadsheetExport
 
             $sheet->getStyle("{$col}1")->applyFromArray($style);
         }
+        $sheet->getRowDimension(1)->setRowHeight(60);
 
         $diasSemanaES = [
             'Monday' => 'Lunes',
@@ -116,6 +117,12 @@ class AsistenciasSpreadsheetExport
                     'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                     'startColor' => ['rgb' => 'FDDDCA'],
                 ],
+                'borders' => [
+                    'left' => [
+                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+                        'color' => ['rgb' => '000000'],
+                    ],
+                ],
             ]);
 
             $sheet->getColumnDimension($col1)->setWidth(5);
@@ -124,6 +131,28 @@ class AsistenciasSpreadsheetExport
 
         $row = 3;
         foreach ($usuarios as $user) {
+            $vacaciones = DB::table('solicitud_vacaciones')
+                ->where('user_id', $user->id)
+                ->where('estatus', 'Aceptada')
+                ->where(function ($query) {
+                    $query->whereBetween('fecha_inicio', [$this->fechaInicio, $this->fechaFin])
+                        ->orWhereBetween('fecha_fin', [$this->fechaInicio, $this->fechaFin])
+                        ->orWhere(function ($q) {
+                            $q->where('fecha_inicio', '<', $this->fechaInicio)
+                                ->where('fecha_fin', '>', $this->fechaFin);
+                        });
+                })
+                ->get();
+
+            $diasVacaciones = collect();
+            foreach ($vacaciones as $vac) {
+                $inicio = Carbon::parse($vac->fecha_inicio);
+                $fin = Carbon::parse($vac->fecha_fin);
+                for ($date = $inicio->copy(); $date <= $fin; $date->addDay()) {
+                    $diasVacaciones->push($date->format('Y-m-d'));
+                }
+            }
+
             $totalHorasExtra = DB::table('tiempos_extras')
                 ->where('user_id', $user->id)
                 ->whereBetween('fecha', [$this->fechaInicio, $this->fechaFin])
@@ -156,18 +185,45 @@ class AsistenciasSpreadsheetExport
                 $fechaStr = $current->format('Y-m-d');
                 $asistencia = $asistencias->get($fechaStr);
                 $asistio = false;
+                $falto = false;
 
-                if ($asistencia && $asistencia->elementos_enlistados) {
-                    $enlistados = json_decode($asistencia->elementos_enlistados, true);
-                    $asistio = in_array($user->id, $enlistados);
+                if ($asistencia) {
+                    if ($asistencia->elementos_enlistados) {
+                        $enlistados = json_decode($asistencia->elementos_enlistados, true);
+                        $asistio = in_array($user->id, $enlistados);
+                    }
+                    if ($asistencia->faltas) {
+                        $faltantes = json_decode($asistencia->faltas, true);
+                        $falto = in_array($user->id, $faltantes);
+                    }
                 }
 
-                $valorCelda = $asistio ? 'A' : 'F';
+                if (in_array($fechaStr, $diasVacaciones->toArray())) {
+                    $valorCelda = 'V';
+                } else {
+                    $valorCelda = $asistio ? 'A' : ($falto ? 'F' : '');
+                }
 
                 $cellCol1 = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colDia);
                 $cellCol2 = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colDia + 1);
 
                 $sheet->setCellValue("{$cellCol1}{$row}", $valorCelda);
+
+                if ($valorCelda === 'F') {
+                    $sheet->getStyle("{$cellCol1}{$row}")->getFill()->setFillType(Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB('f5b7b1');
+                } elseif ($valorCelda === '') {
+                    $sheet->getStyle("{$cellCol1}{$row}")->getFill()->setFillType(Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB('FDDDCA');
+                }elseif ($valorCelda === 'V') {
+                    $sheet->getStyle("{$cellCol1}{$row}")->getFill()->setFillType(Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB('A9CCE3'); // Azul claro
+                }
+                else {
+                    $sheet->getStyle("{$cellCol1}{$row}")->getFill()->setFillType(Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB('FFFFFF');
+                }
+
                 $horasExtraDelDia = TiemposExtra::where('user_id', $user->id)
                     ->whereDate('fecha', $fechaStr)
                     ->get()
@@ -182,20 +238,60 @@ class AsistenciasSpreadsheetExport
                     $sheet->setCellValue("{$cellCol2}{$row}", '');
                 }
 
-                if (!$asistio) {
-                    $sheet->getStyle("{$cellCol1}{$row}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('f5b7b1');
-                }
-
                 $colDia += 2;
                 $current->modify('+1 day');
             }
+            $faltas = 0;
+            $incidenciasVacaciones = 0;
+            $current = clone $start;
+            for ($i = 0; $i < $interval; $i++) {
+                $fechaStr = $current->format('Y-m-d');
+                $asistencia = $asistencias->get($fechaStr);
+                $asistio = false;
+                $falto = false;
 
+                if ($asistencia) {
+                    if ($asistencia->elementos_enlistados) {
+                        $enlistados = json_decode($asistencia->elementos_enlistados, true);
+                        $asistio = in_array($user->id, $enlistados);
+                    }
+                    if ($asistencia->faltas) {
+                        $faltantes = json_decode($asistencia->faltas, true);
+                        $falto = in_array($user->id, $faltantes);
+                    }
+                }
+
+                if (in_array($fechaStr, $diasVacaciones->toArray())) {
+                    $incidenciasVacaciones++;
+                } elseif (!$asistio && $falto) {
+                    $faltas++;
+                }
+
+                $current->modify('+1 day');
+            }
+            $sheet->setCellValue("G{$row}", $faltas);
+            $sheet->setCellValue("I{$row}", $incidenciasVacaciones);
             $row++;
         }
 
         foreach (range('A', \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($baseColumnCount)) as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
+
+        $lastColumnIndex = $colDia - 1;
+        $lastColumnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($lastColumnIndex);
+        $lastRow = $row - 1;
+
+        $range = "A1:{$lastColumnLetter}{$lastRow}";
+
+        $sheet->getStyle($range)->applyFromArray([
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['rgb' => '000000'],
+                ],
+            ],
+        ]);
 
         $writer = new Xlsx($spreadsheet);
         $fileName = 'asistencias_filtradas.xlsx';

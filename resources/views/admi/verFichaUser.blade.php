@@ -115,19 +115,11 @@
                                     </a>
                                 </div>
                             @else
-                                @php
-                                    $usuario = Auth::user();
-                                    $roles = ['AUXILIAR NOMINAS', 'Auxiliar Nominas', 'Auxiliar nominas'];
-                                    $rolUsuario = $usuario->rol ?? null;
-                                    $rolSolicitud = $usuario->solicitudAlta?->rol ?? null;
-                                @endphp
-                               @if (($rolUsuario && in_array($rolUsuario, $roles)) || ($rolSolicitud && in_array($rolSolicitud, $roles)))
-                                    @if ($campo == 'arch_rfc')
+                                @if ($campo == 'arch_rfc')
                                     <div class="flex items-center justify-between border rounded p-2 bg-red-200 text-red-700">
                                         <span>{{ $label }}</span>
                                         <span class="text-xs">No disponible</span>
                                     </div>
-                                    @endif
                                 @else
                                     <div class="flex items-center justify-between border rounded p-2 bg-red-50 text-red-700">
                                         <span>{{ $label }}</span>
@@ -175,11 +167,11 @@
                             <a href="#" class="inline-block bg-red-300 text-gray-800 py-2 px-4 rounded-md hover:bg-red-400 transition">
                                 Solicitar Const. de Situación Fiscal
                             </a>
-                            <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
+                            <a href="{{ route('admin.verUsuarios') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
                                 Regresar
                             </a>
                         @else
-                            <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
+                            <a href="{{ route('admin.verUsuarios') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
                                 Regresar
                             </a>
                         @endif

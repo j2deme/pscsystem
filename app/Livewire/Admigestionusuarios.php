@@ -47,11 +47,11 @@ class Admigestionusuarios extends Component
                 $query->where('name', 'like', '%'.$this->search.'%');
             });
 
-        // Filtro por permisos
         if (!(Auth::user()->rol == 'admin' ||
             in_array(Auth::user()->solicitudAlta->rol ?? '', [
                 'AUXILIAR RECURSOS HUMANOS', 'AUXILIAR RH', 'AUX RH',
-                'Auxiliar RH', 'Auxiliar Recursos Humanos', 'Aux RH'
+                'Auxiliar RH', 'Auxiliar Recursos Humanos', 'Aux RH', 'AUXILIAR NOMINAS', 'Auxiliar Nominas',
+                'AUX NOMINAS', 'Aux Nominas', 'Auxiliar nóminas'
             ]) ||
             Auth::user()->solicitudAlta->departamento == 'Recursos Humanos')) {
             $baseQuery->where('punto', Auth()->user()->punto)
@@ -61,7 +61,6 @@ class Admigestionusuarios extends Component
 
         $users = $baseQuery->get();
 
-        // Calcular porcentaje y añadir como propiedad temporal
         $users = $users->map(function ($user) {
             $tipoEmpleado = $user->solicitudAlta?->tipo_empleado;
             $documentacion = $user->solicitudAlta?->documentacion;
@@ -90,7 +89,6 @@ class Admigestionusuarios extends Component
             return $user;
         });
 
-        // Ordenar manualmente
         if ($this->sortField === 'progreso_documentos') {
             $users = $this->sortDirection === 'asc'
                 ? $users->sortBy('progreso_documentos')
@@ -101,7 +99,6 @@ class Admigestionusuarios extends Component
                 : $users->sortByDesc($this->sortField);
         }
 
-        // Paginación manual
         $perPage = 10;
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $currentItems = $users->slice(($currentPage - 1) * $perPage, $perPage)->values();

@@ -35,6 +35,18 @@
             'disabled' => true,
         ],
         [
+            'titulo' => 'Vacaciones',
+            'ruta' => route('nominas.vacaciones'),
+            'icono' => '🎉',
+            'color' => 'bg-blue-100 dark:bg-blue-700',
+        ],
+        [
+            'titulo' => 'Asistencias',
+            'ruta' => route('nominas.asistencias'),
+            'icono' => '📝',
+            'color' => 'bg-green-100 dark:bg-green-700',
+        ],
+        [
             'titulo' => 'Archivos',
             'ruta' => route('rh.archivos'),
             'icono' => '📁',
@@ -61,17 +73,17 @@
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
-            'titulo' => 'Asistencias',
-            'ruta' => route('nominas.asistencias'),
-            'icono' => '📝',
-            'color' => 'bg-green-100 dark:bg-green-700',
-        ],
-        [
             'titulo' => 'Ficha Técnica',
             'ruta' => route('user.verFicha', auth()->user()->id),
             'icono' => '📝',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
             'disabled' => Auth::user()->rol == 'admin'
+        ],
+        [
+            'titulo' => 'Gestión de Usuarios',
+            'ruta' => route('admin.verUsuarios'),
+            'icono' => '👨‍💻',
+            'color' => 'bg-yellow-100 dark:bg-yellow-700'
         ],
         [
             'titulo' => 'Buzón de Quejas y Sugerencias',

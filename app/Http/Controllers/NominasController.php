@@ -29,64 +29,66 @@ class NominasController extends Controller
         return view('nominas.nuevasAltas', compact('solicitudes'));
     }
 
-public function guardarCalculoFiniquito(Request $request)
-{
-    Log::info('Solicitud recibida para guardar imagen de finiquito.', [
-        'solicitud_id' => $request->input('solicitud_id')
-    ]);
-
-    try {
-        $request->validate([
-            'imagen' => 'required|string',
-            'solicitud_id' => 'required|integer|exists:solicitud_bajas,id',
+    public function guardarCalculoFiniquito(Request $request)
+    {
+        Log::info('Solicitud recibida para guardar imagen de finiquito.', [
+            'solicitud_id' => $request->input('solicitud_id')
         ]);
 
-        $imagenBase64 = $request->input('imagen');
-        $solicitudId = $request->input('solicitud_id');
+        try {
+            $request->validate([
+                'imagen' => 'required|string',
+                'solicitud_id' => 'required|integer|exists:solicitud_bajas,id',
+            ]);
 
-        $solicitud = SolicitudBajas::find($solicitudId);
-        if (!$solicitud) {
-            Log::error("Solicitud con ID {$solicitudId} no encontrada.");
-            return response()->json(['success' => false, 'error' => 'Solicitud no encontrada.']);
+            $imagenBase64 = $request->input('imagen');
+            $solicitudId = $request->input('solicitud_id');
+
+            $solicitud = SolicitudBajas::find($solicitudId);
+            if (!$solicitud) {
+                Log::error("Solicitud con ID {$solicitudId} no encontrada.");
+                return response()->json(['success' => false, 'error' => 'Solicitud no encontrada.']);
+            }
+
+            if ($solicitud->calculo_finiquito && Storage::disk('public')->exists($solicitud->calculo_finiquito)) {
+                Storage::disk('public')->delete($solicitud->calculo_finiquito);
+                Log::info("Archivo anterior eliminado: {$solicitud->calculo_finiquito}");
+            }
+
+            $imagen = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imagenBase64));
+            if (!$imagen) {
+                Log::error('No se pudo decodificar la imagen.');
+                return response()->json(['success' => false, 'error' => 'No se pudo decodificar la imagen.']);
+            }
+
+            $carpeta = "solicitudesBajas/{$solicitudId}";
+            Storage::disk('public')->makeDirectory($carpeta);
+
+            $nombreArchivo = 'finiquito_' . now()->format('Ymd_His') . '.png';
+            $rutaCompleta = "{$carpeta}/{$nombreArchivo}";
+
+            Storage::disk('public')->put($rutaCompleta, $imagen);
+            Log::info("Imagen guardada correctamente en: {$rutaCompleta}");
+
+            $solicitud->calculo_finiquito = $rutaCompleta;
+            $solicitud->observaciones = "Finiquito enviado a RH.";
+            $solicitud->save();
+
+            Log::info('Ruta del finiquito actualizada en la base de datos.');
+
+            return response()->json(['success' => true, 'ruta' => $rutaCompleta]);
+
+        } catch (\Exception $e) {
+            Log::error('Error al guardar imagen de finiquito: ' . $e->getMessage());
+            return response()->json(['success' => false, 'error' => 'Error interno.']);
         }
-
-        if ($solicitud->calculo_finiquito && Storage::disk('public')->exists($solicitud->calculo_finiquito)) {
-            Storage::disk('public')->delete($solicitud->calculo_finiquito);
-            Log::info("Archivo anterior eliminado: {$solicitud->calculo_finiquito}");
-        }
-
-        $imagen = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imagenBase64));
-        if (!$imagen) {
-            Log::error('No se pudo decodificar la imagen.');
-            return response()->json(['success' => false, 'error' => 'No se pudo decodificar la imagen.']);
-        }
-
-        $carpeta = "solicitudesBajas/{$solicitudId}";
-        Storage::disk('public')->makeDirectory($carpeta);
-
-        $nombreArchivo = 'finiquito_' . now()->format('Ymd_His') . '.png';
-        $rutaCompleta = "{$carpeta}/{$nombreArchivo}";
-
-        Storage::disk('public')->put($rutaCompleta, $imagen);
-        Log::info("Imagen guardada correctamente en: {$rutaCompleta}");
-
-        $solicitud->calculo_finiquito = $rutaCompleta;
-        $solicitud->observaciones = "Finiquito enviado a RH.";
-        $solicitud->save();
-
-        Log::info('Ruta del finiquito actualizada en la base de datos.');
-
-        return response()->json(['success' => true, 'ruta' => $rutaCompleta]);
-
-    } catch (\Exception $e) {
-        Log::error('Error al guardar imagen de finiquito: ' . $e->getMessage());
-        return response()->json(['success' => false, 'error' => 'Error interno.']);
     }
-}
 
     public function asistenciasNominas(){
         return view('nominas.asistencias');
     }
 
-
+    public function vacacionesNominas(){
+        return view('nominas.vacaciones');
+    }
 }
