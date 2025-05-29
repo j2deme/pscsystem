@@ -11,13 +11,13 @@
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Supervisor: {{ $asistencia->usuario->name }}</p>
                                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Observaciones: {{ $asistencia->observaciones }}</p>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4">
                                     <div>
                                         <h4 class="text-md font-semibold text-green-600 dark:text-green-400 mb-2">Asistieron:</h4>
                                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                                             @foreach ($asistencia->usuarios_enlistados as $usuario)
                                                 <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg text-center shadow">
-                                                    <img src="{{ $usuario->solicitudAlta?->documentacion?->arch_foto ? asset($usuario->solicitudAlta->documentacion->arch_foto) . '?v=' . now()->timestamp : asset('images/default-user.jpg') }}" class="w-16 h-16 rounded-full mx-auto object-cover mb-2 border border-gray-300 dark:border-gray-600">
+                                                    <img src="{{ $usuario->solicitudAlta?->documentacion?->arch_foto ? asset($usuario->solicitudAlta->documentacion->arch_foto) . '?v=' . now()->timestamp : asset('images/default-user.jpg') }}" class="w-20 h-20 rounded-full mx-auto object-cover mb-2 border border-gray-300 dark:border-gray-600">
                                                     <p class="text-gray-800 dark:text-white font-medium">{{ $usuario->name }}</p>
                                                     <p class="text-sm text-gray-500 dark:text-gray-400">{{ $usuario->punto }} - {{ $usuario->empresa }}</p>
                                                     @if (isset($asistencia->fotos_asistentes[$usuario->id]))
@@ -32,6 +32,23 @@
                                     </div>
 
                                     <div>
+                                        @if ($asistencia->usuarios_descansos->isEmpty())
+                                            <h4 class="text-md font-semibold text-blue-600 dark:text-blue-400">No se registraron descansos.</h4>
+                                        @else
+                                            <h4 class="text-md font-semibold text-blue-600 dark:text-blue-400 mb-2">Descansaron:</h4>
+                                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                                @foreach ($asistencia->usuarios_descansos as $usuario)
+                                                    <div class="bg-blue-50 dark:bg-gray-700 p-3 rounded-lg text-center shadow">
+                                                        <img src="{{ $usuario->solicitudAlta?->documentacion?->arch_foto ? asset($usuario->solicitudAlta->documentacion->arch_foto) . '?v=' . now()->timestamp : asset('images/default-user.jpg') }}" class="w-20 h-20 rounded-full mx-auto object-cover mb-2 border border-gray-300 dark:border-gray-600">
+                                                        <p class="text-gray-800 dark:text-white font-medium">{{ $usuario->name }}</p>
+                                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $usuario->punto }} - {{ $usuario->empresa }}</p>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <div>
                                         @if ($asistencia->usuarios_faltantes->isEmpty())
                                             <h4 class="text-md font-semibold text-green-600 dark:text-green-400">No se registraron inasistencias.</h4>
                                         @else
@@ -39,7 +56,7 @@
                                             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                                                 @foreach ($asistencia->usuarios_faltantes as $usuario)
                                                     <div class="bg-red-50 dark:bg-gray-700 p-3 rounded-lg text-center shadow">
-                                                        <img src="{{ $usuario->solicitudAlta?->documentacion?->arch_foto ? asset($usuario->solicitudAlta->documentacion->arch_foto) . '?v=' . now()->timestamp : asset('images/default-user.jpg') }}" class="w-16 h-16 rounded-full mx-auto object-cover mb-2 border border-gray-300 dark:border-gray-600">
+                                                        <img src="{{ $usuario->solicitudAlta?->documentacion?->arch_foto ? asset($usuario->solicitudAlta->documentacion->arch_foto) . '?v=' . now()->timestamp : asset('images/default-user.jpg') }}" class="w-20 h-20 rounded-full mx-auto object-cover mb-2 border border-gray-300 dark:border-gray-600">
                                                         <p class="text-gray-800 dark:text-white font-medium">{{ $usuario->name }}</p>
                                                         <p class="text-sm text-gray-500 dark:text-gray-400">{{ $usuario->punto }} - {{ $usuario->empresa }}</p>
                                                     </div>

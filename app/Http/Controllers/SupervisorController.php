@@ -473,67 +473,108 @@ class SupervisorController extends Controller
     }
 
     public function guardarAsistencias(Request $request)
+{
+    $validated = $request->validate([
+        'asistencias' => 'required|array',
+        'asistencias.*' => 'integer',
+        'foto_evidencia' => 'nullable|array',
+        'foto_evidencia.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+        'observaciones' => 'nullable|string|max:255'
+    ]);
+
+    $user = Auth::user();
+    $now = now('America/Mexico_City');
+
+    $asistencias = $request->input('asistencias', []);
+    $todosUsuarios = User::where('punto', $user->punto)
+        ->where('empresa', $user->empresa)
+        ->where('estatus', 'Activo')
+        ->where('rol', '!=', 'Supervisor')
+        ->pluck('id')
+        ->toArray();
+
+    $faltas = array_values(array_diff($todosUsuarios, $asistencias));
+
+    session([
+        'asistencias_data' => [
+            'asistencias' => $asistencias,
+            'foto_evidencia' => $request->file('foto_evidencia', []),
+            'observaciones' => $request->input('observaciones'),
+            'faltas' => $faltas,
+            'fecha' => $now->toDateString(),
+            'hora' => $now->toTimeString(),
+        ]
+    ]);
+
+    return redirect()->route('asistencias.confirmarFaltas');
+}
+
+    public function confirmarFaltas()
     {
-        $validated = $request->validate([
-            'asistencias' => 'required|array',
-            'asistencias.*' => 'integer',
-            'foto_evidencia' => 'nullable|array',
-            'foto_evidencia.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-            'observaciones' => 'nullable|string|max:255'
+        $data = session('asistencias_data');
+
+        if (!$data) {
+            return redirect()->route('dashboard')->with('error', 'No hay datos de asistencia pendientes.');
+        }
+
+        $faltantes = User::whereIn('id', $data['faltas'])
+        ->with('solicitudAlta.documentacion')->get();
+
+        return view('supervisor.confirmar-faltas', compact('faltantes'));
+    }
+
+public function finalizarAsistencia(Request $request)
+{
+    $data = session('asistencias_data');
+
+    if (!$data) {
+        return redirect()->route('dashboard')->with('error', 'No hay datos para finalizar.');
+    }
+
+    DB::beginTransaction();
+    try {
+        $user = Auth::user();
+        $descansan = $request->input('descansan', []);
+        Log::info('Descansan recibidos:', $descansan);
+        $faltasFinales = array_values(array_diff($data['faltas'], $descansan));
+
+        $rutaBase = "asistencias/" . Str::slug($user->name) . "/" . $data['fecha'];
+        Storage::disk('public')->makeDirectory($rutaBase, 0755, true);
+
+        $fotosAsistentes = [];
+        foreach ($data['foto_evidencia'] ?? [] as $elementoId => $foto) {
+            if ($foto && $foto->isValid()) {
+                $extension = $foto->extension();
+                $nombreArchivo = $elementoId . time() . '.' . $extension;
+                $rutaCompleta = $foto->storeAs($rutaBase, $nombreArchivo, 'public');
+                $fotosAsistentes[$elementoId] = $rutaCompleta;
+            }
+        }
+
+        Asistencia::create([
+            'user_id' => $user->id,
+            'fecha' => $data['fecha'],
+            'hora_asistencia' => $data['hora'],
+            'elementos_enlistados' => json_encode($data['asistencias']),
+            'faltas' => json_encode($faltasFinales),
+            'descansos' => json_encode($descansan),
+            'observaciones' => $data['observaciones'] ?: 'Ninguna',
+            'punto' => $user->punto,
+            'empresa' => $user->empresa,
+            'fotos_asistentes' => json_encode($fotosAsistentes),
         ]);
 
-        DB::beginTransaction();
-        try {
-            $user = Auth::user();
-            $now = now('America/Mexico_City');
+        DB::commit();
+        session()->forget('asistencias_data');
 
-            $asistencias = $request->input('asistencias', []);
-            $todosUsuarios = User::where('punto', $user->punto)
-                            ->where('empresa', $user->empresa)
-                            ->where('estatus', 'Activo')
-                            ->where('rol', '!=', 'Supervisor')
-                            ->pluck('id')
-                            ->toArray();
+        return redirect()->route('dashboard')->with('success', 'Asistencia registrada con faltas y descansos.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Error al finalizar asistencia: '.$e->getMessage());
 
-            $faltas = array_values(array_diff($todosUsuarios, $asistencias));
-
-            $fotosAsistentes = [];
-            $rutaBase = "asistencias/".Str::slug($user->name)."/".$now->format('Y-m-d');
-            Storage::disk('public')->makeDirectory($rutaBase, 0755, true);
-
-            foreach ($request->file('foto_evidencia', []) as $elementoId => $foto) {
-                if ($foto && $foto->isValid()) {
-                    $extension = $foto->extension();
-                    $nombreArchivo = $elementoId.$now->timestamp.'.'.$extension;
-                    $rutaCompleta = $foto->storeAs($rutaBase, $nombreArchivo, 'public');
-                    $fotosAsistentes[$elementoId] = $rutaCompleta;
-                }
-            }
-
-            Asistencia::create([
-                'user_id' => $user->id,
-                'fecha' => $now->toDateString(),
-                'hora_asistencia' => $now->toTimeString(),
-                'elementos_enlistados' => json_encode($asistencias,true),
-                'faltas' => json_encode($faltas, true),
-                'observaciones' => $request->input('observaciones') ?: 'Ninguna',
-                'punto' => $user->punto,
-                'empresa' => $user->empresa,
-                'fotos_asistentes' => json_encode($fotosAsistentes, true),
-            ]);
-
-            DB::commit();
-            return redirect()->route('dashboard')
-                ->with('success', 'Asistencia registrada correctamente');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error al guardar asistencia: '.$e->getMessage()."\n".$e->getTraceAsString());
-
-            return back()->withInput()
-                ->with('error', 'Error al guardar: '.$e->getMessage());
-        }
+        return back()->with('error', 'Error al finalizar asistencia: '.$e->getMessage());
     }
+}
 
     public function verAsistencias($id){
         $user = User::find($id);
@@ -557,9 +598,11 @@ class SupervisorController extends Controller
         $asistencia = Asistencia::find($id);
         $idsAsistieron = json_decode($asistencia->elementos_enlistados, true) ?? [];
         $idsFaltaron = json_decode($asistencia->faltas, true) ?? [];
+        $idsDescansaron = json_decode($asistencia->descansos, true) ?? [];
 
         $usuariosAsistieron = User::whereIn('id', $idsAsistieron)->with('solicitudAlta.documentacion')->get();
         $usuariosFaltaron = User::whereIn('id', $idsFaltaron)->with('solicitudAlta.documentacion')->get();
+        $usuariosDescansaron = User::whereIn('id', $idsDescansaron)->with('solicitudAlta.documentacion')->get();
 
         $fotos = json_decode($asistencia->fotos_asistentes, true) ?? [];
         if (is_array($fotos)) {
@@ -569,6 +612,7 @@ class SupervisorController extends Controller
         }
         $asistencia->usuarios_enlistados = $usuariosAsistieron;
         $asistencia->usuarios_faltantes = $usuariosFaltaron;
+        $asistencia->usuarios_descansos = $usuariosDescansaron;
         $asistencia->fotos_asistentes = $fotos;
 
         return view('supervisor.detalleAsistencia', compact('asistencia'));

@@ -12,6 +12,7 @@ class Asistencia extends Model
         'fecha',
         'hora_asistencia',
         'elementos_enlistados',
+        'descansos',
         'faltas',
         'fotos_asistentes',
         'observaciones',
