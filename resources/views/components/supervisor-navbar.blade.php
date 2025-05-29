@@ -58,6 +58,13 @@
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
+                    'titulo' => 'Solicitar Vacaciones de Elemento',
+                    'ruta' => route('sup.solicitarVacacionesElemento'),
+                    'icono' => '🏖️',
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700',
+                    'disabled' => Auth::user()->rol == 'admin'
+                ],
+                [
                     'titulo' => 'Listas de Asistencia',
                     'ruta' => route('sup.listaAsistencia'),
                     'icono' => '📋',

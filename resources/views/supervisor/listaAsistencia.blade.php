@@ -23,7 +23,6 @@
                     </center>
                     @else
                     <h1 class="text-2xl mb-6 text-gray-800 dark:text-white">Usuarios Activos</h1>
-
                     <form action="{{route('sup.guardarAsistencias')}}" method="POST" enctype="multipart/form-data" id="form-asistencias">
                         @csrf
 

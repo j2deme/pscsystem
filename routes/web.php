@@ -75,6 +75,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/gestion_usuarios', [SupervisorController::class, 'gestionUsuarios'])->name('sup.gestionUsuarios');
     Route::get('/descargar_formato_vacaciones/{id}', [SupervisorController::class, 'descargarSolicitudVacaciones'])->name('sup.descargarSolicitudVacaciones');
     Route::post('/solicitud-vacaciones/{id}/subir-archivo', [SupervisorController::class, 'subirArchivo'])->name('solicitud-vacaciones.subir-archivo');
+    Route::get('/vacaciones_elemento', [SupervisorController::class, 'solicitarVacacionesElemento'])->name('sup.solicitarVacacionesElemento');
+    Route::get('/vacaciones_elemento/{id}', [SupervisorController::class, 'vacacionesElementoForm'])->name('sup.solicitarVacacionesElementoForm');
 
     //usuario Recursos Humanos
     Route::get('/solicitudes_altas', [RhController::class,'solicitudesAltas'])->name('rh.solicitudesAltas');

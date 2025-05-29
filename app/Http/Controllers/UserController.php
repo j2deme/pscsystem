@@ -79,7 +79,12 @@ class UserController extends Controller
     }
     public function solicitarVacacionesForm(){
         $user = User::find(Auth::user()->id);
-        $antiguedad = (int) floor(Carbon::parse($user->fecha_ingreso)->floatDiffInYears(now()));
+        $antiguedad = (int) floor(Carbon::parse($user->fecha_ingreso)->floatDiffInYears(now('Americas/Mexico_City')));
+        if ($antiguedad === 0) {
+            $mesesLaborados = $fechaIngreso->diffInMonths($fechaActual);
+        } else {
+            $mesesLaborados = 0;
+        }
 
         if($antiguedad <2){
             $dias=12;
@@ -130,7 +135,7 @@ class UserController extends Controller
         $solicitud = SolicitudAlta::where('id', $user->sol_alta_id)->first();
         $documentacion = DocumentacionAltas::where('solicitud_id', $user->sol_alta_id)->first();
 
-        return view('users.solicitarVacacionesForm', compact('user','solicitud', 'documentacion', 'antiguedad','dias', 'diasDisponibles', 'diasUtilizados'));
+        return view('users.solicitarVacacionesForm', compact('user','solicitud', 'documentacion', 'antiguedad','dias', 'diasDisponibles', 'diasUtilizados', 'mesesLaborados'));
     }
 
     public function solicitarVacaciones(Request $request, $id){
@@ -151,8 +156,8 @@ class UserController extends Controller
                 ->where('empresa', Auth::user()->empresa)
                 ->where('punto', Auth::user()->punto)
                 ->first();
-        }else{
-            $supervisor = 'Desconocido';
+        }elseif(Auth::user()->rol == 'Supervisor' || Auth::user()->rol == 'admin' || Auth::user()->rol == 'SUPERVISOR'){
+            $supervisor = Auth::user();
         }
         $solicitud = new SolicitudVacaciones();
         $solicitud->user_id = $user->id;
@@ -165,7 +170,10 @@ class UserController extends Controller
         $solicitud->dias_disponibles = $request->dias_disponibles;
         $solicitud->dias_por_derecho = $request->dias_por_derecho;
         $solicitud->monto = 0.0;
-        $solicitud->observaciones = 'Solicitud de vacaciones en proceso';
+        if(Auth::user()->rol == 'Supervisor' || Auth::user()->rol == 'admin' || Auth::user()->rol == 'SUPERVISOR')
+            $solicitud->observaciones = 'Solicitud aceptada, falta subir archivo de solicitud.';
+        else
+            $solicitud->observaciones = 'Solicitud de vacaciones en proceso';
         $solicitud->estatus = 'En Proceso';
 
         $solicitud->save();

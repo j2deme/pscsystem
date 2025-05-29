@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Str; @endphp
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -96,6 +97,9 @@
             @else
                 DÍAS
             @endif
+            @if(Str::contains($antiguedad, ['MES', 'MESES']))
+                <strong>POR ADELANTADO </strong>
+            @endif
             DE VACACIONES DEL PERIODO Nº{{$periodo}}.
             ({{ $solicitud->dias_solicitados }}
             @if($solicitud->dias_solicitados == 1)
@@ -127,7 +131,11 @@
     <table style="width: 100%; text-align: center;">
         <tr>
             <td>
-                <p style="border-top: 1px solid black;">SUPERVISOR EN TURNO</p>
+                @if($user->empresa === 'Montana')
+                    <p style="border-top: 1px solid black;">JEFE INMEDIATO</p>
+                @else
+                    <p style="border-top: 1px solid black;">SUPERVISOR EN TURNO</p>
+                @endif
             </td>
         </tr>
         <tr style="margin-top: 75px;">

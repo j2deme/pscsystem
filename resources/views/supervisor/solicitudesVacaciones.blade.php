@@ -67,7 +67,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            <p>Nota: Al aceptar una solicitud, se deberá descargae el archivo PDF con el formato de solicitud de vacaciones, el cual deberá ser firmado por el elemento, para después ser subido nuevamente al sistema y que la solicitud sea aceptada correctamente.</p>
+                            <p>Nota: Al aceptar una solicitud, se deberá descargar el archivo PDF con el formato de solicitud de vacaciones, el cual deberá ser firmado por el elemento, para después ser subido nuevamente al sistema y que la solicitud sea aceptada correctamente.</p>
                             <center><br><a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
                                 Regresar
                             </a></center>

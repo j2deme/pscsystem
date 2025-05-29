@@ -776,24 +776,34 @@ class SupervisorController extends Controller
     }
 
     public function descargarSolicitudVacaciones($id)
-    {
-        $solicitud = SolicitudVacaciones::with('user')->findOrFail($id);
-        $user = $solicitud->user;
+{
+    $solicitud = SolicitudVacaciones::with('user')->findOrFail($id);
+    $user = $solicitud->user;
 
-        $inicioPeriodo = $user->fecha_ingreso;
-        $finPeriodo = Carbon::parse($inicioPeriodo)->addYear();
-        if (floor(Carbon::parse($user->fecha_ingreso)->floatDiffInYears(now())) != 1)
-            $anio = 'AÑOS';
-        else
-            $anio = 'AÑO';
-        $antiguedad = floor(Carbon::parse($user->fecha_ingreso)->floatDiffInYears(now())) . ' '. $anio;
-        if($antiguedad == '0 AÑOS' || $antiguedad == '1 AÑO')
-            $periodo = 1;
-        else
-            $periodo = floor(Carbon::parse($user->fecha_ingreso)->floatDiffInYears(now()));
-        $pdf = Pdf::loadView('pdf.formatoVacaciones', compact('user', 'solicitud', 'inicioPeriodo', 'finPeriodo', 'antiguedad', 'periodo'));
-        return $pdf->download('SOLICITUD DE VACACIONES.pdf');
+    $fechaIngreso = Carbon::parse($user->fecha_ingreso);
+    $fechaActual = now();
+
+    $inicioPeriodo = $fechaIngreso;
+    $finPeriodo = $fechaIngreso->copy()->addYear();
+
+    $antiguedadAnios = floor($fechaIngreso->floatDiffInYears($fechaActual));
+
+    if ($antiguedadAnios >= 1) {
+        $anioTexto = ($antiguedadAnios == 1) ? 'AÑO' : 'AÑOS';
+        $antiguedad = $antiguedadAnios . ' ' . $anioTexto;
+        $periodo = $antiguedadAnios;
+    } else {
+        $mesesLaborados = (int) $fechaIngreso->diffInMonths($fechaActual);
+        $antiguedad = $mesesLaborados . ' ' . ($mesesLaborados === 1 ? 'MES' : 'MESES');
+        $periodo = 1;
     }
+
+    $pdf = Pdf::loadView('pdf.formatoVacaciones', compact(
+        'user', 'solicitud', 'inicioPeriodo', 'finPeriodo', 'antiguedad', 'periodo', 'mesesLaborados'
+    ));
+
+    return $pdf->download('SOLICITUD DE VACACIONES.pdf');
+}
 
     public function subirArchivo(Request $request, $id)
 {
@@ -836,5 +846,81 @@ class SupervisorController extends Controller
         ], 500);
     }
 }
+
+    public function solicitarVacacionesElemento()
+    {
+        $user = Auth::user();
+        $elementos = User::where('punto', Auth::user()->punto)
+            ->where('empresa', Auth::user()->empresa)
+            ->where('estatus', 'Activo')
+            ->where('rol', '!=', 'Supervisor')
+            ->with('solicitudAlta.documentacion')
+            ->get();
+        return view('supervisor.solicitarVacacionesElemento', compact('elementos'));
+    }
+
+    public function vacacionesElementoForm($id){
+        $user = User::find($id);
+        $fechaIngreso = Carbon::parse($user->fecha_ingreso);
+        $fechaActual = now('America/Mexico_City');
+        $antiguedad = (int) floor(Carbon::parse($user->fecha_ingreso)->floatDiffInYears(now('America/Mexico_City')));
+
+        if ($antiguedad === 0) {
+            $mesesLaborados = (int) $fechaIngreso->diffInMonths($fechaActual);
+        } else {
+            $mesesLaborados = 0;
+        }
+
+        if($antiguedad <2){
+            $dias=12;
+        }elseif($antiguedad ==2){
+            $dias=14;
+        }elseif($antiguedad ==3){
+            $dias=16;
+        }elseif($antiguedad ==4){
+            $dias=18;
+        }elseif($antiguedad ==5){
+            $dias=20;
+        }elseif($antiguedad>5 && $antiguedad<=10){
+            $dias=22;
+        }elseif($antiguedad>10 && $antiguedad<=15){
+            $dias=24;
+        }elseif($antiguedad>15 && $antiguedad<=20){
+            $dias=26;
+        }elseif($antiguedad>20 && $antiguedad<=25){
+            $dias=28;
+        }elseif($antiguedad>25 && $antiguedad<=30){
+            $dias=30;
+        }else{
+            $dias=32;
+        }
+
+        $diasDisponibles = $dias;
+        $diasUtilizados = 0;
+        $fechaIngreso = Carbon::parse($user->fecha_ingreso);
+        $aniversario = Carbon::createFromDate(
+            now()->year,
+            $fechaIngreso->month,
+            $fechaIngreso->day
+        );
+
+        if ($aniversario->isFuture()) {
+            $aniversario->subYear();
+        }
+        $vacacionesTomadas = SolicitudVacaciones::where('user_id', $user->id)
+            ->whereIn('estatus', ['Aceptada', 'En Proceso'])
+            ->where('created_at', '>=', $aniversario)
+            ->get();
+
+        foreach ($vacacionesTomadas as $vacacion) {
+            $diasDisponibles -= $vacacion->dias_solicitados;
+            $diasUtilizados += $vacacion->dias_solicitados;
+        }
+
+        $solicitud = SolicitudAlta::where('id', $user->sol_alta_id)->first();
+        $documentacion = DocumentacionAltas::where('solicitud_id', $user->sol_alta_id)->first();
+
+        return view('users.solicitarVacacionesForm', compact('user','solicitud', 'documentacion', 'antiguedad','dias', 'diasDisponibles', 'diasUtilizados', 'mesesLaborados'));
+    }
 
 }
