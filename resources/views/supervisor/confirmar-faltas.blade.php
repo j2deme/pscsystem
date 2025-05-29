@@ -13,7 +13,9 @@
                     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-5 border border-gray-200 dark:border-gray-700 flex flex-col justify-between">
                                     <div>
                                     <div class="flex items-center space-x-4 mb-4">
-                                        <img src="{{ $elemento->solicitudAlta?->documentacion?->arch_foto ?: url('images/default-user.jpg') }}" alt="Foto de {{ $elemento->name }}" class="w-16 h-16 rounded-full object-cover border border-gray-300 dark:border-gray-600">
+                                        <img src="{{ $elemento->solicitudAlta?->documentacion?->arch_foto ? asset($elemento->solicitudAlta->documentacion->arch_foto) . '?v=' . now()->timestamp : asset('images/default-user.jpg') }}"
+                                            alt="Foto de {{ $elemento->name }}"
+                                            class="w-16 h-16 rounded-full object-cover border border-gray-300 dark:border-gray-600">
                                         <div>
                                             <h2 class="text-lg font-semibold text-gray-800 dark:text-white">{{ $elemento->name }}</h2>
                                             <p class="text-sm text-gray-600 dark:text-gray-300">{{ $elemento->empresa }} - {{ $elemento->punto }}</p>
