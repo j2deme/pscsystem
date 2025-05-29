@@ -189,34 +189,60 @@
     function confirmarBaja(userId) {
         Swal.fire({
             title: '¿Estás seguro?',
-            text: "Esto cambiará el estatus del usuario a 'Inactivo'",
+            html: `
+                <p class="mb-2">Esto cambiará el estatus del usuario a 'Inactivo'.</p>
+                <label for="fechaBaja" class="block mb-1 text-sm text-left">Fecha de baja:</label>
+                <input type="date" id="fechaBaja" class="swal2-input" style="width: auto;">
+            `,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'Sí, dar de baja',
-            cancelButtonText: 'Cancelar'
+            cancelButtonText: 'Cancelar',
+            preConfirm: () => {
+                const fecha = document.getElementById('fechaBaja').value;
+                if (!fecha) {
+                    Swal.showValidationMessage('Debes ingresar una fecha de baja');
+                }
+                return fecha;
+            }
         }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = `/admin/baja_usuario/${userId}`;
+            if (result.isConfirmed && result.value) {
+                const fecha = result.value;
+                window.location.href = `/admin/baja_usuario/${userId}?fecha=${fecha}`;
             }
         });
     }
+
     function confirmarReingreso(userId) {
         Swal.fire({
             title: '¿Confirmas generar el reingreso?',
-            text: "Esto añadirá un nuevo reingreso para el usuario.",
+            html: `
+                <p class="mb-2">Esto añadirá un nuevo reingreso para el usuario.</p>
+                <label for="fechaReingreso" class="block mb-1 text-sm text-left">Fecha de reingreso:</label>
+                <input type="date" id="fechaReingreso" class="swal2-input" style="width: auto;">
+            `,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#28a745',
             cancelButtonColor: '#6c757d',
             confirmButtonText: 'Sí, generar',
-            cancelButtonText: 'Cancelar'
+            cancelButtonText: 'Cancelar',
+            preConfirm: () => {
+                const fecha = document.getElementById('fechaReingreso').value;
+                if (!fecha) {
+                    Swal.showValidationMessage('Debes ingresar una fecha de reingreso');
+                }
+                return fecha;
+            }
         }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = `/reingreso/${userId}`;
+            if (result.isConfirmed && result.value) {
+                const fecha = result.value;
+                window.location.href = `/reingreso/${userId}?fecha=${fecha}`;
             }
         });
     }
+
 </script>
 

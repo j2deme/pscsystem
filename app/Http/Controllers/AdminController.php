@@ -34,10 +34,14 @@ class AdminController extends Controller
         return view('admi.editarUsuarioForm', compact('user'));
     }
 
-    public function bajaUsuario($id){
+    public function bajaUsuario($id, Request $request) {
         $user = User::find($id);
         $user->estatus = 'Inactivo';
         $user->save();
+
+        $fechaBaja = $request->query('fecha')
+            ? Carbon::parse($request->query('fecha'))->format('Y-m-d')
+            : Carbon::today()->format('Y-m-d');
 
         $solicitud = new SolicitudBajas();
         $solicitud->user_id = $id;
@@ -45,7 +49,7 @@ class AdminController extends Controller
         $solicitud->motivo = 'Desconocido';
         $solicitud->por = 'Desconocido';
         $solicitud->incapacidad = '';
-        $solicitud->fecha_baja = Carbon::today();
+        $solicitud->fecha_baja = $fechaBaja;
         $solicitud->observaciones = 'Baja realizada por Administrador.';
         $solicitud->autoriza = Auth::user()->name;
         $solicitud->estatus = 'Aceptada';
@@ -71,21 +75,21 @@ class AdminController extends Controller
         return view ('admi.verBuzon', compact('quejas'));
     }
 
-    public function darReingreso($id){
+    public function darReingreso(Request $request, $id){
         $user = User::find($id);
         $user->estatus = 'Activo';
-        $fechaHoy = \Carbon\Carbon::today('America/Mexico_City')->toDateString();
+        $fechaReingreso = Carbon::parse($request->query('fecha'))->format('d-m-Y');
 
         $reingresoTexto = $user->solicitudAlta->reingreso;
 
         if (is_null($reingresoTexto) || trim($reingresoTexto) === '' || $reingresoTexto === 'NO') {
-            $user->solicitudAlta->reingreso = "Reingreso 1: $fechaHoy";
+            $user->solicitudAlta->reingreso = "Reingreso 1: $fechaReingreso";
         } else {
             preg_match_all('/Reingreso \d+:/', $reingresoTexto, $coincidencias);
             $reingresosHechos = count($coincidencias[0]);
 
             $nuevoNumero = $reingresosHechos + 1;
-            $user->solicitudAlta->reingreso .= " Reingreso $nuevoNumero: $fechaHoy";
+            $user->solicitudAlta->reingreso .= " Reingreso $nuevoNumero: $fechaReingreso";
         }
         $user->solicitudAlta->save();
         $user->save();
