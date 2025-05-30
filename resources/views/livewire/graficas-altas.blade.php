@@ -1,38 +1,51 @@
-<div class="p-4 bg-white rounded-lg shadow" wire:ignore>
-    <h2 class="text-xl font-semibold mb-4">Usuarios Activos: {{ $activeUsersCount }}</h2>
+<div class="p-4 bg-white rounded-lg shadow ml-16" wire:ignore>
+    <div class="flex flex-col items-center mb-4">
+    <h2 class="text-xl font-semibold mb-2">Estadísticas Generales</h2>
 
-    <div class="relative h-64">
-        <canvas id="activeUsersChart"></canvas>
+    <select wire:model.live.debounce.300ms="filtro" class="rounded-md border-gray-300 shadow-sm">
+        <option value="hoy">Hoy</option>
+        <option value="semana">Esta Semana</option>
+        <option value="mes">Este Mes</option>
+        <option value="anio">Este Año</option>
+    </select>
+</div>
+
+<center>
+    <div class="relative h-64 w-3/4 flex justify-center">
+        <canvas id="estadisticasChart"></canvas>
     </div>
-
+</center>
     <script>
-    document.addEventListener('livewire:init', function() {
-        // Almacenamos la instancia del gráfico en el contexto del canvas
+    document.addEventListener('livewire:init', function () {
         let chartInstance = null;
 
         function initChart() {
-            const ctx = document.getElementById('activeUsersChart');
-            if (!ctx) {
-                console.error('No se encontró el elemento canvas');
-                return;
-            }
+            const ctx = document.getElementById('estadisticasChart');
+            if (!ctx) return;
 
-            // Destruir gráfico anterior si existe
             if (chartInstance) {
                 chartInstance.destroy();
-                chartInstance = null;
             }
 
-            // Crear nuevo gráfico
             chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Usuarios Activos'],
+                    labels: @json($labels),
                     datasets: [{
-                        label: 'Total',
-                        data: [@json($activeUsersCount)],
-                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
+                        label: 'Totales',
+                        data: @json($data),
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(153, 102, 255, 0.7)',
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(153, 102, 255, 1)',
+                        ],
                         borderWidth: 1,
                         borderRadius: 4
                     }]
@@ -48,19 +61,25 @@
                                 stepSize: 1
                             }
                         }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `${context.dataset.label}: ${context.raw}`;
+                                }
+                            }
+                        }
                     }
                 }
             });
 
-            // Guardar referencia en el canvas
             ctx.chart = chartInstance;
         }
 
-        // Inicializar al cargar
         initChart();
 
-        // Actualizar cuando Livewire actualice el componente
-        Livewire.hook('morph.updated', function() {
+        Livewire.hook('morph.updated', function () {
             initChart();
         });
     });
