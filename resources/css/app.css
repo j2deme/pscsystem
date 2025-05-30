@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.relative.h-64 {
+    min-height: 16rem;
+}
+canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}

@@ -184,4 +184,8 @@ class NominasController extends Controller
         return view('nominas.vistaNominas', compact('usuarios'));
     }
 
+    public function graficas(){
+        return view('nominas.graficas');
+    }
+
 }

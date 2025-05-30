@@ -46,8 +46,8 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
+        @stack('styles')
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -67,6 +67,8 @@
                 {{ $slot }}
             </main>
         </div>
-        @livewireScripts
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    @livewireScripts
     </body>
 </html>

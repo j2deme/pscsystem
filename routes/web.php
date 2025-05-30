@@ -160,6 +160,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/nominas_vacaciones', [NominasController::class, 'vacacionesIndex'])->name('nominas.vacaciones');
     Route::get('/nominas', [NominasController::class, 'vistaNominas'])->name('vistaNominas');
     Route::get('/calculos_nominas', [NominasController::class, 'calculosNominas'])->name('nominas.calculos');
+    Route::get('/graficas_estadisticas', [NominasController::class, 'graficas'])->name('nominas.graficas');
 
 });
 

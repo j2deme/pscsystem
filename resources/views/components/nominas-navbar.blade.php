@@ -14,6 +14,12 @@
 
     $cards = [
         [
+            'titulo' => 'Gráficas y Estadísticas',
+            'ruta' => route('nominas.graficas'),
+            'icono' => '📊',
+            'color' => 'bg-blue-100 dark:bg-blue-700',
+        ],
+        [
             'titulo' => 'Nuevas Altas',
             'ruta' => route('nominas.nuevasAltas'),
             'icono' => '🆕',
