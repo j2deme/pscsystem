@@ -1,6 +1,6 @@
 <div class="p-4 bg-white rounded-lg shadow">
     <div class="flex flex-col items-center mb-4">
-        <h2 class="text-xl font-semibold mb-2">Estadísticas Generales</h2>
+        <h2 class="text-xl font-semibold mb-2">Vacaciones</h2>
         <select wire:model.live.debounce.500ms="filtro" class="rounded-md border-gray-300 shadow-sm">
             <option value="hoy">Hoy</option>
             <option value="semana">Esta Semana</option>
@@ -8,20 +8,23 @@
             <option value="anio">Este Año</option>
         </select>
     </div>
-<center>
-    <div class="relative h-96 w-3/4">
-        <canvas id="chartStats"></canvas>
+
+    <div class="relative h-96 w-3/4 mx-auto">
+        <canvas id="vacacionesChart"></canvas>
     </div>
-    <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
+
+    <div class="text-center mt-4">
+        <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
             Regresar
         </a>
-</center>
+    </div>
+
     <script>
     document.addEventListener('livewire:init', function () {
         let chartInstance = null;
 
         function renderChart(data) {
-            const ctx = document.getElementById('chartStats');
+            const ctx = document.getElementById('vacacionesChart');
             if (!ctx) return;
 
             if (chartInstance) {
@@ -33,11 +36,9 @@
                 data: {
                     labels: @json($labels),
                     datasets: [{
-                        label: 'Cantidad',
+                        label: 'Vacaciones Aceptadas',
                         data: data,
-                        backgroundColor: [
-                            '#4caf50', '#f44336', '#ff9800', '#2196f3'
-                        ],
+                        backgroundColor: '#2196f3',
                         borderRadius: 4
                     }]
                 },
@@ -66,10 +67,9 @@
 
         renderChart(@json($data));
 
-        Livewire.on('chart-altas-updated', ({data}) => {
+        Livewire.on('chart-vacaciones-updated', ({data}) => {
             renderChart(data);
         });
-
     });
-</script>
+    </script>
 </div>

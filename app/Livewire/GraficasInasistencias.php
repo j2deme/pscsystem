@@ -3,10 +3,11 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\SolicitudVacaciones;
+use App\Models\Asistencia;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
-class GraficasVacaciones extends Component
+class GraficasInasistencias extends Component
 {
     public $labels = [];
     public $data = [];
@@ -41,23 +42,35 @@ class GraficasVacaciones extends Component
 
         $this->labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
-        $vacaciones = SolicitudVacaciones::where('estatus', 'Aceptada')
-            ->whereBetween('fecha_inicio', [$inicio, $fin])
-            ->selectRaw('MONTH(fecha_inicio) as mes, COUNT(*) as total')
-            ->groupBy('mes')
-            ->pluck('total', 'mes');
+        // Obtener asistencias dentro del rango
+        $asistencias = Asistencia::whereBetween('fecha', [$inicio, $fin])->get(['fecha', 'faltas']);
 
-        $this->data = [];
-        for ($mes = 1; $mes <= 12; $mes++) {
-            $this->data[] = $vacaciones->get($mes, 0);
+        // Inicializar array con meses (1-12) y conteo 0
+        $conteosPorMes = array_fill(1, 12, 0);
+
+        foreach ($asistencias as $asistencia) {
+            // Convertir 'faltas' JSON a array
+            $faltas = json_decode($asistencia->faltas, true);
+
+            if (is_array($faltas)) {
+                $mes = Carbon::parse($asistencia->fecha)->month;
+                // Sumar la cantidad de IDs en 'faltas' para ese mes
+                $conteosPorMes[$mes] += count($faltas);
+            }
         }
 
-        $this->dispatch('chart-vacaciones-updated', data: $this->data);
+        // Convertir a array indexado de 0 a 11 para el gráfico
+        $this->data = [];
+        for ($mes = 1; $mes <= 12; $mes++) {
+            $this->data[] = $conteosPorMes[$mes] ?? 0;
+        }
+
+        $this->dispatch('chart-inasistencias-updated', data: $this->data);
     }
 
     public function render()
     {
-        return view('livewire.graficas-vacaciones', [
+        return view('livewire.graficas-inasistencias', [
             'filtro' => $this->filtro,
         ]);
     }

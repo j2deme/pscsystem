@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class GraficasAltas extends Component
 {
-    public $filtro = 'anio';
+    public $filtro = 'mes';
     public $labels = ['Altas', 'Bajas', 'Inasistencias', 'Vacaciones'];
     public $data = [];
 
@@ -23,7 +23,7 @@ class GraficasAltas extends Component
     public function updatedFiltro()
 {
     $this->actualizarDatos();
-    $this->dispatch('chart-updated', data: $this->data);
+    $this->dispatch('chart-altas-updated', data: $this->data);
 }
 
     public function actualizarDatos()
