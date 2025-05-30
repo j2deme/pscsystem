@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\Asistencia;
 use App\Models\SolicitudVacaciones;
 use App\Models\SolicitudAlta;
 use App\Models\SolicitudBajas;
@@ -150,6 +151,35 @@ class NominasController extends Controller
         }
 
         $usuarios = $query->get();
+        $fechaInicio = $request->fecha_inicio ? Carbon::parse($request->fecha_inicio) : null;
+    $fechaFin = $request->fecha_fin ? Carbon::parse($request->fecha_fin) : null;
+
+    foreach ($usuarios as $user) {
+        $asistencias = Asistencia::query()
+            ->when($fechaInicio && $fechaFin, function ($q) use ($fechaInicio, $fechaFin) {
+                return $q->whereBetween('fecha', [$fechaInicio, $fechaFin]);
+            })
+            ->where('punto', $user->punto)
+            ->get();
+
+        $asistencias_count = 0;
+        $descansos_count = 0;
+        $faltas_count = 0;
+
+        foreach ($asistencias as $registro) {
+            $enlistados = json_decode($registro->elementos_enlistados, true) ?? [];
+            $descansos = json_decode($registro->descansos, true) ?? [];
+            $faltas = json_decode($registro->faltas, true) ?? [];
+
+            if (in_array($user->id, $enlistados)) $asistencias_count++;
+            if (in_array($user->id, $descansos)) $descansos_count++;
+            if (in_array($user->id, $faltas)) $faltas_count++;
+        }
+
+        $user->asistencias_count = $asistencias_count;
+        $user->descansos_count = $descansos_count;
+        $user->faltas_count = $faltas_count;
+    }
 
         return view('nominas.vistaNominas', compact('usuarios'));
     }
