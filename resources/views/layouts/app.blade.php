@@ -70,5 +70,6 @@
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @livewireScripts
+    @stack('scripts')
     </body>
 </html>

@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class GraficasAltas extends Component
 {
-    public $filtro = 'mes';
+    public $filtro = 'anio';
     public $labels = ['Altas', 'Bajas', 'Inasistencias', 'Vacaciones'];
     public $data = [];
 

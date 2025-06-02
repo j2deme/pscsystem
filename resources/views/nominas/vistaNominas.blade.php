@@ -290,6 +290,4 @@
         confirmButtonText: 'Cerrar'
     });
 }
-
-
 </script>
