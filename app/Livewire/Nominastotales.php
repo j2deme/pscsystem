@@ -23,26 +23,27 @@ class Nominastotales extends Component
         $this->actualizarGrafica();
     }
 
-    public function actualizarGrafica()
-    {
-        $datos = $this->calcularNominaDelMes();
+public function actualizarGrafica()
+{
+    $datos = $this->calcularNominaDelMes();
 
-        if ($this->filtro === 'todos') {
-            $this->labels = [
-                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-            ];
-            $this->values = $datos;
-        } else {
-            $this->labels = [$this->capitalizarMes($this->filtro)];
-            $this->values = $datos; // Ya es array con un solo valor
-        }
-
-        $this->dispatch('chart-nominas-updated', [
-            'labels' => $this->labels,
-            'values' => $this->values,
-        ]);
+    if ($this->filtro === 'todos') {
+        $this->labels = [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
+        $this->values = $datos;
+    } else {
+        $this->labels = [$this->capitalizarMes($this->filtro)];
+        $this->values = $datos;
     }
+
+    // Enviar los datos como objeto directo, no dentro de un array
+    $this->dispatch('chart-nominas-updated',
+        labels: $this->labels,
+        values: $this->values
+    );
+}
 
     public function render()
     {

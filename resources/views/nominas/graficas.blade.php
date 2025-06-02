@@ -9,6 +9,9 @@
                 <div class="relative w-full overflow-hidden">
                     <div id="carouselSlides" class="flex transition-transform duration-500 ease-in-out" style="width: 100%; transform: translateX(0%)">
                         <div class="w-full flex-shrink-0 px-2" wire:ignore>
+                            @livewire('nominastotales')
+                        </div>
+                        <div class="w-full flex-shrink-0 px-2" wire:ignore>
                             @livewire('graficas-altas')
                         </div>
                         <div class="w-full flex-shrink-0 px-2" wire:ignore>
@@ -23,9 +26,7 @@
                         <div class="w-full flex-shrink-0 px-2" wire:ignore>
                             @livewire('graficas-vacaciones')
                         </div>
-                        <div class="w-full flex-shrink-0 px-2" wire:ignore>
-                            @livewire('nominastotales')
-                        </div>
+
                         <div class="w-full flex-shrink-0 px-2" wire:ignore>
                             <!--Finiquitos por mes-->
                         </div>
