@@ -12,6 +12,8 @@ class Nominastotales extends Component
     public string $filtro = 'todos';
     public array $labels = [];
     public array $values = [];
+    public array $periodo1 = [];
+    public array $periodo2 = [];
     public float $total = 0;
 
     public function mount()
@@ -24,29 +26,77 @@ class Nominastotales extends Component
         $this->actualizarGrafica();
     }
 
-public function actualizarGrafica()
+    public function actualizarGrafica()
 {
     $datos = $this->calcularNominaDelMes();
 
+    $this->labels = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+
+    $this->periodo1 = array_fill(0, 12, 0);
+    $this->periodo2 = array_fill(0, 12, 0);
+
     if ($this->filtro === 'todos') {
-        $this->labels = [
-            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-        ];
-        $this->values = $datos;
-        $this->total = array_sum($datos);
+        foreach ($datos as $index => $valores) {
+            $this->periodo1[$index] = $valores[0];
+            $this->periodo2[$index] = $valores[1];
+        }
+        $this->total = array_sum($this->periodo1) + array_sum($this->periodo2);
     } else {
-        $this->labels = [$this->capitalizarMes($this->filtro)];
-        $this->values = $datos;
-        $this->total = $datos[0] ?? 0;
+        $mesIndex = $this->obtenerNumeroMes($this->filtro) - 1;
+        $this->periodo1[$mesIndex] = $datos[0][0] ?? 0;
+        $this->periodo2[$mesIndex] = $datos[0][1] ?? 0;
+        $this->total = $this->periodo1[$mesIndex] + $this->periodo2[$mesIndex];
     }
 
-    $this->dispatch('chart-nominas-updated',
-        labels: $this->labels,
-        values: $this->values
-    );
+    $this->dispatch('chart-nominas-updated', [
+        'labels' => $this->labels,
+        'periodo1' => $this->periodo1,
+        'periodo2' => $this->periodo2,
+        'filtro' => $this->filtro
+    ]);
 }
 
+    public function calcularNominaDelMes(): array
+    {
+        $anio = now()->year;
+        $resultados = [];
+
+        if ($this->filtro === 'todos') {
+            for ($mes = 1; $mes <= 12; $mes++) {
+                $resultados[] = $this->calcularPeriodosMes($anio, $mes);
+            }
+        } else {
+            $mesNumero = $this->obtenerNumeroMes($this->filtro);
+            $resultados[] = $this->calcularPeriodosMes($anio, $mesNumero);
+        }
+
+        return $resultados;
+    }
+
+    private function calcularPeriodosMes(int $anio, int $mes): array
+    {
+        $mesAnterior = $mes - 1;
+        $anioPeriodo1 = $anio;
+
+        if ($mesAnterior < 1) {
+            $mesAnterior = 12;
+            $anioPeriodo1 = $anio - 1;
+        }
+
+        $inicioPeriodo1 = Carbon::createFromDate($anioPeriodo1, $mesAnterior, 26)->startOfDay();
+        $finPeriodo1 = Carbon::createFromDate($anio, $mes, 10)->endOfDay();
+
+        $inicioPeriodo2 = Carbon::createFromDate($anio, $mes, 11)->startOfDay();
+        $finPeriodo2 = Carbon::createFromDate($anio, $mes, 25)->endOfDay();
+
+        return [
+            $this->calcularNominaPorRango($inicioPeriodo1, $finPeriodo1),
+            $this->calcularNominaPorRango($inicioPeriodo2, $finPeriodo2)
+        ];
+    }
     public function render()
     {
         return view('livewire.nominastotales', [
@@ -56,29 +106,6 @@ public function actualizarGrafica()
         ]);
     }
 
-    public function calcularNominaDelMes(): array
-    {
-        $anio = now()->year;
-
-        if ($this->filtro === 'todos') {
-            $totalesPorMes = [];
-
-            for ($mes = 1; $mes <= 12; $mes++) {
-                $inicio = Carbon::createFromDate($anio, $mes, 1)->startOfMonth();
-                $fin = $inicio->copy()->endOfMonth();
-
-                $totalesPorMes[] = $this->calcularNominaPorRango($inicio, $fin);
-            }
-
-            return $totalesPorMes;
-        } else {
-            $mesNumero = $this->obtenerNumeroMes($this->filtro);
-            $inicio = Carbon::createFromDate($anio, $mesNumero, 1)->startOfMonth();
-            $fin = $inicio->copy()->endOfMonth();
-
-            return [$this->calcularNominaPorRango($inicio, $fin)];
-        }
-    }
 
     private function calcularNominaPorRango(Carbon $inicio, Carbon $fin): float
     {
