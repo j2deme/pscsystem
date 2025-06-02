@@ -12,6 +12,7 @@ class Nominastotales extends Component
     public string $filtro = 'todos';
     public array $labels = [];
     public array $values = [];
+    public float $total = 0;
 
     public function mount()
     {
@@ -33,12 +34,13 @@ public function actualizarGrafica()
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
         ];
         $this->values = $datos;
+        $this->total = array_sum($datos);
     } else {
         $this->labels = [$this->capitalizarMes($this->filtro)];
         $this->values = $datos;
+        $this->total = $datos[0] ?? 0;
     }
 
-    // Enviar los datos como objeto directo, no dentro de un array
     $this->dispatch('chart-nominas-updated',
         labels: $this->labels,
         values: $this->values

@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="text-center text-lg font-bold mb-4">
-        Total: ${{ number_format($values[0] ?? 0, 2) }}
+        Total: ${{ number_format($total, 2) }}
     </div>
 
     <div class="relative h-96 w-3/4 mx-auto">
