@@ -12,8 +12,6 @@ class Nominastotales extends Component
     public string $filtro = 'todos';
     public array $labels = [];
     public array $values = [];
-    public array $debug = [];
-
 
     public function mount()
     {
@@ -25,23 +23,20 @@ class Nominastotales extends Component
         $this->actualizarGrafica();
     }
 
-    public function render()
-    {
-        $total = $this->calcularNominaDelMes();
-
-        return view('livewire.nominastotales', [
-            'labels' => [$this->capitalizarMes($this->filtro)],
-            'values' => [$total],
-            'filtro' => $this->filtro,
-        ]);
-    }
-
     public function actualizarGrafica()
     {
-        $total = $this->calcularNominaDelMes();
+        $datos = $this->calcularNominaDelMes();
 
-        $this->labels = [$this->capitalizarMes($this->filtro)];
-        $this->values = [$total];
+        if ($this->filtro === 'todos') {
+            $this->labels = [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            ];
+            $this->values = $datos;
+        } else {
+            $this->labels = [$this->capitalizarMes($this->filtro)];
+            $this->values = $datos; // Ya es array con un solo valor
+        }
 
         $this->dispatch('chart-nominas-updated', [
             'labels' => $this->labels,
@@ -49,85 +44,84 @@ class Nominastotales extends Component
         ]);
     }
 
-    public function calcularNominaDelMes(): float
+    public function render()
     {
-        $mesNumero = $this->obtenerNumeroMes($this->filtro);
+        return view('livewire.nominastotales', [
+            'labels' => $this->labels,
+            'values' => $this->values,
+            'filtro' => $this->filtro,
+        ]);
+    }
+
+    public function calcularNominaDelMes(): array
+    {
         $anio = now()->year;
 
         if ($this->filtro === 'todos') {
-    $inicio = Carbon::now()->startOfYear();
-    $fin = Carbon::now()->endOfYear();
-} else {
-    $mesNumero = $this->obtenerNumeroMes($this->filtro);
-    $anio = now()->year;
-    $inicio = Carbon::createFromDate($anio, $mesNumero, 1)->startOfMonth();
-    $fin = $inicio->copy()->endOfMonth();
-}
+            $totalesPorMes = [];
 
+            for ($mes = 1; $mes <= 12; $mes++) {
+                $inicio = Carbon::createFromDate($anio, $mes, 1)->startOfMonth();
+                $fin = $inicio->copy()->endOfMonth();
 
+                $totalesPorMes[] = $this->calcularNominaPorRango($inicio, $fin);
+            }
+
+            return $totalesPorMes;
+        } else {
+            $mesNumero = $this->obtenerNumeroMes($this->filtro);
+            $inicio = Carbon::createFromDate($anio, $mesNumero, 1)->startOfMonth();
+            $fin = $inicio->copy()->endOfMonth();
+
+            return [$this->calcularNominaPorRango($inicio, $fin)];
+        }
+    }
+
+    private function calcularNominaPorRango(Carbon $inicio, Carbon $fin): float
+    {
         $usuarios = User::where('estatus', 'Activo')->get();
         $total = 0;
 
         foreach ($usuarios as $user) {
-    $asistencias = Asistencia::whereBetween('fecha', [$inicio, $fin])
-        ->where('punto', $user->punto)
-        ->get();
+            $asistencias = Asistencia::whereBetween('fecha', [$inicio, $fin])
+                ->where('punto', $user->punto)
+                ->get();
 
-    $asistencias_count = 0;
-    $descansos_count = 0;
-    $faltas_count = 0;
+            $asistencias_count = 0;
+            $descansos_count = 0;
+            $faltas_count = 0;
 
-    foreach ($asistencias as $registro) {
-        $enlistados = json_decode($registro->elementos_enlistados, true) ?? [];
-        $descansos = json_decode($registro->descansos, true) ?? [];
-        $faltas = json_decode($registro->faltas, true) ?? [];
+            foreach ($asistencias as $registro) {
+                $enlistados = json_decode($registro->elementos_enlistados, true) ?? [];
+                $descansos = json_decode($registro->descansos, true) ?? [];
+                $faltas = json_decode($registro->faltas, true) ?? [];
 
-        if (in_array($user->id, $enlistados)) $asistencias_count++;
-        if (in_array($user->id, $descansos)) $descansos_count++;
-        if (in_array($user->id, $faltas)) $faltas_count++;
-    }
+                if (in_array($user->id, $enlistados)) $asistencias_count++;
+                if (in_array($user->id, $descansos)) $descansos_count++;
+                if (in_array($user->id, $faltas)) $faltas_count++;
+            }
 
-    $sd = $user->solicitudAlta->sd ?? 0;
-    $sdi = $user->solicitudAlta->sdi ?? 0;
-    $diasTrabajados = $asistencias_count + $descansos_count;
+            $sd = $user->solicitudAlta->sd ?? 0;
+            $sdi = $user->solicitudAlta->sdi ?? 0;
+            $diasTrabajados = $asistencias_count + $descansos_count;
 
-    $percepciones = $sd * $diasTrabajados;
+            $percepciones = $sd * $diasTrabajados;
 
-    if ($faltas_count === 0) {
-        $bono = $percepciones * 0.20;
-        $percepciones += $bono;
-    } else {
-        $bono = 0;
-    }
+            if ($faltas_count === 0) {
+                $bono = $percepciones * 0.20;
+                $percepciones += $bono;
+            }
 
-    $imss = $this->calcularIMSS($sdi, $diasTrabajados);
-    $isr = $this->calcularISR($sd, $diasTrabajados, $faltas_count);
+            $imss = $this->calcularIMSS($sdi, $diasTrabajados);
+            $isr = $this->calcularISR($sd, $diasTrabajados, $faltas_count);
 
-    $deducciones = $imss + $isr;
-    $neto = $percepciones - $deducciones;
+            $deducciones = $imss + $isr;
+            $neto = $percepciones - $deducciones;
 
-    $this->debug[] = [
-        'usuario' => $user->name,
-        'sd' => $sd,
-        'sdi' => $sdi,
-        'asistencias' => $asistencias_count,
-        'descansos' => $descansos_count,
-        'faltas' => $faltas_count,
-        'diasTrabajados' => $diasTrabajados,
-        'percepciones' => $percepciones,
-        'bono' => $bono,
-        'imss' => $imss,
-        'isr' => $isr,
-        'deducciones' => $deducciones,
-        'neto' => $neto,
-    ];
-
-    if ($neto > 0) {
-    $total += $neto;
-}
-
-}
-
+            if ($neto > 0) {
+                $total += $neto;
+            }
+        }
 
         return round($total, 2);
     }
