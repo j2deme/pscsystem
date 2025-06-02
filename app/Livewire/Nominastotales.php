@@ -31,8 +31,8 @@ class Nominastotales extends Component
     $datos = $this->calcularNominaDelMes();
 
     $this->labels = [
-        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+        'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
     ];
 
     $this->periodo1 = array_fill(0, 12, 0);

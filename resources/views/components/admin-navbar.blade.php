@@ -182,6 +182,12 @@ $cards = array_filter([
                     @if($card['titulo'] === 'Recursos Humanos')
                         href="#"
                         @click.prevent="$dispatch('cambiar-menu', { menu: 'rh' })"
+                    @elseif($card['titulo'] === 'Nóminas')
+                        href="#"
+                        @click.prevent="$dispatch('cambiar-menu', { menu: 'nominas' })"
+                    @elseif($card['titulo'] === 'IMSS')
+                        href="#"
+                        @click.prevent="$dispatch('cambiar-menu', { menu: 'imss' })"
                     @else
                         href="{{ $card['ruta'] }}"
                     @endif

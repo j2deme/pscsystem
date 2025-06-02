@@ -25,9 +25,14 @@
                             <div x-show="menu === 'admin'" x-cloak>
                                 <x-admin-navbar />
                             </div>
-
                             <div x-show="menu === 'rh'" x-cloak>
                                 <x-rh-navbar />
+                            </div>
+                            <div x-show="menu === 'nominas'" x-cloak>
+                                <x-nominas-navbar />
+                            </div>
+                            <div x-show="menu === 'imss'" x-cloak>
+                                <x-auxadmin-navbar />
                             </div>
                         @elseif (Auth::user()->rol == 'Supervisor')
                             <x-supervisor-navbar></x-supervisor-navbar>
