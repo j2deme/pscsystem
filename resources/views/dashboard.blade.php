@@ -1,4 +1,4 @@
-<script src="https://unpkg.com/alpinejs" defer></script>
+
 <x-app-layout>
     <x-navbar />
     <div class="py-4 px-2 sm:py-6 sm:px-4">

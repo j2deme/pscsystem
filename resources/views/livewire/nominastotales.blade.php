@@ -6,25 +6,32 @@
         @endforeach
     </select>
 
-    <center><div class="chart-container" style="position: relative; height:400px; width:75%">
-        <canvas id="nominaChart" wire:ignore></canvas>
-    </div></center>
+    <div class="relative" style="height: 400px;">
+        <canvas id="nominaChart-{{ $this->getId() }}" wire:ignore></canvas>
+    </div>
 
     <div class="mt-3 text-lg font-bold">Total: ${{ number_format(array_sum($periodo1) + array_sum($periodo2), 2) }}</div>
 </div>
 
-@script
 <script>
 document.addEventListener('livewire:initialized', () => {
-    const ctx = document.getElementById('nominaChart').getContext('2d');
-    let chart = null;
+    const canvasId = 'nominaChart-{{ $this->getId() }}';
+    const canvas = document.getElementById(canvasId);
 
-    function renderChart(labels, periodo1, periodo2, filtro) {
-        if (chart) {
-            chart.destroy();
+    if (!canvas) {
+        console.error('Canvas no encontrado:', canvasId);
+        return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    let nominaChart;
+
+    const initChart = (labels, periodo1, periodo2) => {
+        if (nominaChart) {
+            nominaChart.destroy();
         }
 
-        chart = new Chart(ctx, {
+        nominaChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
@@ -60,18 +67,15 @@ document.addEventListener('livewire:initialized', () => {
                 }
             }
         });
-    }
+    };
 
-    renderChart(
-        @js($labels),
-        @js($periodo1),
-        @js($periodo2),
-        @js($filtro)
-    );
+    // Inicializar con datos iniciales
+    initChart(@js($labels), @js($periodo1), @js($periodo2));
 
-    Livewire.on('chart-updated', ({labels, periodo1, periodo2, filtro}) => {
-        renderChart(labels, periodo1, periodo2, filtro);
+    // Escuchar evento Livewire para actualizar datos
+    Livewire.on('chart-nominas-updated', data => {
+        initChart(data.labels, data.periodo1, data.periodo2);
     });
 });
 </script>
-@endscript
+
