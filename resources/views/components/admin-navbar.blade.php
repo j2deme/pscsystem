@@ -7,7 +7,43 @@ use App\Models\SolicitudVacaciones;
 use App\Models\Asistencia;
 use Carbon\Carbon;
 
-$activos= User::where('estatus', 'Activo')->count();
+$activos = User::where('estatus', 'Activo')->count();
+$activosMesActual = User::where('estatus', 'Activo')
+    ->whereDate('created_at', '>=', Carbon::now()->startOfMonth())
+    ->count();
+$activosMesPasado = $activos - $activosMesActual;
+
+$inicioMesActual = Carbon::now()->startOfMonth();
+$inicioMesPasado = Carbon::now()->subMonth()->startOfMonth();
+$finMesPasado = Carbon::now()->subMonth()->endOfMonth();
+
+$conteoAltasAdmin = SolicitudAlta::where('status', 'Aceptada')
+    ->whereDate('fecha_ingreso', '>=', $inicioMesActual)
+    ->count();
+
+$altasMesPasado = SolicitudAlta::where('status', 'Aceptada')
+    ->whereBetween('fecha_ingreso', [$inicioMesPasado, $finMesPasado])
+    ->count();
+
+$conteoBajasAdmin = SolicitudBajas::where('estatus', 'Aceptada')
+    ->whereDate('fecha_baja', '>=', $inicioMesActual)
+    ->count();
+
+$bajasMesPasado = SolicitudBajas::where('estatus', 'Aceptada')
+    ->whereBetween('fecha_baja', [$inicioMesPasado, $finMesPasado])
+    ->count();
+
+function calcularVariacion($actual, $anterior) {
+    if ($anterior == 0) return $actual > 0 ? 100 : 0;
+    return round((($actual - $anterior) / $anterior) * 100);
+}
+
+$variacionActivos = calcularVariacion($activos, $activosMesPasado);
+$variacionAltas = calcularVariacion($conteoAltasAdmin, $altasMesPasado);
+$variacionBajas = calcularVariacion($conteoBajasAdmin, $bajasMesPasado);
+
+
+
 $user = Auth::user();
 $asistenciasHoy = 0;
 $solicitudesAdmin = SolicitudAlta::where('status', 'Aceptada')
@@ -75,7 +111,7 @@ $cards = array_filter([
         'notificaciones' => $conteoAltasAux,
     ],
     [
-        'titulo' => 'Recursos Humanos',
+        'titulo' => 'RRHH',
         'ruta' => '#',
         'icono' => '👨‍👩‍👧‍👦',
         'color' => 'bg-gray-300 dark:bg-gray-700',
@@ -152,7 +188,7 @@ $cards = array_filter([
                     </form>
                 @else
                     <a href="{{ $card['ruta'] ?? '#' }}"
-                        @if(in_array($card['titulo'], ['Recursos Humanos', 'Nóminas', 'IMSS']))
+                        @if(in_array($card['titulo'], ['RRHH', 'Nóminas', 'IMSS']))
                             @click.prevent="$dispatch('cambiar-menu', { menu: '{{ strtolower(str_replace(' ', '_', $card['titulo'])) }}' })"
                         @endif
                         class="block p-3 rounded-lg {{ $card['color'] }} {{ $isActive ? 'ring-2 ring-blue-500' : '' }} hover:bg-opacity-70 transition relative">
@@ -172,35 +208,90 @@ $cards = array_filter([
     </div>
 
     <div class="flex-1 overflow-y-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-4">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-blue-500">
-                <div class="h-full flex flex-col">
+                <div class="h-full flex flex-col min-w-0">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Elementos Activos</h3>
-                    <div class="mt-auto text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $activos }}</div>
+                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $activos }}</div>
+                    <div class="text-sm mt-1 flex items-center gap-1 {{ $variacionActivos >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                        @if($variacionActivos > 0)
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                <path d="M5 10l5-5 5 5H5z" />
+                            </svg>
+                        @elseif($variacionActivos < 0)
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                <path d="M5 10l5 5 5-5H5z" />
+                            </svg>
+                        @else
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                <path d="M4 9h12v2H4z" />
+                            </svg>
+                        @endif
+                        <span class="whitespace-nowrap">
+                            {{ $variacionActivos >= 0 ? '+' : '' }}{{ $variacionActivos }}% vs mes pasado
+                        </span>
+                    </div>
                 </div>
             </div>
 
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-green-500">
-                <div class="h-full flex flex-col">
+                <div class="h-full flex flex-col min-w-0">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Altas Nuevas</h3>
-                    <div class="mt-auto text-2xl font-bold text-gray-800 dark:text-gray-200">--</div>
+                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $conteoAltasAdmin }}</div>
+                    <div class="text-sm mt-1 flex items-center gap-1 {{ $variacionAltas >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                        @if($variacionAltas > 0)
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                <path d="M5 10l5-5 5 5H5z" />
+                            </svg>
+                        @elseif($variacionAltas < 0)
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                <path d="M5 10l5 5 5-5H5z" />
+                            </svg>
+                        @else
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                <path d="M4 9h12v2H4z" />
+                            </svg>
+                        @endif
+                        <span class="whitespace-nowrap">
+                            {{ $variacionAltas >= 0 ? '+' : '' }}{{ $variacionAltas }}% vs mes pasado
+                        </span>
+                    </div>
                 </div>
             </div>
 
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-yellow-500">
-                <div class="h-full flex flex-col">
+                <div class="h-full flex flex-col min-w-0">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Bajas Recientes</h3>
-                    <div class="mt-auto text-2xl font-bold text-gray-800 dark:text-gray-200">--</div>
+                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $conteoBajasAdmin }}</div>
+                    <div class="text-sm mt-1 flex items-center gap-1 {{ $variacionBajas >= 0 ? 'text-red-600' : 'text-green-500' }}">
+                        @if($variacionBajas > 0)
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                <path d="M5 10l5-5 5 5H5z" />
+                            </svg>
+                        @elseif($variacionBajas < 0)
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                <path d="M5 10l5 5 5-5H5z" />
+                            </svg>
+                        @else
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                <path d="M4 9h12v2H4z" />
+                            </svg>
+                        @endif
+                        <span class="whitespace-nowrap">
+                            {{ $variacionBajas >= 0 ? '+' : '' }}{{ $variacionBajas }}% vs mes pasado
+                        </span>
+                    </div>
                 </div>
             </div>
 
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-purple-500">
-                <div class="h-full flex flex-col">
+                <div class="h-full flex flex-col min-w-0">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Movimientos de Nóminas</h3>
                     <div class="mt-auto text-2xl font-bold text-gray-800 dark:text-gray-200">--</div>
                 </div>
             </div>
         </div>
+
 
         <div class="relative p-6">
         <div class="relative overflow-hidden rounded-lg">

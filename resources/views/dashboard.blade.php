@@ -25,10 +25,10 @@
                             <div x-show="menu === 'admin'" x-cloak>
                                 <x-admin-navbar />
                             </div>
-                            <div x-show="menu === 'rh'" x-cloak>
+                            <div x-show="menu === 'rrhh'" x-cloak>
                                 <x-rh-navbar />
                             </div>
-                            <div x-show="menu === 'nominas'" x-cloak>
+                            <div x-show="menu === 'nóminas'" x-cloak>
                                 <x-nominas-navbar />
                             </div>
                             <div x-show="menu === 'imss'" x-cloak>

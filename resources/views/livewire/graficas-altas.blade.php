@@ -12,9 +12,6 @@
     <div class="relative h-96 w-3/4">
         <canvas id="chartStats"></canvas>
     </div>
-    <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
-            Regresar
-        </a>
 </center>
     <script>
     document.addEventListener('livewire:init', function () {

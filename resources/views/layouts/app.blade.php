@@ -66,7 +66,9 @@
             <main class="bg-blue-50 dark:bg-gray-900 min-h-screen">
                 {{ $slot }}
             </main>
+            <x-footer></x-footer>
         </div>
+
 
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @livewireScripts

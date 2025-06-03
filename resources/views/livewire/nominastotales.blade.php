@@ -1,4 +1,5 @@
 <div>
+    <h2 class="text-xl font-semibold mb-2">Cálculo de nomina total</h2>
     <select wire:model.live.debounce.500ms="filtro" class="form-select mb-4">
         <option value="todos">Todos los meses</option>
         @foreach(['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'] as $mes)

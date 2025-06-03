@@ -12,12 +12,6 @@
         <canvas id="bajasChart"></canvas>
     </div>
 
-    <div class="text-center mt-4">
-        <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
-            Regresar
-        </a>
-    </div>
-
     <script>
     document.addEventListener('livewire:init', function () {
         let chartInstance = null;

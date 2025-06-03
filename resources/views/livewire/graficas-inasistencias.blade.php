@@ -13,12 +13,6 @@
         <canvas id="inasistenciasChart"></canvas>
     </div>
 
-    <div class="text-center mt-4">
-        <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
-            Regresar
-        </a>
-    </div>
-
     <script>
     document.addEventListener('livewire:init', function () {
         let chartInstance = null;
@@ -38,8 +32,14 @@
                     datasets: [{
                         label: 'Inasistencias',
                         data: data,
-                        backgroundColor: '#f44336',
-                        borderRadius: 4
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#3b82f6',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
                     }]
                 },
                 options: {
@@ -48,14 +48,32 @@
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1f2937',
+                            titleColor: '#fff',
+                            bodyColor: '#d1d5db',
+                            padding: 10
                         }
                     },
                     scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(229, 231, 235, 0.3)'
+                            },
+                            ticks: {
+                                color: '#6b7280'
+                            }
+                        },
                         y: {
                             beginAtZero: true,
                             ticks: {
                                 stepSize: 1,
-                                precision: 0
+                                precision: 0,
+                                color: '#6b7280'
+                            },
+                            grid: {
+                                color: 'rgba(229, 231, 235, 0.3)'
                             }
                         }
                     }
