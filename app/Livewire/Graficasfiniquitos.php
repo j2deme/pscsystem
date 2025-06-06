@@ -38,7 +38,9 @@ class Graficasfiniquitos extends Component
         };
     }
 
-    public function actualizarDatos()
+    public $detallesFiniquitos = [];
+
+public function actualizarDatos()
 {
     [$inicio, $fin] = $this->obtenerRango();
 
@@ -46,6 +48,7 @@ class Graficasfiniquitos extends Component
 
     $montosPeriodo1 = array_fill(1, 12, 0);
     $montosPeriodo2 = array_fill(1, 12, 0);
+    $this->detallesFiniquitos = [];
 
     $solicitudes = SolicitudBajas::with(['user', 'user.solicitudAlta'])
         ->where('estatus', 'Aceptada')
@@ -68,9 +71,9 @@ class Graficasfiniquitos extends Component
         $periodo2Fin = $fechaBaja->copy()->day(25);
 
         $fechaIngreso = Carbon::parse($user->fecha_ingreso);
-        $ultimaAsistencia = Carbon::parse($solicitud->ultima_asistencia);
-
-        $diasQuincena = 0;
+        $ultimaAsistencia = $solicitud->ultima_asistencia
+            ? Carbon::parse($solicitud->ultima_asistencia)
+            : $fechaBaja;
 
         $diasTrabajadosAnio = $fechaIngreso->diffInDays($fechaBaja) + 1;
         $diasNoLaborados = $ultimaAsistencia->diffInDays($fechaBaja);
@@ -99,6 +102,21 @@ class Graficasfiniquitos extends Component
 
         $finiquito = $montoVacaciones + $primaVacacional + $montoAguinaldo + $primaAguinaldo - $descuentoNoLaborados - $descuentoNoEntregados;
 
+        $this->detallesFiniquitos[] = [
+            'user_id' => $user->id,
+            'nombre' => $user->name,
+            'punto' => $user->punto ?? '',
+            'mes' => $mes,
+            'ultima_asistencia' => Carbon::parse($solicitud->ultima_asistencia)->format('d/m/Y'),
+            'vacaciones' => round($montoVacaciones, 2),
+            'primaVacacional' => round($primaVacacional, 2),
+            'aguinaldo' => round($montoAguinaldo, 2),
+            'primaAguinaldo' => round($primaAguinaldo, 2),
+            'descuentoFaltas' => round($descuentoNoLaborados, 2),
+            'descuentoExtra' => round($descuentoNoEntregados, 2),
+            'total' => round($finiquito, 2),
+        ];
+
         if ($fechaBaja->between($periodo1Inicio, $periodo1Fin)) {
             $montosPeriodo1[$mes] += $finiquito;
         } elseif ($fechaBaja->between($periodo2Inicio, $periodo2Fin)) {
@@ -118,7 +136,10 @@ class Graficasfiniquitos extends Component
         'periodo1' => $this->dataPeriodo1,
         'periodo2' => $this->dataPeriodo2,
     ]);
+
+    //dd($this->detallesFiniquitos);
 }
+
 
     public function render()
     {
