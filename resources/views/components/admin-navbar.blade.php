@@ -301,6 +301,11 @@ $cards = array_filter([
                         @livewire('nominastotales')
                     </div>
                 </div>
+                <div class="w-full flex-shrink-0 px-4">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-full">
+                        @livewire('graficasfiniquitos')
+                    </div>
+                </div>
                 <div class="w-full flex-shrink-0">
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                         @livewire('graficas-altas')
@@ -346,7 +351,7 @@ $cards = array_filter([
     </button>
 
     <div class="flex justify-center mt-4 space-x-2">
-        @for ($i = 0; $i < 6; $i++)
+        @for ($i = 0; $i < 7; $i++)
             <button onclick="goToSlide({{ $i }})" class="w-3 h-3 rounded-full bg-gray-400 hover:bg-blue-500 transition indicator-dot"></button>
         @endfor
     </div>
@@ -356,7 +361,7 @@ $cards = array_filter([
 @push('scripts')
 <script>
     let currentSlide = 0;
-    const totalSlides = 6;
+    const totalSlides = 7;
     const carousel = document.getElementById('carouselSlides');
     const indicators = document.querySelectorAll('.indicator-dot');
 
@@ -392,7 +397,7 @@ $cards = array_filter([
 
     document.addEventListener('DOMContentLoaded', () => {
         updateCarousel();
-        setInterval(nextSlide, 10000);
+        //setInterval(nextSlide, 10000);
     });
 </script>
 @endpush

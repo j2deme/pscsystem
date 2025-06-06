@@ -1,6 +1,17 @@
-
 <x-app-layout>
     <x-navbar />
+@if (Auth::user()->rol == 'admin')
+    <div class="mt-4 ml-4">
+        <!-- El x-data es el que corrompe los charts para que no rendericen -->
+        <div x-data="{ menu: 'admin' }" x-on:cambiar-menu.window="menu = $event.detail.menu" class="mb-4">
+            <div x-show="menu === 'rrhh'" x-cloak><x-rh-navbar /></div>
+            <div x-show="menu === 'nóminas'" x-cloak><x-nominas-navbar /></div>
+            <div x-show="menu === 'imss'" x-cloak><x-auxadmin-navbar /></div>
+        </div>
+
+        <x-admin-navbar></x-admin-navbar> <!--funciona siempre y cuando este fuera de div x-data-->
+    </div>
+@else
     <div class="py-4 px-2 sm:py-6 sm:px-4">
         <div class="mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
@@ -16,24 +27,12 @@
                         </div>
                         @else
                     @endif
-                    <p class="text-gray-900 text-2xl dark:text-gray-100 text-2xl">
-                        Tablero de Opciones
-                    </p>
-
-                    <div class="">
-                        @if(Auth::user()->rol == 'admin')
-                            <div x-show="menu === 'admin'" x-cloak>
-                                <x-admin-navbar />
-                            </div>
-                            <div x-show="menu === 'rrhh'" x-cloak>
-                                <x-rh-navbar />
-                            </div>
-                            <div x-show="menu === 'nóminas'" x-cloak>
-                                <x-nominas-navbar />
-                            </div>
-                            <div x-show="menu === 'imss'" x-cloak>
-                                <x-auxadmin-navbar />
-                            </div>
+                    @if (Auth::user()->rol != 'admin')
+                        <p class="text-gray-900 text-2xl dark:text-gray-100 text-2xl">
+                            Tablero de Opciones
+                        </p>
+                        <div class="">
+                        @if(Auth::user()->rol == 'admin' || Auth::user()->rol == NULL)
                         @elseif (Auth::user()->rol == 'Supervisor')
                             <x-supervisor-navbar></x-supervisor-navbar>
                         @elseif(Auth::user()->rol == 'AUXILIAR NOMINAS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR NOMINAS' || Auth::user()->rol == 'Auxiliar Nominas' || Auth::user()->solicitudAlta->rol == 'Auxiliar Nominas' )
@@ -47,12 +46,14 @@
                         @else
                             <x-user-navbar></x-user-navbar>
                         @endif
-                    </div>
+                        </div>
+                    @endif
 
                 </div>
             </div>
         </div>
     </div>
+    @endif
 </x-app-layout>
 <style>
 button, [type="button"], [type="submit"] {
