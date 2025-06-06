@@ -208,7 +208,7 @@ $cards = array_filter([
     </div>
 
     <div class="flex-1 overflow-y-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 p-4">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-blue-500">
                 <div class="h-full flex flex-col min-w-0">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Elementos Activos</h3>
@@ -284,12 +284,9 @@ $cards = array_filter([
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-purple-500">
-                <div class="h-full flex flex-col min-w-0">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Movimientos de Nóminas</h3>
-                    <div class="mt-auto text-2xl font-bold text-gray-800 dark:text-gray-200">--</div>
-                </div>
-            </div>
+                @livewire('nominamensual')
+                @livewire('finiquitomensual')
+
         </div>
 
 
