@@ -305,7 +305,7 @@ $cards = array_filter([
                     </div>
                     <div class="w-full flex-shrink-0">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                            <!--Estadísticas Generales-->
+                            @livewire('graficas-altas')
                         </div>
                     </div>
                 </div>
