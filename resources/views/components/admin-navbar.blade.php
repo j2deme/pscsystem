@@ -295,41 +295,17 @@ $cards = array_filter([
             <div id="carouselSlides" class="flex transition-transform duration-300 ease-in-out">
                 <div class="w-full flex-shrink-0 px-4">
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-full">
-                        @livewire('nominastotales')
+                        <!--Nominas-->
                     </div>
                 </div>
                 <div class="w-full flex-shrink-0 px-4">
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-full">
-                        @livewire('graficasfiniquitos')
+                        <!--Finiquitos-->
                     </div>
                 </div>
                 <div class="w-full flex-shrink-0">
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        @livewire('graficas-altas')
-                    </div>
-                </div>
-
-                <div class="w-full flex-shrink-0">
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        @livewire('graficasnuevasaltas')
-                    </div>
-                </div>
-
-                <div class="w-full flex-shrink-0">
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        @livewire('graficas-bajas')
-                    </div>
-                </div>
-
-                <div class="w-full flex-shrink-0">
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        @livewire('graficas-inasistencias')
-                    </div>
-                </div>
-
-                <div class="w-full flex-shrink-0">
-                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                        @livewire('graficas-vacaciones')
+                        <!--Estadísticas Generales-->
                     </div>
                 </div>
             </div>
@@ -348,7 +324,7 @@ $cards = array_filter([
     </button>
 
     <div class="flex justify-center mt-4 space-x-2">
-        @for ($i = 0; $i < 7; $i++)
+        @for ($i = 0; $i < 3; $i++)
             <button onclick="goToSlide({{ $i }})" class="w-3 h-3 rounded-full bg-gray-400 hover:bg-blue-500 transition indicator-dot"></button>
         @endfor
     </div>
@@ -358,7 +334,7 @@ $cards = array_filter([
 @push('scripts')
 <script>
     let currentSlide = 0;
-    const totalSlides = 7;
+    const totalSlides = 3;
     const carousel = document.getElementById('carouselSlides');
     const indicators = document.querySelectorAll('.indicator-dot');
 
