@@ -295,7 +295,7 @@ $cards = array_filter([
                 <div id="carouselSlides" class="flex transition-transform duration-300 ease-in-out">
                     <div class="w-full flex-shrink-0 px-4">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-full">
-                            @livewire('nominastotales')
+
                         </div>
                     </div>
                     <div class="w-full flex-shrink-0 px-4">
