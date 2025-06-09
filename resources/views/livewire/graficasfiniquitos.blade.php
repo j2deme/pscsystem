@@ -1,7 +1,8 @@
-<div class="p-4 bg-white rounded-lg shadow">
-    <div class="flex flex-col items-center mb-4">
-        <h2 class="text-xl font-semibold mb-2">Cálculo de finiquitos por periodo</h2>
 
+    <div>
+        <div class="flex justify-center">
+            <h2 class="text-xl font-semibold mb-2">Cálculo de finiquitos por periodo</h2>
+        </div>
         @if (!$readyToLoad)
             <div class="flex justify-center">
                 <button wire:click="cargarGrafica" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
@@ -36,7 +37,7 @@
             </div>
         @endif
     </div>
-</div>
+
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -56,9 +57,9 @@
         }
 
         ctx.style.width = '100%';
-        ctx.style.height = '100%';
-        ctx.width = ctx.offsetWidth;
-        ctx.height = ctx.offsetHeight;
+            ctx.style.height = '100%';
+            ctx.width = ctx.offsetWidth;
+            ctx.height = ctx.offsetHeight;
 
         chartInstance = new Chart(ctx, {
             type: 'bar',
