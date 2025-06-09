@@ -6,58 +6,66 @@ use Livewire\Component;
 use App\Models\User;
 use App\Models\Asistencia;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class Nominastotales extends Component
 {
     public string $filtro = 'todos';
     public array $labels = [];
-    public array $values = [];
     public array $periodo1 = [];
     public array $periodo2 = [];
     public float $total = 0;
+    public bool $readyToLoad = false;
 
-    public function mount()
+    public function render()
     {
+        return view('livewire.nominastotales');
+    }
+
+    public function cargarGrafica()
+    {
+        $this->readyToLoad = true;
+        $this->isCalculating = true;
         $this->actualizarGrafica();
     }
 
     public function updatedFiltro()
     {
-        $this->actualizarGrafica();
+        if ($this->readyToLoad) {
+            $this->isCalculating = true;
+            $this->actualizarGrafica();
+        }
     }
 
     public function actualizarGrafica()
-{
-    $datos = $this->calcularNominaDelMes();
+    {
+        $datos = $this->calcularNominaDelMes();
 
-    $this->labels = [
-        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-        'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
-    ];
+        $this->labels = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        $this->periodo1 = array_fill(0, 12, 0);
+        $this->periodo2 = array_fill(0, 12, 0);
 
-    $this->periodo1 = array_fill(0, 12, 0);
-    $this->periodo2 = array_fill(0, 12, 0);
-
-    if ($this->filtro === 'todos') {
-        foreach ($datos as $index => $valores) {
-            $this->periodo1[$index] = $valores[0];
-            $this->periodo2[$index] = $valores[1];
+        if ($this->filtro === 'todos') {
+            foreach ($datos as $index => $valores) {
+                $this->periodo1[$index] = $valores[0];
+                $this->periodo2[$index] = $valores[1];
+            }
+            $this->total = array_sum($this->periodo1) + array_sum($this->periodo2);
+        } else {
+            $mesIndex = $this->obtenerNumeroMes($this->filtro) - 1;
+            $this->periodo1[$mesIndex] = $datos[0][0] ?? 0;
+            $this->periodo2[$mesIndex] = $datos[0][1] ?? 0;
+            $this->total = $this->periodo1[$mesIndex] + $this->periodo2[$mesIndex];
         }
-        $this->total = array_sum($this->periodo1) + array_sum($this->periodo2);
-    } else {
-        $mesIndex = $this->obtenerNumeroMes($this->filtro) - 1;
-        $this->periodo1[$mesIndex] = $datos[0][0] ?? 0;
-        $this->periodo2[$mesIndex] = $datos[0][1] ?? 0;
-        $this->total = $this->periodo1[$mesIndex] + $this->periodo2[$mesIndex];
-    }
 
-    $this->dispatch('chart-nominas-updated', [
-        'labels' => $this->labels,
-        'periodo1' => $this->periodo1,
-        'periodo2' => $this->periodo2,
-        'filtro' => $this->filtro
-    ]);
-}
+        $this->isCalculating = false;
+        $this->dispatch('chart-nominas-updated', [
+            'labels' => $this->labels,
+            'periodo1' => $this->periodo1,
+            'periodo2' => $this->periodo2,
+            'total' => $this->total
+        ]);
+    }
 
     public function calcularNominaDelMes(): array
     {
@@ -79,12 +87,8 @@ class Nominastotales extends Component
     private function calcularPeriodosMes(int $anio, int $mes): array
     {
         $mesAnterior = $mes - 1;
-        $anioPeriodo1 = $anio;
-
-        if ($mesAnterior < 1) {
-            $mesAnterior = 12;
-            $anioPeriodo1 = $anio - 1;
-        }
+        $anioPeriodo1 = $mesAnterior < 1 ? $anio - 1 : $anio;
+        $mesAnterior = $mesAnterior < 1 ? 12 : $mesAnterior;
 
         $inicioPeriodo1 = Carbon::createFromDate($anioPeriodo1, $mesAnterior, 26)->startOfDay();
         $finPeriodo1 = Carbon::createFromDate($anio, $mes, 10)->endOfDay();
@@ -94,18 +98,9 @@ class Nominastotales extends Component
 
         return [
             $this->calcularNominaPorRango($inicioPeriodo1, $finPeriodo1),
-            $this->calcularNominaPorRango($inicioPeriodo2, $finPeriodo2)
+            $this->calcularNominaPorRango($inicioPeriodo2, $finPeriodo2),
         ];
     }
-    public function render()
-    {
-        return view('livewire.nominastotales', [
-            'labels' => $this->labels,
-            'values' => $this->values,
-            'filtro' => $this->filtro,
-        ]);
-    }
-
 
     private function calcularNominaPorRango(Carbon $inicio, Carbon $fin): float
     {
@@ -136,11 +131,7 @@ class Nominastotales extends Component
             $diasTrabajados = $asistencias_count + $descansos_count;
 
             $percepciones = $sd * $diasTrabajados;
-
-            if ($faltas_count === 0) {
-                $bono = $percepciones * 0.20;
-                $percepciones += $bono;
-            }
+            if ($faltas_count === 0) $percepciones += $percepciones * 0.20;
 
             $imss = $this->calcularIMSS($sdi, $diasTrabajados);
             $isr = $this->calcularISR($sd, $diasTrabajados, $faltas_count);
@@ -148,9 +139,7 @@ class Nominastotales extends Component
             $deducciones = $imss + $isr;
             $neto = $percepciones - $deducciones;
 
-            if ($neto > 0) {
-                $total += $neto;
-            }
+            if ($neto > 0) $total += $neto;
         }
 
         return round($total, 2);
@@ -159,12 +148,11 @@ class Nominastotales extends Component
     private function calcularIMSS(float $sdi, int $diasTrabajados): float
     {
         $sueldo = $diasTrabajados * $sdi;
-
-        $inv = $sueldo * 0.00625;
-        $ces = $sueldo * 0.01125;
-        $mat = $sdi * 0.05;
-
-        return $inv + $ces + $mat;
+        return round(
+            ($sueldo * 0.00625) +  // Invalidez y vida
+            ($sueldo * 0.01125) +  // Cesantía y vejez
+            ($sdi * 0.05),         // Enfermedades y maternidad
+        2);
     }
 
     private function calcularISR(float $sd, int $diasTrabajados, int $faltas): float
@@ -185,7 +173,7 @@ class Nominastotales extends Component
 
         foreach ($tablaISR as $rango) {
             if ($sueldo >= $rango['limInf'] && $sueldo <= $rango['limSup']) {
-                return $rango['cuotaFija'] + (($sueldo - $rango['limInf']) * ($rango['porcentaje'] / 100));
+                return $rango['cuotaFija'] + (($sueldo - $rango['limInf']) * $rango['porcentaje'] / 100);
             }
         }
 
@@ -194,25 +182,10 @@ class Nominastotales extends Component
 
     private function obtenerNumeroMes(string $mes): int
     {
-        return match(strtolower($mes)) {
-            'enero' => 1,
-            'febrero' => 2,
-            'marzo' => 3,
-            'abril' => 4,
-            'mayo' => 5,
-            'junio' => 6,
-            'julio' => 7,
-            'agosto' => 8,
-            'septiembre' => 9,
-            'octubre' => 10,
-            'noviembre' => 11,
-            'diciembre' => 12,
-            default => now()->month
-        };
-    }
-
-    private function capitalizarMes(string $mes): string
-    {
-        return ucfirst(strtolower($mes));
+        return [
+            'enero' => 1, 'febrero' => 2, 'marzo' => 3, 'abril' => 4,
+            'mayo' => 5, 'junio' => 6, 'julio' => 7, 'agosto' => 8,
+            'septiembre' => 9, 'octubre' => 10, 'noviembre' => 11, 'diciembre' => 12,
+        ][$mes] ?? now()->month;
     }
 }

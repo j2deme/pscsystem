@@ -300,11 +300,11 @@ $cards = array_filter([
                     </div>
                     <div class="w-full flex-shrink-0 px-4">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-full">
-                            @livewire('graficasfiniquitos')
+
                         </div>
                     </div>
                     <div class="w-full flex-shrink-0">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-4">
                             @livewire('graficas-altas')
                         </div>
                     </div>
