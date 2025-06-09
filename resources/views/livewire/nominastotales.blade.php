@@ -1,13 +1,14 @@
 <div>
-    <h2 class="text-xl font-semibold mb-2">Gráfico de Nómina</h2>
-
+    <div class="flex justify-center">
+        <h2 class="text-xl font-semibold mb-2">Gráfico de Nómina</h2>
+    </div>
     @if (!$readyToLoad)
         <div class="flex justify-center">
             <button wire:click="cargarGrafica" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                 Generar Gráfico
             </button><br>
         </div>
-        <center><p>Nota: Favor de esperar un momento después de hacer clic en el botón.</p></center>
+        <center><p class="mt-2 text-sm text-gray-600">Nota: Favor de esperar un momento después de hacer clic en el botón.</p></center>
     @endif
 
     @if ($readyToLoad)
