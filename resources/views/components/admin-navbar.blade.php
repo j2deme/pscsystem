@@ -208,7 +208,7 @@ $cards = array_filter([
     </div>
 
     <div class="flex-1 overflow-y-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 p-4">
+        <div class="grid gap-4 p-4" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-blue-500">
                 <div class="h-full flex flex-col min-w-0">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Elementos Activos</h3>
@@ -295,12 +295,12 @@ $cards = array_filter([
                 <div id="carouselSlides" class="flex transition-transform duration-300 ease-in-out">
                     <div class="w-full flex-shrink-0 px-4">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-full">
-
+                            @livewire('nominastotales')
                         </div>
                     </div>
                     <div class="w-full flex-shrink-0 px-4">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-full">
-                            <!--Finiquitos-->
+                            @livewire('graficasfiniquitos')
                         </div>
                     </div>
                     <div class="w-full flex-shrink-0">
