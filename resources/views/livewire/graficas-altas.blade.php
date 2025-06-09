@@ -13,16 +13,15 @@
 
     @if ($readyToLoad)
     <div wire:loading wire:target="actualizarDatos">Cargando...</div>
-
-    <center><div wire:loading.remove wire:target="actualizarDatos" class="relative">
-    <select wire:model.live.debounce.500ms="filtro" class="rounded-md border-gray-300 shadow-sm">
-        <option value="hoy">Hoy</option>
-        <option value="semana">Esta Semana</option>
-        <option value="mes">Este Mes</option>
-        <option value="anio">Este Año</option>
-    </select>
-    <canvas id="chartStats"></canvas></center>
-</div>
+        <center><div wire:loading.remove wire:target="actualizarDatos" class="relative">
+        <select wire:model.live.debounce.500ms="filtro" class="rounded-md border-gray-300 shadow-sm">
+            <option value="hoy">Hoy</option>
+            <option value="semana">Esta Semana</option>
+            <option value="mes">Este Mes</option>
+            <option value="anio">Este Año</option>
+        </select>
+        <canvas id="chartStats"></canvas></center>
+    </div>
 @endif
 </div>
 

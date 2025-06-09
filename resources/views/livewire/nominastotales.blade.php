@@ -43,10 +43,10 @@
             }
 
             // Configurar dimensiones del canvas
-            ctx.style.width = '100%';
+            /*ctx.style.width = '100%';
             ctx.style.height = '100%';
             ctx.width = ctx.offsetWidth;
-            ctx.height = ctx.offsetHeight;
+            ctx.height = ctx.offsetHeight;*/
 
             if (chartNominas) {
                 chartNominas.destroy();

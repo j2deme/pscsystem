@@ -14,7 +14,7 @@
 
         @if ($readyToLoad)
             <div wire:loading.remove wire:target="actualizarDatos">
-                <select wire:model.live="filtro" class="rounded-md border-gray-300 shadow-sm mb-4" wire:loading.attr="disabled">
+                <select wire:model.live="filtro" class="rounded-md mb-4" wire:loading.attr="disabled">
                     <option value="hoy">Hoy</option>
                     <option value="anio">Este Año</option>
                     <option value="enero">Enero</option>
@@ -56,10 +56,10 @@
             chartInstance.destroy();
         }
 
-        ctx.style.width = '100%';
+        /*ctx.style.width = '100%';
             ctx.style.height = '100%';
             ctx.width = ctx.offsetWidth;
-            ctx.height = ctx.offsetHeight;
+            ctx.height = ctx.offsetHeight;*/
 
         chartInstance = new Chart(ctx, {
             type: 'bar',
