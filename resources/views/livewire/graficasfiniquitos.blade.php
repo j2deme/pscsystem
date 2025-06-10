@@ -31,7 +31,7 @@
                     <option value="diciembre">Diciembre</option>
                 </select>
 
-                <div class="relative h-96 w-full">
+                <div class="relative w-full min-h-[400px]">
                     <canvas id="finiquitosChart" wire:ignore></canvas>
                 </div>
             </div>
@@ -86,7 +86,7 @@
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false,
+                maintainAspectRatio: true,
                 plugins: {
                     legend: {
                         position: 'top',

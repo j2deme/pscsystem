@@ -31,7 +31,10 @@ class NominasController extends Controller
         $solicitudes = SolicitudAlta::where('status', 'Aceptada')
             ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))//si se requiere respetar a toda la quincena
             ->get();
-        return view('nominas.nuevasAltas', compact('solicitudes'));
+        $users = User::where('estatus', 'Activo')
+            ->where('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))
+            ->get();
+        return view('nominas.nuevasAltas', compact('solicitudes', 'users'));
     }
 
     public function guardarCalculoFiniquito(Request $request)
