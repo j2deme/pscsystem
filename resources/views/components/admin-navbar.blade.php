@@ -111,6 +111,13 @@ $cards = array_filter([
         'notificaciones' => $conteoAltasAux,
     ],
     [
+        'titulo' => 'Custodios',
+        'ruta' => '#',
+        'icono' => '👮‍♂️',
+        'color' => 'bg-gray-300 dark:bg-gray-700',
+        'disabled' => true,
+    ],
+    [
         'titulo' => 'RRHH',
         'ruta' => route('admin.rhDashboard'),
         'icono' => '👨‍👩‍👧‍👦',
