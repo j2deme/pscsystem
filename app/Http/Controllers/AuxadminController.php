@@ -84,18 +84,29 @@ class AuxadminController extends Controller
             $request->validate([
                 'arch_acuse_imss' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
                 'arch_retencion_infonavit' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+                'sd' => 'nullable|numeric',
+                'sdi' => 'nullable|numeric',
             ]);
-
-            $solicitud = SolicitudAlta::findOrFail($id);
+            $solDocs= DocumentacionAltas::where('id', $id)->first();
+            $solAlta = SolicitudAlta::where('id', $solDocs->solicitud_id)->first();
+            Log::debug("Valores recibidos - SD: {$request->sd}, SDI: {$request->sdi}, IdSolicitud: {$solDocs->solicitud_id}");
+            $solicitud = SolicitudAlta::findOrFail($solAlta->id);
             $solicitudId = $id;
-            $documentacion = DocumentacionAltas::firstOrNew(['solicitud_id' => $solicitudId]);
-            $carpeta = 'solicitudesAltas/' . $solicitudId;
+            $solicitud->sd = $request->sd;
+            $solicitud->sdi = $request->sdi;
+            $solicitud->save();
+            $solicitud->refresh();
+            Log::debug("Después de guardar: SD={$solicitud->sd}, SDI={$solicitud->sdi}, ID={$solAlta->id}");
+
+            $documentacion = DocumentacionAltas::firstOrNew(['id' => $solDocs->id]);
+            $carpeta = 'solicitudesAltas/' . $solAlta->id;
 
             $archivos = [
                 'arch_acuse_imss',
                 'arch_retencion_infonavit',
             ];
 
+            Log::debug("Antes de guardar archivos de guardar: ID={$solDocs->id}");
             foreach ($archivos as $campo) {
                 if ($request->hasFile($campo)) {
                     try {
@@ -107,14 +118,12 @@ class AuxadminController extends Controller
                         $nombreArchivo = $campo . '.' . $archivo->getClientOriginalExtension();
                         $ruta = $archivo->storeAs($carpeta, $nombreArchivo, 'public');
                         $documentacion->$campo = 'storage/' . $ruta;
-
+                         Log::debug("Archivo {$campo} guardado en: storage/{$ruta}");
                     } catch (\Exception $e) {
                         Log::error("Error al guardar el archivo {$campo}: " . $e->getMessage());
                     }
                 }
             }
-
-            $documentacion->solicitud_id = $solicitudId;
             $documentacion->save();
 
             return response()->json(['success' => true]);

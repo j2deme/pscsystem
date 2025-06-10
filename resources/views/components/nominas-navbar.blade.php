@@ -18,6 +18,7 @@
             'ruta' => route('nominas.graficas'),
             'icono' => '📊',
             'color' => 'bg-blue-100 dark:bg-blue-700',
+            'disabled' => true,
         ],
         [
             'titulo' => 'Nuevas Altas',

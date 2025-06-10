@@ -25,6 +25,8 @@ class SolicitudAlta extends Model
         'domicilio_colonia',
         'domicilio_ciudad',
         'domicilio_estado',
+        'sd',
+        'sdi',
         'telefono',
         'email',
         'estatura',

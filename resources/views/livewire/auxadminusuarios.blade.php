@@ -234,11 +234,15 @@ function abrirModalCarga(solicitudId, datos = {}) {
         preConfirm: () => {
             const fileImss = document.getElementById('file-imss').files[0];
             const fileInfonavit = document.getElementById('file-infonavit').files[0];
+            const sd = document.getElementById('input-sd').value;
+            const sdi = document.getElementById('input-sdi').value;
 
             const formData = new FormData();
-            formData.append('solicitud_id', solicitudId);
-            if (fileImss) formData.append('arch_acuse_imss', fileImss);
-            if (fileInfonavit) formData.append('arch_retencion_infonavit', fileInfonavit);
+            formData.append('sol_docs_id', solicitudId);
+            formData.append('sd', sd);
+            formData.append('sdi', sdi);
+            if (fileImss) formData.append('acuse_imss', fileImss);
+            if (fileInfonavit) formData.append('retencion_infonavit', fileInfonavit);
 
             return fetch(`/actualizacion_documentacion/${solicitudId}`, {
                 method: 'POST',
