@@ -56,7 +56,7 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <a href="{{route('user.verFicha', $solicitud->user->id)}}" class="text-blue-600 hover:text-blue-900">Ver Más</a>
+                                            <a href="{{route('user.verFicha', $solicitud->usuario->id)}}" class="text-blue-600 hover:text-blue-900">Ver Más</a>
                                         </td>
                                     </tr>
                                 @endforeach

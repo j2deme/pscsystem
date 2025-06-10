@@ -90,13 +90,13 @@
                     'icono' => '📋',
                     'color' => 'bg-blue-100 dark:bg-blue-700'
                 ],
-                [
+                /*[
                     'titulo' => 'Solicitudes de Vacaciones',
                     'ruta' => route('sup.solicitudesVacaciones'),
                     'icono' => '🏖️',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
                     'notificaciones' => $vacaciones
-                ],
+                ],*/
                 [
                     'titulo' => 'Solicitar Vacaciones',
                     'ruta' => route('user.solicitarVacacionesForm'),

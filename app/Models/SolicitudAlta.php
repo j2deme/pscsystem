@@ -47,5 +47,8 @@ class SolicitudAlta extends Model
     public function user() {
         return $this->belongsTo(User::class, 'sol_alta_id');
     }
+    public function usuario() {
+        return $this->hasOne(User::class, 'sol_alta_id');
+    }
 
 }
