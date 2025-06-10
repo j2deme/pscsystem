@@ -235,11 +235,6 @@ function abrirModalCarga(solicitudId, datos = {}) {
             const fileImss = document.getElementById('file-imss').files[0];
             const fileInfonavit = document.getElementById('file-infonavit').files[0];
 
-            if (!fileImss && !fileInfonavit) {
-                Swal.showValidationMessage('Debes seleccionar al menos un archivo para subir');
-                return false;
-            }
-
             const formData = new FormData();
             formData.append('solicitud_id', solicitudId);
             if (fileImss) formData.append('arch_acuse_imss', fileImss);
@@ -253,7 +248,7 @@ function abrirModalCarga(solicitudId, datos = {}) {
                 body: formData
             })
             .then(response => {
-                if (!response.ok) throw new Error('Error al subir archivos');
+                if (!response.ok) throw new Error('Error al actualizar la información.');
                 return response.json();
             })
             .catch(error => {
@@ -262,7 +257,7 @@ function abrirModalCarga(solicitudId, datos = {}) {
         }
     }).then(result => {
         if (result.isConfirmed) {
-            Swal.fire('¡Listo!', 'Los archivos se subieron correctamente', 'success')
+            Swal.fire('¡Listo!', 'La información se actualizó correctamente.', 'success')
                 .then(() => location.reload());
         }
     });
