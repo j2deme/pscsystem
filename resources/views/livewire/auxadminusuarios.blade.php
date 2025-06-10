@@ -241,8 +241,8 @@ function abrirModalCarga(solicitudId, datos = {}) {
             formData.append('sol_docs_id', solicitudId);
             formData.append('sd', sd);
             formData.append('sdi', sdi);
-            if (fileImss) formData.append('acuse_imss', fileImss);
-            if (fileInfonavit) formData.append('retencion_infonavit', fileInfonavit);
+            if (fileImss) formData.append('arch_acuse_imss', fileImss);
+            if (fileInfonavit) formData.append('arch_retencion_infonavit', fileInfonavit);
 
             return fetch(`/actualizacion_documentacion/${solicitudId}`, {
                 method: 'POST',
