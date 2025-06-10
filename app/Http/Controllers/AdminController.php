@@ -96,4 +96,14 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'El usuario ha sido dado de alta correctamente.');
     }
+
+    public function tableroNominas(){
+        return view('admi.tableroNominas');
+    }
+    public function tableroImss(){
+        return view('admi.tableroImss');
+    }
+    public function tableroRh(){
+        return view('admi.tableroRh');
+    }
 }
