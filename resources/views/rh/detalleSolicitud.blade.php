@@ -117,7 +117,7 @@
             </div>
             <div class="flex flex-wrap justify-center gap-4 mt-4">
                 @if($solicitud->status == 'En Proceso')
-                    @if((Auth::user()->rol == 'admin' && $solicitud->observaciones == 'Solicitud enviada a Administrador.')||(Auth::user()->rol == 'Recursos Humanos'&&$solicitud->observaciones != 'Solicitud enviada a Administrador.'))
+                    @if((Auth::user()->rol == 'admin' && $solicitud->observaciones == 'Solicitud enviada a Administrador.')||((Auth::user()->rol == 'Recursos Humanos' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos') && $solicitud->observaciones != 'Solicitud enviada a Administrador.'))
                         <a href="{{ route('rh.aceptarSolicitud', $solicitud->id) }}"
                             class="inline-block bg-green-300 text-gray-800 py-2 px-4 rounded-md hover:bg-green-400 transition">
                             Aceptar

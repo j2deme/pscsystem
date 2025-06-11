@@ -25,38 +25,55 @@ class SupervisorController extends Controller
     public function nuevoUsuarioForm(){
         return view('supervisor.nuevoUsuarioForm');
     }
-
+    public function formAlta(Request $request)
+    {
+        $tipo = $request->get('tipo', 'noarmado');
+        return view('supervisor.nuevoUsuarioForm', compact('tipo'));
+    }
     public function guardarInfo(Request $request)
     {
         try {
             $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'apellido_paterno' => 'required|string|max:255',
-                'apellido_materno' => 'required|string|max:255',
-                'fecha_nacimiento' => 'required|date',
-                'curp' => 'required|string|max:255',
-                'nss' => 'required|string|max:255',
-                'edo_civil' => 'required|string',
-                'rfc' => 'required|string|max:255',
-                'telefono' => 'required|string|max:255',
-                'calle' => 'required|string|max:255',
-                'num_ext' => 'required|integer',
-                'colonia' => 'required|string|max:255',
-                'ciudad' => 'required|string|max:255',
-                'estado' => 'required|string|max:255',
+                'tipo' => 'required|in:armado,noarmado',
+                'name' => 'nullable|string|max:255',
+                'apellido_paterno' => 'nullable|string|max:255',
+                'apellido_materno' => 'nullable|string|max:255',
+                'fecha_nacimiento' => 'nullable|date',
+                'curp' => 'nullable|string|max:255',
+                'nss' => 'nullable|string|max:255',
+                'edo_civil' => 'nullable|string',
+                'rfc' => 'nullable|string|max:255',
+                'telefono' => 'nullable|string|max:255',
+                'calle' => 'nullable|string|max:255',
+                'num_ext' => 'nullable|string|max:255',
+                'colonia' => 'nullable|string|max:255',
+                'ciudad' => 'nullable|string|max:255',
+                'peso' => 'nullable|string|max:255',
+                'estatura' => 'nullable|string|max:255',
+                'cp_fiscal' => 'nullable|string|max:255',
+                'estado' => 'nullable|string|max:255',
+                'liga_rfc' => 'nullable|string|max:255',
+                'infonavit' => 'nullable|string|max:255',
+                'fonacot' => 'nullable|string|max:255',
+                'domicilio_comprobante' => 'nullable|string|max:255',
                 'departamento' => 'nullable|string|max:255',
-                'rol' => 'required|string|max:255',
-                'punto' => 'required|string|max:255',
-                'empresa' => 'required|string',
-                'email' => 'required|email|unique:solicitud_altas,email',
+                'rol' => 'nullable|string|max:255',
+                'reingreso' => 'nullable|string',
+                'punto' => 'nullable|string|max:255',
+                'empresa' => 'nullable|string',
+                'sueldo_mensual' => 'nullable|string',
+                'fecha_ingreso' => 'nullable|date',
+                'email' => 'nullable|email|unique:solicitud_altas,email',
             ]);
 
+            $tipoSeleccionado = $request->get('tipo', 'noarmado');
             $solicitud = new SolicitudAlta();
             $solicitud->solicitante = auth()->user()->name;
             $solicitud->nombre = $request->name;
             $solicitud->apellido_paterno = $request->apellido_paterno;
             $solicitud->apellido_materno = $request->apellido_materno;
             $solicitud->fecha_nacimiento = $request->fecha_nacimiento;
+            $solicitud->tipo_empleado = $request->get('tipo', 'noarmado');
             $solicitud->curp = $request->curp;
             $solicitud->nss = $request->nss;
             $solicitud->estado_civil = $request->edo_civil;
@@ -66,20 +83,30 @@ class SupervisorController extends Controller
             $solicitud->domicilio_numero = $request->num_ext;
             $solicitud->domicilio_colonia = $request->colonia;
             $solicitud->domicilio_ciudad = $request->ciudad;
+            $solicitud->peso = $request->peso;
+            $solicitud->estatura = $request->estatura;
+            $solicitud->cp_fiscal = $request->cp_fiscal;
             $solicitud->domicilio_estado = $request->estado;
+            $solicitud->liga_rfc = $request->liga_rfc;
+            $solicitud->infonavit = $request->infonavit;
+            $solicitud->fonacot = $request->fonacot;
+            $solicitud->domicilio_comprobante = $request->domicilio_comprobante;
             $solicitud->departamento = $request->departamento;
+            $solicitud->reingreso = $request->reingreso;
             $solicitud->rol = $request->rol;
             $solicitud->punto = $request->punto;
             $solicitud->empresa = $request->empresa;
             $solicitud->email = $request->email;
-            $solicitud->estatura = '0.0';
-            $solicitud->peso = '0.0';
+            $solicitud->sueldo_mensual = $request->sueldo_mensual;
+            $solicitud->fecha_ingreso = $request->fecha_ingreso;
             $solicitud->status = 'En Proceso';
             $solicitud->observaciones = 'Solicitud en revisión';
+            $solicitud->created_at = Carbon::now('America/Mexico_City');
+            $solicitud->updated_at = Carbon::now('America/Mexico_City');
 
             $solicitud->save();
 
-            return redirect()->route('sup.subirArchivosForm', ['id' => $solicitud->id]);
+            return redirect()->route('sup.subirArchivosForm', ['id' => $solicitud->id, 'tipo' => $tipoSeleccionado]);
 
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error al guardar la solicitud, intente nuevamente.');
@@ -88,8 +115,9 @@ class SupervisorController extends Controller
 
     public function subirArchivosForm($id)
     {
+        $tipo = request('tipo');
         $solicitud = SolicitudAlta::findOrFail($id);
-        return view('supervisor.subirArchivosForm', compact('solicitud'));
+        return view('supervisor.subirArchivosForm', compact('solicitud', 'tipo'));
     }
 
     public function guardarArchivos(Request $request, $id)

@@ -82,6 +82,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/vacaciones_elemento/{id}', [SupervisorController::class, 'vacacionesElementoForm'])->name('sup.solicitarVacacionesElementoForm');
     Route::get('/asistencias/confirmar-faltas', [SupervisorController::class, 'confirmarFaltas'])->name('asistencias.confirmarFaltas');
     Route::post('/asistencias/finalizar', [SupervisorController::class, 'finalizarAsistencia'])->name('asistencias.finalizar');
+    Route::get('/sup-alta-usuario', [SupervisorController::class, 'formAlta'])->name('sup.formAlta');
 
 
     //usuario Recursos Humanos

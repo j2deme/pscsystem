@@ -145,7 +145,7 @@
 
                 <div class="form-group mb-4">
                     <label for="peso" class="block text-sm font-semibold text-gray-600">Peso</label>
-                    <input type="text" id="peso" name="pesp" placeholder="Peso" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                    <input type="text" id="peso" name="peso" placeholder="Peso" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-4">
@@ -172,17 +172,17 @@
 
                 <div class="form-group mb-6">
                     <label for="rol" class="block text-sm font-semibold text-gray-600">Rol/Puesto</label>
-                    <input type="rol" id="rol" name="rol" placeholder="Rol" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                    <input type="text" id="rol" name="rol" placeholder="Rol" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-6">
                     <label for="punto" class="block text-sm font-semibold text-gray-600">Punto</label>
-                    <input type="punto" id="punto" name="punto" placeholder="Punto" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                    <input type="text" id="punto" name="punto" placeholder="Punto" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-6">
                     <label for="reingreso" class="block text-sm font-semibold text-gray-600">Reingreso</label>
-                    <input type="reingreso" id="reingreso" name="reingreso" placeholder="Reingreso" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                    <input type="text" id="reingreso" name="reingreso" placeholder="Reingreso" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
                 </div>
 
                 <div class="form-group mb-6">

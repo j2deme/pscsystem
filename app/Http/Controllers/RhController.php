@@ -242,7 +242,7 @@ class RhController extends Controller
                 'apellido_materno' => 'nullable|string|max:255',
                 'fecha_nacimiento' => 'nullable|date',
                 'curp' => 'nullable|string|max:255',
-                'nss' => 'required|string|max:255',
+                'nss' => 'nullable|string|max:255',
                 'edo_civil' => 'nullable|string',
                 'rfc' => 'nullable|string|max:255',
                 'telefono' => 'nullable|string|max:255',
@@ -303,6 +303,7 @@ class RhController extends Controller
             $solicitud->status = 'Aceptada';
             $solicitud->observaciones = 'Solicitud Aceptada.';
             $solicitud->created_at = Carbon::now('America/Mexico_City');
+            $solicitud->updated_at = Carbon::now('America/Mexico_City');
 
             $solicitud->save();
 
