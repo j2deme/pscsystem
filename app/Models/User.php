@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Subpunto::class);
     }
+
+    public function subpuntosSupervisados()
+    {
+        return $this->belongsToMany(Subpunto::class, 'supervisorpuntos', 'supervisor_id', 'subpunto_id');
+    }
 }

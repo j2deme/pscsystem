@@ -157,7 +157,18 @@
 
                 <div class="form-group mb-6">
                     <label for="punto" class="block text-sm font-semibold text-gray-600">Punto</label>
-                    <input type="text" id="punto" name="punto" placeholder="Punto" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                    <select id="punto" name="punto" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
+                        <option disabled selected value="">Seleccione un subpunto</option>
+                        @foreach($puntos as $punto)
+                            <optgroup label="{{ $punto->nombre }}">
+                                @foreach($punto->subpuntos as $subpunto)
+                                    <option value="{{ $subpunto->nombre }}">
+                                        @if($subpunto->codigo!= null)({{ str_pad($subpunto->codigo, 3, '0', STR_PAD_LEFT) }}) @endif {{ $subpunto->nombre }}
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="form-group mb-6">

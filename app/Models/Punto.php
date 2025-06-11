@@ -9,4 +9,8 @@ class Punto extends Model
     protected $fillable = [
         'nombre',
     ];
+
+    public function subpuntos() {
+        return $this->hasMany(Subpunto::class);
+    }
 }

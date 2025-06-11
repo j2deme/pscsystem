@@ -7,6 +7,7 @@ use App\Models\DocumentacionAltas;
 use App\Models\SolicitudBajas;
 use App\Models\SolicitudVacaciones;
 use App\Models\User;
+use App\Models\Punto;
 use App\Models\Asistencia;
 use App\Models\TiemposExtra;
 use App\Models\CubrirTurno;
@@ -23,12 +24,14 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class SupervisorController extends Controller
 {
     public function nuevoUsuarioForm(){
-        return view('supervisor.nuevoUsuarioForm');
+        $puntos = Punto::with('subpuntos')->get();
+        return view('supervisor.nuevoUsuarioForm', compact('puntos'));
     }
     public function formAlta(Request $request)
     {
         $tipo = $request->get('tipo', 'noarmado');
-        return view('supervisor.nuevoUsuarioForm', compact('tipo'));
+        $puntos = Punto::with('subpuntos')->get();
+        return view('supervisor.nuevoUsuarioForm', compact('tipo', 'puntos'));
     }
     public function guardarInfo(Request $request)
     {
@@ -389,8 +392,38 @@ class SupervisorController extends Controller
     {
         $usuario = auth()->user();
 
-        $elementos = User::where('punto', $usuario->punto)
-            ->where('empresa', $usuario->empresa)
+        $puntoUsuarioRaw = Auth::user()->punto;
+        $puntoUsuario = null;
+        $subpuntosZona = collect();
+
+        $punto = Punto::where('nombre', $puntoUsuarioRaw)->first();
+        if ($punto) {
+            $puntoUsuario = $punto;
+        } else {
+            $subpunto = Subpunto::where('nombre', $puntoUsuarioRaw)->first();
+            if ($subpunto) {
+                $puntoUsuario = $subpunto;
+
+                $zona = $subpunto->zona;
+                if ($zona) {
+                    $subpuntosZona = Subpunto::where('zona', $zona->id)->pluck('nombre');
+                }
+            } else {
+                $subpuntoPorCodigo = Subpunto::where('codigo', $puntoUsuarioRaw)->first();
+                if ($subpuntoPorCodigo) {
+                    $puntoUsuario = $subpuntoPorCodigo;
+                    $zona = $subpuntoPorCodigo->zona;
+                    if ($zona) {
+                        $subpuntosZona = Subpunto::where('zona', $zona->id)->pluck('nombre');
+                    }
+                }
+            }
+        }
+        $elementos = User::where('empresa', $usuario->empresa)
+            ->where(function ($query) use ($usuario, $subpuntosZona) {
+                $query->where('punto', $usuario->punto)
+                    ->orWhereIn('punto', $subpuntosZona);
+            })
             ->get();
 
         return view('supervisor.solicitarBajaForm', compact('elementos'));
@@ -461,14 +494,39 @@ class SupervisorController extends Controller
         }
     }
 
-    public function historialBajas(){
+    public function historialBajas()
+    {
         $user = Auth::user();
 
-    $solicitudes = SolicitudBajas::whereHas('user', function ($query) use ($user) {
-        $query->where('empresa', $user->empresa)
-            ->where('punto', $user->punto)
-            ->where('por','Renuncia');
-            })->with('user')->get();
+        $puntoUsuarioRaw = $user->punto;
+        $subpuntosZona = collect();
+
+        $punto = \App\Models\Punto::where('nombre', $puntoUsuarioRaw)->first();
+        if (!$punto) {
+            $subpunto = \App\Models\Subpunto::where('nombre', $puntoUsuarioRaw)->first();
+            if (!$subpunto) {
+                $subpunto = \App\Models\Subpunto::where('codigo', $puntoUsuarioRaw)->first();
+            }
+
+            if ($subpunto && $subpunto->zona) {
+                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona->id)
+                    ->pluck('nombre')
+                    ->merge(
+                        \App\Models\Subpunto::where('zona', $subpunto->zona->id)->pluck('codigo')
+                    );
+            }
+        }
+
+        $solicitudes = \App\Models\SolicitudBajas::whereHas('user', function ($query) use ($user, $subpuntosZona) {
+            $query->where('empresa', $user->empresa)
+                ->where('por', 'Renuncia')
+                ->where(function ($q) use ($user, $subpuntosZona) {
+                    $q->where('punto', $user->punto);
+                    if ($subpuntosZona->isNotEmpty()) {
+                        $q->orWhereIn('punto', $subpuntosZona);
+                    }
+                });
+        })->with('user')->get();
 
         return view('supervisor.historialBajas', compact('solicitudes'));
     }
@@ -491,10 +549,34 @@ class SupervisorController extends Controller
                         ->where('user_id', $user->id)
                         ->get();
 
-        $elementos = User::where('punto', $user->punto)
-            ->where('empresa', $user->empresa)
+        $puntoUsuarioRaw = $user->punto;
+        $subpuntosZona = collect();
+
+        $punto = \App\Models\Punto::where('nombre', $puntoUsuarioRaw)->first();
+        if (!$punto) {
+            $subpunto = \App\Models\Subpunto::where('nombre', $puntoUsuarioRaw)->first();
+            if (!$subpunto) {
+                $subpunto = \App\Models\Subpunto::where('codigo', $puntoUsuarioRaw)->first();
+            }
+
+            if ($subpunto && $subpunto->zona) {
+                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona->id)
+                    ->pluck('nombre')
+                    ->merge(
+                        \App\Models\Subpunto::where('zona', $subpunto->zona->id)->pluck('codigo')
+                    );
+            }
+        }
+
+        $elementos = \App\Models\User::where('empresa', $user->empresa)
             ->where('estatus', 'Activo')
             ->where('rol', '!=', 'Supervisor')
+            ->where(function ($query) use ($user, $subpuntosZona) {
+                $query->where('punto', $user->punto);
+                if ($subpuntosZona->isNotEmpty()) {
+                    $query->orWhereIn('punto', $subpuntosZona);
+                }
+            })
             ->with('solicitudAlta.documentacion')
             ->get();
         return view('supervisor.listaAsistencia', compact('elementos', 'asistencia_hoy', 'supervisores'));
@@ -669,18 +751,48 @@ public function finalizarAsistencia(Request $request)
         return view('supervisor.verAsistencias', compact('asistenciasElementos', 'fechaSeleccionada'));
     }
 
-    public function solicitudesVacaciones(){
-        $punto = Auth::user()->punto;
+    public function solicitudesVacaciones()
+    {
+        $user = Auth::user();
+        $puntoUsuarioRaw = $user->punto;
+        $subpuntosZona = collect();
 
-        if(Auth::user()->rol == 'admin'){
+        if ($user->rol == 'admin') {
             $solicitudes = SolicitudVacaciones::where('estatus', 'En Proceso')->get();
-        }else{
-            $solicitudes = SolicitudVacaciones::whereHas('user', function ($query) use ($punto) {
-                $query->where('punto', $punto);
-            })->with('user')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        } else {
+            $punto = \App\Models\Punto::where('nombre', $puntoUsuarioRaw)->first();
+
+            if (!$punto) {
+                $subpunto = \App\Models\Subpunto::where('nombre', $puntoUsuarioRaw)->first();
+
+                if (!$subpunto) {
+                    $subpunto = \App\Models\Subpunto::where('codigo', $puntoUsuarioRaw)->first();
+                }
+
+                if ($subpunto && $subpunto->zona) {
+                    $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona->id)
+                        ->pluck('nombre')
+                        ->merge(
+                            \App\Models\Subpunto::where('zona', $subpunto->zona->id)->pluck('codigo')
+                        );
+                }
+            }
+
+            $solicitudes = SolicitudVacaciones::where('estatus', 'En Proceso')
+                ->whereHas('user', function ($query) use ($user, $subpuntosZona) {
+                    $query->where('empresa', $user->empresa)
+                        ->where(function ($q) use ($user, $subpuntosZona) {
+                            $q->where('punto', $user->punto);
+                            if ($subpuntosZona->isNotEmpty()) {
+                                $q->orWhereIn('punto', $subpuntosZona);
+                            }
+                        });
+                })
+                ->with('user')
+                ->orderBy('created_at', 'desc')
+                ->get();
         }
+
         return view('supervisor.solicitudesVacaciones', compact('solicitudes'));
     }
 
@@ -713,14 +825,42 @@ public function finalizarAsistencia(Request $request)
         return view('supervisor.detalleBaja', compact('user','solicitudAlta', 'solicitudBaja'));
     }
 
-    public function tiemposExtras(){
+    public function tiemposExtras()
+    {
         $user = Auth::user();
-        $elementos = User::where('punto', Auth::user()->punto)
-            ->where('empresa', Auth::user()->empresa)
+        $puntoUsuarioRaw = $user->punto;
+        $subpuntosZona = collect();
+
+        $punto = \App\Models\Punto::where('nombre', $puntoUsuarioRaw)->first();
+
+        if (!$punto) {
+            $subpunto = \App\Models\Subpunto::where('nombre', $puntoUsuarioRaw)->first();
+
+            if (!$subpunto) {
+                $subpunto = \App\Models\Subpunto::where('codigo', $puntoUsuarioRaw)->first();
+            }
+
+            if ($subpunto && $subpunto->zona) {
+                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona->id)
+                    ->pluck('nombre')
+                    ->merge(
+                        \App\Models\Subpunto::where('zona', $subpunto->zona->id)->pluck('codigo')
+                    );
+            }
+        }
+
+        $elementos = \App\Models\User::where('empresa', $user->empresa)
             ->where('estatus', 'Activo')
             ->where('rol', '!=', 'Supervisor')
+            ->where(function ($query) use ($user, $subpuntosZona) {
+                $query->where('punto', $user->punto);
+                if ($subpuntosZona->isNotEmpty()) {
+                    $query->orWhereIn('punto', $subpuntosZona);
+                }
+            })
             ->with('solicitudAlta.documentacion')
             ->get();
+
         return view('supervisor.tiemposExtras', compact('elementos'));
     }
 
@@ -794,12 +934,39 @@ public function finalizarAsistencia(Request $request)
         return view('supervisor.historialTiemposExtras', compact('tiemposExtras'));
     }
 
-    public function gestionUsuarios(){
+    public function gestionUsuarios()
+    {
         $user = Auth::user();
-        $usuarios = User::where('punto', $user->punto)
-            ->where('empresa', $user->empresa)
+        $puntoUsuarioRaw = $user->punto;
+        $subpuntosZona = collect();
+
+        $punto = \App\Models\Punto::where('nombre', $puntoUsuarioRaw)->first();
+
+        if (!$punto) {
+            $subpunto = \App\Models\Subpunto::where('nombre', $puntoUsuarioRaw)->first();
+
+            if (!$subpunto) {
+                $subpunto = \App\Models\Subpunto::where('codigo', $puntoUsuarioRaw)->first();
+            }
+
+            if ($subpunto && $subpunto->zona) {
+                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona->id)
+                    ->pluck('nombre')
+                    ->merge(
+                        \App\Models\Subpunto::where('zona', $subpunto->zona->id)->pluck('codigo')
+                    );
+            }
+        }
+
+        $usuarios = \App\Models\User::where('empresa', $user->empresa)
             ->where('estatus', 'Activo')
             ->where('rol', '!=', 'Supervisor')
+            ->where(function ($query) use ($user, $subpuntosZona) {
+                $query->where('punto', $user->punto);
+                if ($subpuntosZona->isNotEmpty()) {
+                    $query->orWhereIn('punto', $subpuntosZona);
+                }
+            })
             ->get();
 
         return view('supervisor.gestionUsuarios', compact('usuarios'));
@@ -922,10 +1089,34 @@ public function finalizarAsistencia(Request $request)
     public function solicitarVacacionesElemento()
     {
         $user = Auth::user();
-        $elementos = User::where('punto', Auth::user()->punto)
-            ->where('empresa', Auth::user()->empresa)
+        $puntoUsuarioRaw = $user->punto;
+        $subpuntosZona = collect();
+
+        $punto = \App\Models\Punto::where('nombre', $puntoUsuarioRaw)->first();
+        if (!$punto) {
+            $subpunto = \App\Models\Subpunto::where('nombre', $puntoUsuarioRaw)->first();
+            if (!$subpunto) {
+                $subpunto = \App\Models\Subpunto::where('codigo', $puntoUsuarioRaw)->first();
+            }
+
+            if ($subpunto && $subpunto->zona) {
+                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona->id)
+                    ->pluck('nombre')
+                    ->merge(
+                        \App\Models\Subpunto::where('zona', $subpunto->zona->id)->pluck('codigo')
+                    );
+            }
+        }
+
+        $elementos = \App\Models\User::where('empresa', $user->empresa)
             ->where('estatus', 'Activo')
             ->where('rol', '!=', 'Supervisor')
+            ->where(function ($query) use ($user, $subpuntosZona) {
+                $query->where('punto', $user->punto);
+                if ($subpuntosZona->isNotEmpty()) {
+                    $query->orWhereIn('punto', $subpuntosZona);
+                }
+            })
             ->with('solicitudAlta.documentacion')
             ->get();
         return view('supervisor.solicitarVacacionesElemento', compact('elementos'));

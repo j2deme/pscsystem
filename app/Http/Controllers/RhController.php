@@ -14,6 +14,7 @@ use App\Models\SolicitudVacaciones;
 use App\Models\DocumentacionAltas;
 use App\Models\SolicitudBajas;
 use App\Models\User;
+use App\Models\Punto;
 use Carbon\Carbon;
 use Hash;
 
@@ -224,12 +225,14 @@ class RhController extends Controller
     }
 
     public function generarNuevaAltaForm(){
-        return view('rh.generarAlta');
+        $puntos = Punto::with('subpuntos')->get();
+        return view('rh.generarAlta', compact('puntos'));
     }
     public function formAlta(Request $request)
     {
+        $puntos = Punto::with('subpuntos')->get();
         $tipo = $request->get('tipo', 'oficina');
-        return view('rh.generarAlta', compact('tipo'));
+        return view('rh.generarAlta', compact('tipo', 'puntos'));
     }
 
 
