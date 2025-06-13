@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SolicitudVacaciones;
 use App\Models\SolicitudAlta;
 use App\Models\SolicitudBajas;
 use App\Models\DocumentacionAltas;
@@ -105,5 +106,17 @@ class AdminController extends Controller
     }
     public function tableroRh(){
         return view('admi.tableroRh');
+    }
+
+    public function solicitudesVacaciones(){
+        $vacaciones = SolicitudVacaciones::where('estatus', 'En Proceso')
+        ->where('observaciones', '!=', 'Solicitud aceptada, falta subir archivo de solicitud.')
+        ->whereHas('user', function ($query) {
+            $query->where('empresa', 'Montana');
+        })
+        ->with('user')
+        ->get();
+
+        return view('admi.solicitudesVacaciones', compact('vacaciones'));
     }
 }

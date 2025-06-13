@@ -21,6 +21,7 @@
                             <div><strong>Empresa:</strong> {{ $solicitud->empresa }}</div>
                             <div><strong>Punto:</strong> {{ $solicitud->punto }}</div>
                             <div><strong>Fecha de Nacimiento:</strong> {{ $solicitud->fecha_nacimiento }}</div>
+                            <div><strong>Fecha de Ingreso:</strong> {{ $user->fecha_ingreso }}</div>
                         </div>
                         <div class="flex flex-col items-center justify-start text-center space-y-2">
                             @if ($documentacion && $documentacion->arch_foto)

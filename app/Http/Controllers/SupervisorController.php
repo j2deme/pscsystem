@@ -803,8 +803,10 @@ public function finalizarAsistencia(Request $request)
         $solicitud->autorizado_por = Auth::user()->name;
 
         $solicitud->save();
-
-        return redirect()->route('sup.solicitudesVacaciones')->with('success', 'Solicitud de vacaciones respondida correctamente, a la espera del archivo de solicitud.');
+        if(Auth::user()->rol == 'admin')
+            return redirect()->route('admin.solicitudesVacaciones')->with('success', 'Solicitud de vacaciones respondida correctamente, a la espera del archivo de solicitud.');
+        else
+            return redirect()->route('sup.solicitudesVacaciones')->with('success', 'Solicitud de vacaciones respondida correctamente, a la espera del archivo de solicitud.');
     }
 
     public function rechazarSolicitudVacaciones($id){
@@ -1020,10 +1022,19 @@ public function finalizarAsistencia(Request $request)
     $user = $solicitud->user;
 
     $fechaIngreso = Carbon::parse($user->fecha_ingreso);
-    $fechaActual = now();
-
+    $fechaActual = Carbon::now('America/Mexico_City');
+    $mesesLaborados = 0;
     $inicioPeriodo = $fechaIngreso;
     $finPeriodo = $fechaIngreso->copy()->addYear();
+    $aniversario = Carbon::createFromDate($fechaActual->year, $fechaIngreso->month, $fechaIngreso->day);
+
+    if ($aniversario->isFuture()) {
+        $inicioPeriodo = $aniversario->copy()->subYear();
+        $finPeriodo = $aniversario;
+    } else {
+        $inicioPeriodo = $aniversario;
+        $finPeriodo = $aniversario->copy()->addYear();
+    }
 
     $antiguedadAnios = floor($fechaIngreso->floatDiffInYears($fechaActual));
 
@@ -1038,7 +1049,7 @@ public function finalizarAsistencia(Request $request)
     }
 
     $pdf = Pdf::loadView('pdf.formatoVacaciones', compact(
-        'user', 'solicitud', 'inicioPeriodo', 'finPeriodo', 'antiguedad', 'periodo', 'mesesLaborados'
+        'user', 'solicitud', 'inicioPeriodo', 'finPeriodo', 'antiguedad', 'periodo', 'mesesLaborados', 'antiguedadAnios'
     ));
 
     return $pdf->download('SOLICITUD DE VACACIONES.pdf');

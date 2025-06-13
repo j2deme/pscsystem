@@ -79,7 +79,10 @@ class UserController extends Controller
     }
     public function solicitarVacacionesForm(){
         $user = User::find(Auth::user()->id);
-        $antiguedad = (int) floor(Carbon::parse($user->fecha_ingreso)->floatDiffInYears(now('Americas/Mexico_City')));
+        $antiguedad = (int) floor(Carbon::parse($user->fecha_ingreso)->floatDiffInYears(now('America/Mexico_City')));
+        $fechaIngreso = Carbon::parse($user->fecha_ingreso);
+        $fechaActual = Carbon::now('America/Mexico_City');
+
         if ($antiguedad === 0) {
             $mesesLaborados = $fechaIngreso->diffInMonths($fechaActual);
         } else {
@@ -112,7 +115,6 @@ class UserController extends Controller
 
         $diasDisponibles = $dias;
         $diasUtilizados = 0;
-        $fechaIngreso = Carbon::parse($user->fecha_ingreso);
         $aniversario = Carbon::createFromDate(
             now()->year,
             $fechaIngreso->month,
@@ -150,20 +152,16 @@ class UserController extends Controller
         ]);
 
         $user = User::findorFail($id);
-        if(Auth::user()->rol == 'Patrullero' || Auth::user()->rol == 'Cortador' || Auth::user()->rol == 'Chofer' || Auth::user()->rol == 'Escolta')
-        {
-            $supervisor = User::where('rol', 'Supervisor')
-                ->where('empresa', Auth::user()->empresa)
-                ->where('punto', Auth::user()->punto)
-                ->first();
-        }elseif(Auth::user()->rol == 'Supervisor' || Auth::user()->rol == 'admin' || Auth::user()->rol == 'SUPERVISOR'){
-            $supervisor = Auth::user();
+        if(Auth::user()->rol == 'Supervisor' || Auth::user()->rol == 'SUPERVISOR'){
+            $supervisor = User::where('rol', 'admin')->get();
         }
+        $supervisores = User::where('rol', 'admin')->pluck('id')->toArray();
         $solicitud = new SolicitudVacaciones();
         $solicitud->user_id = $user->id;
         $solicitud->tipo = $request->tipo;
         $solicitud->fecha_inicio = $request->fecha_inicio;
-        $solicitud->supervisor_id = $supervisor->id;
+            //$solicitud->supervisor_id = $supervisor->id;
+        $solicitud->supervisores_ids = json_encode($supervisores);
         $solicitud->fecha_fin = $request->fecha_fin;
         $solicitud->dias_solicitados = $request->dias_solicitados;
         $solicitud->dias_ya_utlizados = $request->dias_utilizados;
@@ -177,7 +175,7 @@ class UserController extends Controller
         $solicitud->estatus = 'En Proceso';
 
         $solicitud->save();
-        return redirect()->route('dashboard')->with('success', 'Solicitud de vacaciones enviada correctamente');
+        return redirect()->route('sup.solicitudesVacaciones')->with('success', 'Solicitud de vacaciones enviada correctamente');
     }
 
     public function historialVacaciones(){

@@ -85,7 +85,7 @@
     <p><strong>FECHA DE INGRESO:</strong> {{ \Carbon\Carbon::parse($user->fecha_ingreso)->translatedFormat('d \\d\\e F \\d\\e\\l Y') }}</p>
 
     <div class="seccion">
-        <p><strong>SOLICITADAS PARA EL PERIODO Nº1 COMPRENDIDO DEL</strong> {{ \Carbon\Carbon::parse($inicioPeriodo)->translatedFormat('d \\d\\e F \\d\\e\\l Y') }} <strong>AL</strong> {{ \Carbon\Carbon::parse($finPeriodo)->translatedFormat('d \\d\\e F \\d\\e\\l Y') }}</p>
+        <p><strong>SOLICITADAS PARA EL PERIODO Nº{{$periodo}} COMPRENDIDO DEL</strong> {{ \Carbon\Carbon::parse($inicioPeriodo)->translatedFormat('d \\d\\e F \\d\\e\\l Y') }} <strong>AL</strong> {{ \Carbon\Carbon::parse($finPeriodo)->translatedFormat('d \\d\\e F \\d\\e\\l Y') }}</p>
     </div>
 
     <div class="seccion">
@@ -134,7 +134,11 @@
                 @if($user->empresa === 'Montana')
                     <p style="border-top: 1px solid black;">JEFE INMEDIATO</p>
                 @else
-                    <p style="border-top: 1px solid black;">SUPERVISOR EN TURNO</p>
+                    @if(Auth::user()->rol == 'admin' || Auth::user()->empresa == 'Montana')
+                        <p style="border-top: 1px solid black;">JEFE INMEDIATO</p>
+                    @else
+                        <p style="border-top: 1px solid black;">SUPERVISOR EN TURNO</p>
+                    @endif
                 @endif
             </td>
         </tr>

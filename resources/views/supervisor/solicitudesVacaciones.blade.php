@@ -11,7 +11,6 @@
                             </div>
                         </div>
                     </div>
-                    @else
                 @endif
                 <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Solicitudes de vacaciones</h1>
                 @if($solicitudes->isEmpty())

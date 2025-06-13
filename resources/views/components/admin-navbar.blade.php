@@ -7,6 +7,13 @@ use App\Models\SolicitudVacaciones;
 use App\Models\Asistencia;
 use Carbon\Carbon;
 
+$vacacionesAdmin = SolicitudVacaciones::where('estatus', 'En Proceso')
+    ->where('observaciones', '!=', 'Solicitud aceptada, falta subir archivo de solicitud.')
+    ->whereHas('user', function ($query) {
+        $query->where('empresa', 'Montana');
+    })
+    ->count();
+
 $activos = User::where('estatus', 'Activo')->count();
 $activosMesActual = User::where('estatus', 'Activo')
     ->whereDate('created_at', '>=', Carbon::now()->startOfMonth())
@@ -137,6 +144,13 @@ $cards = array_filter([
         'icono' => '👨‍💻',
         'color' => 'bg-gray-300 dark:bg-gray-700',
         'notificaciones' => $supNotificaciones
+    ],
+    [
+        'titulo' => 'Vacaciones',
+        'ruta' => route('admin.solicitudesVacaciones'),
+        'icono' => '🏕️',
+        'color' => 'bg-gray-300 dark:bg-gray-700',
+        'notificaciones' => $vacacionesAdmin,
     ],
     [
         'titulo' => 'Gestión de Usuarios',

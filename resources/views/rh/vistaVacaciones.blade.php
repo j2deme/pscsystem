@@ -44,6 +44,9 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-500">
                                     <a href="#" onclick="abrirModalArchivo({{ $solicitud->id }})" class="ml-2 text-green-700 hover:text-green-800">Subir Archivo</a>
+                                    @if($solicitud->user->empresa == 'Montana')
+                                        <a href="{{ route('sup.descargarSolicitudVacaciones', $solicitud->id) }}" class="text-blue-500 hover:text-blue-700 ml-4">Descargar Formato</a>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
