@@ -13,6 +13,10 @@ $vacacionesAdmin = SolicitudVacaciones::where('estatus', 'En Proceso')
         $query->where('empresa', 'Montana');
     })
     ->count();
+$conteoBajasJuridico = SolicitudBajas::where('estatus', 'En Proceso')
+        ->where('por', '!=', 'Renuncia')
+        ->where('fecha_baja', '>=', Carbon::now()->subDays(7))
+        ->count();
 
 $activos = User::where('estatus', 'Activo')->count();
 $activosMesActual = User::where('estatus', 'Activo')
@@ -116,6 +120,13 @@ $cards = array_filter([
         'icono' => '💊',
         'color' => 'bg-gray-300 dark:bg-gray-700',
         'notificaciones' => $conteoAltasAux,
+    ],
+    [
+        'titulo' => 'Jurídico',
+        'ruta' => route('admin.juridicoDashboard'),
+        'icono' => '⚖️',
+        'color' => 'bg-gray-300 dark:bg-gray-700',
+        'notificacions' => $conteoBajasJuridico,
     ],
     [
         'titulo' => 'Custodios',

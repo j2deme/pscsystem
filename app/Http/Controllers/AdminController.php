@@ -107,6 +107,9 @@ class AdminController extends Controller
     public function tableroRh(){
         return view('admi.tableroRh');
     }
+    public function tableroJuridico(){
+        return view ('admi.tableroJuridico');
+    }
 
     public function solicitudesVacaciones(){
         $vacaciones = SolicitudVacaciones::where('estatus', 'En Proceso')

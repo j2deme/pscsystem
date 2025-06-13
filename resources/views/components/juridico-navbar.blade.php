@@ -1,30 +1,21 @@
 @php
     use App\Models\User;
-    use App\Models\SolicitudAlta;
+    use App\Models\SolicitudBajas;
     use Carbon\Carbon;
 
-    $conteoAltas = SolicitudAlta::where('status', 'Aceptada')
-        ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(7))
-        ->whereNull('sd')
-        ->whereNull('sdi')
-        ->whereHas('documentacion', function ($q) {
-            $q->whereNull('arch_acuse_imss');
-        })
+    $conteoBajas = SolicitudBajas::where('estatus', 'En Proceso')
+        ->where('por', '!=', 'Renuncia')
+        ->where('fecha_baja', '>=', Carbon::now()->subDays(7))
         ->count();
 
     $cards = [
         [
-            'titulo' => 'Nuevas Altas',
-            'ruta' => route('aux.nuevasAltas'),
-            'icono' => '🆕',
+            'titulo' => 'Nuevas Bajas',
+            'ruta' => '#',
+            //'ruta' => route('juridico.nuevasBajas'),
+            'icono' => '🚨',
             'color' => 'bg-green-100 dark:bg-green-700',
-            'notificaciones' => $conteoAltas,
-        ],
-        [
-            'titulo' => 'Actualización de Información',
-            'ruta' => route('aux.usuariosList'),
-            'icono' => '📁',
-            'color' => 'bg-yellow-100 dark:bg-yellow-700',
+            'notificaciones' => $conteoBajas,
         ],
         [
             'titulo' => 'Solicitar Vacaciones',
