@@ -41,6 +41,13 @@
             'color' => 'bg-blue-100 dark:bg-blue-700',
         ],
         [
+            'titulo' => 'Destajos',
+            'ruta' => '#',
+            'icono' => '💵',
+            'color' => 'bg-green-100 dark:bg-green-700',
+            'disabled' => true,
+        ],
+        [
             'titulo' => 'Deducciones',
             'ruta' => route('nominas.deducciones'),
             'icono' => '🧾',
@@ -74,28 +81,28 @@
             'titulo' => 'Solicitar Vacaciones',
             'ruta' => route('user.solicitarVacacionesForm'),
             'icono' => '🎉',
-            'color' => 'bg-blue-100 dark:bg-blue-700',
+            'color' => 'bg-green-100 dark:bg-green-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Mi Historial de Vacaciones',
             'ruta' => route('user.historialVacaciones'),
             'icono' => '📅',
-            'color' => 'bg-green-100 dark:bg-green-700',
+            'color' => 'bg-yellow-100 dark:bg-yellow-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Ficha Técnica',
             'ruta' => route('user.verFicha', auth()->user()->id),
             'icono' => '📝',
-            'color' => 'bg-yellow-100 dark:bg-yellow-700',
+            'color' => 'bg-blue-100 dark:bg-blue-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Gestión de Usuarios',
             'ruta' => route('admin.verUsuarios'),
             'icono' => '👨‍💻',
-            'color' => 'bg-yellow-100 dark:bg-yellow-700',
+            'color' => 'bg-green-100 dark:bg-green-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
