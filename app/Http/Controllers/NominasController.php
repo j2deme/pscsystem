@@ -30,10 +30,10 @@ class NominasController extends Controller
 
     public function nuevasAltas(){
         $solicitudes = SolicitudAlta::where('status', 'Aceptada')
-            ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))//si se requiere respetar a toda la quincena
+            ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(15))//si se requiere respetar a toda la quincena
             ->get();
         $users = User::where('estatus', 'Activo')
-            ->where('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))
+            ->where('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(15))
             ->get();
         return view('nominas.nuevasAltas', compact('solicitudes', 'users'));
     }
@@ -231,6 +231,22 @@ class NominasController extends Controller
                 ->with('error', 'Error al guardar la deducción: '. $e->getMessage())
                 ->withInput();
         }
+    }
+
+    public function asignarNumEmpleado(Request $request){
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'num_empleado' => 'required|integer|min:1',
+        ]);
+
+        $user = User::find($request->user_id);
+        $user->num_empleado = $request->num_empleado;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Número de empleado asignado correctamente.'
+        ]);
     }
 
 }

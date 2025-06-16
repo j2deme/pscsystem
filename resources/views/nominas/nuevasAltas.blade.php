@@ -57,6 +57,10 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <a href="{{route('user.verFicha', $solicitud->usuario->id)}}" class="text-blue-600 hover:text-blue-900">Ver Más</a>
+                                            <br><a href="#" class="text-indigo-600 hover:text-indigo-900"
+                                                onclick="asignarNumeroEmpleado({{ $solicitud->usuario->id }}, '{{ $solicitud->nombre }} {{ $solicitud->apellido_paterno }}')">
+                                                Asignar Núm. Empleado
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -69,4 +73,57 @@
             </a></center>
         </div>
     </div>
+    @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function asignarNumeroEmpleado(userId, nombreCompleto) {
+        Swal.fire({
+            title: 'Asignar Número de Empleado',
+            text: `Asignar número a: ${nombreCompleto}`,
+            input: 'number',
+            inputAttributes: {
+                min: 1
+            },
+            inputLabel: 'Número de empleado',
+            showCancelButton: true,
+            confirmButtonText: 'Guardar',
+            cancelButtonText: 'Cancelar',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Debe ingresar un número';
+                }
+                if (isNaN(value) || value < 1) {
+                    return 'Debe ser un número válido';
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("{{ route('nominas.asignarNumeroEmpleado') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        num_empleado: result.value
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('¡Guardado!', data.message, 'success')
+                            .then(() => window.location.reload());
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(() => {
+                    Swal.fire('Error', 'Ocurrió un error al guardar.', 'error');
+                });
+            }
+        });
+    }
+</script>
+@endpush
 </x-app-layout>

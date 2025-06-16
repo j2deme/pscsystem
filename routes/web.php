@@ -170,6 +170,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/deducciones', [NominasController::class, 'deduccionesIndex'])->name('nominas.deducciones');
     Route::get('/nueva_deduccion', [NominasController::class, 'nuevaDeduccionForm'])->name('crearDeduccion');
     Route::post('/guardar_deduccion', [NominasController::class, 'guardarDeduccion'])->name('guardarDeduccion');
+    Route::post('/asginar_num_empleado', [NominasController::class, 'asignarNumEmpleado'])->name('nominas.asignarNumeroEmpleado');
 });
 
 require __DIR__.'/auth.php';
