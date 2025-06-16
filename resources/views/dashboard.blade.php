@@ -16,7 +16,6 @@
         <div class="mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
                 <div x-data="{ menu: 'admin' }" x-on:cambiar-menu.window="menu = $event.detail.menu" class="space-y-4">
-
                     @if(session('success'))
                         <div class="bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-4 py-3 shadow-md" role="alert">
                             <div class="flex">

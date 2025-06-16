@@ -20,15 +20,15 @@ class Filtrousuarios extends Component
 
     public function render()
     {
-        $usuarios = User::when($this->search, function ($query) {
-                return $query->where('name', 'like', '%'.$this->search.'%');
-            })
-            ->where('estatus', 'Activo')
-            ->orderBy('name')
-            ->paginate(10);
+        if (strlen($this->search) > 2) {
+            $this->usuarios = User::where('estatus', 'Activo')
+                ->where('name', 'like', '%' . $this->search . '%')
+                ->limit(5)
+                ->get();
+        } else {
+            $this->usuarios = [];
+        }
 
-        return view('livewire.filtrousuarios', [
-            'usuarios' => $usuarios
-        ]);
+        return view('livewire.nuevadeduccion');
     }
 }

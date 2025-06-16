@@ -167,7 +167,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/nominas', [NominasController::class, 'vistaNominas'])->name('vistaNominas');
     Route::get('/calculos_nominas', [NominasController::class, 'calculosNominas'])->name('nominas.calculos');
     Route::get('/graficas_estadisticas', [NominasController::class, 'graficas'])->name('nominas.graficas');
-
+    Route::get('/deducciones', [NominasController::class, 'deduccionesIndex'])->name('nominas.deducciones');
+    Route::get('/nueva_deduccion', [NominasController::class, 'nuevaDeduccionForm'])->name('crearDeduccion');
+    Route::post('/guardar_deduccion', [NominasController::class, 'guardarDeduccion'])->name('guardarDeduccion');
 });
 
 require __DIR__.'/auth.php';

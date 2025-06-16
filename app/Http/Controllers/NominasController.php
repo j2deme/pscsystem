@@ -8,6 +8,7 @@ use App\Models\SolicitudAlta;
 use App\Models\SolicitudBajas;
 use App\Models\Punto;
 use App\Models\Subpunto;
+use App\Models\Deducciones;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -189,6 +190,47 @@ class NominasController extends Controller
 
     public function graficas(){
         return view('nominas.graficas');
+    }
+
+    public function deduccionesIndex(){
+        $deducciones = Deducciones::where('status', 'Pendiente')
+            ->paginate(10);
+        return view('nominas.deducciones', compact('deducciones'));
+    }
+
+    public function nuevaDeduccionForm(){
+        return view('nominas.deduccionForm');
+    }
+
+    public function guardarDeduccion(Request $request){
+        try{
+            $request->validate([
+                'user_id' => 'required|integer|exists:users,id',
+                'concepto' => 'required|string',
+                'fecha_inicio' => 'required|date',
+                'monto' => 'required|numeric',
+                'num_quincenas' => 'required|integer',
+            ]);
+
+
+            $deduccion = new Deducciones();
+            $deduccion->user_id = $request->user_id;
+            $deduccion->concepto = $request->concepto;
+            $deduccion->fecha_inicio = $request->fecha_inicio;
+            $deduccion->monto = $request->monto;
+            $deduccion->num_quincenas = $request->num_quincenas;
+            $deduccion->monto_pendiente = $request->monto;
+            $deduccion->status = 'Pendiente';
+            $deduccion->save();
+
+            return redirect()->route('nominas.deducciones')
+                ->with('success', 'Deducción guardada correctamente');
+        }catch(\Exception $e){
+            Log::error('Error al guardar deduccion: '. $e->getMessage());
+            return redirect()->route('nominas.deducciones')
+                ->with('error', 'Error al guardar la deducción: '. $e->getMessage())
+                ->withInput();
+        }
     }
 
 }

@@ -41,6 +41,12 @@
             'color' => 'bg-blue-100 dark:bg-blue-700',
         ],
         [
+            'titulo' => 'Deducciones',
+            'ruta' => route('nominas.deducciones'),
+            'icono' => '🧾',
+            'color' => 'bg-red-100 dark:bg-red-700',
+        ],
+        [
             'titulo' => 'Vacaciones',
             'ruta' => route('nominas.vacaciones'),
             'icono' => '🎉',
