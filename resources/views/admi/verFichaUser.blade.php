@@ -164,7 +164,7 @@
                         </a>
                     @elseif(Auth::user()->rol == 'AUXILIAR NOMINAS' || Auth::user()->rol == 'Auxiliar Nominas' || Auth::user()->solicitudAlta->rol == 'AUXILIAR NOMINAS' || Auth::user()->solicitudAlta->rol == 'Auxiliar Nominas' || Auth::user()->solicitudAlta->rol == 'Auxiliar nominas' )
                         @if($documentacion->arch_rfc == null)
-                            <a href="#" class="inline-block bg-red-300 text-gray-800 py-2 px-4 rounded-md hover:bg-red-400 transition">
+                            <a href="#" onclick="enviarNotificacion({{ $user->id }})" class="inline-block bg-red-300 text-gray-800 py-2 px-4 rounded-md hover:bg-red-400 transition">
                                 Solicitar Const. de Situación Fiscal
                             </a>
                             <a href="{{ route('admin.verUsuarios') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 transition">
@@ -241,6 +241,34 @@
                 const fecha = result.value;
                 window.location.href = `/reingreso/${userId}?fecha=${fecha}`;
             }
+        });
+    }
+
+    function enviarNotificacion(userId) {
+        fetch("{{ route('solicitar.constancia') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({ user_id: userId })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Solicitud enviada',
+                    text: 'Tu solicitud fue enviada a Recursos Humanos.'
+                });
+            }
+        })
+        .catch(() => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un problema al enviar tu solicitud.'
+            });
         });
     }
 

@@ -171,6 +171,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/nueva_deduccion', [NominasController::class, 'nuevaDeduccionForm'])->name('crearDeduccion');
     Route::post('/guardar_deduccion', [NominasController::class, 'guardarDeduccion'])->name('guardarDeduccion');
     Route::post('/asginar_num_empleado', [NominasController::class, 'asignarNumEmpleado'])->name('nominas.asignarNumeroEmpleado');
+    Route::post('/solicitar-constancia', [NominasController::class, 'solicitarConstancia'])->name('solicitar.constancia');
+    Route::post('/notificaciones/leidas', function () {
+        \App\Models\Alerta::where('user_id', Auth::id())
+            ->where('leida', false)
+            ->update(['leida' => true]);
+
+        return response()->json(['ok' => true]);
+    })->name('notificaciones.leer');
+
 });
 
 require __DIR__.'/auth.php';

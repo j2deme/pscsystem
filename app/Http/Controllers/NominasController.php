@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Alerta;
 use App\Models\Asistencia;
 use App\Models\SolicitudVacaciones;
 use App\Models\SolicitudAlta;
@@ -248,5 +250,43 @@ class NominasController extends Controller
             'message' => 'Número de empleado asignado correctamente.'
         ]);
     }
+
+public function solicitarConstancia(Request $request)
+{
+    $user = User::findOrFail($request->user_id);
+    Log::info('Solicitud de constancia iniciada por el usuario: ' . Auth::id());
+
+    try {
+        $usuariosRH = User::where('estatus', 'Activo')->where(function ($query) {
+            $query->where('rol', 'admin')
+                ->orWhereIn('rol', [
+                    'AUXILIAR RECURSOS HUMANOS', 'Auxiliar recursos humanos'
+                ])
+                ->orWhereHas('solicitudAlta', function ($q) {
+                    $q->where('departamento', 'Recursos Humanos')
+                        ->orWhereIn('rol', [
+                        'AUXILIAR RECURSOS HUMANOS', 'AUXILIAR RH', 'AUX RH',
+                        'Auxiliar RH', 'Auxiliar Recursos Humanos', 'Aux RH'
+                    ]);
+                });
+        })->get();
+
+        Log::info('Usuarios RH encontrados: ' . $usuariosRH->count());
+
+            Alerta::create([
+                'user_id' => $user->id,
+                'titulo' => 'Solicitud de Constancia',
+                'mensaje' =>'Depto. Nóminas solicitó una Constancia de Situación Fiscal del usuario: '. $user->name,
+            ]);
+
+
+        return response()->json(['ok' => true]);
+
+    } catch (\Exception $e) {
+        Log::error('Error al enviar solicitud de constancia: ' . $e->getMessage());
+        return response()->json(['ok' => false], 500);
+    }
+}
+
 
 }
