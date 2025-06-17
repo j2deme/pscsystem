@@ -19,6 +19,12 @@ export default {
 
     plugins: [forms],
 
+    safelist: [
+        'w-6', 'h-6', 'text-green-500', 'dark:text-green-400',
+        'bg-red-600', 'text-white', 'rounded-full',
+        'max-h-80', 'overflow-y-auto', 'text-sm', 'w-80',
+    ],
+
 };
 module.exports = {
     important: true,
