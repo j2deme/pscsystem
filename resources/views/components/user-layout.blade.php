@@ -19,7 +19,7 @@
                     @if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'Auxiliar recursos humanos')
                         <div class="relative">
                             <button onclick="toggleNotificaciones()" class="flex items-center gap-2 px-4 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-all duration-200 relative">
-                                <svg class="w-6 h-6 text-green-500 dark:text-green-400" fill="currentColor" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <svg class="w-6 h-6 text-green-500 dark:text-green-400" fill="currentColor" stroke="currentColor" stroke-width="2" viewBox="0 0 20 20">
                                     <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C8.67 6.165 8 7.388 8 9v5.159c0 .538-.214 1.055-.595 1.436L6 17h5m4 0v1a3 3 0 01-6 0v-1m6 0H9" />
                                 </svg>
                                 Notificaciones
@@ -88,7 +88,7 @@ function toggleNotificaciones() {
         .then(data => {
             if (data.ok) {
                 const contador = document.querySelector('[id^="notificacionesDropdown"]')
-                                  .previousElementSibling.querySelector('span');
+                                .previousElementSibling.querySelector('span');
                 if (contador) contador.remove();
             }
         });

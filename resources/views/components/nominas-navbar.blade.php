@@ -72,7 +72,7 @@
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
         ],
         [
-            'titulo' => 'Antigüedad',
+            'titulo' => 'Primas Vacacionales',
             'ruta' => route('nominas.usersAntiguedades'),
             'icono' => '📆',
             'color' => 'bg-blue-100 dark:bg-blue-700',

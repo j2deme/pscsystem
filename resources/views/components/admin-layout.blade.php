@@ -7,7 +7,7 @@ $usuarios = User::with('documentacionAltas')
     ->where('estatus', 'Activo')
     ->whereDate('fecha_ingreso', '<', Carbon::now()->subMonth())
     ->where('empresa', '!=', 'Montana')
-    ->orWhere('rol', 'admin')
+    ->where('rol','!=' ,'admin')
     ->get();
 
 $notificacionesDocumentacion = collect();
