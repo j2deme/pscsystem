@@ -44,11 +44,17 @@ class AdminController extends Controller
             ? Carbon::parse($request->query('fecha'))->format('Y-m-d')
             : Carbon::today()->format('Y-m-d');
 
+        $motivo = $request->query('motivo');
+
+        if (!$fechaBaja || !$motivo) {
+            return redirect()->back()->with('error', 'Faltan datos para dar de baja.');
+        }
+
         $solicitud = new SolicitudBajas();
         $solicitud->user_id = $id;
         $solicitud->fecha_solicitud = Carbon::today();
         $solicitud->motivo = 'Desconocido';
-        $solicitud->por = 'Desconocido';
+        $solicitud->por = $motivo;
         $solicitud->incapacidad = '';
         $solicitud->fecha_baja = $fechaBaja;
         $solicitud->observaciones = 'Baja realizada por Administrador.';

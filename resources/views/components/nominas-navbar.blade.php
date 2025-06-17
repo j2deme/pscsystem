@@ -42,10 +42,9 @@
         ],
         [
             'titulo' => 'Destajos',
-            'ruta' => '#',
+            'ruta' => route('nominas.destajos'),
             'icono' => '💵',
             'color' => 'bg-green-100 dark:bg-green-700',
-            'disabled' => true,
         ],
         [
             'titulo' => 'Deducciones',

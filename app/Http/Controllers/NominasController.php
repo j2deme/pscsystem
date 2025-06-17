@@ -288,5 +288,25 @@ public function solicitarConstancia(Request $request)
     }
 }
 
+    public function destajos(){
+        return view('nominas.destajos');
+    }
 
+    public function calculoDestajos( Request $request ){
+        $query = User::query()->where('estatus', 'Activo');
+
+        if ($request->filled('punto')) {
+            $punto = Punto::where('nombre', $request->punto)->first();
+
+            if ($punto) {
+                $subpuntos = Subpunto::where('punto_id', $punto->id)->pluck('nombre');
+                $query->whereIn('punto', $subpuntos);
+            } else {
+                $query->where('punto', $request->punto);
+            }
+        }
+
+        $usuarios = $query->get();
+        return view('nominas.destajos', compact('usuarios'));
+    }
 }

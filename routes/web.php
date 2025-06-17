@@ -172,6 +172,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/guardar_deduccion', [NominasController::class, 'guardarDeduccion'])->name('guardarDeduccion');
     Route::post('/asginar_num_empleado', [NominasController::class, 'asignarNumEmpleado'])->name('nominas.asignarNumeroEmpleado');
     Route::post('/solicitar-constancia', [NominasController::class, 'solicitarConstancia'])->name('solicitar.constancia');
+    Route::get('/destajos', [NominasController::class, 'destajos'])->name('nominas.destajos');
+    Route::get('/calculo_destajos', [NominasController::class, 'calculoDestajos'])->name('nominas.calculoDestajos');
     Route::post('/notificaciones/leidas', function () {
         \App\Models\Alerta::where('user_id', Auth::id())
             ->where('leida', false)

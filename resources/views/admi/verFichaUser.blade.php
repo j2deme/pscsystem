@@ -143,7 +143,7 @@
                                 Descargar Ficha
                             </a>
 
-                            @if (Auth::user()->rol == 'admin' && $user->estatus == 'Activo')
+                            @if ((Auth::user()->rol == 'admin' || Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'Auxiliar recursos humanos') && $user->estatus == 'Activo')
                                 <a href="#" class="inline-block bg-red-300 text-gray-800 py-2 px-4 rounded-md hover:bg-red-400 transition"
                                 onclick="confirmarBaja({{ $user->id }})">
                                     Dar de Baja
@@ -187,33 +187,50 @@
 
 <script>
     function confirmarBaja(userId) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            html: `
-                <p class="mb-2">Esto cambiará el estatus del usuario a 'Inactivo'.</p>
-                <label for="fechaBaja" class="block mb-1 text-sm text-left">Fecha de baja:</label>
-                <input type="date" id="fechaBaja" class="swal2-input" style="width: auto;">
-            `,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Sí, dar de baja',
-            cancelButtonText: 'Cancelar',
-            preConfirm: () => {
-                const fecha = document.getElementById('fechaBaja').value;
-                if (!fecha) {
-                    Swal.showValidationMessage('Debes ingresar una fecha de baja');
-                }
-                return fecha;
+    Swal.fire({
+        title: '¿Estás seguro?',
+        html: `
+            <p class="mb-2">Esto cambiará el estatus del usuario a 'Inactivo'.</p>
+            <label for="fechaBaja" class="block mb-1 text-sm text-left">Fecha de baja:</label>
+            <input type="date" id="fechaBaja" class="swal2-input" style="width: auto;">
+
+            <label for="motivoBaja" class="block mt-3 mb-1 text-sm text-left">Motivo:</label>
+            <select id="motivoBaja" class="swal2-input" style="width: auto;">
+                <option value="">Seleccione un motivo</option>
+                <option value="Renuncia">Renuncia</option>
+                <option value="Ausentismo">Ausentismo</option>
+                <option value="Separación voluntaria">Separación voluntaria</option>
+            </select>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, dar de baja',
+        cancelButtonText: 'Cancelar',
+        preConfirm: () => {
+            const fecha = document.getElementById('fechaBaja').value;
+            const motivo = document.getElementById('motivoBaja').value;
+
+            if (!fecha) {
+                Swal.showValidationMessage('Debes ingresar una fecha de baja');
+                return false;
             }
-        }).then((result) => {
-            if (result.isConfirmed && result.value) {
-                const fecha = result.value;
-                window.location.href = `/admin/baja_usuario/${userId}?fecha=${fecha}`;
+            if (!motivo) {
+                Swal.showValidationMessage('Debes seleccionar un motivo');
+                return false;
             }
-        });
-    }
+
+            return { fecha, motivo };
+        }
+    }).then((result) => {
+        if (result.isConfirmed && result.value) {
+            const { fecha, motivo } = result.value;
+            window.location.href = `/admin/baja_usuario/${userId}?fecha=${fecha}&motivo=${encodeURIComponent(motivo)}`;
+        }
+    });
+}
+
 
     function confirmarReingreso(userId) {
         Swal.fire({
