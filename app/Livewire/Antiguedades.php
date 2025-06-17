@@ -17,29 +17,31 @@ class Antiguedades extends Component
         $hoy = Carbon::now();
 
         $this->filtroMes = $this->filtroMes === 'todos' ? $hoy->month : $this->filtroMes;
-        $this->filtroAnio = $this->filtroAnio === 'todos' ? $hoy->year : $this->filtroAnio;
         $this->filtroQuincena = $this->filtroQuincena === 'todas' ? ($hoy->day <= 15 ? '1' : '2') : $this->filtroQuincena;
     }
     public function render()
-{
-    $usuarios = User::where('estatus', 'Activo')
-        ->when($this->filtroMes !== 'todos', function ($query) {
-            $query->whereMonth('fecha_ingreso', $this->filtroMes);
-        })
-        ->when($this->filtroAnio !== 'todos', function ($query) {
-            $query->whereYear('fecha_ingreso', $this->filtroAnio);
-        })
-        ->orderBy('empresa', 'asc')
-        ->get()
-        ->filter(function ($usuario) {
-            $dia = Carbon::parse($usuario->fecha_ingreso)->day;
-            if ($this->filtroQuincena === '1') return $dia <= 15;
-            if ($this->filtroQuincena === '2') return $dia >= 16;
-            return true;
-        });
+    {
+        $usuarios = User::where('estatus', 'Activo')
+            ->whereMonth('fecha_ingreso', $this->filtroMes)
+            ->get()
+            ->filter(function ($usuario) {
+                $fechaIngreso = Carbon::parse($usuario->fecha_ingreso);
+                $dia = $fechaIngreso->day;
+                $antiguedad = $fechaIngreso->diffInYears(Carbon::now());
 
-    return view('livewire.antiguedades', [
-        'usuarios' => $usuarios,
-    ]);
-}
+                if ($antiguedad < 1) {
+                    return false;
+                }
+
+                return match ($this->filtroQuincena) {
+                    '1' => $dia >= 1 && $dia <= 15,
+                    '2' => $dia >= 16,
+                    default => true,
+                };
+            });
+
+        return view('livewire.antiguedades', [
+            'usuarios' => $usuarios,
+        ]);
+    }
 }

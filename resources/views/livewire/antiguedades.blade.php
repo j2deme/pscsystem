@@ -22,15 +22,12 @@
         </select>
     </div>
 
-    <div>
+    <!--<div>
         <label class="block text-sm font-medium text-gray-700">Año</label>
         <select wire:model.live="filtroAnio" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-            <option value="todos">Todos</option>
-            @foreach (range(now()->year, now()->year - 10) as $anio)
-                <option value="{{ $anio }}">{{ $anio }}</option>
-            @endforeach
+
         </select>
-    </div>
+    </div>-->
 </div>
 
         <table class="min-w-full divide-y divide-gray-300 mt-6">
