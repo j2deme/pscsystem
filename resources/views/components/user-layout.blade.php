@@ -1,48 +1,7 @@
 @php
-
-use App\Models\Alerta;
-use App\Models\Asistencia;
-use App\Models\User;
-use Carbon\Carbon;
-
-if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'Auxiliar recursos humanos'){
-    $notificaciones = Alerta::where('user_id', Auth::id())->where('leida', false)->latest()->get();
-}
-elseif(Auth::user()->rol=='AUXILIAR NOMINAS' || Auth::user()->rol=='Auxiliar Nominas' || Auth::user()->rol=='Auxiliar Nóminas'){
-    $notificaciones = Alerta::where('user_id', Auth::id())
-        ->where('leida', false)
-        ->latest()
-        ->get();
-
-    $usuariosConFaltas = [];
-    $hoy = Carbon::today();
-    $ayer = Carbon::yesterday();
-    $anteayer = Carbon::today()->subDays(2);
-
-    $asistencias = Asistencia::whereIn('fecha', [$hoy, $ayer, $anteayer])->get();
-
-    $usuariosActivos = User::where('estatus', 'Activo')->get();
-
-    foreach ($usuariosActivos as $user) {
-        $id = $user->id;
-
-        $tresFaltas = collect([$anteayer, $ayer, $hoy])->every(function ($fecha) use ($asistencias, $id) {
-            $asistenciaDelDia = $asistencias->firstWhere('fecha', $fecha->toDateString());
-
-            if (!$asistenciaDelDia) return false;
-
-            $faltas = json_decode($asistenciaDelDia->faltas, true) ?? [];
-
-            return in_array($id, $faltas);
-        });
-
-        if ($tresFaltas) {
-            $usuariosConFaltas[] = $user;
-        }
-    }
-}
+    use App\Models\Alerta;
+    $notificaciones = Alerta::where('leida', false)->latest()->get();
 @endphp
-
 <div class="rounded-lg bg-gray-100 dark:bg-gray-900">
     <nav class="bg-white dark:bg-gray-800 shadow-md rounded-t-lg">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
@@ -57,7 +16,7 @@ elseif(Auth::user()->rol=='AUXILIAR NOMINAS' || Auth::user()->rol=='Auxiliar Nom
                             Inicio
                         </button>
                     </a>
-                    @if(Auth::user()->rol=='AUXILIAR NOMINAS' || Auth::user()->rol=='Auxiliar Nominas' || Auth::user()->rol=='Auxiliar Nóminas' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'Auxiliar recursos humanos')
+                    @if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'Auxiliar recursos humanos')
                         <div class="relative">
                             <button onclick="toggleNotificaciones()" class="flex items-center gap-2 px-4 py-2 text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-all duration-200 relative">
                                 <svg class="w-6 h-6 text-green-500 dark:text-green-400" fill="currentColor" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -72,23 +31,14 @@ elseif(Auth::user()->rol=='AUXILIAR NOMINAS' || Auth::user()->rol=='Auxiliar Nom
                             </button>
 
                             <div id="notificacionesDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-gray-700 border rounded shadow-lg z-50">
-                                @if(isset($usuariosConFaltas) && count($usuariosConFaltas))
-                                    @foreach($usuariosConFaltas as $usuario)
-                                        <div class="px-4 py-2 text-sm text-red-700 dark:text-red-400 border-b dark:border-gray-600 bg-red-100 dark:bg-red-900">
-                                            <strong>{{ $usuario->name }}</strong><br>
-                                            tiene 3 faltas seguidas ({{ $anteayer->format('d/m') }}, {{ $ayer->format('d/m') }}, {{ $hoy->format('d/m') }})
-                                        </div>
-                                    @endforeach
-                                @endif
                                 @forelse($notificaciones as $alerta)
                                     <div class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100 border-b dark:border-gray-600">
                                         <strong>{{ $alerta->titulo }}</strong><br>
                                         <span>{{ $alerta->mensaje }}</span>
                                     </div>
                                 @empty
-                                    <div class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">No hay más notificaciones.</div>
+                                    <div class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">No hay notificaciones nuevas.</div>
                                 @endforelse
-
                             </div>
                         </div>
                     @endif
@@ -138,7 +88,7 @@ function toggleNotificaciones() {
         .then(data => {
             if (data.ok) {
                 const contador = document.querySelector('[id^="notificacionesDropdown"]')
-                                .previousElementSibling.querySelector('span');
+                                  .previousElementSibling.querySelector('span');
                 if (contador) contador.remove();
             }
         });

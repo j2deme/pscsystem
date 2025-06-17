@@ -8,7 +8,7 @@
         $documentosBase = [
             'arch_ine', 'arch_solicitud_empleo', 'arch_curp', 'arch_rfc', 'arch_nss',
             'arch_acta_nacimiento', 'arch_comprobante_estudios', 'arch_comprobante_domicilio',
-            'arch_carta_rec_laboral', 'arch_carta_rec_personal',
+            'arch_carta_rec_laboral', 'arch_carta_rec_personal','arch_contrato', 'arch_foto'
         ];
 
         $documentosExtraArmado = [
