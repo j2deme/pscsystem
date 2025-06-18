@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tablero_rh', [AdminController::class, 'tableroRh'])->name('admin.rhDashboard');
     Route::get('tablero_juridico', [AdminController::class, 'tableroJuridico'])->name('admin.juridicoDashboard');
     Route::get('/admin_vacaciones', [AdminController::class, 'solicitudesVacaciones'])->name('admin.solicitudesVacaciones');
+    Route::get('/registrar_nominas', [AdminController::class, 'registrarNominas'])->name('registrarNominas');
 
     //Usuario Supervisor
     Route::get('/nuevoUsuario', [SupervisorController::class, 'nuevoUsuarioForm'])->name('sup.nuevoUsuarioForm');

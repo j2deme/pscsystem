@@ -182,6 +182,13 @@ $cards = array_filter([
         'color' => 'bg-gray-300 dark:bg-gray-700',
         'disabled' => true,
     ],
+    [
+        'titulo' => 'Registrar Datos',
+        'ruta' => route('registrarNominas'),
+        'icono' => '📝',
+        'color' => 'bg-gray-300 dark:bg-gray-700',
+
+    ],
 ]);
 @endphp
 
