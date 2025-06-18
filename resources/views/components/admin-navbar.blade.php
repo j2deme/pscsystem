@@ -187,7 +187,7 @@ $cards = array_filter([
         'ruta' => route('registrarNominas'),
         'icono' => '📝',
         'color' => 'bg-gray-300 dark:bg-gray-700',
-
+        'disabled' => true,
     ],
 ]);
 @endphp
