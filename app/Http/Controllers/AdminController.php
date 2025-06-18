@@ -57,7 +57,7 @@ class AdminController extends Controller
         $solicitud->por = $motivo;
         $solicitud->incapacidad = '';
         $solicitud->fecha_baja = $fechaBaja;
-        $solicitud->observaciones = 'Baja realizada por Administrador.';
+        $solicitud->observaciones = 'Baja aceptada.';
         $solicitud->autoriza = Auth::user()->name;
         $solicitud->estatus = 'Aceptada';
         $solicitud->save();
