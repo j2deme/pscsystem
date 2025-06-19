@@ -116,7 +116,7 @@
 
                 <center>
                     <a href="{{ route('dashboard') }}"
-                        class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 ml-2 mr-2">
+                        class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 ml-2 mr-2 mt-4">
                         Regresar
                     </a>
                 </center>
