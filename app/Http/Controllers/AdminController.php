@@ -137,16 +137,13 @@ class AdminController extends Controller
         $anio = $hoy->year;
         $mes = $hoy->month;
 
-        // Determinar el último periodo completo
         if ($hoy->day <= 10) {
-            // Ya estamos en el siguiente mes, último periodo fue del 11 al 25 del mes anterior
             $periodoInicio = Carbon::create($anio, $mes, 1)->subMonth()->setDay(11)->startOfDay();
             $periodoFin = Carbon::create($anio, $mes, 1)->subMonth()->setDay(25)->endOfDay();
             $quincena = '2°';
             $nombreMes = ucfirst($periodoFin->locale('es')->monthName);
             $anioPeriodo = $periodoFin->year;
         } elseif ($hoy->day <= 25) {
-            // Último periodo fue del 26 del mes anterior al 10 del actual
             $mesAnterior = $mes - 1;
             $anioAnterior = $anio;
             if ($mesAnterior < 1) {
@@ -159,7 +156,6 @@ class AdminController extends Controller
             $nombreMes = ucfirst(Carbon::create($anio, $mes)->locale('es')->monthName);
             $anioPeriodo = $anio;
         } else {
-            // Último periodo fue del 11 al 25 del mes actual
             $periodoInicio = Carbon::create($anio, $mes, 11)->startOfDay();
             $periodoFin = Carbon::create($anio, $mes, 25)->endOfDay();
             $quincena = '2°';
@@ -170,6 +166,11 @@ class AdminController extends Controller
         $usuarios = User::where('estatus', 'Activo')->get();
 
         foreach ($usuarios as $user) {
+            $sueldoMensualTexto = $user->solicitudAlta->sueldo_mensual ?? '';
+
+            preg_match('/\((.*?)\)/', $sueldoMensualTexto, $matches);
+            $sueldoMensual = isset($matches[1]) ? floatval(str_replace(['$', ','], '', $matches[1])) : 0;
+
             $asistencias = Asistencia::whereBetween('fecha', [$periodoInicio, $periodoFin])
                 ->where('punto', $user->punto)
                 ->get();
@@ -187,6 +188,9 @@ class AdminController extends Controller
                 if (in_array($user->id, $descansos)) $descansos_count++;
                 if (in_array($user->id, $faltas)) $faltas_count++;
             }
+            $asistencias_count = 7;
+            $descansos_count = 8;
+            $faltas_count = 0;
 
             $sd = $user->solicitudAlta->sd ?? 0;
             $sdi = $user->solicitudAlta->sdi ?? 0;
@@ -217,8 +221,11 @@ class AdminController extends Controller
                     break;
                 }
             }
+            if(($sueldoMensual / 2) < 5018.59)
+                $neto = $percepciones - $isr + 234.2;
+            else
+                $neto = $percepciones - ($imss + $isr);
 
-            $neto = $percepciones - ($imss + $isr);
             $periodoStr = "{$quincena} {$nombreMes} {$anioPeriodo}";
 
             Nomina::updateOrCreate(

@@ -163,7 +163,7 @@
                             Regresar
                         </a>
                     @elseif(Auth::user()->rol == 'AUXILIAR NOMINAS' || Auth::user()->rol == 'Auxiliar Nominas' || Auth::user()->solicitudAlta->rol == 'AUXILIAR NOMINAS' || Auth::user()->solicitudAlta->rol == 'Auxiliar Nominas' || Auth::user()->solicitudAlta->rol == 'Auxiliar nominas' )
-                        @if($documentacion->arch_rfc == null)
+                        @if($documentacion->arch_rfc == null && $user->estatus == 'Activo')
                             <a href="#" onclick="enviarNotificacion({{ $user->id }})" class="inline-block bg-red-300 text-gray-800 py-2 px-4 rounded-md hover:bg-red-400 transition">
                                 Solicitar Const. de Situación Fiscal
                             </a>
