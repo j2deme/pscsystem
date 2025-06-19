@@ -23,6 +23,17 @@ export default {
         'w-6', 'h-6', 'text-green-500', 'dark:text-green-400',
         'bg-red-600', 'text-white', 'rounded-full',
         'max-h-80', 'overflow-y-auto', 'text-sm', 'w-80',
+        'w-10', 'h-10',
+        'bg-white', 'bg-white/80',
+        'dark:bg-gray-700',
+        'text-gray-800', 'dark:text-white',
+        'hover:bg-blue-500',
+        'hover:text-white',
+        'rounded-full',
+        'absolute', 'left-2', 'right-2', 'top-1/2',
+        '-translate-y-1/2',
+        'z-20', 'flex', 'items-center', 'justify-center',
+        'transition',
     ],
 
 };
