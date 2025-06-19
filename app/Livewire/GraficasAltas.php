@@ -60,7 +60,7 @@ class GraficasAltas extends Component
         logger("✅ Altas: $altas");
 
         // Bajas
-        $bajas = SolicitudBajas::where('estatus', 'aceptado')
+        $bajas = SolicitudBajas::where('estatus', 'Aceptada')
             ->whereBetween('fecha_baja', [$inicio, $fin])
             ->count();
         $this->data['Bajas'] = $bajas;
