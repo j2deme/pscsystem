@@ -5,9 +5,34 @@
 .relative.h-64 {
     min-height: 16rem;
 }
+
 canvas {
     display: block;
     width: 100% !important;
     height: 100% !important;
 }
 
+button.carousel-arrow {
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 40px !important;
+    height: 40px !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: white !important;
+    border-radius: 9999px !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+}
+
+button.carousel-arrow.left {
+    left: 1.5rem !important;
+    /* 6 */
+}
+
+button.carousel-arrow.right {
+    right: 1.5rem !important;
+}

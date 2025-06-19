@@ -329,48 +329,45 @@ $cards = array_filter([
         </div>
 
 
-<div class="relative p-6">
-    <div class="relative overflow-hidden rounded-lg border dark:border-gray-700">
-        <div id="carouselSlides" class="flex transition-transform duration-500 ease-in-out w-full">
-            <div class="w-full shrink-0 px-2">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-full min-h-[300px]">
-                    @livewire('nominastotales')
+        <div class="relative p-6">
+            <div class="relative overflow-hidden rounded-lg">
+                <div id="carouselSlides" class="flex transition-transform duration-300 ease-in-out">
+                    <div class="w-full flex-shrink-0 px-4">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-full">
+                            @livewire('nominastotales')
+                        </div>
+                    </div>
+                    <div class="w-full flex-shrink-0 px-4">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-full">
+                            @livewire('graficasfiniquitos')
+                        </div>
+                    </div>
+                    <div class="w-full flex-shrink-0">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-4">
+                            @livewire('graficas-altas')
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="w-full shrink-0 px-2">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-full min-h-[300px]">
-                    @livewire('graficasfiniquitos')
-                </div>
-            </div>
-            <div class="w-full shrink-0 px-2">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 h-full min-h-[300px]">
-                    @livewire('graficas-altas')
-                </div>
+
+            <button onclick="prevSlide()" class="carousel-arrow left">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+
+            <button onclick="nextSlide()" class="carousel-arrow right">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+
+            <div class="flex justify-center mt-4 space-x-2">
+                @for ($i = 0; $i < 3; $i++)
+                    <button onclick="goToSlide({{ $i }})" class="w-3 h-3 rounded-full bg-gray-400 hover:bg-blue-500 transition indicator-dot"></button>
+                @endfor
             </div>
         </div>
-
-        <!-- Flechas -->
-        <button onclick="prevSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-white/80 dark:bg-gray-700 text-gray-800 dark:text-white rounded-full shadow w-10 h-10 flex items-center justify-center hover:bg-blue-500 hover:text-white transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-        </button>
-
-        <button onclick="nextSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-white/80 dark:bg-gray-700 text-gray-800 dark:text-white rounded-full shadow w-10 h-10 flex items-center justify-center hover:bg-blue-500 hover:text-white transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-        </button>
-    </div>
-
-    <!-- Indicadores -->
-    <div class="flex justify-center mt-4 space-x-2">
-        @for ($i = 0; $i < 3; $i++)
-            <button onclick="goToSlide({{ $i }})" class="w-3 h-3 rounded-full bg-gray-400 hover:bg-blue-500 transition indicator-dot"></button>
-        @endfor
-    </div>
-</div>
-
     </div>
 </div>
 @push('scripts')
