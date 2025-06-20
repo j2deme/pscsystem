@@ -55,11 +55,9 @@ class Graficasfiniquitos extends Component
             $fecha = Carbon::parse($finiquito->baja->fecha_baja);
             $mesIndex = $fecha->month - 1;
 
-            // Periodo 1: del 26 del mes anterior al 10 del mes actual
             $periodo1Inicio = $fecha->copy()->subMonth()->day(26);
             $periodo1Fin = $fecha->copy()->day(10);
 
-            // Periodo 2: del 11 al 25 del mes actual
             $periodo2Inicio = $fecha->copy()->day(11);
             $periodo2Fin = $fecha->copy()->day(25);
 
@@ -109,5 +107,3 @@ class Graficasfiniquitos extends Component
         return view('livewire.graficasfiniquitos');
     }
 }
-
-//AJUSTAR PERIODOS PARA QUE LOS AGRUPE CRRECTAMENTE
