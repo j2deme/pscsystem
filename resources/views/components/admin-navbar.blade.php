@@ -53,8 +53,6 @@ $variacionActivos = calcularVariacion($activos, $activosMesPasado);
 $variacionAltas = calcularVariacion($conteoAltasAdmin, $altasMesPasado);
 $variacionBajas = calcularVariacion($conteoBajasAdmin, $bajasMesPasado);
 
-
-
 $user = Auth::user();
 $asistenciasHoy = 0;
 $solicitudesAdmin = SolicitudAlta::where('status', 'Aceptada')
@@ -144,10 +142,9 @@ $cards = array_filter([
     ],
     [
         'titulo' => 'Monitoreo',
-        'ruta' => '#',
+        'ruta' => route('admin.monitoreoDashboard'),
         'icono' => '📈',
         'color' => 'bg-gray-300 dark:bg-gray-700',
-        'disabled' => true
     ],
     [
         'titulo' => 'Supervisores',
@@ -187,6 +184,13 @@ $cards = array_filter([
         'icono' => '📝',
         'color' => 'bg-gray-300 dark:bg-gray-700',
         'disabled' => true,
+    ],
+    [
+        'titulo' => 'Registrar Finiquitos',
+        'ruta' => route('registrarFiniquitos'),
+        'icono' => '📝',
+        'color' => 'bg-gray-300 dark:bg-gray-700',
+        'disabled' => false,
     ],
 ]);
 @endphp

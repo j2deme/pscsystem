@@ -1,22 +1,52 @@
 @php
     $cards = [
         [
-            'titulo' => 'Control de Gasolinas',
-            'ruta' => "#",
-            'icono' => '🛢',
-            'color' => 'bg-green-100 dark:bg-green-700',
-        ],
-        [
             'titulo' => 'Control de Vehículos',
             'ruta' => "#",
             'icono' => '🚗',
             'color' => 'bg-blue-100 dark:bg-blue-700',
         ],
         [
+            'titulo' => 'Mapa',
+            'ruta' => "#",
+            'icono' => '🗺',
+            'color' => 'bg-yellow-100 dark:bg-yellow-700',
+        ],
+        [
+            'titulo' => 'Control de Gastos',
+            'ruta' => "#",
+            'icono' => '💸',
+            'color' => 'bg-red-100 dark:bg-red-700',
+        ],
+        [
+            'titulo' => 'Compras',
+            'ruta' => "#",
+            'icono' => '🛒',
+            'color' => 'bg-blue-100 dark:bg-blue-700',
+        ],
+        [
+            'titulo' => 'Reparaciones',
+            'ruta' => "#",
+            'icono' => '🔧',
+            'color' => 'bg-yellow-100 dark:bg-yellow-700',
+        ],
+        [
+            'titulo' => 'Siniestros',
+            'ruta' => "#",
+            'icono' => '🚓',
+            'color' => 'bg-red-100 dark:bg-red-700',
+        ],
+        [
+            'titulo' => 'Documentación de Usuarios',
+            'ruta' => "#",
+            'icono' => '📄',
+            'color' => 'bg-blue-100 dark:bg-blue-700',
+        ],
+        [
             'titulo' => 'Solicitar Vacaciones',
             'ruta' => route('user.solicitarVacacionesForm'),
             'icono' => '🎉',
-            'color' => 'bg-blue-100 dark:bg-blue-700',
+            'color' => 'bg-yellow-100 dark:bg-yellow-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
@@ -27,13 +57,6 @@
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
-            'titulo' => 'Ficha Técnica',
-            'ruta' => route('user.verFicha', auth()->user()->id),
-            'icono' => '📝',
-            'color' => 'bg-yellow-100 dark:bg-yellow-700',
-            'disabled' => Auth::user()->rol == 'admin'
-        ],
-        [
             'titulo' => 'Buzón de Quejas y Sugerencias',
             'ruta' => route('user.buzon'),
             'icono' => '💬',
@@ -41,10 +64,18 @@
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
+            'titulo' => 'Ficha Técnica',
+            'ruta' => route('user.verFicha', auth()->user()->id),
+            'icono' => '📝',
+            'color' => 'bg-yellow-100 dark:bg-yellow-700',
+            'disabled' => Auth::user()->rol == 'admin'
+        ],
+        [
             'titulo' => 'Importar Datos',
             'ruta' => route('importar.excel'),
             'icono' => '📁',
             'color' => 'bg-gray-100 dark:bg-gray-700',
+            'disabled' => true,
         ],
 
     ];

@@ -3,8 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\User;
-use App\Models\SolicitudBajas;
+use App\Models\Finiquito;
 use Carbon\Carbon;
 
 class Graficasfiniquitos extends Component
@@ -13,7 +12,6 @@ class Graficasfiniquitos extends Component
     public $labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
     public $dataPeriodo1 = [];
     public $dataPeriodo2 = [];
-    public $detallesFiniquitos = [];
     public $readyToLoad = false;
     public $isCalculating = false;
 
@@ -45,58 +43,30 @@ class Graficasfiniquitos extends Component
         $montosPeriodo1 = array_fill(0, 12, 0);
         $montosPeriodo2 = array_fill(0, 12, 0);
 
-        $solicitudes = SolicitudBajas::with(['user', 'user.solicitudAlta'])
-            ->where('estatus', 'Aceptada')
-            ->where('por', 'like', '%renuncia%')
-            ->whereBetween('fecha_baja', [$inicio, $fin])
+        $finiquitos = Finiquito::with('baja')
+            ->whereHas('baja', function ($q) use ($inicio, $fin) {
+                $q->where('estatus', 'Aceptada')
+                  ->where('por', 'like', '%renuncia%')
+                  ->whereBetween('fecha_baja', [$inicio, $fin]);
+            })
             ->get();
 
-        foreach ($solicitudes as $solicitud) {
-            $user = $solicitud->user;
-            $solicitudAlta = $user->solicitudAlta;
-            if (!$solicitudAlta) continue;
+        foreach ($finiquitos as $finiquito) {
+            $fecha = Carbon::parse($finiquito->baja->fecha_baja);
+            $mesIndex = $fecha->month - 1;
 
-            $fechaBaja = Carbon::parse($solicitud->fecha_baja);
-            $mes = $fechaBaja->month;
+            // Periodo 1: del 26 del mes anterior al 10 del mes actual
+            $periodo1Inicio = $fecha->copy()->subMonth()->day(26);
+            $periodo1Fin = $fecha->copy()->day(10);
 
-            $periodo1Inicio = $fechaBaja->copy()->subMonth()->day(26);
-            $periodo1Fin = $fechaBaja->copy()->day(10);
-            $periodo2Inicio = $fechaBaja->copy()->day(11);
-            $periodo2Fin = $fechaBaja->copy()->day(25);
+            // Periodo 2: del 11 al 25 del mes actual
+            $periodo2Inicio = $fecha->copy()->day(11);
+            $periodo2Fin = $fecha->copy()->day(25);
 
-            $fechaIngreso = Carbon::parse($user->fecha_ingreso);
-            $ultimaAsistencia = $solicitud->ultima_asistencia
-                ? Carbon::parse($solicitud->ultima_asistencia)
-                : $fechaBaja;
-
-            $diasTrabajadosAnio = $fechaIngreso->diffInDays($fechaBaja) + 1;
-            $diasNoLaborados = $ultimaAsistencia->diffInDays($fechaBaja);
-            $descuentoNoLaborados = $diasNoLaborados * $solicitudAlta->sd;
-
-            $diasDisponibles = $solicitudAlta->dias_vacaciones_disponibles ?? 6;
-            $factorVacaciones = $diasDisponibles / 365;
-            $diasVacaciones = $diasTrabajadosAnio * $factorVacaciones;
-            $montoVacaciones = $diasVacaciones * $solicitudAlta->sd;
-            $primaVacacional = $montoVacaciones * 0.25;
-
-            $factorAguinaldo = 15 / 365;
-            $inicioAnio = now()->startOfYear();
-            $diasTrabajAnio = $fechaIngreso->greaterThanOrEqualTo($inicioAnio)
-                ? $fechaIngreso->diffInDays($ultimaAsistencia) + 1
-                : $inicioAnio->diffInDays($ultimaAsistencia) + 1;
-
-            $diasAguinaldo = $diasTrabajAnio * $factorAguinaldo;
-            $montoAguinaldo = $diasAguinaldo * $solicitudAlta->sd;
-            $primaAguinaldo = $montoAguinaldo * 0.25;
-
-            $descuentoNoEntregados = $solicitud->descuento ?? 0;
-
-            $finiquito = $montoVacaciones + $primaVacacional + $montoAguinaldo + $primaAguinaldo - $descuentoNoLaborados - $descuentoNoEntregados;
-
-            if ($fechaBaja->between($periodo1Inicio, $periodo1Fin, true)) {
-                $montosPeriodo1[$mes] += $finiquito;
-            } elseif ($fechaBaja->between($periodo2Inicio, $periodo2Fin, true)) {
-                $montosPeriodo2[$mes] += $finiquito;
+            if ($fecha->between($periodo1Inicio, $periodo1Fin, true)) {
+                $montosPeriodo1[$mesIndex] += $finiquito->monto;
+            } elseif ($fecha->between($periodo2Inicio, $periodo2Fin, true)) {
+                $montosPeriodo2[$mesIndex] += $finiquito->monto;
             }
         }
 
@@ -107,7 +77,7 @@ class Graficasfiniquitos extends Component
         $this->dispatch('chart-finiquitos-updated', [
             'labels' => $this->labels,
             'periodo1' => $this->dataPeriodo1,
-            'periodo2' => $this->dataPeriodo2
+            'periodo2' => $this->dataPeriodo2,
         ]);
     }
 
@@ -139,4 +109,5 @@ class Graficasfiniquitos extends Component
         return view('livewire.graficasfiniquitos');
     }
 }
+
 //AJUSTAR PERIODOS PARA QUE LOS AGRUPE CRRECTAMENTE

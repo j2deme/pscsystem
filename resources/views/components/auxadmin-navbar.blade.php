@@ -27,6 +27,30 @@
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
         ],
         [
+            'titulo' => 'Incapacidades',
+            'ruta' => '#',
+            'icono' => '🤕',
+            'color' => 'bg-red-100 dark:bg-red-700',
+        ],
+        [
+            'titulo' => 'Gráficos',
+            'ruta' => "#",
+            'icono' => '📊',
+            'color' => 'bg-green-100 dark:bg-green-700',
+        ],
+        [
+            'titulo' => 'Riesgos de Trabajo',
+            'ruta' => '#',
+            'icono' => '🚨',
+            'color' => 'bg-yellow-100 dark:bg-yellow-700',
+        ],
+        [
+            'titulo' => 'Historial de Incapacidades/Riesgos de Trabajo',
+            'ruta' => '#',
+            'icono' => '📅',
+            'color' => 'bg-red-100 dark:bg-red-700',
+        ],
+        [
             'titulo' => 'Solicitar Vacaciones',
             'ruta' => route('user.solicitarVacacionesForm'),
             'icono' => '🎉',
