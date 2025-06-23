@@ -21,13 +21,13 @@
             @endforeach
         </select>
     </div>
+    <div class="mb-4">
+        <button wire:click="generarExcel"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow">
+            Generar Archivo
+        </button>
+    </div>
 
-    <!--<div>
-        <label class="block text-sm font-medium text-gray-700">Año</label>
-        <select wire:model.live="filtroAnio" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-
-        </select>
-    </div>-->
 </div>
 
         <table class="min-w-full divide-y divide-gray-300 mt-6">
