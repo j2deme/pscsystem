@@ -182,7 +182,22 @@ class NominasController extends Controller
             if (in_array($user->id, $descansos)) $descansos_count++;
             if (in_array($user->id, $faltas)) $faltas_count++;
         }
+        $deducciones = Deducciones::where('user_id', $user->id)
+            ->where(function ($q) {
+                $q->where('status', 'Pendiente')
+                ->orWhere('monto_pendiente', '>', 0);
+            })
+            ->get();
 
+        $montoDeducciones = 0;
+
+        foreach ($deducciones as $deduccion) {
+            $montoQuincenal = $deduccion->monto / $deduccion->num_quincenas;
+            $montoQuincenal = round($montoQuincenal, 2);
+            $montoDeducciones += $montoQuincenal;
+        }
+
+        $user->monto_deducciones = $montoDeducciones;
         $user->asistencias_count = $asistencias_count;
         $user->descansos_count = $descansos_count;
         $user->faltas_count = $faltas_count;

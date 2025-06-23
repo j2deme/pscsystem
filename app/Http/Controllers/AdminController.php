@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Deducciones;
 use App\Models\Finiquito;
 use App\Models\SolicitudVacaciones;
 use App\Models\SolicitudAlta;
@@ -230,6 +232,40 @@ class AdminController extends Controller
                 $neto = $percepciones - $isr + 234.2;
             else
                 $neto = $percepciones - ($imss + $isr);
+
+            $deducciones = Deducciones::where('user_id', $user->id)
+                ->where(function ($q) {
+                    $q->where('status', 'Pendiente')
+                    ->orWhere('monto_pendiente', '>', 0);
+                })
+                ->get();
+                Log::info("🧾 Usuario: {$user->name} (ID: {$user->id}) - Deducciones encontradas: {$deducciones->count()}");
+            $montoDeducciones = 0;
+
+            foreach ($deducciones as $deduccion) {
+                $montoQuincenal = $deduccion->monto / $deduccion->num_quincenas;
+                $montoQuincenal = round($montoQuincenal, 2);
+
+                $montoDeducciones += $montoQuincenal;
+
+                Log::info("💸 Deducción ID {$deduccion->id} | Total: {$deduccion->monto} | Quincenal: {$montoQuincenal} | Pendiente antes: {$deduccion->monto_pendiente}");
+
+                $deduccion->monto_pendiente -= $montoQuincenal;
+
+                if ($deduccion->monto_pendiente <= 0) {
+                    $deduccion->monto_pendiente = 0;
+                    $deduccion->status = 'Pagada';
+                    Log::info("✅ Deducción ID {$deduccion->id} pagada completamente.");
+                } else {
+                    Log::info("🔄 Deducción ID {$deduccion->id} actualizada. Nuevo pendiente: {$deduccion->monto_pendiente}");
+                }
+
+                $deduccion->save();
+            }
+
+            Log::info("📉 Total deducciones aplicadas a {$user->name}: {$montoDeducciones}");
+
+            $neto -= $montoDeducciones;
 
             $periodoStr = "{$quincena} {$nombreMes} {$anioPeriodo}";
 

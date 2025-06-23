@@ -71,7 +71,8 @@
                                                     {{ $user->descansos_count }},
                                                     {{ $user->faltas_count }},
                                                     {{ $user->solicitudAlta->sd }},
-                                                    {{ $user->solicitudAlta->sdi }}
+                                                    {{ $user->solicitudAlta->sdi }},
+                                                    {{ $user->monto_deducciones }}
                                                 )"
                                                 class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                                 Ver
@@ -153,7 +154,7 @@
         return isr.toFixed(2);
     }
 
-   function abrirModalNomina(userId, userName, asistencias, descansos, faltas, sd, sdi) {
+   function abrirModalNomina(userId, userName, asistencias, descansos, faltas, sd, sdi, deducciones) {
     const isr = calcularISR(sd, asistencias, descansos, faltas);
     const imss = calcularImss(sdi, asistencias, descansos);
     const sueldo = ((asistencias + descansos) * sd).toFixed(2);
@@ -210,6 +211,17 @@
         </tr>
     `;
 
+    let filaDeduccionesExtra = '';
+    if (deducciones > 0) {
+        filaDeduccionesExtra = `
+            <tr>
+                <td>Deducciones adicionales</td>
+                <td>$</td>
+                <td>${deducciones.toFixed(2)}</td>
+            </tr>
+        `;
+        deduccionesNum += deducciones;
+    }
     Swal.fire({
         title: 'Detalle de nómina de ' + userName,
         html: `
@@ -230,7 +242,7 @@
                         <tbody>
                             <tr>
                                 <td>Sueldo</td>
-                                <td>${asistencias}</td>
+                                <td>${asistencias + descansos}</td>
                                 <td>$</td>
                                 <td>${sueldo}</td>
                             </tr>
@@ -267,6 +279,7 @@
                                 <td>$</td>
                                 <td>${parseFloat(imss).toFixed(2)}</td>
                             </tr>
+                            ${filaDeduccionesExtra}
                             ${!ladoPercepciones ? filaAjuste : ''}
                             <tr><td colspan="3" style="height: 20px;"></td></tr>
                             <tr>
@@ -278,7 +291,7 @@
                             <tr>
                                 <td>Neto a pagar</td>
                                 <td>$</td>
-                                <td>${netoPagarFinal}</td>
+                                <td>${(netoPagarFinal-deducciones).toFixed(2)}</td>
                             </tr>
                         </tbody>
                     </table>

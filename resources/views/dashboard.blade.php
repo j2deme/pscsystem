@@ -8,7 +8,6 @@
             <div x-show="menu === 'nóminas'" x-cloak><x-nominas-navbar /></div>
             <div x-show="menu === 'imss'" x-cloak><x-auxadmin-navbar /></div>
         </div>
-
         <x-admin-navbar></x-admin-navbar> <!--funciona siempre y cuando este fuera de div x-data-->
     </div>
 @else

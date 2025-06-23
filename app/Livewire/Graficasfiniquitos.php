@@ -46,8 +46,8 @@ class Graficasfiniquitos extends Component
         $finiquitos = Finiquito::with('baja')
             ->whereHas('baja', function ($q) use ($inicio, $fin) {
                 $q->where('estatus', 'Aceptada')
-                  ->where('por', 'like', '%renuncia%')
-                  ->whereBetween('fecha_baja', [$inicio, $fin]);
+                ->where('por', 'like', '%renuncia%')
+                ->whereBetween('fecha_baja', [$inicio, $fin]);
             })
             ->get();
 
