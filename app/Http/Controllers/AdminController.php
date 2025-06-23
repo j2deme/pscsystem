@@ -204,6 +204,28 @@ class AdminController extends Controller
             $diasTrabajados = $asistencias_count + $descansos_count;
             $percepciones = $sd * $diasTrabajados;
 
+            $vacaciones = SolicitudVacaciones::where('user_id', $user->id)
+                ->where('estatus', 'Aceptada')
+                ->where(function ($query) use ($periodoInicio, $periodoFin) {
+                    $query->whereBetween('fecha_inicio', [$periodoInicio, $periodoFin])
+                        ->orWhereBetween('fecha_fin', [$periodoInicio, $periodoFin]);
+                })
+                ->get();
+
+            $montoVacaciones = 0;
+            $totalDiasVacaciones = 0;
+
+            foreach ($vacaciones as $vacacion) {
+                $montoVacaciones += ($sd * $vacacion->dias_solicitados)*1.2;
+                $totalDiasVacaciones += $vacacion->dias_solicitados;
+            }
+
+            if ($montoVacaciones > 0) {
+                Log::info("🌴 Vacaciones para {$user->name}: {$totalDiasVacaciones} días, Monto: {$montoVacaciones}");
+            }
+
+            $percepciones += $montoVacaciones;
+
             if ($faltas_count === 0) {
                 $percepciones *= 1.2;
             }

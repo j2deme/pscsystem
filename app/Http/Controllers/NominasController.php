@@ -197,6 +197,23 @@ class NominasController extends Controller
             $montoDeducciones += $montoQuincenal;
         }
 
+        $vacaciones = SolicitudVacaciones::where('user_id', $user->id)
+            ->where('estatus', 'Aceptada')
+            ->where(function ($q) use ($fechaInicio, $fechaFin) {
+                $q->whereBetween('fecha_inicio', [$fechaInicio, $fechaFin])
+                ->orWhereBetween('fecha_fin', [$fechaInicio, $fechaFin]);
+            })
+            ->get();
+
+        $montoVacaciones = 0;
+        foreach ($vacaciones as $vacacion) {
+            $dias = $vacacion->dias_solicitados ?? 0;
+            $sd = $user->solicitudAlta->sd ?? 0;
+            $monto = $sd * $dias;
+            $montoVacaciones += $monto;
+        }
+
+        $user->monto_vacaciones = round($montoVacaciones, 2);
         $user->monto_deducciones = $montoDeducciones;
         $user->asistencias_count = $asistencias_count;
         $user->descansos_count = $descansos_count;
@@ -349,122 +366,155 @@ public function solicitarConstancia(Request $request)
     return 0;
 }
 
-public function calculoDestajos(Request $request)
-{
-    $query = User::query()->where('estatus', 'Activo');
+    public function calculoDestajos(Request $request)
+    {
+        $query = User::query()->where('estatus', 'Activo');
 
-    if ($request->filled('punto')) {
-        $punto = Punto::where('nombre', $request->punto)->first();
+        if ($request->filled('punto')) {
+            $punto = Punto::where('nombre', $request->punto)->first();
 
-        if ($punto) {
-            $subpuntos = Subpunto::where('punto_id', $punto->id)->pluck('nombre');
-            $query->whereIn('punto', $subpuntos);
-        } else {
-            $query->where('punto', $request->punto);
+            if ($punto) {
+                $subpuntos = Subpunto::where('punto_id', $punto->id)->pluck('nombre');
+                $query->whereIn('punto', $subpuntos);
+            } else {
+                $query->where('punto', $request->punto);
+            }
         }
+
+        $usuarios = $query->get();
+
+        $periodo = $request->get('periodo');
+        $mesNombre = strtolower($request->get('mes'));
+        $anio = now()->year;
+
+        $meses = [
+            'enero' => 1, 'febrero' => 2, 'marzo' => 3, 'abril' => 4,
+            'mayo' => 5, 'junio' => 6, 'julio' => 7, 'agosto' => 8,
+            'septiembre' => 9, 'octubre' => 10, 'noviembre' => 11, 'diciembre' => 12
+        ];
+
+        $mesNumero = $meses[$mesNombre] ?? now()->month;
+        $periodoTexto = $periodo && $mesNombre ? "{$periodo} {$mesNombre} {$anio}" : null;
+
+        $nominasPorUsuario = collect();
+        if ($periodoTexto) {
+            $nominas = Nomina::where('periodo', $periodoTexto)->get();
+            $nominasPorUsuario = $nominas->keyBy('user_id');
+        }
+
+        if ($periodo === '1°') {
+            $fechaInicio = Carbon::create($anio, $mesNumero - 1, 26)->startOfDay();
+            $fechaFin = Carbon::create($anio, $mesNumero, 10)->endOfDay();
+        } else {
+            $fechaInicio = Carbon::create($anio, $mesNumero, 11)->startOfDay();
+            $fechaFin = Carbon::create($anio, $mesNumero, 25)->endOfDay();
+        }
+
+        $destajos = [];
+
+        foreach ($usuarios as $user) {
+            Log::info("Calculando destajo para: {$user->name} (ID: {$user->id})");
+
+            $asistencias = Asistencia::whereBetween('fecha', [$fechaInicio, $fechaFin])
+                ->where('punto', $user->punto)
+                ->get();
+
+            $asistencias_count = 0;
+            $descansos_count = 0;
+            $faltas_count = 0;
+
+            foreach ($asistencias as $registro) {
+                $enlistados = json_decode($registro->elementos_enlistados, true) ?? [];
+                $descansos = json_decode($registro->descansos, true) ?? [];
+                $faltas = json_decode($registro->faltas, true) ?? [];
+
+                if (in_array($user->id, $enlistados)) $asistencias_count++;
+                if (in_array($user->id, $descansos)) $descansos_count++;
+                if (in_array($user->id, $faltas)) $faltas_count++;
+            }
+
+            Log::info("Asistencias: $asistencias_count, Descansos: $descansos_count, Faltas: $faltas_count");
+
+            $sd = floatval($user->solicitudAlta->sd ?? 0);
+            $sdi = floatval($user->solicitudAlta->sdi ?? 0);
+            $sueldoMensualTexto = $user->solicitudAlta->sueldo_mensual ?? '';
+
+            preg_match('/\((.*?)\)/', $sueldoMensualTexto, $matches);
+            $sueldoMensual = isset($matches[1]) ? floatval(str_replace(['$', ','], '', $matches[1])) : 0;
+
+            preg_match('/^\$?[\d,]+/', $sueldoMensualTexto, $matchesMin);
+            $sueldoMinimo = isset($matchesMin[0]) ? floatval(str_replace(['$', ','], '', $matchesMin[0])) : 0;
+
+            $nominaNormal = $sd * 15;
+            $diasTrabajados = 15; // Fijo, puedes cambiarlo si prefieres usar asistencias + descansos
+
+            // 💰 Cálculo de vacaciones
+            $vacaciones = SolicitudVacaciones::where('user_id', $user->id)
+                ->where('estatus', 'Aceptada')
+                ->where(function ($q) use ($fechaInicio, $fechaFin) {
+                    $q->whereBetween('fecha_inicio', [$fechaInicio, $fechaFin])
+                        ->orWhereBetween('fecha_fin', [$fechaInicio, $fechaFin]);
+                })->get();
+
+            $montoVacaciones = 0;
+            foreach ($vacaciones as $v) {
+                $montoVacaciones += $sd * $v->dias_solicitados;
+            }
+
+            // 📉 Deducciones
+            $deducciones = Deducciones::where('user_id', $user->id)
+                ->where(function ($q) {
+                    $q->where('status', 'Pendiente')
+                        ->orWhere('monto_pendiente', '>', 0);
+                })->get();
+
+            $montoDeducciones = 0;
+            foreach ($deducciones as $d) {
+                $quincenal = round($d->monto / $d->num_quincenas, 2);
+                $montoDeducciones += $quincenal;
+            }
+
+            // 🧮 IMSS e ISR
+            $imss = $this->calcularIMSS($sdi, 7, 8);
+            $isr = $this->calcularISR($sd, 7, 8, $faltas_count);
+
+            if ($faltas_count == 0) {
+                $nominaNormal += $nominaNormal * 0.20;
+                $nominaNormal += $montoVacaciones;
+
+                if (($sueldoMensual / 2) < 5018.59)
+                    $nominaNormal = $nominaNormal - $isr + 234.2;
+                else
+                    $nominaNormal = $nominaNormal - $isr - $imss;
+
+                $nominaNormal -= $montoDeducciones;
+
+                $destajo = ($sueldoMensual / 2) - $nominaNormal;
+            } else {
+                $nominaTrabajada = $sd * $diasTrabajados;
+                $nominaTrabajada += $montoVacaciones;
+
+                if (($sueldoMensual / 2) < 5018.59)
+                    $nominaNormal = $nominaTrabajada - $isr + 234.2;
+                else
+                    $nominaNormal = $nominaTrabajada - $isr;
+
+                $nominaNormal -= $montoDeducciones;
+
+                $destajoNormal = ($sueldoMensual / 2) - $nominaNormal;
+                $destajo = $destajoNormal * ($diasTrabajados / 15);
+            }
+
+            $destajos[$user->id] = [
+                'asistencias' => $asistencias_count,
+                'descansos' => $descansos_count,
+                'faltas' => $faltas_count,
+                'vacaciones' => $montoVacaciones,
+                'deducciones' => $montoDeducciones,
+                'destajo' => round($destajo, 2),
+            ];
+        }
+
+        return view('nominas.destajos', compact('usuarios', 'nominasPorUsuario', 'periodoTexto', 'destajos'));
     }
-
-    $usuarios = $query->get();
-
-    $periodo = $request->get('periodo');
-    $mesNombre = strtolower($request->get('mes'));
-    $anio = now()->year;
-
-    $meses = [
-        'enero' => 1, 'febrero' => 2, 'marzo' => 3, 'abril' => 4,
-        'mayo' => 5, 'junio' => 6, 'julio' => 7, 'agosto' => 8,
-        'septiembre' => 9, 'octubre' => 10, 'noviembre' => 11, 'diciembre' => 12
-    ];
-
-    $mesNumero = $meses[$mesNombre] ?? now()->month;
-    $periodoTexto = $periodo && $mesNombre ? "{$periodo} {$mesNombre} {$anio}" : null;
-
-    $nominasPorUsuario = collect();
-    if ($periodoTexto) {
-        $nominas = Nomina::where('periodo', $periodoTexto)->get();
-        $nominasPorUsuario = $nominas->keyBy('user_id');
-    }
-
-    if ($periodo === '1°') {
-        $fechaInicio = Carbon::create($anio, $mesNumero - 1, 26)->startOfDay();
-        $fechaFin = Carbon::create($anio, $mesNumero, 10)->endOfDay();
-    } else {
-        $fechaInicio = Carbon::create($anio, $mesNumero, 11)->startOfDay();
-        $fechaFin = Carbon::create($anio, $mesNumero, 25)->endOfDay();
-    }
-
-    $destajos = [];
-
-    foreach ($usuarios as $user) {
-    Log::info("Calculando destajo para: {$user->name} (ID: {$user->id})");
-
-    $asistencias = Asistencia::whereBetween('fecha', [$fechaInicio, $fechaFin])
-        ->where('punto', $user->punto)
-        ->get();
-
-    $asistencias_count = 0;
-    $descansos_count = 0;
-    $faltas_count = 0;
-
-    foreach ($asistencias as $registro) {
-        $enlistados = json_decode($registro->elementos_enlistados, true) ?? [];
-        $descansos = json_decode($registro->descansos, true) ?? [];
-        $faltas = json_decode($registro->faltas, true) ?? [];
-
-        if (in_array($user->id, $enlistados)) $asistencias_count++;
-        if (in_array($user->id, $descansos)) $descansos_count++;
-        if (in_array($user->id, $faltas)) $faltas_count++;
-    }
-
-    Log::info("Asistencias: $asistencias_count, Descansos: $descansos_count, Faltas: $faltas_count");
-
-    $sd = floatval($user->solicitudAlta->sd ?? 0);
-    $sdi = floatval($user->solicitudAlta->sdi ?? 0);
-    $sueldoMensualTexto = $user->solicitudAlta->sueldo_mensual ?? '';
-
-    preg_match('/\((.*?)\)/', $sueldoMensualTexto, $matches);
-    $sueldoMensual = isset($matches[1]) ? floatval(str_replace(['$', ','], '', $matches[1])) : 0;
-
-    preg_match('/^\$?[\d,]+/', $sueldoMensualTexto, $matchesMin);
-    $sueldoMinimo = isset($matchesMin[0]) ? floatval(str_replace(['$', ','], '', $matchesMin[0])) : 0;
-
-    Log::info("SD: $sd, Sueldo mensual (limpio): $sueldoMensual");
-
-    $nominaNormal = $sd * 15;
-    $diasTrabajados = 15; //$asistencias_count + $descansos_count;
-
-    $imss = $this->calcularIMSS($sdi, 7, 8);
-    $isr = $this->calcularISR($sd, 7, 8, $faltas_count);
-
-    if ($faltas_count == 0) {
-        $nominaNormal += $nominaNormal * 0.20;
-        if(($sueldoMensual / 2) < 5018.59)
-            $nominaNormal = $nominaNormal - $isr + 234.2;
-        else
-            $nominaNormal = $nominaNormal - $isr - $imss;
-
-        $destajo = ($sueldoMensual / 2) - $nominaNormal;
-        Log::info("Sin faltas → Nómina normal: $nominaNormal, Destajo: $destajo, Desc. IMSS: $imss, Desc. ISR: $isr");
-    } else {
-        $nominaTrabajada = $sd * $diasTrabajados;
-        if(($sueldoMensual / 2) < 5018.59)
-            $nominaNormal = $nominaNormal - $isr + 234.2;
-        else
-            $nominaNormal = $nominaNormal - $isr;
-
-        $destajoNormal = ($sueldoMensual / 2) - $nominaNormal;
-        $destajo = $destajoNormal * ($diasTrabajados / 15);
-        Log::info("Con faltas → Nómina trabajada: $nominaTrabajada, Destajo normal: $destajoNormal, Destajo final: $destajo, Desc. IMSS: $imss, Desc. ISR: $isr");
-    }
-
-    $destajos[$user->id] = [
-        'asistencias' => $asistencias_count,
-        'descansos' => $descansos_count,
-        'faltas' => $faltas_count,
-        'destajo' => round($destajo, 2)
-    ];
-}
-    return view('nominas.destajos', compact('usuarios', 'nominasPorUsuario', 'periodoTexto', 'destajos'));
-}
-
 }

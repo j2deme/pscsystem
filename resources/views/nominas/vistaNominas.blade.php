@@ -72,7 +72,8 @@
                                                     {{ $user->faltas_count }},
                                                     {{ $user->solicitudAlta->sd }},
                                                     {{ $user->solicitudAlta->sdi }},
-                                                    {{ $user->monto_deducciones }}
+                                                    {{ $user->monto_deducciones }},
+                                                    {{ $user->monto_vacaciones }},
                                                 )"
                                                 class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                                 Ver
@@ -154,7 +155,7 @@
         return isr.toFixed(2);
     }
 
-   function abrirModalNomina(userId, userName, asistencias, descansos, faltas, sd, sdi, deducciones) {
+   function abrirModalNomina(userId, userName, asistencias, descansos, faltas, sd, sdi, deducciones, vacaciones) {
     const isr = calcularISR(sd, asistencias, descansos, faltas);
     const imss = calcularImss(sdi, asistencias, descansos);
     const sueldo = ((asistencias + descansos) * sd).toFixed(2);
@@ -165,6 +166,20 @@
             ? (parseFloat(totalPremio) * 2 + (asistencias + descansos) * sd)
             : (asistencias + descansos) * sd
     );
+
+    let filaVacaciones = '';
+    if (vacaciones > 0) {
+        percepcionesNum += vacaciones;
+        filaVacaciones = `
+            <tr>
+                <td>Vacaciones disfrutadas</td>
+                <td></td>
+                <td>$</td>
+                <td>${vacaciones.toFixed(2)}</td>
+            </tr>
+        `;
+    }
+
     let deduccionesNum = parseFloat(isr) + parseFloat(imss);
 
     const netoPagarCalculado = parseFloat((percepcionesNum - deduccionesNum).toFixed(2));
@@ -247,6 +262,7 @@
                                 <td>${sueldo}</td>
                             </tr>
                             ${filasPremios}
+                            ${filaVacaciones}
                             ${ladoPercepciones ? filaAjuste : ''}
                             <tr><td colspan="4" style="height: 20px;"></td></tr>
                             <tr>

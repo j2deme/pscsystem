@@ -129,7 +129,7 @@
         Swal.fire({
             title: `Nómina de ${nombre}`,
             html: `<p><strong>Monto de nómina:</strong> $${parseFloat(monto).toFixed(2)}</p>
-                   <p><strong>Destajo estimado:</strong> $${parseFloat(destajo).toFixed(2)}</p>`,
+                    <p><strong>Destajo estimado:</strong> $${parseFloat(destajo).toFixed(2)}</p>`,
             icon: 'info',
             confirmButtonText: 'Cerrar',
             customClass: {
