@@ -591,7 +591,7 @@ class SupervisorController extends Controller
         'foto_evidencia.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         'observaciones' => 'nullable|string|max:255',
         'coberturas' => 'nullable|array',
-        'coberturas.*' => 'integer',
+        'coberturas.*' => 'required|string',
     ]);
 
     $user = Auth::user();
@@ -606,7 +606,12 @@ class SupervisorController extends Controller
         ->toArray();
 
     $faltas = array_values(array_diff($todosUsuarios, $asistencias));
-    $coberturas= $request->input('coberturas', []);
+
+    $coberturasRaw = $request->input('coberturas', []);
+    $coberturas = array_map(function ($item) {
+        return json_decode($item, true);
+    }, $coberturasRaw);
+
     session([
         'asistencias_data' => [
             'asistencias' => $asistencias,

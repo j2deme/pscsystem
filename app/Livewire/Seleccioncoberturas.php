@@ -13,6 +13,25 @@ class Seleccioncoberturas extends Component
     public $usuarios = [];
     public $seleccionados = [];
     public $showDropdown = false;
+    public $puntos = [];
+
+        public function mount()
+    {
+        $this->puntos = Punto::with('subpuntos')->get();
+    }
+
+    public function asignarSubpunto($usuarioId, $subpuntoId)
+    {
+        $subpunto = Subpunto::with('punto')->find($subpuntoId);
+
+        foreach ($this->seleccionados as &$usuario) {
+            if ($usuario['id'] === $usuarioId) {
+                $usuario['punto'] = $subpunto->punto->nombre . ' - ' . $subpunto->nombre;
+                $usuario['subpunto_id'] = $subpunto->id;
+                break;
+            }
+        }
+    }
 
     public function updatedSearch($value)
     {
@@ -32,10 +51,8 @@ class Seleccioncoberturas extends Component
         $user = User::find($id);
 
         if ($user) {
-            // Obtener punto a través de la relación existente
             $puntoNombre = optional(optional($user->subpunto)->punto)->nombre ?? 'No definido';
 
-            // Verificar que no esté duplicado
             if (!collect($this->seleccionados)->pluck('id')->contains($user->id)) {
                 $this->seleccionados[] = [
                     'id' => $user->id,
