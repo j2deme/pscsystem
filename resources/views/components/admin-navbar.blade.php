@@ -128,10 +128,9 @@ $cards = array_filter([
     ],
     [
         'titulo' => 'Custodios',
-        'ruta' => '#',
+        'ruta' => route('admin.custodiosDashboard'),
         'icono' => '👮‍♂️',
         'color' => 'bg-gray-300 dark:bg-gray-700',
-        'disabled' => true,
     ],
     [
         'titulo' => 'RRHH',

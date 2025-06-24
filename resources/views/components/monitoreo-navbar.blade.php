@@ -50,6 +50,12 @@
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
+            'titulo' => 'Deducciones',
+            'ruta' => route('monitoreo.deducciones'),
+            'icono' => '📝',
+            'color' => 'bg-red-100 dark:bg-red-700',
+        ],
+        [
             'titulo' => 'Mi Historial de Vacaciones',
             'ruta' => route('user.historialVacaciones'),
             'icono' => '📅',
@@ -57,17 +63,17 @@
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
-            'titulo' => 'Buzón de Quejas y Sugerencias',
-            'ruta' => route('user.buzon'),
-            'icono' => '💬',
-            'color' => 'bg-purple-100 dark:bg-purple-700',
-            'disabled' => Auth::user()->rol == 'admin'
-        ],
-        [
             'titulo' => 'Ficha Técnica',
             'ruta' => route('user.verFicha', auth()->user()->id),
             'icono' => '📝',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
+            'disabled' => Auth::user()->rol == 'admin'
+        ],
+        [
+            'titulo' => 'Buzón de Quejas y Sugerencias',
+            'ruta' => route('user.buzon'),
+            'icono' => '💬',
+            'color' => 'bg-purple-100 dark:bg-purple-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [

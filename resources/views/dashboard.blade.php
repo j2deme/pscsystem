@@ -43,6 +43,8 @@
                             <x-auxadmin-navbar></x-auxadmin-navbar>
                         @elseif(Auth::user()->rol == 'Juridico' || Auth::user()->rol == 'JURIDICO')
                             <x-juridico-navbar></x-juridico-navbar>
+                        @elseif(Auth::user()->rol == 'CUSTODIOS' || Auth::user()->rol == 'Custodios' || Auth::user()->solicitudAlta->rol == 'CUSTODIOS')
+                            <x-custodios-navbar></x-custodios-navbar>
                         @else
                             <x-user-navbar></x-user-navbar>
                         @endif

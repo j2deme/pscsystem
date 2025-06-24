@@ -126,6 +126,10 @@ class AdminController extends Controller
         return view('admi.tableroMonitoreo');
     }
 
+    public function tableroCustodios(){
+        return view('admi.tableroCustodios');
+    }
+
     public function solicitudesVacaciones(){
         $vacaciones = SolicitudVacaciones::where('estatus', 'En Proceso')
         ->where('observaciones', '!=', 'Solicitud aceptada, falta subir archivo de solicitud.')

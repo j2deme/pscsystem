@@ -51,13 +51,6 @@
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
-                    'titulo' => 'Solicitar Baja de Elemento',
-                    'ruta' => route('sup.solicitarBajaForm'),
-                    'icono' => '⬇️',
-                    'color' => 'bg-red-100 dark:bg-red-700',
-                    'disabled' => Auth::user()->rol == 'admin'
-                ],
-                [
                     'titulo' => 'Solicitar Vacaciones de Elemento',
                     'ruta' => route('sup.solicitarVacacionesElemento'),
                     'icono' => '🏖️',
@@ -65,17 +58,24 @@
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
-                    'titulo' => 'Listas de Asistencia',
-                    'ruta' => route('sup.listaAsistencia'),
-                    'icono' => '📋',
-                    'color' => 'bg-green-100 dark:bg-green-700',
-                    'notificaciones' => $asistencia
+                    'titulo' => 'Solicitar Baja de Elemento',
+                    'ruta' => route('sup.solicitarBajaForm'),
+                    'icono' => '⬇️',
+                    'color' => 'bg-red-100 dark:bg-red-700',
+                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Historial de Altas',
                     'ruta' => route('sup.historial'),
                     'icono' => '🗂️',
-                    'color' => 'bg-yellow-100 dark:bg-yellow-700'
+                    'color' => 'bg-blue-100 dark:bg-blue-700'
+                ],
+                [
+                    'titulo' => 'Listas de Asistencia',
+                    'ruta' => route('sup.listaAsistencia'),
+                    'icono' => '📋',
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700',
+                    'notificaciones' => $asistencia
                 ],
 
                 [
@@ -85,17 +85,17 @@
                     'color' => 'bg-red-100 dark:bg-red-700'
                 ],
                 [
-                    'titulo' => 'Historial de Asistencias',
-                    'ruta' => route('sup.verAsistencias', Auth::user()->id),
-                    'icono' => '📋',
-                    'color' => 'bg-blue-100 dark:bg-blue-700'
-                ],
-                [
                     'titulo' => 'Solicitudes de Vacaciones',
                     'ruta' => route('sup.solicitudesVacaciones'),
                     'icono' => '🏖️',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
                     'notificaciones' => $vacaciones
+                ],
+                [
+                    'titulo' => 'Historial de Asistencias',
+                    'ruta' => route('sup.verAsistencias', Auth::user()->id),
+                    'icono' => '📋',
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
                 [
                     'titulo' => 'Solicitar Vacaciones',
@@ -105,17 +105,10 @@
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
-                    'titulo' => 'Mi Historial de Vacaciones',
-                    'ruta' => route('user.historialVacaciones'),
-                    'icono' => '📅',
-                    'color' => 'bg-yellow-100 dark:bg-yellow-700',
-                    'disabled' => Auth::user()->rol == 'admin'
-                ],
-                [
                     'titulo' => 'Tiempos Extras y Cobertura de Turnos',
                     'ruta' => route('sup.tiemposExtras'),
                     'icono' => '🕑',
-                    'color' => 'bg-green-100 dark:bg-green-700',
+                    'color' => 'bg-blue-100 dark:bg-blue-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
@@ -123,6 +116,13 @@
                     'ruta' => route('sup.historialTiemposExtras'),
                     'icono' => '📅',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
+                ],
+                [
+                    'titulo' => 'Mi Historial de Vacaciones',
+                    'ruta' => route('user.historialVacaciones'),
+                    'icono' => '📅',
+                    'color' => 'bg-green-100 dark:bg-green-700',
+                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Gestión de Usuarios',
