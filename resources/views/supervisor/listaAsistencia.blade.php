@@ -71,6 +71,11 @@
                             <textarea name="observaciones" id="observaciones" rows="4" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Escribe tus observaciones aquí..."></textarea>
                         </div>
 
+                        <div class="mt-6">
+                            <label for="coberturas" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Coberturas de Turno</label>
+                            @livewire('seleccioncoberturas')
+                        </div>
+
                         <div class="mt-8 text-center">
                             <button type="submit"
                                     class="inline-block bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition duration-200">

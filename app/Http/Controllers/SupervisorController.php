@@ -589,7 +589,9 @@ class SupervisorController extends Controller
         'asistencias.*' => 'integer',
         'foto_evidencia' => 'nullable|array',
         'foto_evidencia.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-        'observaciones' => 'nullable|string|max:255'
+        'observaciones' => 'nullable|string|max:255',
+        'coberturas' => 'nullable|array',
+        'coberturas.*' => 'integer',
     ]);
 
     $user = Auth::user();
@@ -604,12 +606,13 @@ class SupervisorController extends Controller
         ->toArray();
 
     $faltas = array_values(array_diff($todosUsuarios, $asistencias));
-
+    $coberturas= $request->input('coberturas', []);
     session([
         'asistencias_data' => [
             'asistencias' => $asistencias,
             'foto_evidencia' => $request->file('foto_evidencia', []),
             'observaciones' => $request->input('observaciones'),
+            'coberturas' => $coberturas,
             'faltas' => $faltas,
             'fecha' => $now->toDateString(),
             'hora' => $now->toTimeString(),
@@ -660,7 +663,7 @@ public function finalizarAsistencia(Request $request)
                 $fotosAsistentes[$elementoId] = $rutaCompleta;
             }
         }
-
+        Log::info('Coberturas a guardar:', $data['coberturas']);
         Asistencia::create([
             'user_id' => $user->id,
             'fecha' => $data['fecha'],
@@ -668,6 +671,7 @@ public function finalizarAsistencia(Request $request)
             'elementos_enlistados' => json_encode($data['asistencias']),
             'faltas' => json_encode($faltasFinales),
             'descansos' => json_encode($descansan),
+            'coberturas' => json_encode($data['coberturas']),
             'observaciones' => $data['observaciones'] ?: 'Ninguna',
             'punto' => $user->punto,
             'empresa' => $user->empresa,

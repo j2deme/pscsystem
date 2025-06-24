@@ -16,6 +16,7 @@ class Asistencia extends Model
         'faltas',
         'fotos_asistentes',
         'observaciones',
+        'coberturas',
         'punto',
         'empresa',
     ];
