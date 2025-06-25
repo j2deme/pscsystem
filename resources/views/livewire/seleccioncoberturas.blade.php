@@ -1,5 +1,4 @@
 <div class="flex flex-col sm:flex-row sm:space-x-4">
-    {{-- Buscador --}}
     <div class="sm:w-1/3">
         <input
             type="text"
@@ -30,7 +29,6 @@
         @endif
     </div>
 
-    {{-- Lista de seleccionados --}}
     <div class="sm:w-2/3 mt-4 sm:mt-0">
         @if(!empty($seleccionados))
             <ul class="space-y-2">
@@ -41,11 +39,10 @@
                             <span class="text-sm text-gray-600">Punto: {{ $usuario['punto'] ?? 'Sin asignar' }}</span>
                         </div>
 
-                        {{-- Selector de subpunto --}}
                         <div class="mt-2 sm:mt-0 sm:ml-4">
                             <select wire:change="asignarSubpunto({{ $usuario['id'] }}, $event.target.value)"
                                 class="p-2 border rounded">
-                                <option value="">Selecciona subpunto</option>
+                                <option value="">Selecciona punto</option>
                                 @foreach($puntos as $punto)
                                     <optgroup label="{{ $punto->nombre }}">
                                         @foreach($punto->subpuntos as $sub)

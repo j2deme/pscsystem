@@ -560,10 +560,10 @@ class SupervisorController extends Controller
             }
 
             if ($subpunto && $subpunto->zona) {
-                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona->id)
+                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona)
                     ->pluck('nombre')
                     ->merge(
-                        \App\Models\Subpunto::where('zona', $subpunto->zona->id)->pluck('codigo')
+                        \App\Models\Subpunto::where('zona', $subpunto->zona)->pluck('codigo')
                     );
             }
         }
