@@ -1,11 +1,13 @@
 <div>
     <div class="mb-6 justify-between">
-        <input
-            type="text"
-            wire:model.live.debounce.300ms="search"
-            placeholder="Buscar por nombre o fecha"
-            class="w-1/3 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-        >
+        @if(Auth::user()->rol == 'admin')
+            <input
+                type="text"
+                wire:model.live.debounce.300ms="search"
+                placeholder="Buscar por nombre o fecha"
+                class="w-1/3 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            >
+        @endif
         <input
             type="date"
             wire:model.live="fecha"
