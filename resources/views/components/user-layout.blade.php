@@ -1,7 +1,48 @@
 @php
-    use App\Models\Alerta;
+use App\Models\Alerta;
+use App\Models\Punto;
+use App\Models\Subpunto;
+use App\Models\User;
+
+$user = auth()->user();
+$notificaciones = collect();
+
+if ($user->rol === 'Supervisor') {
+    $puntoUsuarioRaw = $user->punto;
+    $subpuntosZona = collect();
+
+    $punto = Punto::where('nombre', $puntoUsuarioRaw)->first();
+
+    if (!$punto) {
+        $subpunto = Subpunto::where('nombre', $puntoUsuarioRaw)->first()
+                  ?? Subpunto::where('codigo', $puntoUsuarioRaw)->first();
+
+        if ($subpunto && $subpunto->zona) {
+            $subpuntosZona = Subpunto::where('zona', $subpunto->zona)->pluck('nombre');
+        }
+    }
+
+    // Obtener IDs de usuarios supervisados (en su punto o zona)
+    $idsSupervisados = User::where('empresa', $user->empresa)
+        ->where('estatus', 'Activo')
+        ->where(function ($query) use ($user, $subpuntosZona) {
+            $query->where('punto', $user->punto);
+            if ($subpuntosZona->isNotEmpty()) {
+                $query->orWhereIn('punto', $subpuntosZona);
+            }
+        })
+        ->pluck('id');
+
+    $notificaciones = Alerta::where('leida', false)
+        ->whereIn('user_id', $idsSupervisados)
+        ->latest()
+        ->get();
+} else {
+    // Admin u otros roles ven todas las alertas no leídas
     $notificaciones = Alerta::where('leida', false)->latest()->get();
+}
 @endphp
+
 <div class="rounded-lg bg-gray-100 dark:bg-gray-900">
     <nav class="bg-white dark:bg-gray-800 shadow-md rounded-t-lg">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
