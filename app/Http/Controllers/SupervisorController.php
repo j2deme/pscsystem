@@ -406,7 +406,7 @@ class SupervisorController extends Controller
 
                 $zona = $subpunto->zona;
                 if ($zona) {
-                    $subpuntosZona = Subpunto::where('zona', $zona->id)->pluck('nombre');
+                    $subpuntosZona = Subpunto::where('zona', $zona)->pluck('nombre');
                 }
             } else {
                 $subpuntoPorCodigo = Subpunto::where('codigo', $puntoUsuarioRaw)->first();
@@ -414,7 +414,7 @@ class SupervisorController extends Controller
                     $puntoUsuario = $subpuntoPorCodigo;
                     $zona = $subpuntoPorCodigo->zona;
                     if ($zona) {
-                        $subpuntosZona = Subpunto::where('zona', $zona->id)->pluck('nombre');
+                        $subpuntosZona = Subpunto::where('zona', $zona)->pluck('nombre');
                     }
                 }
             }
@@ -509,10 +509,10 @@ class SupervisorController extends Controller
             }
 
             if ($subpunto && $subpunto->zona) {
-                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona->id)
+                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona)
                     ->pluck('nombre')
                     ->merge(
-                        \App\Models\Subpunto::where('zona', $subpunto->zona->id)->pluck('codigo')
+                        \App\Models\Subpunto::where('zona', $subpunto->zona)->pluck('codigo')
                     );
             }
         }
@@ -597,11 +597,36 @@ class SupervisorController extends Controller
     $user = Auth::user();
     $now = now('America/Mexico_City');
 
+    $puntoUsuarioRaw = $user->punto;
+    $subpuntosZona = collect();
+
+    $punto = \App\Models\Punto::where('nombre', $puntoUsuarioRaw)->first();
+    if (!$punto) {
+        $subpunto = \App\Models\Subpunto::where('nombre', $puntoUsuarioRaw)->first();
+        if (!$subpunto) {
+            $subpunto = \App\Models\Subpunto::where('codigo', $puntoUsuarioRaw)->first();
+        }
+
+        if ($subpunto && $subpunto->zona) {
+            $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona)
+                ->pluck('nombre')
+                ->merge(
+                    \App\Models\Subpunto::where('zona', $subpunto->zona)->pluck('codigo')
+                );
+        }
+    }
+
+
     $asistencias = $request->input('asistencias', []);
-    $todosUsuarios = User::where('punto', $user->punto)
-        ->where('empresa', $user->empresa)
-        ->where('estatus', 'Activo')
-        ->where('rol', '!=', 'Supervisor')
+    $todosUsuarios = User::where('empresa', $user->empresa)
+            ->where('estatus', 'Activo')
+            ->where('rol', '!=', 'Supervisor')
+            ->where(function ($query) use ($user, $subpuntosZona) {
+                $query->where('punto', $user->punto);
+                if ($subpuntosZona->isNotEmpty()) {
+                    $query->orWhereIn('punto', $subpuntosZona);
+                }
+            })
         ->pluck('id')
         ->toArray();
 
@@ -718,10 +743,16 @@ public function finalizarAsistencia(Request $request)
         $idsAsistieron = json_decode($asistencia->elementos_enlistados, true) ?? [];
         $idsFaltaron = json_decode($asistencia->faltas, true) ?? [];
         $idsDescansaron = json_decode($asistencia->descansos, true) ?? [];
+        $coberturas = json_decode($asistencia->coberturas, true) ?? [];
+        $idsCoberturas = collect($coberturas)->pluck('id')->toArray();
 
         $usuariosAsistieron = User::whereIn('id', $idsAsistieron)->with('solicitudAlta.documentacion')->get();
         $usuariosFaltaron = User::whereIn('id', $idsFaltaron)->with('solicitudAlta.documentacion')->get();
         $usuariosDescansaron = User::whereIn('id', $idsDescansaron)->with('solicitudAlta.documentacion')->get();
+        $usuariosCoberturas = User::whereIn('id', $idsCoberturas)
+            ->with('solicitudAlta.documentacion')
+            ->get();
+
 
         $fotos = json_decode($asistencia->fotos_asistentes, true) ?? [];
         if (is_array($fotos)) {
@@ -729,6 +760,7 @@ public function finalizarAsistencia(Request $request)
                 $fotos[$id] = asset('storage/' . $path);
             }
         }
+        $asistencia->usuarios_coberturas = $usuariosCoberturas;
         $asistencia->usuarios_enlistados = $usuariosAsistieron;
         $asistencia->usuarios_faltantes = $usuariosFaltaron;
         $asistencia->usuarios_descansos = $usuariosDescansaron;
@@ -779,10 +811,10 @@ public function finalizarAsistencia(Request $request)
                 }
 
                 if ($subpunto && $subpunto->zona) {
-                    $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona->id)
+                    $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona)
                         ->pluck('nombre')
                         ->merge(
-                            \App\Models\Subpunto::where('zona', $subpunto->zona->id)->pluck('codigo')
+                            \App\Models\Subpunto::where('zona', $subpunto->zona)->pluck('codigo')
                         );
                 }
             }
@@ -852,10 +884,10 @@ public function finalizarAsistencia(Request $request)
             }
 
             if ($subpunto && $subpunto->zona) {
-                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona->id)
+                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona)
                     ->pluck('nombre')
                     ->merge(
-                        \App\Models\Subpunto::where('zona', $subpunto->zona->id)->pluck('codigo')
+                        \App\Models\Subpunto::where('zona', $subpunto->zona)->pluck('codigo')
                     );
             }
         }
@@ -961,10 +993,10 @@ public function finalizarAsistencia(Request $request)
             }
 
             if ($subpunto && $subpunto->zona) {
-                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona->id)
+                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona)
                     ->pluck('nombre')
                     ->merge(
-                        \App\Models\Subpunto::where('zona', $subpunto->zona->id)->pluck('codigo')
+                        \App\Models\Subpunto::where('zona', $subpunto->zona)->pluck('codigo')
                     );
             }
         }
@@ -1120,10 +1152,10 @@ public function finalizarAsistencia(Request $request)
             }
 
             if ($subpunto && $subpunto->zona) {
-                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona->id)
+                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona)
                     ->pluck('nombre')
                     ->merge(
-                        \App\Models\Subpunto::where('zona', $subpunto->zona->id)->pluck('codigo')
+                        \App\Models\Subpunto::where('zona', $subpunto->zona)->pluck('codigo')
                     );
             }
         }

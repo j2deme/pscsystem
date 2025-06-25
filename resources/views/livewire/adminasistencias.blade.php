@@ -38,7 +38,13 @@
                         Asistencias
                     </th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Descansos
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                         Faltas
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        Coberturas
                     </th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                         Acciones
@@ -68,12 +74,25 @@
 
                         $faltantes = json_decode($asistencia->faltas, true);
                         $faltas = is_array($faltantes) ? count($faltantes) : 0;
+
+                        $descansaron = json_decode($asistencia->descansos, true);
+                        $descansos = is_array($descansaron) ? count($descansaron) : 0;
+
+                        $coberturas = json_decode($asistencia->coberturas, true);
+                        $coberturasDia = is_array($coberturas) ? count($coberturas) : 0;
+
                     @endphp
                     <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         {{ $asistenciasDia }}
                     </td>
                     <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                        {{ $descansos }}
+                    </td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         {{ $faltas }}
+                    </td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                        {{ $coberturasDia }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm ">
                         <a href="{{route('sup.detalleAsistencia', $asistencia->id)}}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-500 mr-3">Ver Detalles</a>

@@ -64,6 +64,22 @@
                                             </div>
                                         @endif
                                     </div>
+                                    <div>
+                                        @if ($asistencia->usuarios_coberturas->isEmpty())
+                                            <h4 class="text-md font-semibold text-yellow-600 dark:text-yellow-400">No se registraron coberturas.</h4>
+                                        @else
+                                            <h4 class="text-md font-semibold text-yellow-600 dark:text-yellow-400 mb-2">Hicieron cobertura:</h4>
+                                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                                @foreach ($asistencia->usuarios_coberturas as $usuario)
+                                                    <div class="bg-yellow-50 dark:bg-gray-700 p-3 rounded-lg text-center shadow">
+                                                        <img src="{{ $usuario->solicitudAlta?->documentacion?->arch_foto ? asset($usuario->solicitudAlta->documentacion->arch_foto) . '?v=' . now()->timestamp : asset('images/default-user.jpg') }}" class="w-20 h-20 rounded-full mx-auto object-cover mb-2 border border-gray-300 dark:border-gray-600">
+                                                        <p class="text-gray-800 dark:text-white font-medium">{{ $usuario->name }}</p>
+                                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $usuario->punto }} - {{ $usuario->empresa }}</p>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                             <div id="imageModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden z-50">

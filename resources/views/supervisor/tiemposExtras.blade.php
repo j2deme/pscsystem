@@ -14,7 +14,7 @@
                     @else
                 @endif
                 <h1 class="text-2xl text-gray-800 dark:text-white">Usuarios Activos</h1>
-                <span class="text-sm text-gray-600 mb-6 dark:text-gray-300">Seleccione un usuario para ingresar una solicitud de tiempo extra o cobertura de turno a otro elemento.</span>
+                <span class="text-sm text-gray-600 mb-6 dark:text-gray-300">Seleccione un usuario para ingresar una solicitud de tiempo extra a otro elemento.</span>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
                     @foreach($elementos as $elemento)
                         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-5 border border-gray-200 dark:border-gray-700 flex flex-col justify-between h-full min-h-[220px] transition hover:shadow-lg">
@@ -27,8 +27,7 @@
                                 </div>
                             </div>
                             <div class="flex justify-center">
-                                <a href="{{ route('sup.tiemposExtrasForm', $elemento->id) }}" class="inline-block w-1/3 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 mr-2">Tiempo Extra</a>
-                                <a href="{{ route('sup.coberturaTurnoForm', $elemento->id) }}" class="inline-block w-1/3 bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 mx-4">Cobertura de Turno</a>
+                                <a href="{{ route('sup.tiemposExtrasForm', $elemento->id) }}" class="inline-block w-1/2 bg-blue-500 text-white py-2 px-4 text-center rounded-md hover:bg-blue-600 mr-2">Tiempo Extra</a>
                             </div>
                         </div>
 

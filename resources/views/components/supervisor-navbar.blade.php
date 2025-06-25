@@ -105,7 +105,7 @@
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
-                    'titulo' => 'Tiempos Extras y Cobertura de Turnos',
+                    'titulo' => 'Tiempos Extras',
                     'ruta' => route('sup.tiemposExtras'),
                     'icono' => '🕑',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
