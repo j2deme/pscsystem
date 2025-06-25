@@ -8,6 +8,7 @@ use App\Models\SolicitudBajas;
 use App\Models\SolicitudVacaciones;
 use App\Models\User;
 use App\Models\Punto;
+use App\Models\Subpunto;
 use App\Models\Asistencia;
 use App\Models\TiemposExtra;
 use App\Models\CubrirTurno;
