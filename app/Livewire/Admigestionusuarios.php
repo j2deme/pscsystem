@@ -54,9 +54,35 @@ class Admigestionusuarios extends Component
                 'AUX NOMINAS', 'Aux Nominas', 'Auxiliar nóminas'
             ]) ||
             Auth::user()->solicitudAlta->departamento == 'Recursos Humanos')) {
-            $baseQuery->where('punto', Auth()->user()->punto)
-                    ->where('empresa', Auth()->user()->empresa)
-                    ->where('rol', '!=', 'Supervisor');
+            $user = Auth::user();
+$puntoUsuarioRaw = $user->punto;
+$subpuntosZona = collect();
+
+// Intentar obtener el punto o subpunto
+$punto = \App\Models\Punto::where('nombre', $puntoUsuarioRaw)->first();
+
+if (!$punto) {
+    $subpunto = \App\Models\Subpunto::where('nombre', $puntoUsuarioRaw)->first()
+        ?? \App\Models\Subpunto::where('codigo', $puntoUsuarioRaw)->first();
+
+    if ($subpunto && $subpunto->zona) {
+        $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona)
+            ->pluck('nombre')
+            ->merge(
+                \App\Models\Subpunto::where('zona', $subpunto->zona)->pluck('codigo')
+            );
+    }
+}
+
+$baseQuery->where('empresa', $user->empresa)
+    ->where('rol', '!=', 'Supervisor')
+    ->where(function ($query) use ($user, $subpuntosZona) {
+        $query->where('punto', $user->punto);
+
+        if ($subpuntosZona->isNotEmpty()) {
+            $query->orWhereIn('punto', $subpuntosZona);
+        }
+    });
         }
 
         $users = $baseQuery->get();

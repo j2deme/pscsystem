@@ -978,43 +978,50 @@ public function finalizarAsistencia(Request $request)
         return view('supervisor.historialTiemposExtras', compact('tiemposExtras'));
     }
 
-    public function gestionUsuarios()
-    {
-        $user = Auth::user();
-        $puntoUsuarioRaw = $user->punto;
-        $subpuntosZona = collect();
+public function gestionUsuarios()
+{
+    $user = Auth::user();
+    $puntoUsuarioRaw = $user->punto;
+    $subpuntosZona = collect();
 
-        $punto = \App\Models\Punto::where('nombre', $puntoUsuarioRaw)->first();
+    Log::info("Punto del usuario: " . $puntoUsuarioRaw);
 
-        if (!$punto) {
-            $subpunto = \App\Models\Subpunto::where('nombre', $puntoUsuarioRaw)->first();
+    $punto = Punto::where('nombre', $puntoUsuarioRaw)->first();
 
-            if (!$subpunto) {
-                $subpunto = \App\Models\Subpunto::where('codigo', $puntoUsuarioRaw)->first();
+    if ($punto) {
+        Log::info("Es punto principal: " . $punto->nombre);
+    } else {
+        $subpunto = Subpunto::where('nombre', $puntoUsuarioRaw)->first()
+                  ?? Subpunto::where('codigo', $puntoUsuarioRaw)->first();
+
+        if ($subpunto) {
+            Log::info("Subpunto encontrado: " . $subpunto->nombre . " | Zona: " . $subpunto->zona);
+
+            if ($subpunto->zona) {
+                $subpuntosZona = Subpunto::where('zona', $subpunto->zona)->pluck('nombre');
+                Log::info("Subpuntos de la zona: ", $subpuntosZona->toArray());
             }
-
-            if ($subpunto && $subpunto->zona) {
-                $subpuntosZona = \App\Models\Subpunto::where('zona', $subpunto->zona)
-                    ->pluck('nombre')
-                    ->merge(
-                        \App\Models\Subpunto::where('zona', $subpunto->zona)->pluck('codigo')
-                    );
-            }
+        } else {
+            Log::warning("No se encontró subpunto ni por nombre ni por código.");
         }
-
-        $usuarios = \App\Models\User::where('empresa', $user->empresa)
-            ->where('estatus', 'Activo')
-            ->where('rol', '!=', 'Supervisor')
-            ->where(function ($query) use ($user, $subpuntosZona) {
-                $query->where('punto', $user->punto);
-                if ($subpuntosZona->isNotEmpty()) {
-                    $query->orWhereIn('punto', $subpuntosZona);
-                }
-            })
-            ->get();
-
-        return view('supervisor.gestionUsuarios', compact('usuarios'));
     }
+
+    $usuarios = User::where('empresa', $user->empresa)
+        ->where('estatus', 'Activo')
+        ->where('rol', '!=', 'Supervisor')
+        ->where(function ($query) use ($user, $subpuntosZona) {
+            $query->where('punto', $user->punto);
+            if ($subpuntosZona->isNotEmpty()) {
+                $query->orWhereIn('punto', $subpuntosZona);
+            }
+        })
+        ->get();
+
+    Log::info("Usuarios encontrados: " . $usuarios->count());
+
+    return view('supervisor.gestionUsuarios', compact('usuarios'));
+}
+
 
     public function coberturaTurnoForm($id){
         $elemento = User::find($id);
