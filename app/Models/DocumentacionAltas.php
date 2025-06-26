@@ -15,6 +15,7 @@ class DocumentacionAltas extends Model
         'arch_ine',
         'arch_comprobante_domicilio',
         'arch_rfc',
+        'arch_modificacion_salario',
         'arch_comprobante_estudios',
         'arch_carta_rec_laboral',
         'arch_carta_rec_personal',

@@ -85,7 +85,9 @@
                                 imssNombre: '{{ optional($user->documentacionAltas)->arch_acuse_imss ? basename($user->documentacionAltas->arch_acuse_imss) : '' }}',
                                 infonavitNombre: '{{ optional($user->documentacionAltas)->arch_retencion_infonavit ? basename($user->documentacionAltas->arch_retencion_infonavit) : '' }}',
                                 imssUrl: '{{ optional($user->documentacionAltas)->arch_acuse_imss ? asset($user->documentacionAltas->arch_acuse_imss) : '' }}',
-                                infonavitUrl: '{{ optional($user->documentacionAltas)->arch_retencion_infonavit ? asset($user->documentacionAltas->arch_retencion_infonavit) : '' }}'
+                                infonavitUrl: '{{ optional($user->documentacionAltas)->arch_retencion_infonavit ? asset($user->documentacionAltas->arch_retencion_infonavit) : '' }}',
+                                modificacionNombre: '{{ optional($user->documentacionAltas)->arch_modificacion_salario ? basename($user->documentacionAltas->arch_modificacion_salario) : '' }}',
+                                modificacionUrl: '{{ optional($user->documentacionAltas)->arch_modificacion_salario ? asset($user->documentacionAltas->arch_modificacion_salario) : '' }}',
                             })"
                             class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-500 mr-3">
                             Editar
@@ -183,6 +185,18 @@ function abrirModalCarga(solicitudId, datos = {}) {
                         ${datos.infonavitNombre ? `Archivo actual: <a href="${datos.infonavitUrl}" target="_blank" class="underline text-blue-600">${datos.infonavitNombre}</a>` : ''}
                     </p>
                 </div>
+                <div id="drop-modificacion" class="border-dashed border-2 border-blue-400 rounded-md p-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Modificación de Salario</label>
+                    <input type="file" id="file-modificacion" hidden>
+                    <button type="button"
+                            onclick="document.getElementById('file-modificacion').click()"
+                            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                        Seleccionar archivo
+                    </button>
+                    <p id="file-name-modificacion" class="mt-2 text-sm text-green-600">
+                        ${datos.modificacionNombre ? `Archivo actual: <a href="${datos.modificacionUrl}" target="_blank" class="underline text-blue-600">${datos.modificacionNombre}</a>` : ''}
+                    </p>
+                </div>
                 <div class="col-span-2 grid grid-cols-2 gap-4 mt-4">
                     <div>
                         <label for="input-sd" class="block text-gray-700 font-semibold mb-1">SD</label>
@@ -203,7 +217,8 @@ function abrirModalCarga(solicitudId, datos = {}) {
         didOpen: () => {
             const zonas = [
                 { zona: 'drop-imss', input: 'file-imss', label: 'file-name-imss' },
-                { zona: 'drop-infonavit', input: 'file-infonavit', label: 'file-name-infonavit' }
+                { zona: 'drop-infonavit', input: 'file-infonavit', label: 'file-name-infonavit' },
+                { zona: 'drop-modificacion', input: 'file-modificacion', label: 'file-name-modificacion' }
             ];
 
             zonas.forEach(({ zona, input, label }) => {
@@ -234,6 +249,7 @@ function abrirModalCarga(solicitudId, datos = {}) {
         preConfirm: () => {
             const fileImss = document.getElementById('file-imss').files[0];
             const fileInfonavit = document.getElementById('file-infonavit').files[0];
+            const fileModificacion = document.getElementById('file-modificacion').files[0];
             const sd = document.getElementById('input-sd').value;
             const sdi = document.getElementById('input-sdi').value;
 
@@ -243,6 +259,7 @@ function abrirModalCarga(solicitudId, datos = {}) {
             formData.append('sdi', sdi);
             if (fileImss) formData.append('arch_acuse_imss', fileImss);
             if (fileInfonavit) formData.append('arch_retencion_infonavit', fileInfonavit);
+            if (fileModificacion) formData.append('arch_modificacion_salario', fileModificacion);
 
             return fetch(`/actualizacion_documentacion/${solicitudId}`, {
                 method: 'POST',

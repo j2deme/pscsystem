@@ -22,16 +22,22 @@
                     'color' => 'bg-green-100 dark:bg-green-700'
                 ],
                 [
-                    'titulo' => 'Historial de Misiones',
+                    'titulo' => 'Formulario Post-Misión',
                     'ruta' => '#',
-                    'icono' => '🗂️',
-                    'color' => 'bg-indigo-100 dark:bg-indigo-700'
+                    'icono' => '📋',
+                    'color' => 'bg-blue-100 dark:bg-blue-700'
                 ],
                 [
                     'titulo' => 'Listado de Elementos',
                     'ruta' => '#',
                     'icono' => '📋',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
+                ],
+                [
+                    'titulo' => 'Historial de Misiones',
+                    'ruta' => '#',
+                    'icono' => '🗂️',
+                    'color' => 'bg-green-100 dark:bg-green-700'
                 ],
                 [
                     'titulo' => 'Buzón de Quejas y Sugerencias',

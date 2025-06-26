@@ -84,6 +84,7 @@ class AuxadminController extends Controller
             $request->validate([
                 'arch_acuse_imss' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
                 'arch_retencion_infonavit' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+                'arch_modificacion_salario' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
                 'sd' => 'nullable|numeric',
                 'sdi' => 'nullable|numeric',
             ]);
@@ -104,6 +105,7 @@ class AuxadminController extends Controller
             $archivos = [
                 'arch_acuse_imss',
                 'arch_retencion_infonavit',
+                'arch_modificacion_salario',
             ];
 
             Log::debug("Antes de guardar archivos de guardar: ID={$solDocs->id}");
