@@ -54,13 +54,6 @@
             'titulo' => 'Solicitar Vacaciones',
             'ruta' => route('user.solicitarVacacionesForm'),
             'icono' => '🎉',
-            'color' => 'bg-blue-100 dark:bg-blue-700',
-            'disabled' => Auth::user()->rol == 'admin'
-        ],
-        [
-            'titulo' => 'Mi Historial de Vacaciones',
-            'ruta' => route('user.historialVacaciones'),
-            'icono' => '📅',
             'color' => 'bg-green-100 dark:bg-green-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
@@ -69,6 +62,13 @@
             'ruta' => route('user.verFicha', auth()->user()->id),
             'icono' => '📝',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
+            'disabled' => Auth::user()->rol == 'admin'
+        ],
+        [
+            'titulo' => 'Mi Historial de Vacaciones',
+            'ruta' => route('user.historialVacaciones'),
+            'icono' => '📅',
+            'color' => 'bg-pink-100 dark:bg-pink-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
