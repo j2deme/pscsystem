@@ -138,6 +138,11 @@
                                 Editar
                             </a>
 
+                            <a href="{{ route('sup.solicitarVacacionesElementoForm', $user->id) }}"
+                                class="inline-block bg-yellow-300 text-gray-800 py-2 px-4 rounded-md hover:bg-yellow-400 transition">
+                                Generar Sol. Vacaciones
+                            </a>
+
                             <a href="{{ route('rh.descargarFicha', $user->id) }}"
                                 class="inline-block bg-blue-300 text-gray-800 py-2 px-4 rounded-md hover:bg-blue-400 transition">
                                 Descargar Ficha
