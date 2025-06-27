@@ -109,7 +109,7 @@
                         </button>
 
                         <div id="notificacionesDropdown"
-                            class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-gray-700 border rounded shadow-lg z-50 max-h-80 overflow-y-auto">
+                            class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-gray-700 border rounded shadow-lg z-50 max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600">
                             @forelse($notificacionesDocumentacion as $alerta)
                                 <div
                                     class="px-4 py-2 text-sm text-gray-800 dark:text-gray-100 border-b dark:border-gray-600">
