@@ -190,6 +190,11 @@ Route::middleware('auth')->group(function () {
 
     //Custodios
     Route::get('/nueva_mision', [CustodiosController::class, 'nuevaMisionForm'])->name('custodios.nuevaMisionForm');
+    Route::post('/agentes-disponibles', [CustodiosController::class, 'obtenerAgentesDisponibles']);
+    Route::post('/guardarMision', [CustodiosController::class, 'guardarMision'])->name('misiones.store');
+    Route::get('/misiones', [CustodiosController::class,'misionesIndex'])->name('custodios.misiones');
+    Route::get('/custodios', [CustodiosController::class, 'custodiosIndex'])->name('custodios.elementos');
+    Route::get('/historial_misiones', [CustodiosController::class, 'historialMisiones'])->name('custodios.historialMisiones');
 
 });
 

@@ -17,5 +17,6 @@ class Misiones extends Model
         'tipo_operacion',
         'num_vehiculos',
         'tipo_vehiculos',
+        'estatus',
     ];
 }

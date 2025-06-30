@@ -17,7 +17,7 @@
                 ],
                 [
                     'titulo' => 'Misiones Activas',
-                    'ruta' => '#',
+                    'ruta' => route('custodios.misiones'),
                     'icono' => '📝',
                     'color' => 'bg-green-100 dark:bg-green-700'
                 ],
@@ -29,13 +29,13 @@
                 ],
                 [
                     'titulo' => 'Listado de Elementos',
-                    'ruta' => '#',
+                    'ruta' => route('custodios.elementos'),
                     'icono' => '📋',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
                 [
                     'titulo' => 'Historial de Misiones',
-                    'ruta' => '#',
+                    'ruta' => route('custodios.historialMisiones'),
                     'icono' => '🗂️',
                     'color' => 'bg-green-100 dark:bg-green-700'
                 ],
