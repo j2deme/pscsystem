@@ -5,7 +5,7 @@
             $cards = [
                 [
                     'titulo' => 'Nueva Misión',
-                    'ruta' => '#',
+                    'ruta' => route('custodios.nuevaMisionForm'),
                     'icono' => '🚓',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
                 ],
@@ -22,7 +22,7 @@
                     'color' => 'bg-green-100 dark:bg-green-700'
                 ],
                 [
-                    'titulo' => 'Formulario Post-Misión',
+                    'titulo' => 'Formularios Post-Misión',
                     'ruta' => '#',
                     'icono' => '📋',
                     'color' => 'bg-blue-100 dark:bg-blue-700'

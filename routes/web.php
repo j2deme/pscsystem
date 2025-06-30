@@ -14,6 +14,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\MonitoreoController;
 use App\Http\Controllers\AuxadminController;
 use App\Http\Controllers\NominasController;
+use App\Http\Controllers\CustodiosController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -186,6 +187,9 @@ Route::middleware('auth')->group(function () {
 
         return response()->json(['ok' => true]);
     })->name('notificaciones.leer');
+
+    //Custodios
+    Route::get('/nueva_mision', [CustodiosController::class, 'nuevaMisionForm'])->name('custodios.nuevaMisionForm');
 
 });
 
