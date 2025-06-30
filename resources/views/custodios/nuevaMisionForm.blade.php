@@ -20,7 +20,7 @@
                         <select id="agentes" name="agentes_id[]" class="border p-2 w-full" multiple>
                             <option disabled>Selecciona fechas para ver agentes disponibles</option>
                         </select>
-                        <small class="text-gray-500">Usa Ctrl/Cmd para seleccionar varios</small>
+                        <small class="text-gray-500">Usa Ctrl + Clic para seleccionar varios</small>
                     </div>
 
                     <div class="mb-4">

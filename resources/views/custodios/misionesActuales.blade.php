@@ -34,6 +34,10 @@
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                     Estatus
                                 </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                    Acciones
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -59,6 +63,12 @@
                                             class="px-2 py-1 text-xs font-semibold leading-tight text-green-800 bg-green-200 rounded-full">
                                             En Curso
                                         </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap dark:text-gray-300">
+                                        <a href="#"
+                                            class="text-blue-600 hover:text-blue-900">
+                                            Ver PDF (Pendiente)
+                                        </a>
                                     </td>
                                 </tr>
                             @empty
