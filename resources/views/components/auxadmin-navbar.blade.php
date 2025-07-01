@@ -27,10 +27,32 @@
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
         ],
         [
-            'titulo' => 'Incapacidades',
+            'titulo' => 'Acuses de Bajas',
             'ruta' => '#',
-            'icono' => '🤕',
+            'icono' => '🗑',
             'color' => 'bg-red-100 dark:bg-red-700',
+            'disabled' => true,
+        ],
+        [
+            'titulo' => 'Confrontas IMSS/INFONAVIT',
+            'ruta' => '#',
+            'icono' => '🤝',
+            'color' => 'bg-green-100 dark:bg-green-700',
+            'disabled' => true,
+        ],
+        [
+            'titulo' => 'Cédulas',
+            'ruta' => '#',
+            'icono' => '📃',
+            'color' => 'bg-yellow-100 dark:bg-yellow-700',
+            'disabled' => true,
+        ],
+        [
+            'titulo' => 'Sipare',
+            'ruta' => '#',
+            'icono' => '📂',
+            'color' => 'bg-pink-100 dark:bg-pink-700',
+            'disabled' => true,
         ],
         [
             'titulo' => 'Gráficos',
@@ -45,9 +67,9 @@
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
         ],
         [
-            'titulo' => 'Historial de Incapacidades/Riesgos de Trabajo',
+            'titulo' => 'Incapacidades',
             'ruta' => '#',
-            'icono' => '📅',
+            'icono' => '🤕',
             'color' => 'bg-red-100 dark:bg-red-700',
         ],
         [
@@ -65,10 +87,16 @@
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
+            'titulo' => 'Historial de Incapacidades/Riesgos de Trabajo',
+            'ruta' => '#',
+            'icono' => '📅',
+            'color' => 'bg-red-100 dark:bg-red-700',
+        ],
+        [
             'titulo' => 'Mi Historial de Vacaciones',
             'ruta' => route('user.historialVacaciones'),
             'icono' => '📅',
-            'color' => 'bg-pink-100 dark:bg-pink-700',
+            'color' => 'bg-green-100 dark:bg-green-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
