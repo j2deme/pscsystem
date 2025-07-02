@@ -65,10 +65,14 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap dark:text-gray-300">
-                                        <a href="#"
-                                            class="text-blue-600 hover:text-blue-900">
-                                            Ver PDF (Pendiente)
-                                        </a>
+                                        @if ($mision->arch_mision)
+                                            <a href="{{ asset('storage/' . $mision->arch_mision) }}"
+                                                class="text-blue-600 hover:text-blue-900" target="_blank">
+                                                Ver PDF
+                                            </a>
+                                        @else
+                                            <span class="text-gray-500 italic">Sin PDF</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
@@ -83,10 +87,11 @@
                     </table>
                 @endif
                 <div class="flex justify-center">
-                    <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                    <a href="{{ route('dashboard') }}"
+                        class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
                         Regresar
                     </a>
                 </div>
+            </div>
         </div>
-    </div>
 </x-app-layout>

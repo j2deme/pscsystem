@@ -8,7 +8,9 @@ class Misiones extends Model
 {
     protected $fillable = [
         'agentes_id',
+        'nivel_amenaza',
         'tipo_servicio',
+        'nombre_clave',
         'ubicacion',
         'fecha_inicio',
         'fecha_fin',
@@ -17,6 +19,7 @@ class Misiones extends Model
         'tipo_operacion',
         'num_vehiculos',
         'tipo_vehiculos',
+        'arch_mision',
         'estatus',
     ];
 }

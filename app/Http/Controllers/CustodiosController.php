@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Misiones;
+use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
 class CustodiosController extends Controller
@@ -63,11 +65,13 @@ class CustodiosController extends Controller
         $request->validate([
             'agentes_id' => 'required|array',
             'agentes_id.*' => 'exists:users,id',
+            'nivel_amenaza' => 'nullable|string|max:255',
             'tipo_servicio' => 'required|string|max:255',
             'ubicacion' => 'required|string|max:255',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
             'cliente' => 'nullable|string|max:255',
+            'nombre_clave' => 'nullable|string|max:255',
             'pasajeros' => 'nullable|string|max:255',
             'tipo_operacion' => 'nullable|string|max:255',
             'num_vehiculos' => 'nullable|integer|min:0',
@@ -75,19 +79,36 @@ class CustodiosController extends Controller
             'tipo_vehiculos.*' => 'string|max:255',
         ]);
 
-        Misiones::create([
+        $mision = Misiones::create([
             'agentes_id' => json_encode($request->agentes_id),
+            'nivel_amenaza' => $request->nivel_amenaza,
             'tipo_servicio' => $request->tipo_servicio,
             'ubicacion' => $request->ubicacion,
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
             'cliente' => $request->cliente,
+            'nombre_clave' => $request->nombre_clave,
             'pasajeros' => $request->pasajeros,
             'tipo_operacion' => $request->tipo_operacion,
             'num_vehiculos' => $request->num_vehiculos,
             'tipo_vehiculos' => json_encode($request->tipo_vehiculos),
             'estatus' => 'Pendiente',
         ]);
+
+        $agentes = User::whereIn('id', $request->agentes_id)->get();
+
+        $pdf = Pdf::loadView('pdf.mision', [
+            'mision' => $mision,
+            'agentes' => $agentes,
+        ])
+        ->setPaper('a4', 'landscape');
+
+        $rutaRelativa = "misiones/{$mision->id}/archivo_mision.pdf";
+        Storage::makeDirectory("misiones/{$mision->id}");
+        Storage::put($rutaRelativa, $pdf->output());
+
+        $mision->arch_mision = $rutaRelativa;
+        $mision->save();
 
         return redirect()->route('dashboard')->with('success', 'Misión registrada exitosamente.');
     }

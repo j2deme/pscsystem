@@ -136,4 +136,8 @@ class AuxadminController extends Controller
         }
     }
 
+    public function confrontasForm(){
+        return view('auxadmin.confrontasForm');
+    }
+
 }

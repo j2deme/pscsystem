@@ -35,10 +35,9 @@
         ],
         [
             'titulo' => 'Confrontas IMSS/INFONAVIT',
-            'ruta' => '#',
+            'ruta' => route('aux.confrontas'),
             'icono' => '🤝',
             'color' => 'bg-green-100 dark:bg-green-700',
-            'disabled' => true,
         ],
         [
             'titulo' => 'Cédulas',

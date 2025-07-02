@@ -161,6 +161,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/subida_documentacion/{id}', [AuxadminController::class, 'guardarAcuses'])->name('documentacion.subir');
     Route::get('/listado_usuarios', [AuxadminController::class, 'listadoUsuarios'])->name('aux.usuariosList');
     Route::post('/actualizacion_documentacion/{id}', [AuxadminController::class, 'actualizarAcuses'])->name('documentacion.actualizar');
+    Route::get('/confrontas', [AuxadminController::class, 'confrontasForm'])->name('aux.confrontas');
 
     //Usuario nominas
     Route::get('/antiguedades', [NominasController::class, 'antiguedades'])->name('nominas.usersAntiguedades');

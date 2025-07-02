@@ -9,18 +9,28 @@
 
                     <div class="mb-4 mt-4">
                         <label for="fecha_inicio" class="block font-semibold mb-1">Fecha de Inicio</label>
-                        <input type="datetime-local" name="fecha_inicio" id="fecha_inicio"
-                            class="w-full p-2 border rounded-lg" onchange="actualizarAgentes()" required>
+                        <input type="date" name="fecha_inicio" id="fecha_inicio" class="w-full p-2 border rounded-lg"
+                            onchange="actualizarAgentes()" required>
 
-                            <label for="fecha_fin" class="block font-semibold mb-1">Fecha de Fin</label>
-                        <input type="datetime-local" name="fecha_fin" id="fecha_fin"
-                            class="w-full p-2 border rounded-lg" onchange="actualizarAgentes()" required>
+                        <label for="fecha_fin" class="block font-semibold mb-1">Fecha de Fin</label>
+                        <input type="date" name="fecha_fin" id="fecha_fin" class="w-full p-2 border rounded-lg"
+                            onchange="actualizarAgentes()" required>
 
-                            <label for="agentes_id" class="block font-semibold mb-1">Agentes Asignados</label>
+                        <label for="agentes_id" class="block font-semibold mb-1">Agentes Asignados</label>
                         <select id="agentes" name="agentes_id[]" class="border p-2 w-full" multiple>
                             <option disabled>Selecciona fechas para ver agentes disponibles</option>
                         </select>
                         <small class="text-gray-500">Usa Ctrl + Clic para seleccionar varios</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="nivel_amenaza" class="block font-semibold mb-1">Nivel de Amenaza</label>
+                        <select name="nivel_amenaza" id="nivel_amenaza" class="w-full p-2 border rounded-lg" required>
+                            <option value="" disabled selected>Selecciona un nivel</option>
+                            <option value="bajo">Bajo</option>
+                            <option value="medio">Medio</option>
+                            <option value="alto">Alto</option>
+                        </select>
                     </div>
 
                     <div class="mb-4">
@@ -36,12 +46,18 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="cliente" class="block font-semibold mb-1">Cliente (opcional)</label>
+                        <label for="nombre_clave" class="block font-semibold mb-1">Nombre Clave</label>
+                        <input type="text" name="nombre_clave" id="nombre_clave" class="w-full p-2 border rounded-lg"
+                            required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="cliente" class="block font-semibold mb-1">Cliente</label>
                         <input type="text" name="cliente" id="cliente" class="w-full p-2 border rounded-lg">
                     </div>
 
                     <div class="mb-4">
-                        <label for="pasajeros" class="block font-semibold mb-1">Pasajeros (opcional)</label>
+                        <label for="pasajeros" class="block font-semibold mb-1">Pasajeros</label>
                         <input type="text" name="pasajeros" id="pasajeros" class="w-full p-2 border rounded-lg">
                     </div>
 
@@ -72,10 +88,12 @@
                     </div>
 
                     <div class="mt-6 flex justify-center">
-                        <button type="submit" class="bg-blue-600 inline-block text-white py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                        <button type="submit"
+                            class="bg-blue-600 inline-block text-white py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
                             Registrar Misión
                         </button>
-                        <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                        <a href="{{ route('dashboard') }}"
+                            class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
                             Regresar
                         </a>
                     </div>
@@ -85,42 +103,42 @@
         </div>
     </div>
     <script>
-function actualizarAgentes() {
-    const inicio = document.getElementById('fecha_inicio').value;
-    const fin = document.getElementById('fecha_fin').value;
-    const select = document.getElementById('agentes');
+        function actualizarAgentes() {
+            const inicio = document.getElementById('fecha_inicio').value;
+            const fin = document.getElementById('fecha_fin').value;
+            const select = document.getElementById('agentes');
 
-    if (!inicio || !fin) return;
+            if (!inicio || !fin) return;
 
-    fetch('/agentes-disponibles', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-            fecha_inicio: inicio,
-            fecha_fin: fin
-        })
-    })
-    .then(res => res.json())
-    .then(agentes => {
-        select.innerHTML = '';
+            fetch('/agentes-disponibles', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        fecha_inicio: inicio,
+                        fecha_fin: fin
+                    })
+                })
+                .then(res => res.json())
+                .then(agentes => {
+                    select.innerHTML = '';
 
-        agentes.forEach(agente => {
-            const option = document.createElement('option');
-            option.value = agente.id;
-            option.textContent = agente.name;
+                    agentes.forEach(agente => {
+                        const option = document.createElement('option');
+                        option.value = agente.id;
+                        option.textContent = agente.name;
 
-            if (agente.ocupado) {
-                option.disabled = true;
-                option.textContent += ' (Ocupado)';
-            }
+                        if (agente.ocupado) {
+                            option.disabled = true;
+                            option.textContent += ' (Ocupado)';
+                        }
 
-            select.appendChild(option);
-        });
-    });
-}
-</script>
+                        select.appendChild(option);
+                    });
+                });
+        }
+    </script>
 
 </x-app-layout>
