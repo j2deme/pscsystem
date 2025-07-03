@@ -196,6 +196,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/misiones', [CustodiosController::class,'misionesIndex'])->name('custodios.misiones');
     Route::get('/custodios', [CustodiosController::class, 'custodiosIndex'])->name('custodios.elementos');
     Route::get('/historial_misiones', [CustodiosController::class, 'historialMisiones'])->name('custodios.historialMisiones');
+    Route::get('/misiones_terminadas', [CustodiosController::class, 'misionesTerminadas'])->name('custodios.misionesTerminadas');
 
 });
 

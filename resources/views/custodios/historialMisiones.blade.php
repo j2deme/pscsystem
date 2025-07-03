@@ -53,10 +53,10 @@
                                         {{ $mision->ubicacion }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                        {{ \Carbon\Carbon::parse($mision->fecha_inicio)->format('d/m/Y H:i') }}
+                                        {{ \Carbon\Carbon::parse($mision->fecha_inicio)->format('d/m/Y') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                        {{ \Carbon\Carbon::parse($mision->fecha_fin)->format('d/m/Y H:i') }}
+                                        {{ \Carbon\Carbon::parse($mision->fecha_fin)->format('d/m/Y') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                         <span

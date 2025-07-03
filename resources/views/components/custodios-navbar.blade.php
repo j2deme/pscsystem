@@ -22,15 +22,33 @@
                     'color' => 'bg-green-100 dark:bg-green-700'
                 ],
                 [
-                    'titulo' => 'Formularios Post-Misión',
+                    'titulo' => 'Solicitudes de  Misiones',
                     'ruta' => '#',
                     'icono' => '📋',
-                    'color' => 'bg-blue-100 dark:bg-blue-700'
+                    'color' => 'bg-blue-100 dark:bg-blue-700',
+                ],
+                [
+                    'titulo' => 'Formularios Post-Misión',
+                    'ruta' => route('custodios.misionesTerminadas'),
+                    'icono' => '📋',
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
                 [
                     'titulo' => 'Listado de Elementos',
                     'ruta' => route('custodios.elementos'),
                     'icono' => '📋',
+                    'color' => 'bg-green-100 dark:bg-green-700'
+                ],
+                [
+                    'titulo' => 'Solicitar Vacaciones',
+                    'ruta' => route('user.solicitarVacacionesForm'),
+                    'icono' => '🎉',
+                    'color' => 'bg-blue-100 dark:bg-blue-700'
+                ],
+                [
+                    'titulo' => 'Mi Historial de Vacaciones',
+                    'ruta' => route('user.historialVacaciones'),
+                    'icono' => '📅',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
                 [

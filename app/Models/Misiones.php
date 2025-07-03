@@ -12,6 +12,7 @@ class Misiones extends Model
         'tipo_servicio',
         'nombre_clave',
         'ubicacion',
+        'armados',
         'fecha_inicio',
         'fecha_fin',
         'cliente',
@@ -20,6 +21,11 @@ class Misiones extends Model
         'num_vehiculos',
         'tipo_vehiculos',
         'arch_mision',
+        'datos_hotel',
+        'datos_aeropuerto',
+        'datos_vuelo',
+        'datos_hospital',
+        'datos_embajada',
         'estatus',
     ];
 }

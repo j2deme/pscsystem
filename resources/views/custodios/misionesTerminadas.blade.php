@@ -3,7 +3,7 @@
     <div class="py-4 px-2 sm:py-6 sm:px-4">
         <div class="mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-                <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Misiones en Curso</h1>
+                <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Misiones Finalizadas</h1>
                 @if ($misiones->isEmpty())
                     <p class="text-gray-600 dark:text-gray-300">No hay misiones en curso actualmente.</p>
                 @else
@@ -79,7 +79,7 @@
                                 <tr>
                                     <td colspan="5"
                                         class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-300">
-                                        No hay misiones en curso actualmente.
+                                        No hay misiones finalizadas aún.
                                     </td>
                                 </tr>
                             @endforelse
@@ -87,11 +87,11 @@
                     </table>
                 @endif
                 <div class="flex justify-center">
-                    <a href="{{ route('dashboard') }}"
-                        class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                    <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
                         Regresar
                     </a>
                 </div>
             </div>
         </div>
+    </div>
 </x-app-layout>

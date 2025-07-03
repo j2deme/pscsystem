@@ -34,6 +34,15 @@
                     </div>
 
                     <div class="mb-4">
+                        <label for="armados" class="block font-semibold mb-1">Tipo de Agentes</label>
+                        <select name="armados" id="armados" class="w-full p-2 border rounded-lg" required>
+                            <option value="" disabled selected>Selecciona tipo</option>
+                            <option value="armado">Armados</option>
+                            <option value="desarmado">Desarmados</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
                         <label for="tipo_servicio" class="block font-semibold mb-1">Tipo de Servicio</label>
                         <input type="text" name="tipo_servicio" id="tipo_servicio"
                             class="w-full p-2 border rounded-lg" required>
@@ -85,6 +94,97 @@
                             <option value="Otro">Otro</option>
                         </select>
                         <small class="text-gray-500">Selecciona uno o varios</small>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="border rounded-lg p-4 bg-gray-100">
+                            <div class="flex justify-center">
+                                <h3 class="font-semibold text-lg mb-2">Datos del Hotel</h3>
+                            </div>
+                            <label class="block font-semibold mb-1">Nombre</label>
+                            <input type="text" name="hotel[nombre]" class="w-full p-2 border rounded-lg mb-2">
+                            <label class="block font-semibold mb-1">Dirección</label>
+                            <input type="text" name="hotel[direccion]" class="w-full p-2 border rounded-lg mb-2">
+                            <label class="block font-semibold mb-1">Teléfono</label>
+                            <input type="text" name="hotel[telefono]" class="w-full p-2 border rounded-lg">
+                        </div>
+
+                        <div class="border rounded-lg p-4 bg-gray-100">
+                            <div class="flex justify-center">
+                                <h3 class="font-semibold text-lg mb-2">Datos del Hospital</h3>
+                            </div>
+                            <label class="block font-semibold mb-1">Nombre</label>
+                            <input type="text" name="hospital[nombre]" class="w-full p-2 border rounded-lg mb-2">
+                            <label class="block font-semibold mb-1">Dirección</label>
+                            <input type="text" name="hospital[direccion]"
+                                class="w-full p-2 border rounded-lg mb-2">
+                            <label class="block font-semibold mb-1">Teléfono</label>
+                            <input type="text" name="hospital[telefono]" class="w-full p-2 border rounded-lg">
+                        </div>
+
+                        <div class="border rounded-lg p-4 bg-gray-100">
+                            <div class="flex justify-center">
+                                <h3 class="font-semibold text-lg mb-2">Datos de la Embajada</h3>
+                            </div>
+                            <label class="block font-semibold mb-1">Nombre</label>
+                            <input type="text" name="embajada[nombre]" class="w-full p-2 border rounded-lg mb-2">
+                            <label class="block font-semibold mb-1">Dirección</label>
+                            <input type="text" name="embajada[direccion]"
+                                class="w-full p-2 border rounded-lg mb-2">
+                            <label class="block font-semibold mb-1">Teléfono</label>
+                            <input type="text" name="embajada[telefono]" class="w-full p-2 border rounded-lg">
+                        </div>
+                        <div class="border rounded-lg p-4 bg-gray-100">
+                            <div class="flex justify-center">
+                                <h3 class="font-semibold text-lg mb-2">Datos de Aeropuerto</h3>
+                            </div>
+                                <label class="block font-semibold mb-1">Nombre</label>
+                            <input type="text" name="aeropuerto[nombre]"
+                                class="w-full p-2 border rounded-lg mb-2">
+                            <label class="block font-semibold mb-1">Dirección</label>
+                            <input type="text" name="aeropuerto[direccion]"
+                                class="w-full p-2 border rounded-lg mb-2">
+                            <label class="block font-semibold mb-1">Teléfono</label>
+                            <input type="text" name="aeropuerto[telefono]" class="w-full p-2 border rounded-lg">
+                        </div>
+
+                        <div class="md:col-span-2 border rounded-lg p-4 bg-gray-100">
+                            <div class="flex justify-center">
+                                <h3 class="font-semibold text-lg mb-2">Datos del Vuelo</h3>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block font-semibold mb-1">Fecha</label>
+                                    <input type="date" name="vuelo[fecha]" class="w-full p-2 border rounded-lg">
+                                </div>
+
+                                <div>
+                                    <label class="block font-semibold mb-1">Flight</label>
+                                    <input type="text" name="vuelo[flight]" class="w-full p-2 border rounded-lg">
+                                </div>
+
+                                <div>
+                                    <label class="block font-semibold mb-1">Hora</label>
+                                    <input type="time" name="vuelo[hora]" class="w-full p-2 border rounded-lg">
+                                </div>
+
+                                <div>
+                                    <label class="block font-semibold mb-1">Pax</label>
+                                    <input type="text" name="vuelo[pax]" class="w-full p-2 border rounded-lg">
+                                </div>
+
+                                <div>
+                                    <label class="block font-semibold mb-1">Evento</label>
+                                    <input type="text" name="vuelo[evento]" class="w-full p-2 border rounded-lg">
+                                </div>
+
+                                <div>
+                                    <label class="block font-semibold mb-1">Aeropuerto</label>
+                                    <input type="text" name="vuelo[aeropuerto]"
+                                        class="w-full p-2 border rounded-lg">
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mt-6 flex justify-center">

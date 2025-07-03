@@ -77,8 +77,31 @@ class CustodiosController extends Controller
             'num_vehiculos' => 'nullable|integer|min:0',
             'tipo_vehiculos' => 'nullable|array',
             'tipo_vehiculos.*' => 'string|max:255',
-        ]);
+            'armados' => 'nullable|string|in:armado,desarmado',
 
+            'hotel.nombre' => 'nullable|string|max:255',
+            'hotel.direccion' => 'nullable|string|max:255',
+            'hotel.telefono' => 'nullable|string|max:100',
+
+            'aeropuerto.nombre' => 'nullable|string|max:255',
+            'aeropuerto.direccion' => 'nullable|string|max:255',
+            'aeropuerto.telefono' => 'nullable|string|max:100',
+
+            'vuelo.fecha' => 'nullable|date',
+            'vuelo.hora' => 'nullable',
+            'vuelo.evento' => 'nullable|string|max:255',
+            'vuelo.aeropuerto' => 'nullable|string|max:255',
+            'vuelo.flight' => 'nullable|string|max:255',
+            'vuelo.pax' => 'nullable|string|max:255',
+
+            'hospital.nombre' => 'nullable|string|max:255',
+            'hospital.direccion' => 'nullable|string|max:255',
+            'hospital.telefono' => 'nullable|string|max:100',
+
+            'embajada.nombre' => 'nullable|string|max:255',
+            'embajada.direccion' => 'nullable|string|max:255',
+            'embajada.telefono' => 'nullable|string|max:100',
+        ]);
         $mision = Misiones::create([
             'agentes_id' => json_encode($request->agentes_id),
             'nivel_amenaza' => $request->nivel_amenaza,
@@ -92,6 +115,12 @@ class CustodiosController extends Controller
             'tipo_operacion' => $request->tipo_operacion,
             'num_vehiculos' => $request->num_vehiculos,
             'tipo_vehiculos' => json_encode($request->tipo_vehiculos),
+            'armados' => $request->armados,
+            'datos_hotel' => json_encode($request->input('hotel', [])),
+            'datos_aeropuerto' => json_encode($request->input('aeropuerto', [])),
+            'datos_vuelo' => json_encode($request->input('vuelo', [])),
+            'datos_hospital' => json_encode($request->input('hospital', [])),
+            'datos_embajada' => json_encode($request->input('embajada', [])),
             'estatus' => 'Pendiente',
         ]);
 
@@ -116,6 +145,13 @@ class CustodiosController extends Controller
     public function historialMisiones(){
         $misiones = Misiones::paginate(10);
         return view('custodios.historialMisiones', compact('misiones'));
+    }
+
+    public function misionesTerminadas(){
+        $misiones = Misiones::where('estatus', 'Terminada')
+            ->where('fecha_fin', '<', Carbon::now())
+            ->paginate(10);
+        return view('custodios.misionesTerminadas', compact('misiones'));
     }
 
 }
