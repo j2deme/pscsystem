@@ -64,6 +64,13 @@
                     'color' => 'bg-purple-100 dark:bg-purple-700',
                     'disabled' => Auth::user()->rol=='admin'
                 ],
+                [
+                    'titulo' => 'Ficha Técnica',
+                    'ruta' => route('user.verFicha', auth()->user()->id),
+                    'icono' => '📝',
+                    'color' => 'bg-yellow-100 dark:bg-yellow-700',
+                    'disabled' => Auth::user()->rol == 'admin'
+                ],
             ];
         @endphp
 
