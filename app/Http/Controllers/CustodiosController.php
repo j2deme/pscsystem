@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Misiones;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Geocoder\Laravel\Facades\Geocoder;
 
 class CustodiosController extends Controller
 {
@@ -61,13 +63,16 @@ class CustodiosController extends Controller
         return response()->json($agentesDisponibles);
     }
 
-    public function guardarMision(Request $request){
+    public function guardarMision(Request $request)
+    {
         $request->validate([
             'agentes_id' => 'required|array',
             'agentes_id.*' => 'exists:users,id',
             'nivel_amenaza' => 'nullable|string|max:255',
             'tipo_servicio' => 'required|string|max:255',
             'ubicacion' => 'required|string|max:255',
+            'latitud' => 'nullable|numeric',
+            'longitud' => 'nullable|numeric',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
             'cliente' => 'nullable|string|max:255',
@@ -102,11 +107,32 @@ class CustodiosController extends Controller
             'embajada.direccion' => 'nullable|string|max:255',
             'embajada.telefono' => 'nullable|string|max:100',
         ]);
+
+        $lat = $request->latitud;
+        $lng = $request->longitud;
+
+        if (!$lat || !$lng) {
+            Log::info('No se ingresaron coordenadas manuales. Intentando geocodificar:', ['direccion' => $request->ubicacion]);
+
+            $geo = Geocoder::geocode($request->ubicacion)->get()->first();
+
+            if ($geo && $geo->getCoordinates()) {
+                $lat = $geo->getCoordinates()->getLatitude();
+                $lng = $geo->getCoordinates()->getLongitude();
+                Log::info('Coordenadas obtenidas por geocoder:', ['lat' => $lat, 'lng' => $lng]);
+            } else {
+                Log::warning('No se pudieron obtener coordenadas para la dirección:', ['direccion' => $request->ubicacion]);
+                return back()->withInput()->with('error', 'No se pudo obtener coordenadas de la ubicación ingresada.');
+            }
+        }
+
         $mision = Misiones::create([
             'agentes_id' => json_encode($request->agentes_id),
             'nivel_amenaza' => $request->nivel_amenaza,
             'tipo_servicio' => $request->tipo_servicio,
             'ubicacion' => $request->ubicacion,
+            'lat' => $lat,
+            'lng' => $lng,
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
             'cliente' => $request->cliente,
@@ -129,8 +155,7 @@ class CustodiosController extends Controller
         $pdf = Pdf::loadView('pdf.mision', [
             'mision' => $mision,
             'agentes' => $agentes,
-        ])
-        ->setPaper('a4', 'landscape');
+        ])->setPaper('a4', 'landscape');
 
         $rutaRelativa = "misiones/{$mision->id}/archivo_mision.pdf";
         Storage::makeDirectory("misiones/{$mision->id}");

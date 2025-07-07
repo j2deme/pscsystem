@@ -86,6 +86,7 @@
                     <h3 class="text-lg font-semibold mb-4">Documentación</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
                         @foreach([
+                            'arch_solicitud_empleo' => 'Solicitud de Empleo',
                             'arch_acta_nacimiento' => 'Acta de Nacimiento',
                             'arch_curp' => 'CURP',
                             'arch_ine' => 'INE',

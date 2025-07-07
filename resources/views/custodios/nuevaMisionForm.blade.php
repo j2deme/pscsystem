@@ -6,7 +6,6 @@
                 <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Nueva Misión</h1>
                 <form action="{{ route('misiones.store') }}" method="POST">
                     @csrf
-
                     <div class="mb-4 mt-4">
                         <label for="fecha_inicio" class="block font-semibold mb-1">Fecha de Inicio</label>
                         <input type="date" name="fecha_inicio" id="fecha_inicio" class="w-full p-2 border rounded-lg"
@@ -49,9 +48,21 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="ubicacion" class="block font-semibold mb-1">Ubicación</label>
-                        <input type="text" name="ubicacion" id="ubicacion" class="w-full p-2 border rounded-lg"
-                            required>
+                        <label class="block font-semibold mb-1">Dirección</label>
+                        <input type="text" name="ubicacion" class="w-full p-2 border rounded-lg"
+                            placeholder="Ej. Calle X, Ciudad, Estado">
+                        <small class="text-gray-500">O ingresa latitud y longitud directamente:</small>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-semibold mb-1">Latitud</label>
+                            <input type="text" name="latitud" class="w-full p-2 border rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block font-semibold mb-1">Longitud</label>
+                            <input type="text" name="longitud" class="w-full p-2 border rounded-lg">
+                        </div>
                     </div>
 
                     <div class="mb-4">
@@ -138,7 +149,7 @@
                             <div class="flex justify-center">
                                 <h3 class="font-semibold text-lg mb-2">Datos de Aeropuerto</h3>
                             </div>
-                                <label class="block font-semibold mb-1">Nombre</label>
+                            <label class="block font-semibold mb-1">Nombre</label>
                             <input type="text" name="aeropuerto[nombre]"
                                 class="w-full p-2 border rounded-lg mb-2">
                             <label class="block font-semibold mb-1">Dirección</label>

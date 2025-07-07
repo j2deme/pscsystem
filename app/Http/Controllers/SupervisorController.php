@@ -128,6 +128,7 @@ class SupervisorController extends Controller
 {
     $request->validate([
         'arch_acta_nacimiento' => 'nullable|file',
+        'arch_solicitud_empleo' => 'nullable|file',
         'arch_curp' => 'nullable|file',
         'arch_ine' => 'nullable|file',
         'arch_comprobante_domicilio' => 'nullable|file',
@@ -164,6 +165,7 @@ class SupervisorController extends Controller
         'arch_licencia_conducir',
         'arch_carta_no_penales',
         'arch_foto',
+        'arch_solicitud_empleo',
         'visa',
         'pasaporte',
     ];
@@ -353,6 +355,7 @@ class SupervisorController extends Controller
             'arch_licencia_conducir',
             'arch_carta_no_penales',
             'arch_foto',
+            'arch_solicitud_empleo',
             'visa',
             'pasaporte',
         ];

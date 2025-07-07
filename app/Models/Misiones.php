@@ -26,6 +26,8 @@ class Misiones extends Model
         'datos_vuelo',
         'datos_hospital',
         'datos_embajada',
+        'lat',
+        'lng',
         'estatus',
     ];
 }
