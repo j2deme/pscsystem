@@ -71,6 +71,13 @@
                     'color' => 'bg-yellow-100 dark:bg-yellow-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
+                [
+                    'titulo' => 'Mensajes',
+                    'ruta' => route('custodios.mensajes'),
+                    'icono' => '💬',
+                    'color' => 'bg-purple-100 dark:bg-purple-700',
+                    'disabled' => Auth::user()->rol == 'admin'
+                ],
             ];
         @endphp
 

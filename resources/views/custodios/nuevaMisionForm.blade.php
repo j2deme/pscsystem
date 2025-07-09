@@ -3,6 +3,7 @@
     <div class="py-4 px-2 sm:py-6 sm:px-4">
         <div class="mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+
                 <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Nueva Misión</h1>
                 <form action="{{ route('misiones.store') }}" method="POST">
                     @csrf
@@ -47,25 +48,33 @@
                             class="w-full p-2 border rounded-lg" required>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block font-semibold mb-1">Dirección</label>
-                        <input type="text" name="ubicacion" class="w-full p-2 border rounded-lg"
-                            placeholder="Ej. Calle X, Ciudad, Estado">
-                        <small class="text-gray-500">O ingresa latitud y longitud directamente:</small>
-                    </div>
+                    <div id="ubicaciones-container" class="mb-6 space-y-4">
+    <div class="ubicacion-item border p-4 rounded bg-gray-50">
+        <label class="block font-semibold mb-1">Dirección</label>
+        <input type="text" name="ubicaciones[0][direccion]" class="w-full p-2 border rounded-lg mb-2"
+            placeholder="Ej. Calle X, Ciudad, Estado">
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block font-semibold mb-1">Latitud</label>
-                            <input type="text" name="latitud" class="w-full p-2 border rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block font-semibold mb-1">Longitud</label>
-                            <input type="text" name="longitud" class="w-full p-2 border rounded-lg">
-                        </div>
-                    </div>
+        <small class="text-gray-500">O ingresa latitud y longitud directamente:</small>
 
-                    <div class="mb-4">
+        <div class="grid grid-cols-2 gap-4 mt-2">
+            <div>
+                <label class="block font-semibold mb-1">Latitud</label>
+                <input type="text" name="ubicaciones[0][latitud]" class="w-full p-2 border rounded-lg">
+            </div>
+            <div>
+                <label class="block font-semibold mb-1">Longitud</label>
+                <input type="text" name="ubicaciones[0][longitud]" class="w-full p-2 border rounded-lg">
+            </div>
+        </div>
+    </div>
+</div>
+
+<button type="button" onclick="agregarUbicacion()"
+    class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+    + Agregar otra ubicación
+</button>
+
+                    <div class="mb-4 mt-4">
                         <label for="nombre_clave" class="block font-semibold mb-1">Nombre Clave</label>
                         <input type="text" name="nombre_clave" id="nombre_clave" class="w-full p-2 border rounded-lg"
                             required>
@@ -200,7 +209,7 @@
 
                     <div class="mt-6 flex justify-center">
                         <button type="submit"
-                            class="bg-blue-600 inline-block text-white py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                            class="bg-blue-600 inline-block text-white py-2 px-4 rounded-md hover:bg-blue-800 mr-2 mb-2">
                             Registrar Misión
                         </button>
                         <a href="{{ route('dashboard') }}"
@@ -251,5 +260,35 @@
                 });
         }
     </script>
+    <script>
+    let ubicacionIndex = 1;
+
+    function agregarUbicacion() {
+        const container = document.getElementById('ubicaciones-container');
+        const nuevaUbicacion = document.createElement('div');
+        nuevaUbicacion.className = 'ubicacion-item border p-4 rounded bg-gray-50';
+
+        nuevaUbicacion.innerHTML = `
+            <label class="block font-semibold mb-1">Dirección</label>
+            <input type="text" name="ubicaciones[${ubicacionIndex}][direccion]" class="w-full p-2 border rounded-lg mb-2"
+                placeholder="Ej. Calle X, Ciudad, Estado">
+
+            <small class="text-gray-500">O ingresa latitud y longitud directamente:</small>
+
+            <div class="grid grid-cols-2 gap-4 mt-2">
+                <div>
+                    <label class="block font-semibold mb-1">Latitud</label>
+                    <input type="text" name="ubicaciones[${ubicacionIndex}][latitud]" class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Longitud</label>
+                    <input type="text" name="ubicaciones[${ubicacionIndex}][longitud]" class="w-full p-2 border rounded-lg">
+                </div>
+            </div>
+        `;
+        container.appendChild(nuevaUbicacion);
+        ubicacionIndex++;
+    }
+</script>
 
 </x-app-layout>

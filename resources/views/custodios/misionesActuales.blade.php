@@ -49,8 +49,10 @@
                                     <td class="px-6 py-4 whitespace-nowrap dark:text-gray-300">
                                         {{ $mision->tipo_servicio }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap dark:text-gray-300">
-                                        {{ $mision->ubicacion }}
+                                    <td class="px-6 py-4 whitespace-normal break-words dark:text-gray-300" style="max-width: 250px;">
+                                            @foreach ($mision->ubicacion as $ubicacion)
+                                                {{ $ubicacion['direccion'] }}<br>
+                                            @endforeach
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                         {{ \Carbon\Carbon::parse($mision->fecha_inicio)->format('d/m/Y') }}

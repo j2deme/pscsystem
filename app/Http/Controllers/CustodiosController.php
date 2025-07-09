@@ -64,75 +64,96 @@ class CustodiosController extends Controller
     }
 
     public function guardarMision(Request $request)
-    {
-        $request->validate([
-            'agentes_id' => 'required|array',
-            'agentes_id.*' => 'exists:users,id',
-            'nivel_amenaza' => 'nullable|string|max:255',
-            'tipo_servicio' => 'required|string|max:255',
-            'ubicacion' => 'required|string|max:255',
-            'latitud' => 'nullable|numeric',
-            'longitud' => 'nullable|numeric',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'cliente' => 'nullable|string|max:255',
-            'nombre_clave' => 'nullable|string|max:255',
-            'pasajeros' => 'nullable|string|max:255',
-            'tipo_operacion' => 'nullable|string|max:255',
-            'num_vehiculos' => 'nullable|integer|min:0',
-            'tipo_vehiculos' => 'nullable|array',
-            'tipo_vehiculos.*' => 'string|max:255',
-            'armados' => 'nullable|string|in:armado,desarmado',
+{
+    $request->validate([
+        'agentes_id' => 'required|array',
+        'agentes_id.*' => 'exists:users,id',
+        'nivel_amenaza' => 'nullable|string|max:255',
+        'tipo_servicio' => 'required|string|max:255',
 
-            'hotel.nombre' => 'nullable|string|max:255',
-            'hotel.direccion' => 'nullable|string|max:255',
-            'hotel.telefono' => 'nullable|string|max:100',
+        'ubicaciones' => 'required|array|min:1',
+        'ubicaciones.*.direccion' => 'nullable|string',
+        'ubicaciones.*.latitud' => 'nullable|numeric',
+        'ubicaciones.*.longitud' => 'nullable|numeric',
 
-            'aeropuerto.nombre' => 'nullable|string|max:255',
-            'aeropuerto.direccion' => 'nullable|string|max:255',
-            'aeropuerto.telefono' => 'nullable|string|max:100',
+        'fecha_inicio' => 'required|date',
+        'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
+        'cliente' => 'nullable|string|max:255',
+        'nombre_clave' => 'nullable|string|max:255',
+        'pasajeros' => 'nullable|string|max:255',
+        'tipo_operacion' => 'nullable|string|max:255',
+        'num_vehiculos' => 'nullable|integer|min:0',
+        'tipo_vehiculos' => 'nullable|array',
+        'tipo_vehiculos.*' => 'string|max:255',
+        'armados' => 'nullable|string|in:armado,desarmado',
 
-            'vuelo.fecha' => 'nullable|date',
-            'vuelo.hora' => 'nullable',
-            'vuelo.evento' => 'nullable|string|max:255',
-            'vuelo.aeropuerto' => 'nullable|string|max:255',
-            'vuelo.flight' => 'nullable|string|max:255',
-            'vuelo.pax' => 'nullable|string|max:255',
+        'hotel.nombre' => 'nullable|string|max:255',
+        'hotel.direccion' => 'nullable|string|max:255',
+        'hotel.telefono' => 'nullable|string|max:100',
 
-            'hospital.nombre' => 'nullable|string|max:255',
-            'hospital.direccion' => 'nullable|string|max:255',
-            'hospital.telefono' => 'nullable|string|max:100',
+        'aeropuerto.nombre' => 'nullable|string|max:255',
+        'aeropuerto.direccion' => 'nullable|string|max:255',
+        'aeropuerto.telefono' => 'nullable|string|max:100',
 
-            'embajada.nombre' => 'nullable|string|max:255',
-            'embajada.direccion' => 'nullable|string|max:255',
-            'embajada.telefono' => 'nullable|string|max:100',
-        ]);
+        'vuelo.fecha' => 'nullable|date',
+        'vuelo.hora' => 'nullable',
+        'vuelo.evento' => 'nullable|string|max:255',
+        'vuelo.aeropuerto' => 'nullable|string|max:255',
+        'vuelo.flight' => 'nullable|string|max:255',
+        'vuelo.pax' => 'nullable|string|max:255',
 
-        $lat = $request->latitud;
-        $lng = $request->longitud;
+        'hospital.nombre' => 'nullable|string|max:255',
+        'hospital.direccion' => 'nullable|string|max:255',
+        'hospital.telefono' => 'nullable|string|max:100',
+
+        'embajada.nombre' => 'nullable|string|max:255',
+        'embajada.direccion' => 'nullable|string|max:255',
+        'embajada.telefono' => 'nullable|string|max:100',
+    ]);
+
+    $ubicacionesProcesadas = [];
+
+    foreach ($request->ubicaciones as $index => $ubicacion) {
+        $direccion = $ubicacion['direccion'];
+        $lat = $ubicacion['latitud'] ?? null;
+        $lng = $ubicacion['longitud'] ?? null;
 
         if (!$lat || !$lng) {
-            Log::info('No se ingresaron coordenadas manuales. Intentando geocodificar:', ['direccion' => $request->ubicacion]);
+            Log::info("Geocodificando dirección #$index", ['direccion' => $direccion]);
 
-            $geo = Geocoder::geocode($request->ubicacion)->get()->first();
+            try {
+                $geo = Geocoder::geocode($direccion)->get()->first();
 
-            if ($geo && $geo->getCoordinates()) {
-                $lat = $geo->getCoordinates()->getLatitude();
-                $lng = $geo->getCoordinates()->getLongitude();
-                Log::info('Coordenadas obtenidas por geocoder:', ['lat' => $lat, 'lng' => $lng]);
-            } else {
-                Log::warning('No se pudieron obtener coordenadas para la dirección:', ['direccion' => $request->ubicacion]);
-                return back()->withInput()->with('error', 'No se pudo obtener coordenadas de la ubicación ingresada.');
+                if ($geo && $geo->getCoordinates()) {
+                    $lat = $geo->getCoordinates()->getLatitude();
+                    $lng = $geo->getCoordinates()->getLongitude();
+                    Log::info("Coordenadas #$index obtenidas", ['lat' => $lat, 'lng' => $lng]);
+                } else {
+                    Log::warning("No se pudo geocodificar dirección #$index", ['direccion' => $direccion]);
+                    return back()->withInput()->with('error', "No se pudo obtener coordenadas para la dirección: $direccion");
+                }
+            } catch (\Exception $e) {
+                Log::error("Error geocodificando dirección #$index", [
+                    'direccion' => $direccion,
+                    'message' => $e->getMessage(),
+                ]);
+                return back()->withInput()->with('error', "Error geocodificando la dirección: $direccion");
             }
         }
 
+        $ubicacionesProcesadas[] = [
+            'direccion' => $direccion,
+            'latitud' => $lat,
+            'longitud' => $lng,
+        ];
+    }
+
+    try {
         $mision = Misiones::create([
             'agentes_id' => json_encode($request->agentes_id),
             'nivel_amenaza' => $request->nivel_amenaza,
             'tipo_servicio' => $request->tipo_servicio,
-            'ubicacion' => $request->ubicacion,
-            'lat' => $lat,
-            'lng' => $lng,
+            'ubicacion' => $ubicacionesProcesadas, // ya es array, Laravel lo serializa como JSON
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
             'cliente' => $request->cliente,
@@ -149,23 +170,34 @@ class CustodiosController extends Controller
             'datos_embajada' => json_encode($request->input('embajada', [])),
             'estatus' => 'Pendiente',
         ]);
-
-        $agentes = User::whereIn('id', $request->agentes_id)->get();
-
-        $pdf = Pdf::loadView('pdf.mision', [
-            'mision' => $mision,
-            'agentes' => $agentes,
-        ])->setPaper('a4', 'landscape');
-
-        $rutaRelativa = "misiones/{$mision->id}/archivo_mision.pdf";
-        Storage::makeDirectory("misiones/{$mision->id}");
-        Storage::put($rutaRelativa, $pdf->output());
-
-        $mision->arch_mision = $rutaRelativa;
-        $mision->save();
-
-        return redirect()->route('dashboard')->with('success', 'Misión registrada exitosamente.');
+    } catch (\Exception $e) {
+        Log::error('Error al guardar misión:', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'ubicaciones' => $ubicacionesProcesadas,
+        ]);
+        return back()->withInput()->with('error', 'Ocurrió un error al guardar la misión.');
     }
+
+    $agentes = User::whereIn('id', $request->agentes_id)->get();
+
+    $pdf = Pdf::loadView('pdf.mision', [
+        'mision' => $mision,
+        'agentes' => $agentes,
+    ])->setPaper('a4', 'landscape');
+
+    $rutaRelativa = "misiones/{$mision->id}/archivo_mision.pdf";
+    Storage::makeDirectory("misiones/{$mision->id}");
+    Storage::put($rutaRelativa, $pdf->output());
+
+    $mision->arch_mision = $rutaRelativa;
+    $mision->save();
+
+    Log::info('Misión registrada exitosamente', ['id' => $mision->id]);
+
+    return redirect()->route('dashboard')->with('success', 'Misión registrada exitosamente.');
+}
+
 
     public function historialMisiones(){
         $misiones = Misiones::paginate(10);
@@ -177,6 +209,10 @@ class CustodiosController extends Controller
             ->where('fecha_fin', '<', Carbon::now())
             ->paginate(10);
         return view('custodios.misionesTerminadas', compact('misiones'));
+    }
+
+    public function mensajesIndex(){
+        return view('custodios.mensajes');
     }
 
 }
