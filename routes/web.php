@@ -15,6 +15,7 @@ use App\Http\Controllers\MonitoreoController;
 use App\Http\Controllers\AuxadminController;
 use App\Http\Controllers\NominasController;
 use App\Http\Controllers\CustodiosController;
+use App\Http\Controllers\ChatWebController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -197,7 +198,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/custodios', [CustodiosController::class, 'custodiosIndex'])->name('custodios.elementos');
     Route::get('/historial_misiones', [CustodiosController::class, 'historialMisiones'])->name('custodios.historialMisiones');
     Route::get('/misiones_terminadas', [CustodiosController::class, 'misionesTerminadas'])->name('custodios.misionesTerminadas');
-    Route::get('mensajes', [CustodiosController::class,'mensajesIndex'])->name('custodios.mensajes');
+    //Route::get('mensajes', [CustodiosController::class,'mensajesIndex'])->name('custodios.mensajes');
+
+    //Mensajería
+    Route::get('/mensajes/nuevo', [ChatWebController::class, 'crear'])->name('mensajes.crearChat');
+    Route::post('/mensajes/nuevo', [ChatWebController::class, 'storeConversacion'])->name('mensajes.nueva');
+    Route::get('/mensajes', [ChatWebController::class, 'index'])->name('mensajes.index');
+    Route::get('/mensajes/{conversation}', [ChatWebController::class, 'show'])->name('mensajes.show');
+    Route::post('/mensajes/enviar', [ChatWebController::class, 'storeMensaje'])->name('mensajes.store');
+
 
 });
 
