@@ -16,13 +16,12 @@ class MensajesChat extends Component
 
     public function cargarConversacion($id)
     {
-        $this->conversation = Conversation::with(['messages.user', 'users'])->find($id);
+        $this->conversation = Conversation::with([
+            'messages.user',
+            'users.documentacionAltas'
+        ])->find($id);
 
-        if ($this->conversation) {
-            $this->messages = $this->conversation->messages->toArray();
-        } else {
-            $this->messages = [];
-        }
+        $this->messages = $this->conversation->messages->toArray();
     }
 
     public function enviarMensaje()

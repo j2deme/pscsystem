@@ -1,10 +1,8 @@
 <div>
     @if ($conversation)
         @php
-            $otro = collect($conversation['users'])
-                ->where('id', '!=', auth()->id())
-                ->first();
-            $foto = $otro['documentacion_altas']['arch_foto'] ?? null;
+            $otro = $conversation->users->where('id', '!=', auth()->id())->first();
+            $foto = $otro?->documentacionAltas?->arch_foto;
             $foto_url = $foto ? asset($foto) : asset('images/default-user.jpg');
         @endphp
 
