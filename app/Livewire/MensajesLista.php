@@ -66,6 +66,23 @@ class MensajesLista extends Component
         $this->dispatch('conversacionSeleccionada', id: $conversationId);
     }
 
+    public function eliminarConversacion($id)
+    {
+        $conv = Conversation::with('messages')->find($id);
+
+        if (!$conv || !$conv->users->pluck('id')->contains(auth()->id())) {
+            return;
+        }
+
+        $conv->messages()->delete();
+        $conv->users()->detach();
+        $conv->delete();
+
+        $this->cargarConversaciones();
+        $this->dispatch('conversacionSeleccionada', id: null);
+    }
+
+
     public function toggleBuscador()
     {
         $this->mostrarBuscador = !$this->mostrarBuscador;

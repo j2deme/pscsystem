@@ -61,16 +61,35 @@
                 $foto_url = $foto ? asset($foto) : asset('images/default-user.jpg');
             @endphp
 
-            <div wire:click="seleccionarConversacion({{ $conv->id }})"
-                class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-blue-100 transition">
-                <img src="{{ $foto_url }}" alt="Foto" class="w-10 h-10 rounded-full object-cover">
-                <div class="flex-1">
-                    <strong class="block text-slate-800">
-                        {{ $conv->is_group ? $conv->title ?? 'Grupo sin nombre' : $otro?->name }}
-                    </strong>
-                    <span class="text-sm text-slate-500">
-                        {{ $conv->latestMessage?->body ?? 'Sin mensajes' }}
-                    </span>
+            <div x-data="{ showMenu: false }"
+                @contextmenu.prevent="showMenu = true"
+                @click.away="showMenu = false"
+                class="relative group">
+
+                <div wire:click="seleccionarConversacion({{ $conv->id }})"
+                    class="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-blue-100 transition">
+                    <img src="{{ $foto_url }}" alt="Foto" class="w-10 h-10 rounded-full object-cover">
+                    <div class="flex-1">
+                        <strong class="block text-slate-800">
+                            {{ $conv->is_group ? $conv->title ?? 'Grupo sin nombre' : $otro?->name }}
+                        </strong>
+                        <span class="text-sm text-slate-500">
+                            {{ $conv->latestMessage?->body ?? 'Sin mensajes' }}
+                        </span>
+                    </div>
+                </div>
+
+                <div x-show="showMenu"
+                    x-transition
+                    class="absolute top-2 right-2 z-50 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 shadow-md rounded-md w-48">
+                    <button wire:click="eliminarConversacion({{ $conv->id }})"
+                        class="flex items-center gap-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Eliminar conversación
+                    </button>
                 </div>
             </div>
         @endforeach
