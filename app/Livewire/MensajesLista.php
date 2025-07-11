@@ -14,7 +14,7 @@ class MensajesLista extends Component
     public $usuariosFiltrados = [];
     public $mostrarBuscador = false;
 
-    protected $listeners = ['forzarRender' => '$refresh'];
+    protected $listeners = ['forzarRender' => '$refresh', 'eliminarConversacionJS' => 'eliminarConversacion'];
 
     public function mount()
     {
@@ -66,8 +66,9 @@ class MensajesLista extends Component
         $this->dispatch('conversacionSeleccionada', id: $conversationId);
     }
 
-    public function eliminarConversacion($id)
+    public function eliminarConversacion($payload)
     {
+        $id = $payload['id'];
         $conv = Conversation::with('messages')->find($id);
 
         if (!$conv || !$conv->users->pluck('id')->contains(auth()->id())) {
@@ -80,8 +81,13 @@ class MensajesLista extends Component
 
         $this->cargarConversaciones();
         $this->dispatch('conversacionSeleccionada', id: null);
+        $this->dispatch('conversacionEliminada');
     }
 
+    public function confirmarEliminacion($conversationId)
+    {
+        $this->dispatch('confirmarEliminacionJS', id: $conversationId);
+    }
 
     public function toggleBuscador()
     {

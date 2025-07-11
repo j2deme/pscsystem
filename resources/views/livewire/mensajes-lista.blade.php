@@ -82,7 +82,7 @@
                 <div x-show="showMenu"
                     x-transition
                     class="absolute top-2 right-2 z-50 bg-white border border-gray-200 dark:bg-gray-800 dark:border-gray-700 shadow-md rounded-md w-48">
-                    <button wire:click="eliminarConversacion({{ $conv->id }})"
+                    <button wire:click="confirmarEliminacion({{ $conv->id }})"
                         class="flex items-center gap-2 w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-600" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -96,9 +96,11 @@
     </div>
 </div>
 
-@script
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('livewire:init', () => {
+
         Livewire.on('resultadosActualizados', () => {
             Livewire.dispatch('render');
         });
@@ -108,6 +110,38 @@
                 document.querySelector('[x-ref="searchInput"]')?.focus();
             }, 100);
         });
+
+        Livewire.on('cerrarMenuContextual', () => {
+            document.querySelectorAll('.context-menu').forEach(el => el.classList.add('hidden'));
+        });
+
+        Livewire.on('confirmarEliminacionJS', ({ id }) => {
+            Swal.fire({
+                title: '¿Eliminar conversación?',
+                text: 'Esta acción no se puede deshacer',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e3342f',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.call('eliminarConversacion', { id });
+                }
+            });
+        });
+
+        Livewire.on('conversacionEliminada', () => {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Conversación eliminada!',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        });
+
     });
 </script>
-@endscript
+@endpush
+
