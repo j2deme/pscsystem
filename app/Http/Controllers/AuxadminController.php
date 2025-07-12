@@ -8,6 +8,7 @@ use App\Models\DocumentacionAltas;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AuxadminController extends Controller
 {

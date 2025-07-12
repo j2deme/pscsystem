@@ -1,16 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Log;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Hash;
-use Illuminate\Support\Facades\Log;
+//use Hash;
+//use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Unidades;
 use Exception;
+use Illuminate\Support\Facades\Hash;
 
 class ImportController extends Controller
 {

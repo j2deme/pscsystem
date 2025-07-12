@@ -16,7 +16,9 @@ use App\Http\Controllers\AuxadminController;
 use App\Http\Controllers\NominasController;
 use App\Http\Controllers\CustodiosController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\RiesgoTrabajoController;
+use App\Http\Controllers\IncapacidadController;
+use App\Http\Controllers\IncapacidadReporteController;
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -162,6 +164,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/listado_usuarios', [AuxadminController::class, 'listadoUsuarios'])->name('aux.usuariosList');
     Route::post('/actualizacion_documentacion/{id}', [AuxadminController::class, 'actualizarAcuses'])->name('documentacion.actualizar');
     Route::get('/confrontas', [AuxadminController::class, 'confrontasForm'])->name('aux.confrontas');
+    //nuevass rutas
+    Route::get('/riesgos-trabajo', [RiesgoTrabajoController::class, 'index'])->name('aux.riesgosTrabajo');
+    Route::get('/riesgos-trabajo/generar/{user}', [RiesgoTrabajoController::class, 'create'])->name('aux.generarRiesgoForm');
+    Route::post('/riesgos-trabajo/guardar', [RiesgoTrabajoController::class, 'store'])->name('aux.guardarRiesgo');
+//nuevas rutas incapacidades
+    Route::get('/incapacidades', [IncapacidadController::class, 'index'])->name('aux.incapacidadesList');
+    Route::get('/incapacidades/generar/{user}', [IncapacidadController::class, 'create'])->name('aux.generarIncapacidadForm');
+    Route::post('/incapacidades/guardar', [IncapacidadController::class, 'store'])->name('aux.guardarIncapacidad');
+//historial incapacidades
+    Route::get('/aux/historial-incapacidades', [App\Http\Controllers\IncapacidadController::class, 'showIncapacidadesHistory'])->name('aux.historialIncapacidades');
+    Route::get('/aux/historial-riesgos-trabajo', [App\Http\Controllers\RiesgoTrabajoController::class, 'showHistorialRiesgosTrabajo'])->name('aux.historialRiesgosTrabajo');
+    Route::get('/reporte/incapacidades', [IncapacidadReporteController::class, 'generarPdf'])->name('reporte.incapacidades.pdf');
 
     //Usuario nominas
     Route::get('/antiguedades', [NominasController::class, 'antiguedades'])->name('nominas.usersAntiguedades');

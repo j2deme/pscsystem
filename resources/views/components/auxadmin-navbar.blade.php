@@ -61,13 +61,13 @@
         ],
         [
             'titulo' => 'Riesgos de Trabajo',
-            'ruta' => '#',
+            'ruta' => route('aux.riesgosTrabajo'),
             'icono' => '🚨',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
         ],
         [
             'titulo' => 'Incapacidades',
-            'ruta' => '#',
+            'ruta' => route('aux.incapacidadesList'),
             'icono' => '🤕',
             'color' => 'bg-red-100 dark:bg-red-700',
         ],
@@ -86,8 +86,8 @@
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
-            'titulo' => 'Historial de Incapacidades/Riesgos de Trabajo',
-            'ruta' => '#',
+            'titulo' => 'Historial de Incapacidades',
+            'ruta' => route('aux.historialIncapacidades'),
             'icono' => '📅',
             'color' => 'bg-red-100 dark:bg-red-700',
         ],
@@ -104,6 +104,12 @@
             'icono' => '💬',
             'color' => 'bg-purple-100 dark:bg-purple-700',
             'disabled' => Auth::user()->rol == 'admin'
+        ],
+         [
+            'titulo' => 'Historial de Riesgos de Trabajo',
+            'ruta' => route('aux.historialRiesgosTrabajo'),
+            'icono' => '📅',
+            'color' => 'bg-red-100 dark:bg-red-700',
         ],
 
     ];

@@ -7,7 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "barryvdh/laravel-dompdf": "^3.1",
+        "barryvdh/laravel-dompdf": "*",
         "doctrine/dbal": "^4.2",
         "geocoder-php/nominatim-provider": "^5.8",
         "laravel/breeze": "^2.3",
