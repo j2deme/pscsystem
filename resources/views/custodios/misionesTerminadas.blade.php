@@ -50,7 +50,9 @@
                                         {{ $mision->tipo_servicio }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap dark:text-gray-300">
-                                        {{ $mision->ubicacion }}
+                                        @foreach ($mision->ubicacion as $ubicacion)
+                                            {{ $ubicacion['direccion'] }}<br>
+                                        @endforeach
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                         {{ \Carbon\Carbon::parse($mision->fecha_inicio)->format('d/m/Y') }}
@@ -60,19 +62,14 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                         <span
-                                            class="px-2 py-1 text-xs font-semibold leading-tight text-green-800 bg-green-200 rounded-full">
-                                            En Curso
+                                            class="px-2 py-1 text-xs font-semibold leading-tight text-red-800 bg-red-200 rounded-full">
+                                            Terminada
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap dark:text-gray-300">
-                                        @if ($mision->arch_mision)
-                                            <a href="{{ asset('storage/' . $mision->arch_mision) }}"
-                                                class="text-blue-600 hover:text-blue-900" target="_blank">
-                                                Ver PDF
-                                            </a>
-                                        @else
-                                            <span class="text-gray-500 italic">Sin PDF</span>
-                                        @endif
+                                        <a href="#" class="text-blue-600 hover:text-blue-900" target="_blank">
+                                            Formulario Post-Misión
+                                        </a>
                                     </td>
                                 </tr>
                             @empty
@@ -87,7 +84,8 @@
                     </table>
                 @endif
                 <div class="flex justify-center">
-                    <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                    <a href="{{ route('dashboard') }}"
+                        class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
                         Regresar
                     </a>
                 </div>

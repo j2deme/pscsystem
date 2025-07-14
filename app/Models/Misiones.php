@@ -30,4 +30,15 @@ class Misiones extends Model
         'lng',
         'estatus',
     ];
+    protected $casts = [
+        'ubicacion' => 'array',
+        'agentes_id' => 'array',
+        'tipo_vehiculos' => 'array',
+        'datos_hotel' => 'array',
+        'datos_aeropuerto' => 'array',
+        'datos_vuelo' => 'array',
+        'datos_hospital' => 'array',
+        'datos_embajada' => 'array',
+    ];
+
 }

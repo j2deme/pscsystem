@@ -138,6 +138,13 @@
                     'color' => 'bg-purple-100 dark:bg-purple-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
+                [
+                    'titulo' => 'Mensajes',
+                    'ruta' => route('mensajes.index'),
+                    'icono' => '💬',
+                    'color' => 'bg-purple-100 dark:bg-purple-700',
+                    'disabled' => Auth::user()->rol == 'admin'
+                ],
             ];
         @endphp
 

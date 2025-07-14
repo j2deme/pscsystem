@@ -6,11 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -73,5 +74,17 @@ class User extends Authenticatable
     public function subpuntosSupervisados()
     {
         return $this->belongsToMany(Subpunto::class, 'supervisorpuntos', 'supervisor_id', 'subpunto_id');
+    }
+
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class)
+                    ->withPivot('last_read_at')
+                    ->withTimestamps();
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
     }
 }

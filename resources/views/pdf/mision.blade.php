@@ -92,7 +92,11 @@
         <img src="{{ public_path('images/psc.png') }}" class="logo" alt="Logo">
 
         <h1>RESUMEN DE MISIÓN</h1>
-        <div class="subtitulo">{{ $mision->ubicacion }}</div>
+       <div class="subtitulo">
+            @foreach ($mision->ubicacion as $ubicacion)
+                {{ $ubicacion['direccion'] }}<br>
+            @endforeach
+        </div>
         <div class="fechas">{{ $mision->fecha_inicio }} – {{ $mision->fecha_fin }}</div>
         <div class="tipo-servicio">Tipo de Servicio: {{ $mision->tipo_servicio }}</div>
     </div>
@@ -118,7 +122,7 @@
             </p>
 
             <p>
-                Correo: monitoreo@spyt.com.mx<br>
+                Correo: #<br>
                 Línea de emergencia: #<br>
                 Líneas no emergencia: #<br><br>
                 En cualquier momento de emergencia, si estás utilizando nuestra aplicación, utiliza el botón de pánico o<br>

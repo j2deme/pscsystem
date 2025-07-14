@@ -49,8 +49,10 @@
                                     <td class="px-6 py-4 whitespace-nowrap dark:text-gray-300">
                                         {{ $mision->tipo_servicio }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap dark:text-gray-300">
-                                        {{ $mision->ubicacion }}
+                                    <td class="px-6 py-4 whitespace-normal break-words dark:text-gray-300" style="max-width: 250px;">
+                                        @foreach ($mision->ubicacion as $ubicacion)
+                                            {{ $ubicacion['direccion'] }}<br>
+                                        @endforeach
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                                         {{ \Carbon\Carbon::parse($mision->fecha_inicio)->format('d/m/Y') }}
@@ -87,7 +89,8 @@
                     </table>
                 @endif
                 <div class="flex justify-center">
-                    <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
+                    <a href="{{ route('dashboard') }}"
+                        class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-400 mr-2 mb-2">
                         Regresar
                     </a>
                 </div>
