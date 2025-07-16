@@ -13,6 +13,9 @@ class VehiculosCrud extends Component
 {
     use WithPagination;
     public $perPage = 10;
+    public $filtro_punto = '';
+    public $puntos_disponibles = [];
+    public $filtro_placas = '';
     public $unidadId;
     public $nombre_propietario, $zona, $marca, $modelo, $placas, $kms, $asignacion_punto, $estado_vehiculo, $observaciones;
     public $modo = 'crear';
@@ -85,12 +88,33 @@ class VehiculosCrud extends Component
 
     public function render()
     {
+        $this->puntos_disponibles = Unidades::query()
+            ->select('asignacion_punto')
+            ->whereNotNull('asignacion_punto')
+            ->distinct()
+            ->orderBy('asignacion_punto')
+            ->pluck('asignacion_punto')
+            ->toArray();
+
+        $query = Unidades::query();
+        if ($this->filtro_punto) {
+            $query->whereRaw('LOWER(TRIM(asignacion_punto)) = ?', [strtolower(trim($this->filtro_punto))]);
+        }
+        if ($this->filtro_placas) {
+            $query->where('placas', 'like', "%{$this->filtro_placas}%");
+        }
         return view('livewire.vehiculos-crud', [
-            'unidades' => Unidades::orderBy('id', 'asc')->paginate($this->perPage)
+            'unidades' => $query->orderBy('id', 'asc')->paginate($this->perPage),
+            'puntos_disponibles' => $this->puntos_disponibles,
         ]);
     }
 
     public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFiltroPunto()
     {
         $this->resetPage();
     }
