@@ -16,13 +16,13 @@
       <div class="border border-gray-200 rounded-lg md:col-span-1 bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
         <div class="p-4 border-b border-gray-300 dark:border-gray-600">
           <div class="flex items-center justify-between">
-            <div class="flex items-center justify-between min-h-8 w-full">
+            <div class="flex items-center justify-between w-full min-h-8">
               <h2 class="text-base font-semibold text-gray-900 dark:text-white">
                 Alertas Recientes
               </h2>
               <div class="text-sm text-gray-600 dark:text-gray-400">
                 <span
-                  class="inline-block px-3 py-1 rounded-full bg-gray-800 text-white dark:bg-white/80 dark:text-gray-900 font-semibold text-base shadow">
+                  class="inline-block px-3 py-1 text-base font-semibold text-white bg-gray-800 rounded-full shadow dark:bg-white/80 dark:text-gray-900">
                   {{ $totalAlertas ?? 0 }}
                 </span>
               </div>
@@ -52,9 +52,10 @@
                         {{ $estadoCompleto['texto'] ?? 'N/A' }}
                       </span>
                     </div>
-                    <p class="text-sm {{ $colores['text'] ?? 'text-red-700' }} font-medium">📍 {{ $alerta['ubicacion']
-                      ?? 'Ubicación no disponible' }}</p>
-                    <p class="text-xs text-gray-500">🕐 {{ $alerta['tiempo'] ?? 'Hora no disponible' }} •
+                    <p class="text-sm {{ $colores['text'] ?? 'text-red-700' }} font-medium"><i
+                        class="mr-1 ti ti-map-pin"></i>{{ $alerta['ubicacion'] ?? 'Ubicación no disponible' }}</p>
+                    <p class="text-xs text-gray-500"><i class="mr-1 ti ti-clock"></i>{{ $alerta['tiempo'] ?? 'Hora no
+                      disponible' }} •
                       <span data-timestamp="{{ $alerta['timestamp_creacion'] ?? '' }}" data-minutos="{{ $urgencia }}">
                         @if($urgencia < 60) hace {{ $urgencia }} min @else hace {{ floor($urgencia / 60) }} h @endif
                           </span>
@@ -84,12 +85,12 @@
       <div class="border border-gray-200 rounded-lg md:col-span-2 bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
         <div class="relative">
           <div
-            class="flex items-center justify-between p-4 border-b border-gray-300 dark:border-gray-600 min-h-8 w-full">
+            class="flex items-center justify-between w-full p-4 border-b border-gray-300 dark:border-gray-600 min-h-8">
             <h2 class="text-base font-semibold text-gray-900 dark:text-white">
               Vista del Mapa
             </h2>
             <!-- Escala de Urgencia en la barra del encabezado -->
-            <div class="flex items-center gap-4 text-xs ml-4">
+            <div class="flex items-center gap-4 ml-4 text-xs">
               <span class="font-medium text-gray-600 dark:text-gray-400">Escala de Urgencia:</span>
               <div class="flex items-center gap-3">
                 <div class="flex items-center gap-1">
@@ -115,19 +116,9 @@
               </div>
             </div>
             <button onclick="centrarVistaMapa()"
-              class="p-2 bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 ml-4"
-              title="Centrar Vista">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <polyline points="4,8 4,4 8,4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
-                  stroke-linejoin="round" />
-                <polyline points="16,4 20,4 20,8" stroke="currentColor" stroke-width="2" fill="none"
-                  stroke-linecap="round" stroke-linejoin="round" />
-                <polyline points="20,16 20,20 16,20" stroke="currentColor" stroke-width="2" fill="none"
-                  stroke-linecap="round" stroke-linejoin="round" />
-                <polyline points="8,20 4,20 4,16" stroke="currentColor" stroke-width="2" fill="none"
-                  stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
+              class="p-1 ml-4 bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              title="Ajustar a marcadores">
+              <i class="p-2 text-sm text-white ti ti-map-pin-2"></i>
             </button>
           </div>
         </div>
@@ -459,8 +450,8 @@
       marcador.bindPopup(`
         <div class="p-3">
           <h3 class="font-bold">${alerta.usuario}</h3>
-          <p class="text-sm">📍 ${alerta.ubicacion}</p>
-          <p class="text-xs text-gray-500">🕐 ${alerta.tiempo}</p>
+          <p class="text-sm"><i class='mr-1 ti ti-map-pin'></i> ${alerta.ubicacion}</p>
+          <p class="text-xs text-gray-500"><i class='mr-1 ti ti-clock'></i> ${alerta.tiempo}</p>
           <span class="inline-block px-2 py-1 text-xs text-white rounded ${iconoConfig.bgColor}">
             ${iconoConfig.estadoTexto}
           </span>
@@ -527,14 +518,28 @@
     // Calcular estado dinámico basado en tiempo real
     // Usar la función unificada para obtener texto y colores
     const urgencia = obtenerUrgenciaYColores(minutosTranscurridos);
-    // Mapear a la estructura esperada por los marcadores
-    let icon = '⏱', animation = '', pulse = false;
+    // Mapear a la estructura esperada por los marcadores usando Tabler Icons como fuente web
+    let icon = '', animation = '', pulse = false;
     switch (urgencia.texto) {
-      case 'CRÍTICA': icon = '‼'; animation = 'animate-pulse'; pulse = true; break;
-      case 'ALTA': icon = '❗'; animation = 'animate-pulse'; pulse = true; break;
-      case 'MEDIA': icon = '⚠'; break;
-      case 'BAJA': icon = '⏱'; break;
-      case 'ANTIGUA': icon = '?'; break;
+      case 'CRÍTICA':
+        icon = "<i class='text-lg ti ti-alert-octagon'></i>";
+        animation = 'animate-pulse';
+        pulse = true;
+        break;
+      case 'ALTA':
+        icon = "<i class='text-lg ti ti-alert-triangle'></i>";
+        animation = 'animate-pulse';
+        pulse = true;
+        break;
+      case 'MEDIA':
+        icon = "<i class='text-lg ti ti-alert-circle'></i>";
+        break;
+      case 'BAJA':
+        icon = "<i class='text-lg ti ti-clock'></i>";
+        break;
+      case 'ANTIGUA':
+        icon = "<i class='text-lg ti ti-clock-question'></i>";
+        break;
     }
     return {
       bgColor: urgencia.badge,
