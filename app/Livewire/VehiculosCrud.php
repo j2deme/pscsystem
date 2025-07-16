@@ -18,6 +18,7 @@ class VehiculosCrud extends Component
     public $filtro_placas = '';
     public $unidadId;
     public $nombre_propietario, $zona, $marca, $modelo, $placas, $kms, $asignacion_punto, $estado_vehiculo, $observaciones;
+    public $is_activo = false;
     public $modo = 'crear';
     public $mostrarFormulario = false;
     public $marcas = [];
@@ -32,7 +33,8 @@ class VehiculosCrud extends Component
         'placas' => 'required|string',
         'kms' => 'required|numeric',
         'asignacion_punto' => 'nullable|string',
-        'estado_vehiculo' => 'required|string',
+        // 'estado_vehiculo' => 'required|string',
+        'is_activo' => 'boolean',
         'observaciones' => 'nullable|string',
     ];
 
@@ -93,7 +95,18 @@ class VehiculosCrud extends Component
     public function guardarUnidad()
     {
         $this->validate();
-        Unidades::create($this->only(array_keys($this->rules)));
+        Unidades::create([
+            'nombre_propietario' => $this->nombre_propietario,
+            'zona' => $this->zona,
+            'marca' => $this->marca,
+            'modelo' => $this->modelo,
+            'placas' => $this->placas,
+            'kms' => $this->kms,
+            'asignacion_punto' => $this->asignacion_punto,
+            'estado_vehiculo' => $this->is_activo ? 'Activo' : 'Inactivo',
+            'is_activo' => $this->is_activo,
+            'observaciones' => $this->observaciones,
+        ]);
         $this->recargarListas();
         $this->mostrarFormulario = false;
         session()->flash('success', 'Unidad creada correctamente.');
@@ -103,18 +116,37 @@ class VehiculosCrud extends Component
     {
         $unidad         = Unidades::findOrFail($id);
         $this->unidadId = $unidad->id;
-        foreach ($this->rules as $campo => $regla) {
-            $this->modo              = 'editar';
-            $this->mostrarFormulario = true;
-        }
-        $this->modo = 'editar';
+        // Asignar los valores del modelo a las propiedades públicas
+        $this->nombre_propietario = $unidad->nombre_propietario;
+        $this->zona               = $unidad->zona;
+        $this->marca              = $unidad->marca;
+        $this->modelo             = $unidad->modelo;
+        $this->placas             = $unidad->placas;
+        $this->kms                = $unidad->kms;
+        $this->asignacion_punto   = $unidad->asignacion_punto;
+        $this->estado_vehiculo    = $unidad->estado_vehiculo;
+        $this->is_activo          = (bool) ($unidad->is_activo ?? ($unidad->estado_vehiculo === 'Activo'));
+        $this->observaciones      = $unidad->observaciones;
+        $this->modo               = 'editar';
+        $this->mostrarFormulario  = true;
     }
 
     public function actualizarUnidad()
     {
         $this->validate();
         $unidad = Unidades::findOrFail($this->unidadId);
-        $unidad->update($this->only(array_keys($this->rules)));
+        $unidad->update([
+            'nombre_propietario' => $this->nombre_propietario,
+            'zona' => $this->zona,
+            'marca' => $this->marca,
+            'modelo' => $this->modelo,
+            'placas' => $this->placas,
+            'kms' => $this->kms,
+            'asignacion_punto' => $this->asignacion_punto,
+            'estado_vehiculo' => $this->is_activo ? 'Activo' : 'Inactivo',
+            'is_activo' => $this->is_activo,
+            'observaciones' => $this->observaciones,
+        ]);
         $this->recargarListas();
         $this->modo              = 'crear';
         $this->mostrarFormulario = false;
@@ -135,6 +167,7 @@ class VehiculosCrud extends Component
         foreach ($this->rules as $campo => $regla) {
             $this->$campo = '';
         }
+        $this->is_activo         = false;
         $this->mostrarFormulario = false;
     }
 

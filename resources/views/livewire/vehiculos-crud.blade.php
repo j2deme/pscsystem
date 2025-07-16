@@ -17,6 +17,11 @@
         @endif
 
         @if($mostrarFormulario)
+        <div class="mb-4">
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
+                {{ $modo == 'crear' ? 'Agregar Vehículo' : 'Editar Vehículo' }}
+            </h3>
+        </div>
         <form wire:submit.prevent="{{ $modo == 'crear' ? 'guardarUnidad' : 'actualizarUnidad' }}"
             class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
             <div>
@@ -102,11 +107,21 @@
                 @enderror
             </div>
             <div>
-                <label class="block text-gray-700 dark:text-gray-200">Estado del Vehículo</label>
-                <input type="text" wire:model.defer="estado_vehiculo"
-                    class="w-full h-10 px-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                    required>
-                @error('estado_vehiculo')
+                <label class="block mb-1 text-gray-700 dark:text-gray-200">Estado del Vehículo</label>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm">Inactivo</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" wire:model.defer="is_activo" class="sr-only peer">
+                        <div
+                            class="h-6 transition-all bg-gray-200 rounded-full w-11 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 peer peer-checked:bg-blue-600">
+                        </div>
+                        <div
+                            class="absolute w-4 h-4 transition-all bg-white rounded-full shadow left-1 top-1 peer-checked:translate-x-5">
+                        </div>
+                    </label>
+                    <span class="text-sm">Activo</span>
+                </div>
+                @error('is_activo')
                 <span class="text-xs text-red-500">{{ $message }}</span>
                 @enderror
             </div>
