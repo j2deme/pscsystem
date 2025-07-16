@@ -108,4 +108,17 @@ class VehiculosCrud extends Component
             'puntos_disponibles' => $this->puntos_disponibles,
         ]);
     }
+
+    public function updatingFiltroPlacas()
+    {
+        $this->resetPage();
+    }
+    public function updatingFiltroPunto()
+    {
+        $this->resetPage();
+    }
+    public function updatingPerPage()
+    {
+        $this->resetPage();
+    }
 }
