@@ -18,4 +18,12 @@ class Unidades extends Model
         'estado_vehiculo',
         'observaciones',
     ];
+
+    // Accesor para obtener si la unidad está activa
+    public function getIsActivoAttribute()
+    {
+        $valor   = strtolower(trim($this->estado_vehiculo));
+        $activos = ['activo', 'activa', 'en servicio', 'en uso', 'disponible', 'operando', 'operativa'];
+        return in_array($valor, $activos);
+    }
 }

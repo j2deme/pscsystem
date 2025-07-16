@@ -123,7 +123,15 @@
                         <td class="px-4 py-2">{{ $unidad->placas }}</td>
                         <td class="px-4 py-2">{{ $unidad->kms }}</td>
                         <td class="px-4 py-2">{{ $unidad->asignacion_punto }}</td>
-                        <td class="px-4 py-2">{{ $unidad->estado_vehiculo }}</td>
+                        <td class="px-4 py-2">
+                            @if($unidad->is_activo)
+                            <span
+                                class="inline-flex items-center px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded">Activo</span>
+                            @else
+                            <span
+                                class="inline-flex items-center px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded">Inactivo</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-2">{{ $unidad->observaciones }}</td>
                         <td class="flex gap-2 px-4 py-2">
                             <button wire:click="editarUnidad({{ $unidad->id }})"
