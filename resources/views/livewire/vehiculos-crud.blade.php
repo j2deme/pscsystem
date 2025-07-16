@@ -87,8 +87,7 @@
             <div class="flex flex-wrap items-center gap-4">
                 <div>
                     <label for="perPage" class="mr-2 text-gray-700 dark:text-gray-200">Mostrar:</label>
-                    <select wire:model="perPage" id="perPage" class="px-2 py-1 rounded form-select"
-                        wire:change="$refresh">
+                    <select wire:model.live="perPage" id="perPage" class="px-2 py-1 rounded form-select">
                         <option value="10">10</option>
                         <option value="25">25</option>
                         <option value="1000">Todos</option>
@@ -96,8 +95,7 @@
                 </div>
                 <div>
                     <label for="filtro_punto" class="mr-2 text-gray-700 dark:text-gray-200">Filtrar por punto:</label>
-                    <select wire:model="filtro_punto" id="filtro_punto" class="px-2 py-1 rounded form-select"
-                        wire:change="$refresh">
+                    <select wire:model.live="filtro_punto" id="filtro_punto" class="px-2 py-1 rounded form-select">
                         <option value="">Todos</option>
                         @foreach($puntos_disponibles as $punto)
                         <option value="{{ $punto }}">{{ $punto }}</option>
@@ -106,7 +104,7 @@
                 </div>
                 <div>
                     <label for="filtro_placas" class="mr-2 text-gray-700 dark:text-gray-200">Filtrar por placas:</label>
-                    <input type="text" wire:model.debounce.500ms="filtro_placas" id="filtro_placas"
+                    <input type="text" wire:model.live.100ms="filtro_placas" id="filtro_placas"
                         class="px-2 py-1 rounded form-input" placeholder="Buscar placas">
                 </div>
             </div>
