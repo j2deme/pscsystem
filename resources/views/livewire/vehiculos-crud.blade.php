@@ -1,4 +1,22 @@
 <div class="px-4 py-6 mx-auto max-w-7xl">
+    <nav class="mb-4" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+            <li>
+                <a href="{{ route('admin.monitoreoDashboard') }}" class="hover:text-blue-600 dark:hover:text-blue-400"
+                    title="Dashboard Monitoreo">
+                    <svg class="w-5 h-5 inline-block align-middle" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10V21h16V10" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3l8 7H4l8-7z" />
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <span class="mx-2">/</span>
+            </li>
+            <li class="text-gray-700 dark:text-gray-200 font-semibold">Control de Vehículos</li>
+        </ol>
+    </nav>
     <div class="p-6 bg-white rounded-lg shadow dark:bg-gray-800">
         <h2 class="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">Control de Vehículos</h2>
 
@@ -137,6 +155,7 @@
                 <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">{{ $modo ==
                     'crear' ? 'Agregar' : 'Actualizar' }}</button>
                 <button type="button" wire:click="resetCampos"
+                    onclick="window.history.replaceState({}, '', window.location.pathname);"
                     class="px-4 py-2 text-white bg-gray-400 rounded hover:bg-gray-500">Cancelar</button>
             </div>
         </form>
@@ -214,6 +233,8 @@
                             @endif
                         </td>
                         <td class="flex gap-2 px-4 py-2">
+                            <a href="{{ route('vehiculos.detalle', ['id' => $unidad->id]) }}"
+                                class="px-2 py-1 text-white bg-blue-500 rounded hover:bg-blue-700">Ver Detalle</a>
                             <button wire:click="editarUnidad({{ $unidad->id }})"
                                 class="px-2 py-1 text-white bg-yellow-500 rounded hover:bg-yellow-600">Editar</button>
                             <button wire:click="eliminarUnidad({{ $unidad->id }})"

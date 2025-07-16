@@ -41,6 +41,10 @@ class VehiculosCrud extends Component
     public function mount()
     {
         $this->recargarListas();
+        $editarId = request()->query('editar');
+        if ($editarId) {
+            $this->editarUnidad($editarId);
+        }
     }
 
     public function recargarListas()

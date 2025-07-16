@@ -161,9 +161,14 @@ Route::middleware('auth')->group(function () {
     //Usuario Monitorista
     Route::get('/ver_deducciones', [MonitoreoController::class, 'verDeducciones'])->name('monitoreo.deducciones');
     Route::get('/mapa', [MonitoreoController::class, 'mapa'])->name('monitoreo.mapa');
-    Route::get('/monitoreo/vehiculos', function () {
+    Route::get('/vehiculos', function () {
         return view('vehiculos.crud');
     })->name('vehiculos.index');
+
+    // Detalle de Vehículo (vista Blade con Livewire)
+    Route::get('/vehiculos/{id}', function ($id) {
+        return view('vehiculos-detalle', ['id' => $id]);
+    })->name('vehiculos.detalle');
 
     //Usuario Aux Admin
     Route::get('/nuevas_altas_elementos', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');
