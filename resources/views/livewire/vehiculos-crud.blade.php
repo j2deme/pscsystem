@@ -104,12 +104,12 @@
                         <th class="px-4 py-2">Propietario</th>
                         <th class="px-4 py-2">Zona</th>
                         <th class="px-4 py-2">Marca</th>
-                        <th class="px-4 py-2">Modelo</th>
-                        <th class="px-4 py-2">Placas</th>
-                        <th class="px-4 py-2">Kms</th>
+                        <th class="px-4 py-2 text-center">Modelo</th>
+                        <th class="px-4 py-2 text-center">Placas</th>
+                        <th class="px-4 py-2 text-center">Kms</th>
                         <th class="px-4 py-2">Asignación</th>
                         <th class="px-4 py-2">Estado</th>
-                        <th class="px-4 py-2">Observaciones</th>
+
                         <th class="px-4 py-2">Acciones</th>
                     </tr>
                 </thead>
@@ -119,11 +119,18 @@
                         <td class="px-4 py-2">{{ $unidad->nombre_propietario }}</td>
                         <td class="px-4 py-2">{{ $unidad->zona }}</td>
                         <td class="px-4 py-2">{{ $unidad->marca }}</td>
-                        <td class="px-4 py-2">{{ $unidad->modelo }}</td>
-                        <td class="px-4 py-2">{{ $unidad->placas }}</td>
-                        <td class="px-4 py-2">{{ $unidad->kms }}</td>
-                        <td class="px-4 py-2">{{ $unidad->asignacion_punto }}</td>
-                        <td class="px-4 py-2">
+                        <td class="px-4 py-2 text-center">{{ $unidad->modelo }}</td>
+                        <td class="px-4 py-2 text-center">
+                            <span
+                                class="inline-block px-3 py-1 font-mono text-xs font-bold tracking-widest text-gray-800 bg-white border border-gray-700 rounded shadow select-none">
+                                {{ $unidad->placas }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-2 text-center">{{ is_numeric($unidad->kms) ? number_format($unidad->kms) :
+                            $unidad->kms
+                            }}</td>
+                        <td class="px-4 py-2 text-center">{{ $unidad->asignacion_punto }}</td>
+                        <td class="px-4 py-2 text-center">
                             @if($unidad->is_activo)
                             <span
                                 class="inline-flex items-center px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded">Activo</span>
@@ -132,7 +139,6 @@
                                 class="inline-flex items-center px-2 py-1 text-xs font-semibold text-red-700 bg-red-100 rounded">Inactivo</span>
                             @endif
                         </td>
-                        <td class="px-4 py-2">{{ $unidad->observaciones }}</td>
                         <td class="flex gap-2 px-4 py-2">
                             <button wire:click="editarUnidad({{ $unidad->id }})"
                                 class="px-2 py-1 text-white bg-yellow-500 rounded hover:bg-yellow-600">Editar</button>
