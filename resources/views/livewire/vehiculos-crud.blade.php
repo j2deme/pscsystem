@@ -14,63 +14,79 @@
             class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
             <div>
                 <label class="block text-gray-700 dark:text-gray-200">Propietario</label>
-                <input type="text" wire:model.defer="nombre_propietario" class="w-full form-input" required>
+                <input type="text" wire:model.defer="nombre_propietario"
+                    class="w-full h-10 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                    required>
                 @error('nombre_propietario')
                 <span class="text-xs text-red-500">{{ $message }}</span>
                 @enderror
             </div>
             <div>
                 <label class="block text-gray-700 dark:text-gray-200">Zona</label>
-                <input type="text" wire:model.defer="zona" class="w-full form-input" required>
+                <input type="text" wire:model.defer="zona"
+                    class="w-full h-10 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                    required>
                 @error('zona')
                 <span class="text-xs text-red-500">{{ $message }}</span>
                 @enderror
             </div>
             <div>
                 <label class="block text-gray-700 dark:text-gray-200">Marca</label>
-                <input type="text" wire:model.defer="marca" class="w-full form-input" required>
+                <input type="text" wire:model.defer="marca"
+                    class="w-full h-10 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                    required>
                 @error('marca')
                 <span class="text-xs text-red-500">{{ $message }}</span>
                 @enderror
             </div>
             <div>
                 <label class="block text-gray-700 dark:text-gray-200">Modelo</label>
-                <input type="text" wire:model.defer="modelo" class="w-full form-input" required>
+                <input type="text" wire:model.defer="modelo"
+                    class="w-full h-10 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                    required>
                 @error('modelo')
                 <span class="text-xs text-red-500">{{ $message }}</span>
                 @enderror
             </div>
             <div>
                 <label class="block text-gray-700 dark:text-gray-200">Placas</label>
-                <input type="text" wire:model.defer="placas" class="w-full form-input" required>
+                <input type="text" wire:model.defer="placas"
+                    class="w-full h-10 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                    required>
                 @error('placas')
                 <span class="text-xs text-red-500">{{ $message }}</span>
                 @enderror
             </div>
             <div>
                 <label class="block text-gray-700 dark:text-gray-200">Kilometraje</label>
-                <input type="number" wire:model.defer="kms" class="w-full form-input" required>
+                <input type="number" wire:model.defer="kms"
+                    class="w-full h-10 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                    required>
                 @error('kms')
                 <span class="text-xs text-red-500">{{ $message }}</span>
                 @enderror
             </div>
             <div>
                 <label class="block text-gray-700 dark:text-gray-200">Asignación Punto</label>
-                <input type="text" wire:model.defer="asignacion_punto" class="w-full form-input">
+                <input type="text" wire:model.defer="asignacion_punto"
+                    class="w-full h-10 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100">
                 @error('asignacion_punto')
                 <span class="text-xs text-red-500">{{ $message }}</span>
                 @enderror
             </div>
             <div>
                 <label class="block text-gray-700 dark:text-gray-200">Estado del Vehículo</label>
-                <input type="text" wire:model.defer="estado_vehiculo" class="w-full form-input" required>
+                <input type="text" wire:model.defer="estado_vehiculo"
+                    class="w-full h-10 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                    required>
                 @error('estado_vehiculo')
                 <span class="text-xs text-red-500">{{ $message }}</span>
                 @enderror
             </div>
             <div class="md:col-span-2">
                 <label class="block text-gray-700 dark:text-gray-200">Observaciones</label>
-                <textarea wire:model.defer="observaciones" class="w-full form-input"></textarea>
+                <textarea wire:model.defer="observaciones"
+                    class="w-full h-20 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"></textarea>
                 @error('observaciones')
                 <span class="text-xs text-red-500">{{ $message }}</span>
                 @enderror
