@@ -2,7 +2,7 @@
 $cards = [
 [
 'titulo' => 'Control de Vehículos',
-'ruta' => "#",
+'ruta' => route('vehiculos.index'),
 'icono' => '🚗',
 'color' => 'bg-blue-100 dark:bg-blue-700',
 ],
