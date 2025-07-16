@@ -3,9 +3,16 @@
         <h2 class="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">Control de Vehículos</h2>
 
         @if (session()->has('success'))
-        <div class="px-4 py-3 mb-4 text-green-900 bg-green-100 border-t-4 border-green-500 rounded-b shadow-md"
-            role="alert">
-            <p class="text-sm">{{ session('success') }}</p>
+        @php
+        $msg = session('success');
+        $isDelete = str_contains(strtolower($msg), 'eliminad');
+        @endphp
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+            class="relative px-4 py-3 mb-4 {{ $isDelete ? 'text-red-900 bg-red-100 border-red-500' : 'text-green-900 bg-green-100 border-green-500' }} border-t-4 rounded-b shadow-md"
+            role="alert" @keydown.escape.window="show = false">
+            <p class="text-sm">{{ $msg }}</p>
+            <button type="button" @click="show = false"
+                class="absolute text-xl leading-none top-2 right-2 focus:outline-none">&times;</button>
         </div>
         @endif
 
