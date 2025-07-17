@@ -270,7 +270,22 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="10" class="px-4 py-2 text-center text-gray-500">No hay unidades registradas.</td>
+                    <td colspan="10" class="px-4 py-8 text-center">
+                        <div class="flex flex-col items-center justify-center gap-2">
+                            <span
+                                class="inline-flex items-center justify-center w-16 h-16 text-4xl text-gray-400 bg-gray-100 rounded-full shadow">
+                                <i class="ti ti-car-off"></i>
+                            </span>
+                            <h3 class="mt-2 text-lg font-semibold text-gray-700 dark:text-gray-200">No hay vehículos
+                                registrados</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Agrega un nuevo vehículo para comenzar a
+                                gestionar la flotilla y su historial.</p>
+                            <button wire:click="mostrarFormularioCrear" type="button"
+                                class="flex items-center gap-2 px-4 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700">
+                                <i class="ti ti-plus"></i> Agregar Vehículo
+                            </button>
+                        </div>
+                    </td>
                 </tr>
                 @endforelse
             </tbody>
