@@ -90,7 +90,7 @@
         </div>
         <div>
             <label class="block text-gray-700 dark:text-gray-200">Modelo</label>
-            <input type="text" wire:model.defer="modelo"
+            <input type="number" wire:model.defer="modelo" min="2000" max="{{ date('Y') }}"
                 class="w-full h-10 px-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
                 required>
             @error('modelo')
