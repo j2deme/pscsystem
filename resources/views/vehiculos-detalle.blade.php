@@ -27,8 +27,6 @@
     </div>
   </x-slot>
   <div class="px-4 py-6 mx-auto max-w-7xl">
-    <div class="p-6 bg-white rounded-lg shadow dark:bg-gray-800">
-      @livewire('vehiculo-detalle', ['id' => $id])
-    </div>
+    @livewire('vehiculo-detalle', ['id' => $id])
   </div>
 </x-app-layout>
