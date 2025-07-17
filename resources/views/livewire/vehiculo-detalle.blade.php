@@ -27,16 +27,17 @@
           $unidad->kms }}</div>
       </div>
     </div>
-    <!-- Columna 3: Placas y estado -->
-    <div class="flex flex-col items-center justify-center p-6 bg-white shadow-md rounded-xl dark:bg-gray-800">
+    <!-- Columna 3: Placas y estado + Modal Alpine local -->
+    <div x-data="{ open: false }"
+      class="flex flex-col items-center justify-center p-6 bg-white shadow-md rounded-xl dark:bg-gray-800">
       <div class="flex items-center gap-2 mb-3 text-base font-bold text-blue-700 dark:text-blue-300">
         <i class="text-lg ti ti-id"></i> Placas
       </div>
       <div class="mb-3">
-        <span
-          class="inline-block px-4 py-2 font-mono text-xl font-bold tracking-widest text-gray-800 bg-white border border-gray-700 rounded shadow select-none">
+        <button id="openModalBtn" title="Ver historial de placas"
+          class="inline-block px-4 py-2 font-mono text-xl font-bold tracking-widest text-gray-800 bg-white border border-blue-500 rounded shadow hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-400 select-none">
           {{ $unidad->placas }}
-        </span>
+        </button>
       </div>
       <div>
         @if($unidad->is_activo)
@@ -50,6 +51,69 @@
         </span>
         @endif
       </div>
+      <!-- Modal historial placas JS puro -->
+      <div id="modalPlacas" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg max-w-md w-full p-6 relative">
+          <button type="button" id="closeModalBtn"
+            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" title="Cerrar">
+            <i class="ti ti-x"></i>
+          </button>
+          <div class="mb-4 text-lg font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2">
+            <i class="ti ti-history"></i> Historial de placas
+          </div>
+          <ul class="space-y-3">
+            @foreach($unidad->placas_historial as $placa)
+            <li
+              class="flex flex-col gap-1 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div class="flex items-center gap-2">
+                <span
+                  class="font-mono text-2xl font-extrabold text-blue-700 dark:text-blue-300 tracking-widest drop-shadow">{{
+                  $placa->numero }}</span>
+                @if($placa->estado === 'Activa')
+                <span
+                  class="inline-flex items-center px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full"><i
+                    class="mr-1 ti ti-circle-check"></i> Activa</span>
+                @else
+                <span
+                  class="inline-flex items-center px-2 py-1 text-xs font-semibold text-gray-600 bg-gray-200 rounded-full"><i
+                    class="mr-1 ti ti-history"></i> Inactiva</span>
+                @endif
+              </div>
+              <div class="text-xs text-gray-600 dark:text-gray-400">
+                <span class="font-semibold">Asignada:</span> {{ $placa->fecha_asignacion ?
+                \Carbon\Carbon::parse($placa->fecha_asignacion)->format('d/m/Y') : '-' }}
+                @if($placa->fecha_baja)
+                <span class="ml-2 font-semibold">Baja:</span> {{
+                \Carbon\Carbon::parse($placa->fecha_baja)->format('d/m/Y') }}
+                @endif
+              </div>
+            </li>
+            @endforeach
+            @if(empty($unidad->placas_historial))
+            <li class="text-center text-gray-500 dark:text-gray-400">Sin historial de placas.</li>
+            @endif
+          </ul>
+        </div>
+      </div>
+      <script>
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalPlacas = document.getElementById('modalPlacas');
+        // Abrir modal
+        openModalBtn.addEventListener('click', function() {
+          modalPlacas.classList.remove('hidden');
+        });
+        // Cerrar modal por botón
+        closeModalBtn.addEventListener('click', function() {
+          modalPlacas.classList.add('hidden');
+        });
+        // Cerrar modal por click en fondo
+        modalPlacas.addEventListener('click', function(e) {
+          if (e.target === modalPlacas) {
+            modalPlacas.classList.add('hidden');
+          }
+        });
+      </script>
     </div>
   </div>
   <!-- Sección: Observaciones -->

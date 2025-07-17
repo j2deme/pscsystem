@@ -18,6 +18,16 @@ class VehiculoDetalle extends Component
 
   public function render()
   {
-    return view('livewire.vehiculo-detalle');
+    // Solo lectura: no hay recarga ni cambios de estado
+    // Se consulta el historial de placas una sola vez
+    if (!isset($this->unidad->placas_historial)) {
+      $placas_historial               = \App\Models\Placa::where('unidad_id', $this->unidad->id)
+        ->orderByDesc('created_at')
+        ->get();
+      $this->unidad->placas_historial = $placas_historial;
+    }
+    return view('livewire.vehiculo-detalle', [
+      'unidad' => $this->unidad,
+    ]);
   }
 }
