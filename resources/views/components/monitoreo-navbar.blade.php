@@ -3,83 +3,83 @@ $cards = [
 [
 'titulo' => 'Control de Vehículos',
 'ruta' => route('vehiculos.index'),
-'icono' => '🚗',
+'icono' => 'car',
 'color' => 'bg-blue-100 dark:bg-blue-700',
 ],
 [
 'titulo' => 'Mapa',
 'ruta' => route('monitoreo.mapa'),
-'icono' => '🗺',
+'icono' => 'map-2',
 'color' => 'bg-yellow-100 dark:bg-yellow-700',
 ],
 [
 'titulo' => 'Control de Gastos',
 'ruta' => "#",
-'icono' => '💸',
+'icono' => 'cash',
 'color' => 'bg-red-100 dark:bg-red-700',
 ],
 [
 'titulo' => 'Compras',
 'ruta' => "#",
-'icono' => '🛒',
+'icono' => 'shopping-cart',
 'color' => 'bg-blue-100 dark:bg-blue-700',
 ],
 [
 'titulo' => 'Reparaciones',
 'ruta' => "#",
-'icono' => '🔧',
+'icono' => 'tool',
 'color' => 'bg-yellow-100 dark:bg-yellow-700',
 ],
 [
 'titulo' => 'Siniestros',
 'ruta' => "#",
-'icono' => '🚓',
+'icono' => 'car-crash',
 'color' => 'bg-red-100 dark:bg-red-700',
 ],
 [
 'titulo' => 'Documentación de Usuarios',
 'ruta' => "#",
-'icono' => '📄',
+'icono' => 'file-description',
 'color' => 'bg-blue-100 dark:bg-blue-700',
 ],
 [
 'titulo' => 'Solicitar Vacaciones',
 'ruta' => route('user.solicitarVacacionesForm'),
-'icono' => '🎉',
+'icono' => 'confetti',
 'color' => 'bg-yellow-100 dark:bg-yellow-700',
 'disabled' => Auth::user()->rol == 'admin'
 ],
 [
 'titulo' => 'Deducciones',
 'ruta' => route('monitoreo.deducciones'),
-'icono' => '📝',
+'icono' => 'file-pencil',
 'color' => 'bg-red-100 dark:bg-red-700',
 ],
 [
 'titulo' => 'Mi Historial de Vacaciones',
 'ruta' => route('user.historialVacaciones'),
-'icono' => '📅',
+'icono' => 'calendar',
 'color' => 'bg-green-100 dark:bg-green-700',
 'disabled' => Auth::user()->rol == 'admin'
 ],
 [
 'titulo' => 'Ficha Técnica',
 'ruta' => route('user.verFicha', auth()->user()->id),
-'icono' => '📝',
+'icono' => 'id',
 'color' => 'bg-yellow-100 dark:bg-yellow-700',
 'disabled' => Auth::user()->rol == 'admin'
 ],
 [
 'titulo' => 'Buzón de Quejas y Sugerencias',
 'ruta' => route('user.buzon'),
-'icono' => '💬',
+'icono' => 'message',
 'color' => 'bg-purple-100 dark:bg-purple-700',
 'disabled' => Auth::user()->rol == 'admin'
 ],
 [
 'titulo' => 'Importar Datos',
 'ruta' => route('importar.excel'),
-'icono' => '📁',
+'icono' => 'folder',
 'color' => 'bg-gray-100 dark:bg-gray-700',
 'disabled' => true,
 ],
@@ -120,7 +120,7 @@ $cards = [
                     </span>
                     @endif
                     <div class="text-3xl">
-                        {{ $card['icono'] }}
+                        <i class="ti ti-{{ $card['icono'] }} text-3xl text-gray-400"></i>
                     </div>
                     <h3 class="text-base font-semibold text-gray-800 dark:text-white">
                         {{ $card['titulo'] }}
@@ -136,8 +136,15 @@ $cards = [
             <div
                 class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="text-3xl">
-                        {{ $card['icono'] }}
+                    <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                        <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                            Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                            (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                            (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                            (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                            (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                            (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
+                        }}"></i>
                     </div>
                     <h3 class="text-base font-semibold text-gray-800 dark:text-white">
                         {{ $card['titulo'] }}
@@ -166,8 +173,15 @@ $cards = [
                         {{ $card['notificaciones'] }}
                     </span>
                     @endif
-                    <div class="text-3xl">
-                        {{ $card['icono'] }}
+                    <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                        <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                            Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                            (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                            (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                            (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                            (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                            (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
+                        }}"></i>
                     </div>
                     <h3 class="text-base font-semibold text-gray-800 dark:text-white">
                         {{ $card['titulo'] }}
