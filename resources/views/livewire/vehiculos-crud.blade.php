@@ -108,9 +108,17 @@
         </div>
         <div>
             <label class="block text-gray-700 dark:text-gray-200">Kilometraje</label>
-            <input type="number" wire:model.defer="kms"
-                class="w-full h-10 px-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                required>
+            <div x-data="{ sinKilometraje: @entangle('sin_kilometraje') }" class="flex items-center gap-3">
+                <input type="number" wire:model.defer="kms" :disabled="$wire.modo === 'crear' && sinKilometraje"
+                    :class="$wire.modo === 'crear' && sinKilometraje ? 'bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed' : 'bg-white border-gray-300'"
+                    class="w-full h-10 px-3 transition-all duration-150 border rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100">
+                @if($modo == 'crear')
+                <label class="flex items-center gap-2 ml-4 select-none">
+                    <input type="checkbox" x-model="sinKilometraje" wire:model="sin_kilometraje" class="form-checkbox">
+                    <span class="text-sm text-gray-600 dark:text-gray-300">Kilometraje no disponible</span>
+                </label>
+                @endif
+            </div>
             @error('kms')
             <span class="text-xs text-red-500">{{ $message }}</span>
             @enderror

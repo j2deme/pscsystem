@@ -13,6 +13,7 @@ class VehiculosCrud extends Component
 {
     use WithPagination;
     public $perPage = 10;
+    public $sin_kilometraje = false;
     public $filtro_punto = '';
     public $puntos_disponibles = [];
     public $filtro_placas = '';
@@ -32,9 +33,8 @@ class VehiculosCrud extends Component
         'marca' => 'required|string',
         'modelo' => 'required|string',
         'placas' => 'required|string',
-        'kms' => 'required|numeric',
+        'kms' => 'nullable|numeric',
         'asignacion_punto' => 'nullable|string',
-        // 'estado_vehiculo' => 'required|string',
         'is_activo' => 'boolean',
         'observaciones' => 'nullable|string',
     ];
@@ -101,13 +101,14 @@ class VehiculosCrud extends Component
     public function guardarUnidad()
     {
         $this->validate();
+        $kms    = $this->sin_kilometraje ? null : $this->kms;
         $unidad = Unidades::create([
             'nombre_propietario' => $this->nombre_propietario,
             'zona' => $this->zona,
             'marca' => $this->marca,
             'modelo' => $this->modelo,
             'placas' => $this->placas,
-            'kms' => $this->kms,
+            'kms' => $kms,
             'asignacion_punto' => $this->asignacion_punto,
             'estado_vehiculo' => $this->is_activo ? 'Activo' : 'Inactivo',
             'is_activo' => $this->is_activo,
