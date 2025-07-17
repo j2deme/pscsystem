@@ -12,7 +12,7 @@
       <div class="space-y-2 text-gray-700 dark:text-gray-200">
         <div><span class="font-semibold">Propietario:</span> {{ $unidad->nombre_propietario }}</div>
         <div><span class="font-semibold">Zona:</span> {{ $unidad->zona }}</div>
-        <div><span class="font-semibold">Asignación Punto:</span> {{ $unidad->asignacion_punto }}</div>
+        <div><span class="font-semibold">Punto:</span> {{ $unidad->asignacion_punto }}</div>
       </div>
     </div>
     <!-- Columna 2: Datos técnicos -->
