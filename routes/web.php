@@ -167,7 +167,7 @@ Route::middleware('auth')->group(function () {
 
     // Detalle de Vehículo (vista Blade con Livewire)
     Route::get('/vehiculos/{id}', function ($id) {
-        return view('vehiculos-detalle', ['id' => $id]);
+        return view('vehiculos.detalle', ['id' => $id]);
     })->name('vehiculos.detalle');
 
     //Usuario Aux Admin
