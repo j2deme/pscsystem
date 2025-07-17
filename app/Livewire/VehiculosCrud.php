@@ -24,6 +24,7 @@ class VehiculosCrud extends Component
     public $marcas = [];
     public $propietarios = [];
     public $zonas = [];
+    public $returnTo = null;
 
     protected $rules = [
         'nombre_propietario' => 'required|string',
@@ -41,7 +42,8 @@ class VehiculosCrud extends Component
     public function mount()
     {
         $this->recargarListas();
-        $editarId = request()->query('editar');
+        $this->returnTo = request()->query('return');
+        $editarId       = request()->query('editar');
         if ($editarId) {
             $this->editarUnidad($editarId);
         }
@@ -99,7 +101,7 @@ class VehiculosCrud extends Component
     public function guardarUnidad()
     {
         $this->validate();
-        Unidades::create([
+        $unidad = Unidades::create([
             'nombre_propietario' => $this->nombre_propietario,
             'zona' => $this->zona,
             'marca' => $this->marca,
@@ -114,13 +116,15 @@ class VehiculosCrud extends Component
         $this->recargarListas();
         $this->mostrarFormulario = false;
         session()->flash('success', 'Unidad creada correctamente.');
+        if ($this->returnTo === 'detalle' && $unidad->id) {
+            return redirect()->route('vehiculos.detalle', ['id' => $unidad->id]);
+        }
     }
 
     public function editarUnidad($id)
     {
-        $unidad         = Unidades::findOrFail($id);
-        $this->unidadId = $unidad->id;
-        // Asignar los valores del modelo a las propiedades públicas
+        $unidad                   = Unidades::findOrFail($id);
+        $this->unidadId           = $unidad->id;
         $this->nombre_propietario = $unidad->nombre_propietario;
         $this->zona               = $unidad->zona;
         $this->marca              = $unidad->marca;
@@ -133,6 +137,7 @@ class VehiculosCrud extends Component
         $this->observaciones      = $unidad->observaciones;
         $this->modo               = 'editar';
         $this->mostrarFormulario  = true;
+        $this->returnTo           = request()->query('return', $this->returnTo);
     }
 
     public function actualizarUnidad()
@@ -155,6 +160,9 @@ class VehiculosCrud extends Component
         $this->modo              = 'crear';
         $this->mostrarFormulario = false;
         session()->flash('success', 'Unidad actualizada correctamente.');
+        if ($this->returnTo === 'detalle' && $unidad->id) {
+            return redirect()->route('vehiculos.detalle', ['id' => $unidad->id]);
+        }
     }
 
     public function eliminarUnidad($id)
@@ -167,6 +175,10 @@ class VehiculosCrud extends Component
 
     public function resetCampos()
     {
+        // Si estamos editando y returnTo es 'detalle', redirigir a detalle
+        if ($this->returnTo === 'detalle' && $this->unidadId) {
+            return redirect()->route('vehiculos.detalle', ['id' => $this->unidadId]);
+        }
         $this->unidadId = null;
         foreach ($this->rules as $campo => $regla) {
             $this->$campo = '';
