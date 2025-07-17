@@ -101,19 +101,32 @@ class VehiculosCrud extends Component
     public function guardarUnidad()
     {
         $this->validate();
-        $kms    = $this->sin_kilometraje ? null : $this->kms;
-        $unidad = Unidades::create([
+        $kms = $this->sin_kilometraje ? null : $this->kms;
+        // Sanitizar placas: solo alfanuméricos
+        $placaSanitizada = preg_replace('/[^A-Za-z0-9]/', '', $this->placas);
+        $unidad          = Unidades::create([
             'nombre_propietario' => $this->nombre_propietario,
             'zona' => $this->zona,
             'marca' => $this->marca,
             'modelo' => $this->modelo,
-            'placas' => $this->placas,
+            'placas' => $placaSanitizada,
             'kms' => $kms,
             'asignacion_punto' => $this->asignacion_punto,
             'estado_vehiculo' => $this->is_activo ? 'Activo' : 'Inactivo',
             'is_activo' => $this->is_activo,
             'observaciones' => $this->observaciones,
         ]);
+
+        // Crear registro en la tabla placas y asociar al vehículo
+        if (!empty($placaSanitizada)) {
+            \App\Models\Placa::create([
+                'unidad_id' => $unidad->id,
+                'numero' => $placaSanitizada,
+                'fecha_asignacion' => now(),
+                'estado' => 'Activa', // Estado explícito en alta
+            ]);
+        }
+
         $this->recargarListas();
         $this->mostrarFormulario = false;
         session()->flash('success', 'Unidad creada correctamente.');
@@ -144,19 +157,45 @@ class VehiculosCrud extends Component
     public function actualizarUnidad()
     {
         $this->validate();
-        $unidad = Unidades::findOrFail($this->unidadId);
+        $unidad        = Unidades::findOrFail($this->unidadId);
+        $placaAnterior = $unidad->placas;
+        // Sanitizar placa nueva
+        $placaNuevaSanitizada = preg_replace('/[^A-Za-z0-9]/', '', $this->placas);
+
         $unidad->update([
             'nombre_propietario' => $this->nombre_propietario,
             'zona' => $this->zona,
             'marca' => $this->marca,
             'modelo' => $this->modelo,
-            'placas' => $this->placas,
+            'placas' => $placaNuevaSanitizada,
             'kms' => $this->kms,
             'asignacion_punto' => $this->asignacion_punto,
             'estado_vehiculo' => $this->is_activo ? 'Activo' : 'Inactivo',
             'is_activo' => $this->is_activo,
             'observaciones' => $this->observaciones,
         ]);
+
+        // Si la placa fue cambiada, actualizar historial
+        if ($placaAnterior !== $placaNuevaSanitizada && !empty($placaNuevaSanitizada)) {
+            // Dar de baja la placa anterior y actualizar estado
+            $placaActiva = \App\Models\Placa::where('unidad_id', $unidad->id)
+                ->where('numero', $placaAnterior)
+                ->whereNull('fecha_baja')
+                ->first();
+            if ($placaActiva) {
+                $placaActiva->fecha_baja = now();
+                $placaActiva->estado     = 'Inactiva'; // Cambia el estado a Inactiva
+                $placaActiva->save();
+            }
+            // Crear nueva placa con estado Activa
+            \App\Models\Placa::create([
+                'unidad_id' => $unidad->id,
+                'numero' => $placaNuevaSanitizada,
+                'fecha_asignacion' => now(),
+                'estado' => 'Activa',
+            ]);
+        }
+
         $this->recargarListas();
         $this->modo              = 'crear';
         $this->mostrarFormulario = false;
