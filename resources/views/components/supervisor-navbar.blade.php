@@ -46,34 +46,34 @@
                 [
                     'titulo' => 'Alta de Usuarios',
                     'ruta' => route('sup.nuevoUsuarioForm'),
-                    'icono' => '👨‍👩‍👧‍👦',
+                    'icono' => 'users-group',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Solicitar Vacaciones de Elemento',
                     'ruta' => route('sup.solicitarVacacionesElemento'),
-                    'icono' => '🏖️',
+                    'icono' => 'beach',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Solicitar Baja de Elemento',
                     'ruta' => route('sup.solicitarBajaForm'),
-                    'icono' => '⬇️',
+                    'icono' => 'arrow-down',
                     'color' => 'bg-red-100 dark:bg-red-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Historial de Altas',
                     'ruta' => route('sup.historial'),
-                    'icono' => '🗂️',
+                    'icono' => 'archive',
                     'color' => 'bg-blue-100 dark:bg-blue-700'
                 ],
                 [
                     'titulo' => 'Listas de Asistencia',
                     'ruta' => route('sup.listaAsistencia'),
-                    'icono' => '📋',
+                    'icono' => 'clipboard-list',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700',
                     'notificaciones' => $asistencia
                 ],
@@ -81,67 +81,67 @@
                 [
                     'titulo' => 'Historial de Bajas',
                     'ruta' => route('sup.historialBajas'),
-                    'icono' => '📒',
+                    'icono' => 'book',
                     'color' => 'bg-red-100 dark:bg-red-700'
                 ],
                 [
                     'titulo' => 'Solicitudes de Vacaciones',
                     'ruta' => route('sup.solicitudesVacaciones'),
-                    'icono' => '🏖️',
+                    'icono' => 'beach',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
                     'notificaciones' => $vacaciones
                 ],
                 [
                     'titulo' => 'Historial de Asistencias',
                     'ruta' => route('sup.verAsistencias', Auth::user()->id),
-                    'icono' => '📋',
+                    'icono' => 'clipboard-list',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
                 [
                     'titulo' => 'Solicitar Vacaciones',
                     'ruta' => route('user.solicitarVacacionesForm'),
-                    'icono' => '🎉',
+                    'icono' => 'confetti',
                     'color' => 'bg-green-100 dark:bg-green-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Tiempos Extras',
                     'ruta' => route('sup.tiemposExtras'),
-                    'icono' => '🕑',
+                    'icono' => 'clock-hour-2',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Historial de Tiempos Extras y Coberturas',
                     'ruta' => route('sup.historialTiemposExtras'),
-                    'icono' => '📅',
+                    'icono' => 'calendar',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
                 [
                     'titulo' => 'Mi Historial de Vacaciones',
                     'ruta' => route('user.historialVacaciones'),
-                    'icono' => '📅',
+                    'icono' => 'calendar',
                     'color' => 'bg-green-100 dark:bg-green-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Gestión de Usuarios',
                     'ruta' => route('sup.gestionUsuarios'),
-                    'icono' => '👨‍👩‍👧‍👦',
+                    'icono' => 'users-group',
                     'color' => 'bg-indigo-100 dark:bg-indigo-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Buzón de Quejas y Sugerencias',
                     'ruta' => route('user.buzon'),
-                    'icono' => '💬',
+                    'icono' => 'message',
                     'color' => 'bg-purple-100 dark:bg-purple-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Mensajes',
                     'ruta' => route('mensajes.index'),
-                    'icono' => '💬',
+                    'icono' => 'message',
                     'color' => 'bg-purple-100 dark:bg-purple-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
@@ -161,8 +161,15 @@
                         </span>
                     @endif
                     <div class="flex items-center space-x-3">
-                        <div class="text-3xl">
-                            {{ $card['icono'] }}
+                        <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                            <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                                Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                                (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                                (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                                (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                                (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                                (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
+                            }}"></i>
                         </div>
                         <h3 class="text-base font-semibold text-gray-800 dark:text-white">
                             {{ $card['titulo'] }}

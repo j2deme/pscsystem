@@ -16,99 +16,99 @@
         [
             'titulo' => 'Nuevas Altas',
             'ruta' => route('aux.nuevasAltas'),
-            'icono' => '🆕',
+            'icono' => 'circle-plus',
             'color' => 'bg-green-100 dark:bg-green-700',
             'notificaciones' => $conteoAltas,
         ],
         [
             'titulo' => 'Actualización de Información',
             'ruta' => route('aux.usuariosList'),
-            'icono' => '📁',
+            'icono' => 'folder',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
         ],
         [
             'titulo' => 'Acuses de Bajas',
             'ruta' => '#',
-            'icono' => '🗑',
+            'icono' => 'trash',
             'color' => 'bg-red-100 dark:bg-red-700',
             'disabled' => true,
         ],
         [
             'titulo' => 'Confrontas IMSS/INFONAVIT',
             'ruta' => route('aux.confrontas'),
-            'icono' => '🤝',
+            'icono' => 'folder-open',
             'color' => 'bg-green-100 dark:bg-green-700',
         ],
         [
             'titulo' => 'Cédulas',
             'ruta' => '#',
-            'icono' => '📃',
+            'icono' => 'file-text',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
             'disabled' => true,
         ],
         [
             'titulo' => 'Sipare',
             'ruta' => '#',
-            'icono' => '📂',
+            'icono' => 'folder-open',
             'color' => 'bg-pink-100 dark:bg-pink-700',
             'disabled' => true,
         ],
         [
             'titulo' => 'Gráficos',
             'ruta' => "#",
-            'icono' => '📊',
+            'icono' => 'chart-bar',
             'color' => 'bg-green-100 dark:bg-green-700',
         ],
         [
             'titulo' => 'Riesgos de Trabajo',
             'ruta' => route('aux.riesgosTrabajo'),
-            'icono' => '🚨',
+            'icono' => 'alert-triangle',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
         ],
         [
             'titulo' => 'Incapacidades',
             'ruta' => route('aux.incapacidadesList'),
-            'icono' => '🤕',
+            'icono' => 'bandage',
             'color' => 'bg-red-100 dark:bg-red-700',
         ],
         [
             'titulo' => 'Solicitar Vacaciones',
             'ruta' => route('user.solicitarVacacionesForm'),
-            'icono' => '🎉',
+            'icono' => 'confetti',
             'color' => 'bg-green-100 dark:bg-green-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Ficha Técnica',
             'ruta' => route('user.verFicha', auth()->user()->id),
-            'icono' => '📝',
+            'icono' => 'file-description',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Historial de Incapacidades',
             'ruta' => route('aux.historialIncapacidades'),
-            'icono' => '📅',
+            'icono' => 'calendar',
             'color' => 'bg-red-100 dark:bg-red-700',
         ],
         [
             'titulo' => 'Mi Historial de Vacaciones',
             'ruta' => route('user.historialVacaciones'),
-            'icono' => '📅',
+            'icono' => 'calendar',
             'color' => 'bg-green-100 dark:bg-green-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Buzón de Quejas y Sugerencias',
             'ruta' => route('user.buzon'),
-            'icono' => '💬',
+            'icono' => 'message',
             'color' => 'bg-purple-100 dark:bg-purple-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
          [
             'titulo' => 'Historial de Riesgos de Trabajo',
             'ruta' => route('aux.historialRiesgosTrabajo'),
-            'icono' => '📅',
+            'icono' => 'calendar',
             'color' => 'bg-red-100 dark:bg-red-700',
         ],
 
@@ -147,8 +147,16 @@
                                     {{ $card['notificaciones'] }}
                                 </span>
                             @endif
-                            <div class="text-3xl">
-                                {{ $card['icono'] }}
+                            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                                    (Str::contains($card['color'], 'pink') ? 'text-pink-700' :
+                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800'))))))
+                                }}"></i>
                             </div>
                             <h3 class="text-base font-semibold text-gray-800 dark:text-white">
                                 {{ $card['titulo'] }}
@@ -166,8 +174,16 @@
                                     {{ $card['notificaciones'] }}
                                 </span>
                             @endif
-                            <div class="text-3xl">
-                                {{ $card['icono'] }}
+                            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                                    (Str::contains($card['color'], 'pink') ? 'text-pink-700' :
+                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800'))))))
+                                }}"></i>
                             </div>
                             <h3 class="text-base font-semibold text-gray-800 dark:text-white">
                                 {{ $card['titulo'] }}
