@@ -13,11 +13,7 @@
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   @endpush
 
-  <div class="py-4 px-2 sm:py-6 sm:px-4">
-    <div class="mx-auto max-w-7xl">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
-        <livewire:mapa-monitoreo />
-      </div>
-    </div>
+  <div class="px-4 py-6 mx-auto max-w-7xl">
+    <livewire:mapa-monitoreo />
   </div>
 </x-app-layout>
