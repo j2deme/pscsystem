@@ -25,8 +25,8 @@ $cards = [
 'color' => 'bg-blue-100 dark:bg-blue-700',
 ],
 [
-'titulo' => 'Reparaciones',
-'ruta' => "#",
+'titulo' => 'Servicios y Reparaciones',
+'ruta' => route('servicios.index'),
 'icono' => 'tool',
 'color' => 'bg-yellow-100 dark:bg-yellow-700',
 ],
