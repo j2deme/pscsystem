@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('unidad_id');
             $table->date('fecha');
-            $table->string('descripcion');
+            $table->text('descripcion');
             $table->decimal('costo', 10, 2)->nullable();
             $table->string('responsable')->nullable();
             $table->string('tipo');
