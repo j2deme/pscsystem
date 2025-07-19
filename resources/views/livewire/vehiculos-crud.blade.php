@@ -21,9 +21,10 @@
     @endif
     @if($mostrarFormulario)
     <div class="flex items-center gap-2 mb-4">
-        <span class="inline-flex items-center justify-center w-8 h-8 text-xl rounded-full"
-            :class="$modo == 'crear' ? 'bg-blue-100 text-blue-600' : 'bg-yellow-100 text-yellow-600'">
-            <i class="ti" :class="$modo == 'crear' ? 'ti-plus' : 'ti-edit'"></i>
+        <span class="inline-flex items-center justify-center w-8 h-8 text-xl rounded-full" @if($modo=='crear' )
+            style="background-color: #DBEAFE; color: #2563EB;" @else style="background-color: #FEF3C7; color: #CA8A04;"
+            @endif>
+            <i class="ti {{ $modo == 'crear' ? 'ti-plus' : 'ti-edit' }}"></i>
         </span>
         <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
             {{ $modo == 'crear' ? 'Agregar Vehículo' : 'Editar Vehículo' }}
@@ -260,7 +261,7 @@
                     </td>
                     <td class="flex justify-center gap-2 px-4 py-2">
                         <a href="{{ route('vehiculos.detalle', ['id' => $unidad->id]) }}"
-                            class="flex items-center justify-center p-2 text-white bg-blue-500 rounded hover:bg-blue-700"
+                            class="flex items-center justify-center p-2 text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200"
                             title="Ver Detalle">
                             <i class="ti ti-eye"></i>
                         </a>

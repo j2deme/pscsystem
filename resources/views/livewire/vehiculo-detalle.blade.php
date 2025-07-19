@@ -117,6 +117,7 @@
     </div>
   </div>
   <!-- Sección: Observaciones -->
+  @if(!empty($unidad->observaciones))
   <div class="max-w-5xl p-6 mx-auto mt-8 shadow-md rounded-xl bg-gray-50 dark:bg-gray-900">
     <div class="flex items-center gap-2 mb-2 font-bold text-blue-700 dark:text-blue-300">
       <i class="text-lg ti ti-message-dots"></i>
@@ -127,6 +128,7 @@
       {!! nl2br(e($unidad->observaciones)) !!}
     </div>
   </div>
+  @endif
   <!-- Botones de acción -->
   <div class="flex justify-end max-w-5xl gap-4 mx-auto mt-8">
     <a href="{{ route('vehiculos.index', ['editar' => $unidad->id, 'return' => 'detalle']) }}"

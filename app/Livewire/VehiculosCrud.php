@@ -95,6 +95,7 @@ class VehiculosCrud extends Component
     {
         $this->resetCampos();
         $this->modo              = 'crear';
+        $this->is_activo         = true; // Por defecto al crear
         $this->mostrarFormulario = true;
     }
 
