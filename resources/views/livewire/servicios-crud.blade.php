@@ -221,6 +221,14 @@
                                     {{ $tipo }}
                                 </span>
                             </td>
+                            <td class="flex justify-center gap-2 px-4 py-2">
+                                <button wire:click="eliminarServicio({{ $servicio->id }})"
+                                    class="flex items-center justify-center p-2 text-white bg-red-600 rounded hover:bg-red-700"
+                                    onclick="return confirm('¿Seguro que deseas eliminar este servicio?')"
+                                    title="Eliminar">
+                                    <i class="ti ti-trash"></i>
+                                </button>
+                            </td>
                         </tr>
                         @empty
                         <tr>

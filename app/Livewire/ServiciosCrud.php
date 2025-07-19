@@ -71,6 +71,13 @@ class ServiciosCrud extends Component
         session()->flash('success', 'Servicio creado correctamente.');
     }
 
+    public function eliminarServicio($id)
+    {
+        Servicio::destroy($id);
+        session()->flash('success', 'Servicio eliminado correctamente.');
+        $this->resetPage();
+    }
+
     public function render()
     {
         $query = Servicio::query();
