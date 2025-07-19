@@ -22,11 +22,14 @@
 
             @if($showForm)
             <div class="flex items-center gap-2 mb-4">
-                <span
-                    class="inline-flex items-center justify-center w-8 h-8 text-xl rounded-full bg-blue-100 text-blue-600">
-                    <i class="ti ti-plus"></i>
+                <span class="inline-flex items-center justify-center w-8 h-8 text-xl rounded-full" @if($editId)
+                    style="background-color: #FEF3C7; color: #CA8A04;" @else
+                    style="background-color: #DBEAFE; color: #2563EB;" @endif>
+                    <i class="ti {{ $editId ? 'ti-edit' : 'ti-plus' }}"></i>
                 </span>
-                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">Agregar servicio</h3>
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
+                    {{ $editId ? 'Editar servicio' : 'Agregar servicio' }}
+                </h3>
             </div>
 
             <form wire:submit.prevent="save" class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
@@ -109,9 +112,10 @@
                 <div class="flex gap-2 mt-2 md:col-span-2">
                     <div class="flex justify-end w-full gap-2">
                         <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
-                            <i class="ti ti-plus mr-2"></i>Agregar
+                            <i class="ti {{ $editId ? 'ti-edit' : 'ti-plus' }} mr-2"></i>
+                            {{ $editId ? 'Actualizar' : 'Agregar' }}
                         </button>
-                        <button type="button" wire:click="$set('showForm', false)"
+                        <button type="button" wire:click="cancelarForm"
                             class="px-4 py-2 text-gray-500 transition bg-transparent border border-gray-300 rounded hover:bg-gray-100 hover:text-gray-700">Cancelar</button>
                     </div>
                 </div>
@@ -222,6 +226,11 @@
                                 </span>
                             </td>
                             <td class="flex justify-center gap-2 px-4 py-2">
+                                <button wire:click="editarServicio({{ $servicio->id }})"
+                                    class="flex items-center justify-center p-2 text-white bg-blue-400 rounded hover:bg-blue-500"
+                                    title="Editar">
+                                    <i class="ti ti-edit"></i>
+                                </button>
                                 <button wire:click="eliminarServicio({{ $servicio->id }})"
                                     class="flex items-center justify-center p-2 text-white bg-red-600 rounded hover:bg-red-700"
                                     onclick="return confirm('¿Seguro que deseas eliminar este servicio?')"

@@ -11,6 +11,7 @@ class ServiciosCrud extends Component
 {
     use WithPagination;
 
+    public $editId = null;
     public $showForm = false;
     public $form = [
         'unidad_id' => '',
@@ -44,7 +45,16 @@ class ServiciosCrud extends Component
     {
         $this->reset('form');
         $this->form['costo'] = 0;
+        $this->editId        = null;
         $this->showForm      = true;
+    }
+
+    public function cancelarForm()
+    {
+        $this->showForm = false;
+        $this->editId   = null;
+        $this->reset('form');
+        $this->form['costo'] = 0;
     }
 
     public function save()
@@ -63,12 +73,37 @@ class ServiciosCrud extends Component
             $this->form['costo'] = 0;
         }
 
-        Servicio::create($this->form);
+        if ($this->editId) {
+            // Actualizar registro existente
+            $servicio = Servicio::findOrFail($this->editId);
+            $servicio->update($this->form);
+            session()->flash('success', 'Servicio actualizado correctamente.');
+        } else {
+            // Crear nuevo registro
+            Servicio::create($this->form);
+            session()->flash('success', 'Servicio creado correctamente.');
+        }
 
         $this->showForm = false;
         $this->reset('form');
         $this->form['costo'] = 0;
-        session()->flash('success', 'Servicio creado correctamente.');
+        $this->editId        = null;
+    }
+
+    public function editarServicio($id)
+    {
+        $servicio       = Servicio::findOrFail($id);
+        $this->form     = [
+            'unidad_id' => $servicio->unidad_id,
+            'fecha' => $servicio->fecha,
+            'descripcion' => $servicio->descripcion,
+            'costo' => $servicio->costo,
+            'responsable' => $servicio->responsable,
+            'tipo' => $servicio->tipo,
+            'observaciones' => $servicio->observaciones,
+        ];
+        $this->showForm = true;
+        $this->editId   = $servicio->id;
     }
 
     public function eliminarServicio($id)
