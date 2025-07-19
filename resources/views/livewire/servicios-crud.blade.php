@@ -188,9 +188,15 @@
                                 $unidad = collect($placasDisponibles)->firstWhere('unidad_id', $servicio->unidad_id);
                                 @endphp
                                 @if($unidad)
-                                {{ $unidad['numero'] }}: {{ $unidad['marca'] }} ({{ $unidad['modelo'] }})
+                                <a href="{{ route('vehiculos.detalle', ['id' => $servicio->unidad_id]) }}"
+                                    class="transition text-gray-800 hover:text-blue-600 hover:underline font-semibold">
+                                    {{ $unidad['numero'] }}: {{ $unidad['marca'] }} ({{ $unidad['modelo'] }})
+                                </a>
                                 @else
-                                Unidad #{{ $servicio->unidad_id }}
+                                <a href="{{ route('vehiculos.detalle', ['id' => $servicio->unidad_id]) }}"
+                                    class="transition text-gray-800 hover:text-blue-600 hover:underline font-semibold">
+                                    Unidad #{{ $servicio->unidad_id }}
+                                </a>
                                 @endif
                             </td>
                             <td class="px-4 py-2 text-center">{{
