@@ -3,10 +3,14 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithPagination;
+use App\Models\Unidades;
+use App\Models\Servicio;
 
 class ServiciosCrud extends Component
 {
-    public $servicios;
+    use WithPagination;
+
     public $showForm = false;
     public $form = [
         'unidad_id' => '',
@@ -18,26 +22,22 @@ class ServiciosCrud extends Component
         'observaciones' => '',
     ];
     public $placasDisponibles = [];
+    public $perPage = 10;
+    public $filtro_unidad = '';
+    public $filtro_tipo = '';
 
     public function mount()
     {
-        $this->loadServicios();
         $this->loadPlacasDisponibles();
-
     }
 
     public function loadPlacasDisponibles()
     {
         // Tomar placas del listado de vehículos activos
-        $this->placasDisponibles = \App\Models\Unidades::where("estado_vehiculo", 'Activo')
+        $this->placasDisponibles = Unidades::where("estado_vehiculo", 'Activo')
             ->whereNotNull('placas')
             ->orderBy('placas')
             ->get(['id as unidad_id', 'placas as numero', 'marca', 'modelo'])->toArray();
-    }
-
-    public function loadServicios()
-    {
-        $this->servicios = \App\Models\Servicio::orderByDesc('fecha')->get();
     }
 
     public function showCreateForm()
@@ -58,11 +58,13 @@ class ServiciosCrud extends Component
             'form.tipo' => 'required|string',
             'form.observaciones' => 'nullable|string',
         ]);
+
         if ($this->form['costo'] === null || $this->form['costo'] === '') {
             $this->form['costo'] = 0;
         }
-        \App\Models\Servicio::create($this->form);
-        $this->loadServicios();
+
+        Servicio::create($this->form);
+
         $this->showForm = false;
         $this->reset('form');
         $this->form['costo'] = 0;
@@ -71,6 +73,18 @@ class ServiciosCrud extends Component
 
     public function render()
     {
+        $query = Servicio::query();
+
+        if ($this->filtro_unidad) {
+            $query->where('unidad_id', $this->filtro_unidad);
+        }
+
+        if ($this->filtro_tipo) {
+            $query->where('tipo', $this->filtro_tipo);
+        }
+
+        $servicios = $query->orderByDesc('fecha')->paginate($this->perPage);
+
         $data = [
             'breadcrumbItems' => [
                 ['icon' => 'ti-home', 'url' => route('dashboard')],
@@ -78,14 +92,31 @@ class ServiciosCrud extends Component
             ],
             'titleMain' => 'Servicios y Reparaciones',
             'helpText' => 'Administra y consulta el listado de servicios y reparaciones registrados para los vehículos.',
-            'servicios' => $this->servicios,
+            'servicios' => $servicios,
             'showForm' => $this->showForm,
             'form' => $this->form,
             'placasDisponibles' => $this->placasDisponibles,
+            'perPage' => $this->perPage,
+            'filtro_unidad' => $this->filtro_unidad,
+            'filtro_tipo' => $this->filtro_tipo,
         ];
-        return view(
-            'livewire.servicios-crud',
-            $data
-        )->layout('layouts.app');
+
+        return view('livewire.servicios-crud', $data)
+            ->layout('layouts.app');
+    }
+
+    public function updatingFiltroUnidad()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingFiltroTipo()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPerPage()
+    {
+        $this->resetPage();
     }
 }

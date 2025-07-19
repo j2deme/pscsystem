@@ -1,9 +1,7 @@
 <div>
     <x-navbar />
     <x-livewire.monitoreo-layout :breadcrumb-items="$breadcrumbItems" :title-main="$titleMain" :help-text="$helpText">
-        <div class="container mx-auto py-6"
-            x-data="{ initChoices() { if (window.Choices) { if (this.choicesInstance) { this.choicesInstance.destroy(); } const select = document.getElementById('placa-select'); if (select) { this.choicesInstance = new Choices(select, { searchEnabled: true, itemSelectText: '', shouldSort: false }); select.addEventListener('change', function (e) { window.livewire.find(select.closest('[wire\\:id]').getAttribute('wire:id')).set('form.unidad_id', e.target.value); }); } } } }"
-            x-init="if ($wire.showForm) initChoices()" x-effect="$wire.showForm && initChoices()">
+        <div class="container mx-auto py-6">
             @if (session()->has('success'))
             @php
             $msg = session('success');
@@ -120,13 +118,52 @@
             </form>
             @else
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold">Listado de servicios</h2>
-                <button wire:click="showCreateForm"
-                    class="flex items-center gap-2 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
-                    type="button">
-                    <i class="ti ti-plus"></i>
-                    Agregar servicio
-                </button>
+                <div class="flex flex-wrap items-center gap-4 w-full">
+                    <div class="flex gap-4 w-full">
+                        <div>
+                            <label for="perPage" class="mr-2 text-gray-700 dark:text-gray-200">Mostrar:</label>
+                            <select wire:model.live="perPage" id="perPage" class="px-2 py-1 rounded form-select">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="1000">Todos</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="filtro_unidad" class="mr-2 text-gray-700 dark:text-gray-200">Filtrar por
+                                unidad:</label>
+                            <select wire:model.live="filtro_unidad" id="filtro_unidad"
+                                class="px-2 py-1 rounded form-select">
+                                <option value="">Todas</option>
+                                @foreach($placasDisponibles as $placa)
+                                <option value="{{ $placa['unidad_id'] }}">{{ $placa['numero'] }}: {{ $placa['marca'] }}
+                                    ({{
+                                    $placa['modelo'] }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="filtro_tipo" class="mr-2 text-gray-700 dark:text-gray-200">Filtrar por
+                                tipo:</label>
+                            <select wire:model.live="filtro_tipo" id="filtro_tipo"
+                                class="px-2 py-1 rounded form-select">
+                                <option value="">Todos</option>
+                                <option value="Preventivo">Preventivo</option>
+                                <option value="Correctivo">Correctivo</option>
+                                <option value="Incidencia">Incidencia</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="flex-grow"></div>
+                        <div class="flex items-center justify-end">
+                            <button wire:click="showCreateForm"
+                                class="flex items-center gap-2 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+                                type="button">
+                                <i class="ti ti-plus"></i>
+                                Agregar servicio
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white rounded shadow dark:bg-gray-800">
@@ -136,9 +173,7 @@
                             <th class="px-4 py-2">Fecha</th>
                             <th class="px-4 py-2">Descripción</th>
                             <th class="px-4 py-2">Costo</th>
-                            <!-- Responsable eliminado -->
                             <th class="px-4 py-2">Tipo</th>
-                            <!-- Observaciones eliminada -->
                         </tr>
                     </thead>
                     <tbody>
@@ -171,7 +206,6 @@
                                 ${{ number_format($servicio->costo, 2) }}
                                 @endif
                             </td>
-                            <!-- Responsable eliminado -->
                             <td class="px-4 py-2 text-center">
                                 @php
                                 $badgeColors = [
@@ -187,7 +221,6 @@
                                     {{ $tipo }}
                                 </span>
                             </td>
-                            <!-- Observaciones eliminada -->
                         </tr>
                         @empty
                         <tr>
@@ -204,7 +237,7 @@
                                     <button wire:click="showCreateForm" type="button"
                                         class="mt-2 px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-2">
                                         <i class="ti ti-plus"></i>
-                                        Agregar Servicio
+                                        Agregar servicio
                                     </button>
                                 </div>
                             </td>
@@ -212,6 +245,11 @@
                         @endforelse
                     </tbody>
                 </table>
+                <div class="mt-4">
+                    @if($servicios->hasPages())
+                    {{ $servicios->links() }}
+                    @endif
+                </div>
             </div>
             @endif
             <!-- Modal para mostrar descripción completa -->
@@ -247,5 +285,6 @@
                     }
                 });
             </script>
+        </div>
     </x-livewire.monitoreo-layout>
 </div>
