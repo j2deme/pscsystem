@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RiesgoTrabajoController;
 use App\Http\Controllers\IncapacidadController;
 use App\Http\Controllers\IncapacidadReporteController;
+use Illuminate\Support\Facades\Auth;
+
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -66,19 +68,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/editar_solicitud/{id}', [SupervisorController::class, 'editarSolicitudForm'])->name('sup.editarSolicitudForm');
     Route::post('/editar_informacion_solicitud/{id}', [SupervisorController::class, 'editarInformacionSolicitud'])->name('sup.editarInformacionSolicitud');
     Route::post('/subir_archivos_editados/{id}', [SupervisorController::class, 'subirArchivosEditados'])->name('sup.guardarArchivosEditados');
-    Route::get('/sup_solicitar_baja', [SupervisorController::class,'solicitarBajaForm'])->name('sup.solicitarBajaForm');
-    Route::get('/sup_solicitar_baja/{id}', [SupervisorController::class,'solicitarBajaVista'])->name('sup.validarSolicitudBaja');
+    Route::get('/sup_solicitar_baja', [SupervisorController::class, 'solicitarBajaForm'])->name('sup.solicitarBajaForm');
+    Route::get('/sup_solicitar_baja/{id}', [SupervisorController::class, 'solicitarBajaVista'])->name('sup.validarSolicitudBaja');
     Route::post('/nueva_guardar_baja/{id}', [SupervisorController::class, 'guardarBajaNueva'])->name('sup.guardarBajaNueva');
-    Route::get('/historial_bajas', [SupervisorController::class,'historialBajas'])->name('sup.historialBajas');
+    Route::get('/historial_bajas', [SupervisorController::class, 'historialBajas'])->name('sup.historialBajas');
     Route::get('/lista_asistencia', [SupervisorController::class, 'listaAsistencia'])->name('sup.listaAsistencia');
     Route::post('/guardar_asistencias', [SupervisorController::class, 'guardarAsistencias'])->name('sup.guardarAsistencias');
-    Route::get('/ver_asistencias/{id}', [SupervisorController::class,'verAsistencias'])->name('sup.verAsistencias');
+    Route::get('/ver_asistencias/{id}', [SupervisorController::class, 'verAsistencias'])->name('sup.verAsistencias');
     Route::get('/supervisor/ver_fecha_sistencias', [SupervisorController::class, 'verFechaAsistencias'])->name('sup.verFechaAsistencias');
     Route::get('/detalle_asistencia/{id}', [SupervisorController::class, 'detalleAsistencia'])->name('sup.detalleAsistencia');
-    Route::get('/solicitudes_vacaciones', [SupervisorController::class,'solicitudesVacaciones'])->name('sup.solicitudesVacaciones');
+    Route::get('/solicitudes_vacaciones', [SupervisorController::class, 'solicitudesVacaciones'])->name('sup.solicitudesVacaciones');
     Route::get('/aceptar_solicitud_vacaciones/{id}', [SupervisorController::class, 'aceptarSolicitudVacaciones'])->name('sup.aceptarSolicitudVacaciones');
-    Route::get('/rechazar_solicitud_vacaciones/{id}', [SupervisorController::class,'rechazarSolicitudVacaciones'])->name('sup.rechazarSolicitudVacaciones');
-    Route::get('/ver_solicitud_baja/{id}', [SupervisorController::class,'verSolicitudBaja'])->name('sup.verSolicitudBaja');
+    Route::get('/rechazar_solicitud_vacaciones/{id}', [SupervisorController::class, 'rechazarSolicitudVacaciones'])->name('sup.rechazarSolicitudVacaciones');
+    Route::get('/ver_solicitud_baja/{id}', [SupervisorController::class, 'verSolicitudBaja'])->name('sup.verSolicitudBaja');
     Route::get('/tiempos_extras', [SupervisorController::class, 'tiemposExtras'])->name('sup.tiemposExtras');
     Route::get('/tiempos_extras/{id}', [SupervisorController::class, 'tiemposExtrasForm'])->name('sup.tiemposExtrasForm');
     Route::post('/guardar_tiempo_extra/{id}', [SupervisorController::class, 'guardarTiempoExtra'])->name('sup.guardarTiempoExtra');
@@ -96,11 +98,11 @@ Route::middleware('auth')->group(function () {
 
 
     //usuario Recursos Humanos
-    Route::get('/solicitudes_altas', [RhController::class,'solicitudesAltas'])->name('rh.solicitudesAltas');
+    Route::get('/solicitudes_altas', [RhController::class, 'solicitudesAltas'])->name('rh.solicitudesAltas');
     Route::get('/solicitudes_altas/{id}', [RhController::class, 'detalleSolicitud'])->name('rh.detalleSolicitud');
     Route::get('/aceptar_solicitud/{id}', [RhController::class, 'aceptarSolicitud'])->name('rh.aceptarSolicitud');
     Route::post('/enviar_observacion/{id}', [RhController::class, 'enviarObservacion'])->name('rh.observacion_solicitud');
-    Route::get('/rechazar_solicitud/{id}', [RhController::class,'rechazarSolicitud'])->name('rh.rechazarSolicitud');
+    Route::get('/rechazar_solicitud/{id}', [RhController::class, 'rechazarSolicitud'])->name('rh.rechazarSolicitud');
     Route::get('/historial_solicitudes_altas', [RhController::class, 'historialSolicitudesAltas'])->name('rh.historialSolicitudesAltas');
     Route::get('/solicitudes_bajas', [RhController::class, 'solicitudesBajas'])->name('rh.solicitudesBajas');
     Route::get('/historial_solicitudes_bajas', [RhController::class, 'historialSolicitudesBajas'])->name('rh.historialSolicitudesBajas');
@@ -109,7 +111,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/aceptar_baja/{id}', [RhController::class, 'aceptarBaja'])->name('rh.aceptarBaja');
     Route::get('/generar_nueva_alta', [RhController::class, 'generarNuevaAltaForm'])->name('rh.generarNuevaAltaForm');
     Route::post('/guardar_alta', [RhController::class, 'guardarAlta'])->name('rh.guardarAlta');
-    Route::get('/subir_archivos_alta/{id}', [RhController::class,'subirArchivosAltaForm'])->name('rh.subirArchivosAltaForm');
+    Route::get('/subir_archivos_alta/{id}', [RhController::class, 'subirArchivosAltaForm'])->name('rh.subirArchivosAltaForm');
     Route::post('/guardar_archivos_alta/{id}', [RhController::class, 'guardarArchivosAlta'])->name('rh.guardarArchivosAlta');
     Route::get('/generar_nueva_baja', [RhController::class, 'generarNuevaBajaForm'])->name('rh.generarNuevaBajaForm');
     Route::get('llenar_baja/{id}', [RhController::class, 'llenarBaja'])->name('rh.llenarBaja');
@@ -134,7 +136,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/descargar-vacaciones-cortes', function () {
         $inicio = request()->query('inicio');
-        $fin = request()->query('fin');
+        $fin    = request()->query('fin');
         return (new App\Exports\VacacionesCortesExport())->generateFile($inicio, $fin);
     })->name('exportar.vacacionesCortes');
 
@@ -147,17 +149,26 @@ Route::middleware('auth')->group(function () {
     })->name('exportar.asistencias');
 
     //Usuario 'User'
-    Route::get('/solicitar_baja', [UserController::class,'solicitarBajaForm'])->name('user.solicitarBajaForm');
-    Route::post('/registrar_solicitud_baja/{id}', [UserController::class,'solicitarBaja'])->name('user.registrarSolicitudBaja');
-    Route::get('/solicitar_vacaciones_form', [UserController::class,'solicitarVacacionesForm'])->name('user.solicitarVacacionesForm');
-    Route::post('/solicitar_vacaciones/{id}', [UserController::class,'solicitarVacaciones'])->name('user.solicitarVacaciones');
+    Route::get('/solicitar_baja', [UserController::class, 'solicitarBajaForm'])->name('user.solicitarBajaForm');
+    Route::post('/registrar_solicitud_baja/{id}', [UserController::class, 'solicitarBaja'])->name('user.registrarSolicitudBaja');
+    Route::get('/solicitar_vacaciones_form', [UserController::class, 'solicitarVacacionesForm'])->name('user.solicitarVacacionesForm');
+    Route::post('/solicitar_vacaciones/{id}', [UserController::class, 'solicitarVacaciones'])->name('user.solicitarVacaciones');
     Route::get('/historial_solicitudes_vacaciones', [UserController::class, 'historialVacaciones'])->name('user.historialVacaciones');
-    Route::get('/ver_ficha/{id}', [UserController::class,'verFicha'])->name('user.verFicha');
+    Route::get('/ver_ficha/{id}', [UserController::class, 'verFicha'])->name('user.verFicha');
     Route::get('/buzon', [UserController::class, 'buzon'])->name('user.buzon');
     Route::post('/enviar_sugerencia/{id}', [UserController::class, 'enviarSugerencia'])->name('user.enviarSugerencia');
 
     //Usuario Monitorista
     Route::get('/ver_deducciones', [MonitoreoController::class, 'verDeducciones'])->name('monitoreo.deducciones');
+    Route::get('/mapa', [MonitoreoController::class, 'mapa'])->name('monitoreo.mapa');
+    Route::get('/vehiculos', function () {
+        return view('vehiculos.crud');
+    })->name('vehiculos.index');
+
+    // Detalle de Vehículo (vista Blade con Livewire)
+    Route::get('/vehiculos/{id}', function ($id) {
+        return view('vehiculos.detalle', ['id' => $id]);
+    })->name('vehiculos.detalle');
 
     //Usuario Aux Admin
     Route::get('/nuevas_altas_elementos', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');
@@ -169,11 +180,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/riesgos-trabajo', [RiesgoTrabajoController::class, 'index'])->name('aux.riesgosTrabajo');
     Route::get('/riesgos-trabajo/generar/{user}', [RiesgoTrabajoController::class, 'create'])->name('aux.generarRiesgoForm');
     Route::post('/riesgos-trabajo/guardar', [RiesgoTrabajoController::class, 'store'])->name('aux.guardarRiesgo');
-//nuevas rutas incapacidades
+    //nuevas rutas incapacidades
     Route::get('/incapacidades', [IncapacidadController::class, 'index'])->name('aux.incapacidadesList');
     Route::get('/incapacidades/generar/{user}', [IncapacidadController::class, 'create'])->name('aux.generarIncapacidadForm');
     Route::post('/incapacidades/guardar', [IncapacidadController::class, 'store'])->name('aux.guardarIncapacidad');
-//historial incapacidades
+    //historial incapacidades
     Route::get('/aux/historial-incapacidades', [App\Http\Controllers\IncapacidadController::class, 'showIncapacidadesHistory'])->name('aux.historialIncapacidades');
     Route::get('/aux/historial-riesgos-trabajo', [App\Http\Controllers\RiesgoTrabajoController::class, 'showHistorialRiesgosTrabajo'])->name('aux.historialRiesgosTrabajo');
     Route::get('/reporte/incapacidades', [IncapacidadReporteController::class, 'generarPdf'])->name('reporte.incapacidades.pdf');
@@ -208,7 +219,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/nueva_mision', [CustodiosController::class, 'nuevaMisionForm'])->name('custodios.nuevaMisionForm');
     Route::post('/agentes-disponibles', [CustodiosController::class, 'obtenerAgentesDisponibles']);
     Route::post('/guardarMision', [CustodiosController::class, 'guardarMision'])->name('misiones.store');
-    Route::get('/misiones', [CustodiosController::class,'misionesIndex'])->name('custodios.misiones');
+    Route::get('/misiones', [CustodiosController::class, 'misionesIndex'])->name('custodios.misiones');
     Route::get('/custodios', [CustodiosController::class, 'custodiosIndex'])->name('custodios.elementos');
     Route::get('/historial_misiones', [CustodiosController::class, 'historialMisiones'])->name('custodios.historialMisiones');
     Route::get('/misiones_terminadas', [CustodiosController::class, 'misionesTerminadas'])->name('custodios.misionesTerminadas');
@@ -224,4 +235,4 @@ Route::middleware('auth')->group(function () {
 
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

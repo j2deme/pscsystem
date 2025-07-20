@@ -6,75 +6,75 @@
                 [
                     'titulo' => 'Nueva Misión',
                     'ruta' => route('custodios.nuevaMisionForm'),
-                    'icono' => '🚓',
+                    'icono' => 'car',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
                 ],
                 [
                     'titulo' => 'Notificaciones de Misiones',
                     'ruta' => '#',
-                    'icono' => '🔔',
+                    'icono' => 'bell',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700',
                 ],
                 [
                     'titulo' => 'Misiones Activas',
                     'ruta' => route('custodios.misiones'),
-                    'icono' => '📝',
+                    'icono' => 'file-description',
                     'color' => 'bg-green-100 dark:bg-green-700'
                 ],
                 [
                     'titulo' => 'Solicitudes de  Misiones',
                     'ruta' => '#',
-                    'icono' => '📋',
+                    'icono' => 'clipboard-list',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
                 ],
                 [
                     'titulo' => 'Formularios Post-Misión',
                     'ruta' => route('custodios.misionesTerminadas'),
-                    'icono' => '📋',
+                    'icono' => 'clipboard-list',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
                 [
                     'titulo' => 'Listado de Elementos',
                     'ruta' => route('custodios.elementos'),
-                    'icono' => '📋',
+                    'icono' => 'clipboard-list',
                     'color' => 'bg-green-100 dark:bg-green-700'
                 ],
                 [
                     'titulo' => 'Solicitar Vacaciones',
                     'ruta' => route('user.solicitarVacacionesForm'),
-                    'icono' => '🎉',
+                    'icono' => 'confetti',
                     'color' => 'bg-blue-100 dark:bg-blue-700'
                 ],
                 [
                     'titulo' => 'Mi Historial de Vacaciones',
                     'ruta' => route('user.historialVacaciones'),
-                    'icono' => '📅',
+                    'icono' => 'calendar',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
                 [
                     'titulo' => 'Historial de Misiones',
                     'ruta' => route('custodios.historialMisiones'),
-                    'icono' => '🗂️',
+                    'icono' => 'folder-open',
                     'color' => 'bg-green-100 dark:bg-green-700'
                 ],
                 [
                     'titulo' => 'Buzón de Quejas y Sugerencias',
                     'ruta' => route('user.buzon'),
-                    'icono' => '💬',
+                    'icono' => 'message',
                     'color' => 'bg-purple-100 dark:bg-purple-700',
                     'disabled' => Auth::user()->rol=='admin'
                 ],
                 [
                     'titulo' => 'Ficha Técnica',
                     'ruta' => route('user.verFicha', auth()->user()->id),
-                    'icono' => '📝',
+                    'icono' => 'file-description',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Mensajes',
                     'ruta' => route('mensajes.index'),
-                    'icono' => '💬',
+                    'icono' => 'message',
                     'color' => 'bg-purple-100 dark:bg-purple-700',
                     'disabled' => Auth::user()->rol == 'admin'
                 ],
@@ -91,8 +91,15 @@
                         </span>
                     @endif
                     <div class="flex items-center space-x-3">
-                        <div class="text-3xl">
-                            {{ $card['icono'] }}
+                        <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                            <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                                Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                                (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                                (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                                (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                                (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                                (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
+                            }}"></i>
                         </div>
                         <h3 class="text-base font-semibold text-gray-800 dark:text-white">
                             {{ $card['titulo'] }}

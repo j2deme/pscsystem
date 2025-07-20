@@ -19,5 +19,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        $this->call(SolicitudAltaSeeder::class);
+        $this->call(ActualizarZonaSubPuntosSeeder::class);
+        $this->call(PuntosSeeder::class);
+        $this->call(SubpuntoSiglasSeeder::class);
     }
 }
