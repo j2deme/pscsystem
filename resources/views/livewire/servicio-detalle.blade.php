@@ -33,10 +33,25 @@ $servicio = $servicio ?? null;
                 <i class="text-lg ti ti-tool"></i> Datos del servicio
             </div>
             <div class="space-y-2 text-gray-700 dark:text-gray-200">
-                <div><span class="font-semibold">Tipo:</span> {{ $servicio->tipo }}</div>
+                @php
+                $badgeColors = [
+                'Preventivo' => 'bg-green-100 text-green-800',
+                'Correctivo' => 'bg-yellow-100 text-yellow-800',
+                'Incidencia' => 'bg-red-100 text-red-800',
+                'Otros' => 'bg-gray-100 text-gray-800',
+                ];
+                $tipo = $servicio->tipo;
+                $color = $badgeColors[$tipo] ?? 'bg-gray-100 text-gray-800';
+                @endphp
+                <div>
+                    <span class="font-semibold">Tipo:</span>
+                    <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold {{ $color }} ml-2">
+                        {{ $tipo }}
+                    </span>
+                </div>
                 <div><span class="font-semibold">Fecha:</span> {{
                     \Carbon\Carbon::parse($servicio->fecha)->format('d/m/Y') }}</div>
-                <div><span class="font-semibold">Responsable/Taller:</span> {{ $servicio->responsable }}</div>
+                <div><span class="font-semibold">Responsable / Taller:</span> {{ $servicio->responsable }}</div>
                 <div><span class="font-semibold">Costo:</span> ${{ number_format($servicio->costo, 2) }}</div>
             </div>
         </div>
