@@ -26,10 +26,25 @@ class ServiciosCrud extends Component
     public $perPage = 10;
     public $filtro_unidad = '';
     public $filtro_tipo = '';
+    public $filtro_fecha_inicio = '';
+    public $filtro_fecha_fin = '';
+    public $returnToDetalle = false;
+    public $responsablesDisponibles = [];
 
     public function mount()
     {
         $this->loadPlacasDisponibles();
+        $this->loadResponsablesDisponibles();
+        $request = request();
+        // Si la URL tiene ?editar=ID, abrir el formulario de edición automáticamente
+        if ($request->has('editar')) {
+            $id = $request->input('editar');
+            $this->editarServicio($id);
+        }
+        // Detectar si se debe regresar al detalle después de editar/cancelar
+        if ($request->has('return') && $request->input('return') === 'detalle') {
+            $this->returnToDetalle = true;
+        }
     }
 
     public function loadPlacasDisponibles()
@@ -41,12 +56,25 @@ class ServiciosCrud extends Component
             ->get(['id as unidad_id', 'placas as numero', 'marca', 'modelo'])->toArray();
     }
 
+    public function loadResponsablesDisponibles()
+    {
+        // Obtener responsables/talleres únicos de los servicios existentes
+        $this->responsablesDisponibles = Servicio::query()
+            ->whereNotNull('responsable')
+            ->where('responsable', '!=', '')
+            ->distinct()
+            ->orderBy('responsable')
+            ->pluck('responsable')
+            ->toArray();
+    }
+
     public function showCreateForm()
     {
         $this->reset('form');
-        $this->form['costo'] = 0;
-        $this->editId        = null;
-        $this->showForm      = true;
+        $this->form['costo']   = 0;
+        $this->editId          = null;
+        $this->showForm        = true;
+        $this->returnToDetalle = false;
     }
 
     public function cancelarForm()
@@ -55,6 +83,13 @@ class ServiciosCrud extends Component
         $this->editId   = null;
         $this->reset('form');
         $this->form['costo'] = 0;
+        // Si se inició edición desde el detalle, redirigir
+        if ($this->returnToDetalle && $this->editId) {
+            return redirect()->route('servicios.detalle', ['id' => $this->editId]);
+        }
+        if ($this->returnToDetalle && request()->has('editar')) {
+            return redirect()->route('servicios.detalle', ['id' => request()->input('editar')]);
+        }
     }
 
     public function save()
@@ -84,10 +119,16 @@ class ServiciosCrud extends Component
             session()->flash('success', 'Servicio creado correctamente.');
         }
 
+        $id             = $this->editId ?? null;
         $this->showForm = false;
         $this->reset('form');
         $this->form['costo'] = 0;
         $this->editId        = null;
+
+        // Si se inició edición desde el detalle, redirigir
+        if ($this->returnToDetalle && $id) {
+            return redirect()->route('servicio.detalle', ['id' => $id]);
+        }
     }
 
     public function editarServicio($id)
@@ -104,6 +145,13 @@ class ServiciosCrud extends Component
         ];
         $this->showForm = true;
         $this->editId   = $servicio->id;
+        // Detectar si se debe regresar al detalle
+        $request = request();
+        if ($request->has('return') && $request->input('return') === 'detalle') {
+            $this->returnToDetalle = true;
+        } else {
+            $this->returnToDetalle = false;
+        }
     }
 
     public function eliminarServicio($id)
@@ -125,6 +173,13 @@ class ServiciosCrud extends Component
             $query->where('tipo', $this->filtro_tipo);
         }
 
+        if ($this->filtro_fecha_inicio) {
+            $query->whereDate('fecha', '>=', $this->filtro_fecha_inicio);
+        }
+        if ($this->filtro_fecha_fin) {
+            $query->whereDate('fecha', '<=', $this->filtro_fecha_fin);
+        }
+
         $servicios = $query->orderByDesc('fecha')->paginate($this->perPage);
 
         $data = [
@@ -138,9 +193,12 @@ class ServiciosCrud extends Component
             'showForm' => $this->showForm,
             'form' => $this->form,
             'placasDisponibles' => $this->placasDisponibles,
+            'responsablesDisponibles' => $this->responsablesDisponibles,
             'perPage' => $this->perPage,
             'filtro_unidad' => $this->filtro_unidad,
             'filtro_tipo' => $this->filtro_tipo,
+            'filtro_fecha_inicio' => $this->filtro_fecha_inicio,
+            'filtro_fecha_fin' => $this->filtro_fecha_fin,
         ];
 
         return view('livewire.servicios-crud', $data)

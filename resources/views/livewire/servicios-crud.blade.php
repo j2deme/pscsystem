@@ -1,7 +1,7 @@
-<div>
+<div class="py-6 mx-auto">
     <x-navbar />
     <x-livewire.monitoreo-layout :breadcrumb-items="$breadcrumbItems" :title-main="$titleMain" :help-text="$helpText">
-        <div class="container mx-auto py-6">
+        <div class="container mx-auto">
             @if (session()->has('success'))
             @php
             $msg = session('success');
@@ -141,6 +141,18 @@
                                 <option value="1000">Todos</option>
                             </select>
                         </div>
+                        <div class="flex-grow"></div>
+                        <div class="flex items-center justify-end">
+                            <button wire:click="showCreateForm"
+                                class="flex items-center gap-2 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
+                                type="button">
+                                <i class="ti ti-plus"></i>
+                                Agregar servicio
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Filtros de fecha en segunda fila -->
+                    <div class="flex gap-4 w-full mt-1">
                         <div>
                             <label for="filtro_unidad" class="mr-2 text-gray-700 dark:text-gray-200">Filtrar por
                                 unidad:</label>
@@ -149,8 +161,7 @@
                                 <option value="">Todas</option>
                                 @foreach($placasDisponibles as $placa)
                                 <option value="{{ $placa['unidad_id'] }}">{{ $placa['numero'] }}: {{ $placa['marca'] }}
-                                    ({{
-                                    $placa['modelo'] }})</option>
+                                    ({{ $placa['modelo'] }})</option>
                                 @endforeach
                             </select>
                         </div>
@@ -166,14 +177,17 @@
                                 <option value="Otros">Otros</option>
                             </select>
                         </div>
-                        <div class="flex-grow"></div>
-                        <div class="flex items-center justify-end">
-                            <button wire:click="showCreateForm"
-                                class="flex items-center gap-2 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
-                                type="button">
-                                <i class="ti ti-plus"></i>
-                                Agregar servicio
-                            </button>
+                        <div>
+                            <label for="filtro_fecha_inicio" class="mr-2 text-gray-700 dark:text-gray-200">Fecha
+                                inicio:</label>
+                            <input type="date" wire:model.live="filtro_fecha_inicio" id="filtro_fecha_inicio"
+                                class="px-2 py-1 rounded form-input">
+                        </div>
+                        <div>
+                            <label for="filtro_fecha_fin" class="mr-2 text-gray-700 dark:text-gray-200">Fecha
+                                fin:</label>
+                            <input type="date" wire:model.live="filtro_fecha_fin" id="filtro_fecha_fin"
+                                class="px-2 py-1 rounded form-input">
                         </div>
                     </div>
                 </div>
