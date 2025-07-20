@@ -232,7 +232,7 @@
                                     {{ $servicio->descripcion }}
                                 </button>
                             </td>
-                            <td class="px-4 py-2 text-center">
+                            <td class="px-4 py-2 text-right">
                                 @if($servicio->costo == 0)
                                 &ndash;
                                 @else
@@ -295,6 +295,21 @@
                         </tr>
                         @endforelse
                     </tbody>
+                    <tfoot>
+                        @if($servicios->sum('costo') > 0)
+                        <tr>
+                            <td colspan="3" class="px-4 py-2 text-right font-bold text-gray-700 dark:text-gray-200">
+                                TOTAL
+                            </td>
+                            <td
+                                class="px-4 py-2 text-right font-bold text-gray-700 dark:text-gray-200 border-b-blue-500 border-b-2">
+                                ${{ number_format($servicios->sum('costo'), 2) }}
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        @endif
+                    </tfoot>
                 </table>
                 <div class="mt-4">
                     @if($servicios->hasPages())
