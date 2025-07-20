@@ -183,7 +183,7 @@
                     <tbody>
                         @forelse ($servicios as $servicio)
                         <tr class="border-t">
-                            <td class="px-4 py-2 text-center">
+                            <td class="px-4 py-2">
                                 @php
                                 $unidad = collect($placasDisponibles)->firstWhere('unidad_id', $servicio->unidad_id);
                                 @endphp
@@ -232,6 +232,11 @@
                                 </span>
                             </td>
                             <td class="flex justify-center gap-2 px-4 py-2">
+                                <a href="{{ route('servicio.detalle', ['id' => $servicio->id]) }}"
+                                    class="flex items-center justify-center p-2 text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200"
+                                    title="Ver detalle">
+                                    <i class="ti ti-eye"></i>
+                                </a>
                                 <button wire:click="editarServicio({{ $servicio->id }})"
                                     class="flex items-center justify-center p-2 text-white bg-blue-400 rounded hover:bg-blue-500"
                                     title="Editar">
