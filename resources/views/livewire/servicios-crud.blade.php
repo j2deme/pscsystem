@@ -308,19 +308,19 @@
             </div>
             <script>
                 function showDescModal(btn) {
-                    var modal = document.getElementById('modalDesc');
-                    var text = document.getElementById('modalDescText');
-                    text.textContent = btn.getAttribute('data-desc');
-                    modal.classList.remove('hidden');
-                }
-                document.getElementById('closeDescModalBtn').addEventListener('click', function() {
-                    document.getElementById('modalDesc').classList.add('hidden');
-                });
-                document.getElementById('modalDesc').addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        this.classList.add('hidden');
-                    }
-                });
+                            var modal = document.getElementById('modalDesc');
+                            var text = document.getElementById('modalDescText');
+                            text.textContent = btn.getAttribute('data-desc');
+                            modal.classList.remove('hidden');
+                        }
+                        document.getElementById('closeDescModalBtn').addEventListener('click', function() {
+                            document.getElementById('modalDesc').classList.add('hidden');
+                        });
+                        document.getElementById('modalDesc').addEventListener('click', function(e) {
+                            if (e.target === this) {
+                                this.classList.add('hidden');
+                            }
+                        });
             </script>
         </div>
     </x-livewire.monitoreo-layout>
