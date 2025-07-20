@@ -33,81 +33,90 @@
             </div>
 
             <form wire:submit.prevent="save" class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
-                <!-- 1. Placa -->
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-200" for="placa-select">Placas de la unidad</label>
-                    <select id="placa-select" wire:model.defer="form.unidad_id"
-                        class="w-full h-10 px-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                        required>
-                        <option value="">Selecciona una placa...</option>
-                        @foreach($placasDisponibles as $placa)
-                        <option value="{{ $placa['unidad_id'] }}">{{ $placa['numero'] }}: {{ $placa['marca'] }} ({{
-                            $placa['modelo'] }})</option>
-                        @endforeach
-                    </select>
-                    @error('form.unidad_id')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
-                </div>
-                <!-- 2. Tipo de Servicio -->
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-200" for="tipo-select">¿Qué tipo de servicio se
-                        realizó?</label>
-                    <select id="tipo-select" wire:model.defer="form.tipo"
-                        class="w-full h-10 px-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                        required>
-                        <option value="">Selecciona el tipo...</option>
-                        <option value="Preventivo">Preventivo</option>
-                        <option value="Correctivo">Correctivo</option>
-                        <option value="Incidencia">Incidencia</option>
-                        <option value="Otros">Otros</option>
-                    </select>
-                    @error('form.tipo')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
-                </div>
-                <!-- 3. Fecha -->
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-200" for="fecha-input">Fecha</label>
-                    <input type="date" id="fecha-input" wire:model.defer="form.fecha"
-                        class="w-full h-10 px-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                        required>
-                    @error('form.fecha')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
-                </div>
-                <!-- 4. Costo -->
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-200" for="costo-input">Costo</label>
-                    <div class="relative">
-                        <span
-                            class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 pointer-events-none">
-                            <i class="ti ti-currency-dollar"></i>
-                        </span>
-                        <input type="number" id="costo-input" step="0.01" wire:model.defer="form.costo"
-                            class="w-full h-10 pl-9 pr-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                            placeholder="0.00">
+                <!-- 1a fila: Placa, Tipo de Servicio y Fecha -->
+                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-200" for="placa-select">Placas de la
+                            unidad</label>
+                        <select id="placa-select" wire:model.defer="form.unidad_id"
+                            class="w-full h-10 px-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                            required>
+                            <option value="">Selecciona una placa...</option>
+                            @foreach($placasDisponibles as $placa)
+                            <option value="{{ $placa['unidad_id'] }}">{{ $placa['numero'] }}: {{ $placa['marca'] }} ({{
+                                $placa['modelo'] }})</option>
+                            @endforeach
+                        </select>
+                        @error('form.unidad_id')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
                     </div>
-                    @error('form.costo')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-200" for="tipo-select">¿Qué tipo de servicio se
+                            realizó?</label>
+                        <select id="tipo-select" wire:model.defer="form.tipo"
+                            class="w-full h-10 px-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                            required>
+                            <option value="">Selecciona el tipo...</option>
+                            <option value="Preventivo">Preventivo</option>
+                            <option value="Correctivo">Correctivo</option>
+                            <option value="Incidencia">Incidencia</option>
+                            <option value="Otros">Otros</option>
+                        </select>
+                        @error('form.tipo')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-200" for="fecha-input">Fecha</label>
+                        <input type="date" id="fecha-input" wire:model.defer="form.fecha"
+                            class="w-full h-10 px-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                            required>
+                        @error('form.fecha')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
+                    </div>
                 </div>
-                <!-- 5. Responsable -->
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-200" for="responsable-input">Responsable /
-                        Taller</label>
-                    <input type="text" id="responsable-input" wire:model.defer="form.responsable"
-                        class="w-full h-10 px-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100">
-                    @error('form.responsable')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
+                <!-- 2a fila: Costo y Responsable/Taller -->
+                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-200" for="costo-input">Costo</label>
+                        <div class="relative">
+                            <span
+                                class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 pointer-events-none">
+                                <i class="ti ti-currency-dollar"></i>
+                            </span>
+                            <input type="number" id="costo-input" step="0.01" wire:model.defer="form.costo"
+                                class="w-full h-10 pl-9 pr-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                                placeholder="0.00">
+                        </div>
+                        @error('form.costo')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-200" for="responsable-input">Responsable /
+                            Taller</label>
+                        <input type="text" id="responsable-input" wire:model.defer="form.responsable"
+                            list="responsables-list"
+                            class="w-full h-10 px-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100">
+                        <datalist id="responsables-list">
+                            @foreach($responsablesDisponibles as $resp)
+                            <option value="{{ $resp }}">
+                                @endforeach
+                        </datalist>
+                        @error('form.responsable')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
+                    </div>
                 </div>
-                <!-- 6. Descripción del servicio (textarea) -->
-                <div class="md:col-span-2">
-                    <label class="block text-gray-700 dark:text-gray-200" for="descripcion-input">Descripción del
-                        servicio</label>
-                    <textarea id="descripcion-input" wire:model.defer="form.descripcion"
-                        class="w-full h-32 px-3 py-2 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                        required></textarea>
-                    @error('form.descripcion')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
-                </div>
-                <!-- 7. Observaciones adicionales -->
-                <div class="md:col-span-2">
-                    <label class="block text-gray-700 dark:text-gray-200" for="observaciones-input">Observaciones
-                        adicionales</label>
-                    <textarea id="observaciones-input" wire:model.defer="form.observaciones"
-                        class="w-full h-24 px-3 py-2 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"></textarea>
-                    @error('form.observaciones')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
+                <!-- Descripción y Observaciones en una sola fila -->
+                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-200" for="descripcion-input">Descripción del
+                            servicio</label>
+                        <textarea id="descripcion-input" wire:model.defer="form.descripcion"
+                            class="w-full h-32 px-3 py-2 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                            required></textarea>
+                        @error('form.descripcion')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 dark:text-gray-200" for="observaciones-input">Observaciones
+                            adicionales</label>
+                        <textarea id="observaciones-input" wire:model.defer="form.observaciones"
+                            class="w-full h-32 px-3 py-2 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"></textarea>
+                        @error('form.observaciones')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
+                    </div>
                 </div>
                 <div class="flex gap-2 mt-2 md:col-span-2">
                     <div class="flex justify-end w-full gap-2">
