@@ -6,10 +6,12 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Unidades;
 use App\Models\Servicio;
+use App\Traits\EstilosServicio;
 
 class ServiciosCrud extends Component
 {
     use WithPagination;
+    use EstilosServicio;
 
     public $editId = null;
     public $showForm = false;
@@ -199,6 +201,7 @@ class ServiciosCrud extends Component
             'filtro_tipo' => $this->filtro_tipo,
             'filtro_fecha_inicio' => $this->filtro_fecha_inicio,
             'filtro_fecha_fin' => $this->filtro_fecha_fin,
+            'estilos' => $this->getEstilosServicio(),
         ];
 
         return view('livewire.servicios-crud', $data)

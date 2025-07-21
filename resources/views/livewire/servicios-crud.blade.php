@@ -87,8 +87,8 @@
                         @error('form.costo')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
                     </div>
                     <div>
-                        <label class="block text-gray-700 dark:text-gray-200" for="responsable-input">Responsable /
-                            Taller</label>
+                        <label class="block text-gray-700 dark:text-gray-200" for="responsable-input">Lugar de
+                            reparación</label>
                         <input type="text" id="responsable-input" wire:model.defer="form.responsable"
                             list="responsables-list"
                             class="w-full h-10 px-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100">
@@ -241,16 +241,12 @@
                             </td>
                             <td class="px-4 py-2 text-center">
                                 @php
-                                $badgeColors = [
-                                'Preventivo' => 'bg-green-100 text-green-800',
-                                'Correctivo' => 'bg-yellow-100 text-yellow-800',
-                                'Incidencia' => 'bg-red-100 text-red-800',
-                                'Otros' => 'bg-gray-100 text-gray-800',
-                                ];
                                 $tipo = $servicio->tipo;
-                                $color = $badgeColors[$tipo] ?? 'bg-gray-100 text-gray-800';
+                                $estilo = $estilos[$tipo] ?? $estilos['Otros'];
                                 @endphp
-                                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold {{ $color }}">
+                                <span
+                                    class="inline-block px-3 py-1 rounded-full text-xs font-semibold {{ $estilo['badge'] }}">
+                                    <i class="ti {{ $estilo['icon'] }} {{ $estilo['iconColor'] }} mr-1"></i>
                                     {{ $tipo }}
                                 </span>
                             </td>
