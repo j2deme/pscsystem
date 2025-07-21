@@ -18,6 +18,10 @@ class Servicio extends Model
         'observaciones',
     ];
 
+    protected $casts = [
+        'fecha' => 'datetime',
+    ];
+
     public function unidad()
     {
         return $this->belongsTo(Unidades::class, 'unidad_id');
