@@ -1,6 +1,16 @@
 <x-app-layout>
     <x-navbar />
 @if (Auth::user()->rol == 'admin')
+    @if(session('success'))
+                        <div class="bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-4 py-3 shadow-md" role="alert">
+                            <div class="flex">
+                                <div>
+                                    <p class="text-sm">{{ session('success') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        @else
+                    @endif
     <div class="mt-4 ml-4">
         <!-- El x-data es el que corrompe los charts para que no rendericen -->
         <div x-data="{ menu: 'admin' }" x-on:cambiar-menu.window="menu = $event.detail.menu" class="mb-4">

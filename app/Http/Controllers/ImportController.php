@@ -85,18 +85,21 @@ class ImportController extends Controller
     }
 
     public function importarArchivoRosa(Request $request)
-    {
-        ini_set('max_execution_time', 300);
-        DB::beginTransaction();
+{
+    ini_set('max_execution_time', 300);
+    DB::beginTransaction();
 
-        try {
-            $file = $request->file('excel');
-            $spreadsheet = IOFactory::load($file->getRealPath());
-            $sheet = $spreadsheet->getActiveSheet(0);
-            $rows = $sheet->toArray();
+    $importados = 0;
+    $fallidos = 0;
 
-            foreach (array_slice($rows, 1) as $row) {
+    try {
+        $file = $request->file('excel');
+        $spreadsheet = IOFactory::load($file->getRealPath());
+        $sheet = $spreadsheet->getActiveSheet(0);
+        $rows = $sheet->toArray();
 
+        foreach (array_slice($rows, 1) as $row) {
+            try {
                 $primeraCelda = strtoupper(trim($row[0] ?? ''));
 
                 if (
@@ -126,7 +129,7 @@ class ImportController extends Controller
                     $email = $row[29];
                 }
 
-                if(empty($row[11]))
+                if (empty($row[11]))
                     $password = Hash::make($row[10]);
                 else
                     $password = Hash::make($row[11]);
@@ -168,17 +171,23 @@ class ImportController extends Controller
                     'empresa' => 'PSC',
                     'estatus' => 'Activo'
                 ]);
+
+                $importados++;
+            } catch (\Throwable $e) {
+                $fallidos++;
+                continue; // sigue con la siguiente fila
             }
-
-            DB::commit();
-
-            return back()->with('success', 'Importación completada.');
-
-        } catch (Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Error al importar el archivo: ' . $e->getMessage());
         }
+
+        DB::commit();
+
+        return back()->with('success', "Importación completada. Importados: $importados, Fallidos: $fallidos.");
+    } catch (Exception $e) {
+        DB::rollBack();
+        return back()->with('error', 'Error al importar el archivo: ' . $e->getMessage());
     }
+}
+
 
 public function importarBajas(Request $request)
 {

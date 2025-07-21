@@ -184,7 +184,7 @@
             'ruta' => route('importar.excel'),
             'icono' => 'folder-open',
             'color' => 'bg-gray-300 dark:bg-gray-700',
-            'disabled' => true,
+            'disabled' => false,
         ],
         [
             'titulo' => 'Registrar Datos',
@@ -240,10 +240,19 @@
                         class="p-3 rounded-lg {{ $card['color'] }}">
                         @csrf
                         <div class="flex items-center space-x-3">
-                            <div class="text-2xl">{{ $card['icono'] }}</div>
+                            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
+                                }}"></i>
+                            </div>
                             <span class="font-medium">{{ $card['titulo'] }}</span>
                         </div>
-                        <input type="file" name="excel" accept=".xlsx,.xls"
+                        <input type="file" name="excel" accept=".xlsx,.xls, .csv"
                             class="mt-2 w-full text-sm text-gray-500 file:mr-4 file:py-1 file:px-2 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                             required>
                         <button type="submit"
