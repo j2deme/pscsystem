@@ -22,7 +22,7 @@
 
         <div class="flex-1 overflow-y-auto px-4 py-3 space-y-2 bg-white">
             @foreach ($messages as $msg)
-                @php $esMio = $msg['user_id'] == auth()->id(); @endphp
+                @php $esMio = $msg['api_user_id'] == auth()->id(); @endphp
 
                 <div class="flex {{ $esMio ? 'justify-end' : 'justify-start' }}">
                     <div class="{{ $esMio ? 'bg-blue-600 text-white' : 'bg-blue-100 text-slate-800' }}
