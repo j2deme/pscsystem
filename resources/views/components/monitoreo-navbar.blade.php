@@ -17,12 +17,14 @@ $cards = [
 'ruta' => "#",
 'icono' => 'cash',
 'color' => 'bg-red-100 dark:bg-red-700',
+'disabled' => true,
 ],
 [
 'titulo' => 'Compras',
 'ruta' => "#",
 'icono' => 'shopping-cart',
 'color' => 'bg-blue-100 dark:bg-blue-700',
+'disabled' => true,
 ],
 [
 'titulo' => 'Servicios y Reparaciones',
@@ -35,12 +37,14 @@ $cards = [
 'ruta' => "#",
 'icono' => 'car-crash',
 'color' => 'bg-red-100 dark:bg-red-700',
+'disabled' => true,
 ],
 [
 'titulo' => 'Documentación de Usuarios',
 'ruta' => "#",
 'icono' => 'file-description',
 'color' => 'bg-blue-100 dark:bg-blue-700',
+'disabled' => true,
 ],
 [
 'titulo' => 'Solicitar Vacaciones',
