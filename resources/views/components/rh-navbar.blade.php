@@ -99,12 +99,6 @@
                     'icono' => 'users',
                     'color' => 'bg-pink-100 dark:bg-pink-700'
                 ],
-                [
-            'titulo' => 'Mensajes',
-            'ruta' => route('mensajes.index'),
-            'icono' => 'message',
-            'color' => 'bg-purple-300 dark:bg-purple-700',
-        ],
             ];
         @endphp
 
