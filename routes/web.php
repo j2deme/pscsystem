@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/baja_usuario/{id}', [AdminController::class, 'bajaUsuario'])->name('admin.darDeBajaUsuario');
     Route::get('/editar_usuario/{id}', [AdminController::class, 'editarUsuario'])->name('admin.editarUsuarioForm');
     Route::get('/ver_buzon', [AdminController::class, 'verBuzon'])->name('admin.verBuzon');
-    Route::post('/importar-excel', [ImportController::class, 'importarUnidades'])->name('importar.excel');
+    Route::post('/importar-excel', [ImportController::class, 'importarArchivoRosa'])->name('importar.excel');
     Route::get('/reingreso/{id}', [AdminController::class, 'darReingreso'])->name('admin.reingreso');
     Route::get('/tablero_nominas', [AdminController::class, 'tableroNominas'])->name('admin.nominasDashboard');
     Route::get('/tablero_imss', [AdminController::class, 'tableroImss'])->name('admin.imssDashboard');
@@ -183,6 +183,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/listado_usuarios', [AuxadminController::class, 'listadoUsuarios'])->name('aux.usuariosList');
     Route::post('/actualizacion_documentacion/{id}', [AuxadminController::class, 'actualizarAcuses'])->name('documentacion.actualizar');
     Route::get('/confrontas', [AuxadminController::class, 'confrontasForm'])->name('aux.confrontas');
+    Route::post('/confrontas-upload', [AuxadminController::class, 'confrontasUpload'])->name('confrontas.upload');
     //nuevass rutas
     Route::get('/riesgos-trabajo', [RiesgoTrabajoController::class, 'index'])->name('aux.riesgosTrabajo');
     Route::get('/riesgos-trabajo/generar/{user}', [RiesgoTrabajoController::class, 'create'])->name('aux.generarRiesgoForm');

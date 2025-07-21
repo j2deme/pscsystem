@@ -30,73 +30,73 @@
                 [
                     'titulo' => 'Solicitudes de Altas',
                     'ruta' => route('rh.solicitudesAltas'),
-                    'icono' => '📈',
+                    'icono' => 'trending-up',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
                     'notificaciones' => $altasEnProceso,
                 ],
                 [
                     'titulo' => 'Solicitudes de Bajas',
                     'ruta' => route('rh.solicitudesBajas'),
-                    'icono' => '📉',
+                    'icono' => 'trending-down',
                     'color' => 'bg-red-100 dark:bg-red-700',
                     'notificaciones' => $bajasEnProceso,
                 ],
                 [
                     'titulo' => 'Archivos',
                     'ruta' => route('rh.archivos'),
-                    'icono' => '📁',
+                    'icono' => 'folder',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700'
                 ],
                 [
                     'titulo' => 'Historial de Altas',
                     'ruta' => route('rh.historialSolicitudesAltas'),
-                    'icono' => '🗂️',
+                    'icono' => 'folder-open',
                     'color' => 'bg-indigo-100 dark:bg-indigo-700'
                 ],
                 [
                     'titulo' => 'Historial de Bajas',
                     'ruta' => route('rh.historialSolicitudesBajas'),
-                    'icono' => '📜',
+                    'icono' => 'file-text',
                     'color' => 'bg-pink-100 dark:bg-pink-700'
                 ],
                 [
                     'titulo' => 'Vacaciones',
                     'ruta' => route('rh.vistaVacaciones'),
-                    'icono' => '🎉',
+                    'icono' => 'confetti',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700',
                     'notificaciones' => $vacacionesEnProceso,
                 ],
                 [
                     'titulo' => 'Generar Nueva Alta',
                     'ruta' => route('rh.formAlta', $tipoSeleccionado),
-                    'icono' => '📈',
+                    'icono' => 'trending-up',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
                     'disabled' => Auth::user()->rol=='admin'
                 ],
                 [
                     'titulo' => 'Generar Nueva Baja',
                     'ruta' => route('rh.generarNuevaBajaForm'),
-                    'icono' => '📉',
+                    'icono' => 'trending-down',
                     'color' => 'bg-red-100 dark:bg-red-700',
                     'disabled' => Auth::user()->rol=='admin'
                 ],
                 [
                     'titulo' => 'Historial de Vacaciones',
                     'ruta' => route('rh.historialVacaciones'),
-                    'icono' => '📜',
+                    'icono' => 'file-text',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700',
                 ],
                 [
                     'titulo' => 'Buzón de Quejas y Sugerencias',
                     'ruta' => route('user.buzon'),
-                    'icono' => '💬',
+                    'icono' => 'message',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
                     'disabled' => Auth::user()->rol=='admin'
                 ],
                 [
                     'titulo' => 'Gestión de Usuarios',
                     'ruta' => route('admin.verUsuarios'),
-                    'icono' => '👨‍💻',
+                    'icono' => 'users',
                     'color' => 'bg-pink-100 dark:bg-pink-700'
                 ],
             ];
@@ -112,8 +112,17 @@
                         </span>
                     @endif
                     <div class="flex items-center space-x-3">
-                        <div class="text-3xl">
-                            {{ $card['icono'] }}
+                        <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                            <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                                Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                                (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                                (Str::contains($card['color'], 'pink') ? 'text-pink-700' :
+                                (Str::contains($card['color'], 'indigo') ? 'text-indigo-700' :
+                                (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                                (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                                (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                                (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))))
+                            }}"></i>
                         </div>
                         <h3 class="text-base font-semibold text-gray-800 dark:text-white">
                             {{ $card['titulo'] }}

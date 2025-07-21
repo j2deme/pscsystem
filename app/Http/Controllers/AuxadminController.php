@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\SolicitudAlta;
 use App\Models\DocumentacionAltas;
 use App\Models\User;
+use App\Models\Confronta;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -140,5 +141,68 @@ class AuxadminController extends Controller
     public function confrontasForm(){
         return view('auxadmin.confrontasForm');
     }
+
+public function confrontasUpload(Request $request)
+{
+    Log::info('Iniciando confrontasUpload');
+
+    $request->validate([
+        'inf_psc' => 'nullable|file|mimes:pdf',
+        'inf_spyt' => 'nullable|file|mimes:pdf',
+        'inf_montana' => 'nullable|file|mimes:pdf',
+        'exc_psc' => 'nullable|file|mimes:xlsx,xls,csv',
+        'exc_spyt' => 'nullable|file|mimes:xlsx,xls,csv',
+        'exc_montana' => 'nullable|file|mimes:xlsx,xls,csv',
+    ]);
+
+    $fecha = Carbon::now()->format('Y-m-d');
+    $confronta = new Confronta();
+    Log::info('Objeto Confronta creado');
+
+    // Archivos PDF
+    foreach (['inf_psc', 'inf_spyt', 'inf_montana'] as $field) {
+        if ($request->hasFile($field)) {
+            Log::info("Archivo detectado en campo: $field");
+
+            $archivo = $request->file($field);
+            $nombreArchivo = "arch_{$field}." . $archivo->getClientOriginalExtension();
+            $ruta = $archivo->storeAs("confrontas/pdf/{$fecha}", $nombreArchivo);
+
+            Log::info("Archivo $field guardado en: $ruta");
+
+            $confronta->$field = $ruta;
+        } else {
+            Log::info("No se recibió archivo en: $field");
+        }
+    }
+
+    // Archivos Excel
+    foreach (['exc_psc', 'exc_spyt', 'exc_montana'] as $field) {
+        if ($request->hasFile($field)) {
+            Log::info("Archivo detectado en campo: $field");
+
+            $archivo = $request->file($field);
+            $nombreArchivo = "arch_{$field}." . $archivo->getClientOriginalExtension();
+            $ruta = $archivo->storeAs("confrontas/excel/{$fecha}", $nombreArchivo);
+
+            Log::info("Archivo $field guardado en: $ruta");
+
+            $confronta->$field = $ruta;
+        } else {
+            Log::info("No se recibió archivo en: $field");
+        }
+    }
+
+    $guardado = $confronta->save();
+
+    if ($guardado) {
+        Log::info('Registro de confronta guardado correctamente en BD.', $confronta->toArray());
+        return back()->with('success', 'Archivos subidos correctamente');
+    } else {
+        Log::error('Error al guardar el registro de confronta.');
+        return back()->with('error', 'No se pudo guardar el registro de confronta.');
+    }
+}
+
 
 }

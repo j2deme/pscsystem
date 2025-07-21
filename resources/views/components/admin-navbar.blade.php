@@ -101,103 +101,103 @@
             ? [
                 'titulo' => 'Nuevas Altas',
                 'ruta' => route('admi.verSolicitudesAltas'),
-                'icono' => '👨‍🌾',
-                'color' => 'bg-gray-300 dark:bg-gray-700',
+                'icono' => 'trending-up',
+                'color' => 'bg-green-200 dark:bg-green-700',
                 'notificaciones' => $solicitudesAdmin,
             ]
             : null,
         [
+            'titulo' => 'Mensajes',
+            'ruta' => route('mensajes.index'),
+            'icono' => 'message',
+            'color' => 'bg-purple-300 dark:bg-purple-700',
+        ],
+        [
             'titulo' => 'Nóminas',
             'ruta' => route('admin.nominasDashboard'),
-            'icono' => '💵',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
+            'icono' => 'currency-dollar',
+            'color' => 'bg-yellow-200 dark:bg-yellow-700',
             'notificaciones' => $conteoNominas,
         ],
         [
             'titulo' => 'IMSS',
             'ruta' => route('admin.imssDashboard'),
-            'icono' => '💊',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
+            'icono' => 'pill',
+            'color' => 'bg-blue-200 dark:bg-blue-700',
             'notificaciones' => $conteoAltasAux,
         ],
         [
             'titulo' => 'Jurídico',
             'ruta' => route('admin.juridicoDashboard'),
-            'icono' => '⚖️',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
+            'icono' => 'scale',
+            'color' => 'bg-red-300 dark:bg-red-700',
             'notificacions' => $conteoBajasJuridico,
         ],
         [
             'titulo' => 'Custodios',
             'ruta' => route('admin.custodiosDashboard'),
-            'icono' => '👮‍♂️',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
+            'icono' => 'user-shield',
+            'color' => 'bg-blue-300 dark:bg-blue-700',
         ],
         [
             'titulo' => 'RRHH',
             'ruta' => route('admin.rhDashboard'),
-            'icono' => '👨‍👩‍👧‍👦',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
+            'icono' => 'users-group',
+            'color' => 'bg-pink-300 dark:bg-pink-700',
             'notificaciones' => $rhnotificaciones,
         ],
         [
             'titulo' => 'Monitoreo',
             'ruta' => route('admin.monitoreoDashboard'),
-            'icono' => '📈',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
+            'icono' => 'trending-up',
+            'color' => 'bg-indigo-300 dark:bg-indigo-700',
             'disabled' => true,
         ],
         [
             'titulo' => 'Supervisores',
             'ruta' => route('admin.verTableroSupervisores'),
-            'icono' => '👨‍💻',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
+            'icono' => 'users',
+            'color' => 'bg-green-300 dark:bg-green-700',
             'notificaciones' => $supNotificaciones,
         ],
         [
             'titulo' => 'Vacaciones',
             'ruta' => route('admin.solicitudesVacaciones'),
-            'icono' => '🏕️',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
+            'icono' => 'tent',
+            'color' => 'bg-yellow-300 dark:bg-yellow-700',
             'notificaciones' => $vacacionesAdmin,
         ],
         [
             'titulo' => 'Gestión de Usuarios',
             'ruta' => route('admin.verUsuarios'),
-            'icono' => '👨‍💻',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
+            'icono' => 'user-code',
+            'color' => 'bg-indigo-300 dark:bg-indigo-700',
         ],
         [
             'titulo' => 'Buzón de Quejas y Sugerencias',
             'ruta' => route('admin.verBuzon'),
-            'icono' => '💬',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
-        ],
-        [
-            'titulo' => 'Mensajes',
-            'ruta' => route('mensajes.index'),
-            'icono' => '💬',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
+            'icono' => 'message',
+            'color' => 'bg-purple-300 dark:bg-purple-700',
         ],
         [
             'titulo' => 'Importar Datos',
             'ruta' => route('importar.excel'),
-            'icono' => '📂',
+            'icono' => 'folder-open',
             'color' => 'bg-gray-300 dark:bg-gray-700',
-            'disabled' => true,
+            'disabled' => false,
         ],
         [
             'titulo' => 'Registrar Datos',
             'ruta' => route('registrarNominas'),
-            'icono' => '📝',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
+            'icono' => 'file-text',
+            'color' => 'bg-orange-300 dark:bg-orange-700',
             'disabled' => true,
         ],
         [
             'titulo' => 'Registrar Finiquitos',
             'ruta' => route('registrarFiniquitos'),
-            'icono' => '📝',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
+            'icono' => 'file-text',
+            'color' => 'bg-red-300 dark:bg-red-700',
             'disabled' => true,
         ],
     ]);
@@ -215,7 +215,18 @@
                 @if ($isDisabled)
                     <div class="p-3 rounded-lg {{ $card['color'] }} opacity-50 cursor-not-allowed">
                         <div class="flex items-center space-x-3">
-                            <div class="text-2xl">{{ $card['icono'] }}</div>
+                            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                                    (Str::contains($card['color'], 'indigo') ? 'text-indigo-700' :
+                                    (Str::contains($card['color'], 'orange') ? 'text-orange-700' :
+                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))))
+                                }}"></i>
+                            </div>
                             <span class="font-medium">{{ $card['titulo'] }}</span>
                         </div>
                         @if (isset($card['notificaciones']) && $card['notificaciones'] > 0)
@@ -229,10 +240,19 @@
                         class="p-3 rounded-lg {{ $card['color'] }}">
                         @csrf
                         <div class="flex items-center space-x-3">
-                            <div class="text-2xl">{{ $card['icono'] }}</div>
+                            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
+                                }}"></i>
+                            </div>
                             <span class="font-medium">{{ $card['titulo'] }}</span>
                         </div>
-                        <input type="file" name="excel" accept=".xlsx,.xls"
+                        <input type="file" name="excel" accept=".xlsx,.xls, .csv"
                             class="mt-2 w-full text-sm text-gray-500 file:mr-4 file:py-1 file:px-2 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                             required>
                         <button type="submit"
@@ -245,7 +265,16 @@
                         @if (in_array($card['titulo'], ['RRHH', 'Nóminas', 'IMSS'])) @click.prevent="$dispatch('cambiar-menu', { menu: '{{ strtolower(str_replace(' ', '_', $card['titulo'])) }}' })" @endif
                         class="block p-3 rounded-lg {{ $card['color'] }} {{ $isActive ? 'ring-2 ring-blue-500' : '' }} hover:bg-opacity-70 transition relative">
                         <div class="flex items-center space-x-3">
-                            <div class="text-2xl">{{ $card['icono'] }}</div>
+                            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
+                                }}"></i>
+                            </div>
                             <span class="font-medium">{{ $card['titulo'] }}</span>
                         </div>
                         @if (isset($card['notificaciones']) && $card['notificaciones'] > 0)

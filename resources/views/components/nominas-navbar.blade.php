@@ -16,98 +16,98 @@
         [
             'titulo' => 'Gráficas y Estadísticas',
             'ruta' => route('nominas.graficas'),
-            'icono' => '📊',
+            'icono' => 'chart-bar',
             'color' => 'bg-blue-100 dark:bg-blue-700',
             'disabled' => true,
         ],
         [
             'titulo' => 'Nuevas Altas',
             'ruta' => route('nominas.nuevasAltas'),
-            'icono' => '🆕',
+            'icono' => 'circle-plus',
             'color' => 'bg-green-100 dark:bg-green-700',
             'notificaciones' => $conteoAltas,
         ],
         [
             'titulo' => 'Finiquitos',
             'ruta' => route('nominas.verBajas'),
-            'icono' => '💸',
+            'icono' => 'moneybag',
             'color' => 'bg-red-100 dark:bg-red-700',
             'notificaciones' => $conteoBajas,
         ],
         [
             'titulo' => 'Nóminas',
             'ruta' => route('vistaNominas'),
-            'icono' => '💵',
+            'icono' => 'currency-dollar',
             'color' => 'bg-blue-100 dark:bg-blue-700',
         ],
         [
             'titulo' => 'Destajos',
             'ruta' => route('nominas.destajos'),
-            'icono' => '💵',
+            'icono' => 'currency-dollar',
             'color' => 'bg-green-100 dark:bg-green-700',
         ],
         [
             'titulo' => 'Deducciones',
             'ruta' => route('nominas.deducciones'),
-            'icono' => '🧾',
+            'icono' => 'receipt',
             'color' => 'bg-red-100 dark:bg-red-700',
         ],
         [
             'titulo' => 'Vacaciones',
             'ruta' => route('nominas.vacaciones'),
-            'icono' => '🎉',
+            'icono' => 'confetti',
             'color' => 'bg-blue-100 dark:bg-blue-700',
         ],
         [
             'titulo' => 'Asistencias',
             'ruta' => route('nominas.asistencias'),
-            'icono' => '📝',
+            'icono' => 'file-description',
             'color' => 'bg-green-100 dark:bg-green-700',
         ],
         [
             'titulo' => 'Archivos',
             'ruta' => route('rh.archivos'),
-            'icono' => '📁',
+            'icono' => 'folder',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
         ],
         [
             'titulo' => 'Primas Vacacionales',
             'ruta' => route('nominas.usersAntiguedades'),
-            'icono' => '📆',
+            'icono' => 'calendar',
             'color' => 'bg-blue-100 dark:bg-blue-700',
         ],
         [
             'titulo' => 'Solicitar Vacaciones',
             'ruta' => route('user.solicitarVacacionesForm'),
-            'icono' => '🎉',
+            'icono' => 'confetti',
             'color' => 'bg-green-100 dark:bg-green-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Mi Historial de Vacaciones',
             'ruta' => route('user.historialVacaciones'),
-            'icono' => '📅',
+            'icono' => 'calendar',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Ficha Técnica',
             'ruta' => route('user.verFicha', auth()->user()->id),
-            'icono' => '📝',
+            'icono' => 'file-description',
             'color' => 'bg-blue-100 dark:bg-blue-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Gestión de Usuarios',
             'ruta' => route('admin.verUsuarios'),
-            'icono' => '👨‍💻',
+            'icono' => 'user-cog',
             'color' => 'bg-green-100 dark:bg-green-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Buzón de Quejas y Sugerencias',
             'ruta' => route('user.buzon'),
-            'icono' => '💬',
+            'icono' => 'message',
             'color' => 'bg-purple-100 dark:bg-purple-700',
             'disabled' => Auth::user()->rol == 'admin'
         ],
@@ -147,8 +147,15 @@
                                     {{ $card['notificaciones'] }}
                                 </span>
                             @endif
-                            <div class="text-3xl">
-                                {{ $card['icono'] }}
+                            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
+                                }}"></i>
                             </div>
                             <h3 class="text-base font-semibold text-gray-800 dark:text-white">
                                 {{ $card['titulo'] }}
@@ -167,8 +174,15 @@
                     @csrf
                     <div class="p-4 rounded-xl shadow-md {{ $card['color'] }} hover:shadow-lg h-full flex flex-col justify-between">
                         <div class="flex items-center space-x-3">
-                            <div class="text-3xl">
-                                {{ $card['icono'] }}
+                            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
+                                }}"></i>
                             </div>
                             <h3 class="text-base font-semibold text-gray-800 dark:text-white">
                                 {{ $card['titulo'] }}
@@ -208,8 +222,15 @@
                                     {{ $card['notificaciones'] }}
                                 </span>
                             @endif
-                            <div class="text-3xl">
-                                {{ $card['icono'] }}
+                            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
+                                }}"></i>
                             </div>
                             <h3 class="text-base font-semibold text-gray-800 dark:text-white">
                                 {{ $card['titulo'] }}
