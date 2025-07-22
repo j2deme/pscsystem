@@ -158,17 +158,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/buzon', [UserController::class, 'buzon'])->name('user.buzon');
     Route::post('/enviar_sugerencia/{id}', [UserController::class, 'enviarSugerencia'])->name('user.enviarSugerencia');
 
-    //Usuario Monitorista
+    /*
+     * MONITORISTA
+     */
     Route::get('/ver_deducciones', [MonitoreoController::class, 'verDeducciones'])->name('monitoreo.deducciones');
     Route::get('/mapa', [MonitoreoController::class, 'mapa'])->name('monitoreo.mapa');
     Route::get('/vehiculos', function () {
         return view('vehiculos.crud');
     })->name('vehiculos.index');
-
     // Detalle de Vehículo (vista Blade con Livewire)
     Route::get('/vehiculos/{id}', function ($id) {
         return view('vehiculos.detalle', ['id' => $id]);
     })->name('vehiculos.detalle');
+
+    // Servicios CRUD (Livewire)
+    Route::get('/servicios', App\Livewire\ServiciosCrud::class)->name('servicios.index');
+    // Detalle de Servicio (Livewire)
+    Route::get('/servicios/{id}', App\Livewire\ServicioDetalle::class)->name('servicio.detalle');
+
 
     //Usuario Aux Admin
     Route::get('/nuevas_altas_elementos', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');
