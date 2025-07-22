@@ -176,6 +176,8 @@ Route::middleware('auth')->group(function () {
     // Detalle de Servicio (Livewire)
     Route::get('/servicios/{id}', App\Livewire\ServicioDetalle::class)->name('servicio.detalle');
 
+    // Siniestros CRUD (Livewire)
+    Route::get('/siniestros', App\Livewire\SiniestrosCrud::class)->name('siniestros.index');
 
     //Usuario Aux Admin
     Route::get('/nuevas_altas_elementos', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');
