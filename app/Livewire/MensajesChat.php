@@ -40,7 +40,7 @@ class MensajesChat extends Component
         $this->validate(['body' => 'required|string']);
 
         $msg = $this->conversation->messages()->create([
-            'api_user_id' => Auth::id(),
+            'user_id' => Auth::id(),
             'body' => $this->body,
         ]);
 
