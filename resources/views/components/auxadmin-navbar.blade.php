@@ -55,7 +55,7 @@
         ],
         [
             'titulo' => 'Gráficos',
-            'ruta' => "#",
+            'ruta' => route('auxadmin.index'),
             'icono' => 'chart-bar',
             'color' => 'bg-green-100 dark:bg-green-700',
         ],

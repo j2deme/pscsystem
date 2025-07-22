@@ -189,6 +189,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/aux/historial-incapacidades', [App\Http\Controllers\IncapacidadController::class, 'showIncapacidadesHistory'])->name('aux.historialIncapacidades');
     Route::get('/aux/historial-riesgos-trabajo', [App\Http\Controllers\RiesgoTrabajoController::class, 'showHistorialRiesgosTrabajo'])->name('aux.historialRiesgosTrabajo');
     Route::get('/reporte/incapacidades', [IncapacidadReporteController::class, 'generarPdf'])->name('reporte.incapacidades.pdf');
+    //graficas
+    Route::get('/graficos', [App\Http\Controllers\GraficosController::class, 'index'])->name('auxadmin.index');
+
 
     //Usuario nominas
     Route::get('/antiguedades', [NominasController::class, 'antiguedades'])->name('nominas.usersAntiguedades');
