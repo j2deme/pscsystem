@@ -73,7 +73,9 @@
 
         <!-- Page Content -->
         <main class="bg-blue-50 dark:bg-gray-900 min-h-screen">
-            {{ $slot }}
+        {{ $slot}}
+
+
         </main>
         <x-footer></x-footer>
     </div>
