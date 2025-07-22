@@ -77,11 +77,16 @@ class User extends Authenticatable
     }
 
     public function conversations()
-    {
-        return $this->belongsToMany(Conversation::class)
-                    ->withPivot('last_read_at')
-                    ->withTimestamps();
-    }
+{
+    return $this->belongsToMany(
+        Conversation::class,
+        'conversation_user',     // nombre tabla pivote
+        'api_user_id',           // FK hacia este modelo (User)
+        'conversation_id'        // FK hacia Conversation
+    )
+    ->withPivot('last_read_at')
+    ->withTimestamps();
+}
 
     public function messages()
     {
