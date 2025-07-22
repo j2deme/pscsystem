@@ -51,10 +51,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function solicitudBajas() {
+    public function solicitudBajas()
+    {
         return $this->hasMany(SolicitudBajas::class);
     }
-    public function documentacionAltas(){
+    public function documentacionAltas()
+    {
         return $this->hasOne(DocumentacionAltas::class, 'id', 'sol_docs_id');
     }
     public function solicitudAlta()
@@ -62,7 +64,8 @@ class User extends Authenticatable
         return $this->hasOne(SolicitudAlta::class, 'id', 'sol_alta_id');
     }
 
-    public function solicitarVacacionesForm(){
+    public function solicitarVacacionesForm()
+    {
         return view('user.solicitarVacacionesForm');
     }
 
@@ -79,12 +82,17 @@ class User extends Authenticatable
     public function conversations()
     {
         return $this->belongsToMany(Conversation::class)
-                    ->withPivot('last_read_at')
-                    ->withTimestamps();
+            ->withPivot('last_read_at')
+            ->withTimestamps();
     }
 
     public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function siniestros()
+    {
+        return $this->belongsToMany(\App\Models\Siniestro::class, 'siniestro_user', 'user_id', 'siniestro_id');
     }
 }
