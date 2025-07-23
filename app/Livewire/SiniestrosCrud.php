@@ -52,7 +52,7 @@ class SiniestrosCrud extends Component
     ],
     'INTENTO DE ROBO A TREN' => [
       'label' => 'Intento de robo a tren',
-      'descripcion' => 'Intento de robo a tren, con riesgo latente violencia y daños',
+      'descripcion' => 'Intento de robo a tren, con riesgo latente de violencia y daños',
       'gravedad' => 'Media'
     ],
     'INTENTO DE ROBO DE UNIDAD' => [
