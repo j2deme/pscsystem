@@ -389,7 +389,7 @@
               </td>
               <!-- Acciones -->
               <td class="flex justify-center gap-2 px-4 py-2">
-                <a href="#"
+                <a href="{{ route('siniestros.detalle', $siniestro->id) }}"
                   class="flex items-center justify-center p-2 text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200"
                   title="Ver detalle">
                   <i class="ti ti-eye"></i>
