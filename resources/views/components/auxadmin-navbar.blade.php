@@ -44,14 +44,12 @@
             'ruta' => '#',
             'icono' => 'file-text',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
-            'disabled' => true,
         ],
         [
             'titulo' => 'Sipare',
-            'ruta' => '#',
+            'ruta' => route('aux.sipareForm'),
             'icono' => 'folder-open',
             'color' => 'bg-pink-100 dark:bg-pink-700',
-            'disabled' => true,
         ],
         [
             'titulo' => 'Gráficos',

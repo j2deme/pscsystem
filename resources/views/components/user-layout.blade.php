@@ -62,7 +62,7 @@ $notificaciones = Alerta::where('leida', false)->latest()->get();
                     $rolesPermitidos = [
                     'admin', 'SUPERVISOR', 'Supervisor',
                     'AUXILIAR RECURSOS HUMANOS', 'Auxiliar recursos humanos',
-                    'AUXILIAR RH', 'AUX RH', 'Auxiliar RH', 'Auxiliar Recursos Humanos', 'Aux RH'
+                    'AUXILIAR RH', 'AUX RH', 'Auxiliar Administrativo', 'Auxiliar RH', 'Auxiliar Recursos Humanos', 'Aux RH'
                     ];
                     $departamentosPermitidos = ['Recursos Humanos'];
                     $user = Auth::user();
