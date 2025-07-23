@@ -19,7 +19,7 @@ class Servicio extends Model
     ];
 
     protected $casts = [
-        'fecha' => 'datetime',
+        'fecha' => 'date',
     ];
 
     public function unidad()
