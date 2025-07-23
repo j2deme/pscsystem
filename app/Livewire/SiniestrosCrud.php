@@ -208,13 +208,13 @@ class SiniestrosCrud extends Component
     $this->form     = [
       'tipo_siniestro' => $siniestro->tipo_siniestro,
       'unidad_id' => $siniestro->unidad_id,
-      'fecha' => $siniestro->fecha,
+      'fecha' => $siniestro->fecha ? $siniestro->fecha->format('Y-m-d') : '',
       'tipo' => $siniestro->tipo,
       'zona' => $siniestro->zona,
       'descripcion' => $siniestro->descripcion,
       'seguimiento' => $siniestro->seguimiento,
       'costo' => $siniestro->costo,
-      'usuarios' => $siniestro->usuarios()->pluck('id')->toArray(),
+      'usuarios' => $siniestro->usuarios()->pluck('users.id')->toArray(),
     ];
     $this->showForm = true;
     $this->editId   = $siniestro->id;

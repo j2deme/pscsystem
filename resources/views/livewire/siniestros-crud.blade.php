@@ -352,7 +352,7 @@
                     @else
                     <span
                       class="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-full">
-                      <i class="text-gray-500 ti ti-users"></i> {{ $totalUsuarios }} personas
+                      <i class="text-gray-500 ti ti-users"></i> {{ $totalUsuarios }} elementos
                     </span>
                     @endif
                   </div>
