@@ -32,7 +32,7 @@
       </div>
 
       <form wire:submit.prevent="save" class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
-        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-3">
           <div>
             <label class="block text-gray-700 dark:text-gray-200" for="fecha">Fecha</label>
             <input type="date" id="fecha" wire:model.defer="form.fecha"
@@ -43,19 +43,19 @@
           <div>
             <label class="block text-gray-700 dark:text-gray-200" for="tipo_siniestro">Reporte para...</label>
             <div class="flex gap-4">
-              <div class="inline-flex rounded-lg overflow-hidden border border-blue-500">
+              <div class="inline-flex overflow-hidden border border-blue-500 rounded-lg">
                 <button type="button"
                   class="flex items-center gap-2 px-4 py-2 focus:outline-none transition-all border-r border-blue-500 {{ $form['tipo_siniestro'] === 'vehiculo' ? 'bg-blue-600 text-white' : 'bg-white text-blue-600' }}"
                   style="border-top-left-radius:0.5rem; border-bottom-left-radius:0.5rem;"
                   wire:click="$set('form.tipo_siniestro', 'vehiculo')">
-                  <i class="ti ti-car-crash text-xl"></i>
+                  <i class="text-xl ti ti-car-crash"></i>
                   Vehículo
                 </button>
                 <button type="button"
                   class="flex items-center gap-2 px-4 py-2 focus:outline-none transition-all {{ $form['tipo_siniestro'] === 'personal' ? 'bg-blue-600 text-white' : 'bg-white text-blue-600' }}"
                   style="border-top-right-radius:0.5rem; border-bottom-right-radius:0.5rem;"
                   wire:click="$set('form.tipo_siniestro', 'personal')">
-                  <i class="ti ti-user text-xl"></i>
+                  <i class="text-xl ti ti-user"></i>
                   Personal
                 </button>
               </div>
@@ -78,9 +78,9 @@
           @endif
         </div>
 
-        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-3">
           <div class="flex-1">
-            <label class="block text-gray-700 dark:text-gray-200 mb-1" for="tipo">Tipo</label>
+            <label class="block mb-1 text-gray-700 dark:text-gray-200" for="tipo">Tipo</label>
             @php
             $tipos = $form['tipo_siniestro'] === 'vehiculo' ? $tiposVehiculo : ($form['tipo_siniestro'] === 'personal'
             ? $tiposPersonal : []);
@@ -95,7 +95,7 @@
             </select>
             @error('form.tipo')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
           </div>
-          <div class="flex-1 flex items-center">
+          <div class="flex items-center flex-1">
             @php
             $hasTipo = $form['tipo'] && isset($tipos[$form['tipo']]);
             $gravedad = $hasTipo ? strtolower($tipos[$form['tipo']]['gravedad'] ?? '') : '';
@@ -116,7 +116,7 @@
               class="w-full bg-white dark:bg-gray-800 border {{ $borderColor }} rounded-lg shadow p-4 flex flex-col gap-2 min-h-[80px]">
               @if($hasTipo)
               <div class="flex items-center gap-2">
-                <span class="font-semibold text-base flex-1">{{ $tipos[$form['tipo']]['label'] ?? $form['tipo']
+                <span class="flex-1 text-base font-semibold">{{ $tipos[$form['tipo']]['label'] ?? $form['tipo']
                   }}</span>
                 <span class="inline-block px-2 py-1 rounded border text-xs font-semibold {{ $badgeColor }} ml-auto">
                   {{ ucfirst($tipos[$form['tipo']]['gravedad'] ?? 'No especificada') }}
@@ -127,9 +127,9 @@
               </div>
               @else
               <div class="flex flex-col gap-2 animate-pulse">
-                <span class="h-5 w-1/2 bg-gray-200 rounded"></span>
-                <span class="h-4 w-16 bg-gray-100 rounded"></span>
-                <span class="h-4 w-3/4 bg-gray-100 rounded"></span>
+                <span class="w-1/2 h-5 bg-gray-200 rounded"></span>
+                <span class="w-16 h-4 bg-gray-100 rounded"></span>
+                <span class="w-3/4 h-4 bg-gray-100 rounded"></span>
               </div>
               @endif
             </div>
@@ -141,10 +141,10 @@
             @error('form.zona')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
           </div>
         </div>
-        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-3">
         </div>
 
-        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
           <div>
             <label class="block text-gray-700 dark:text-gray-200" for="descripcion">Descripción</label>
             <textarea id="descripcion" wire:model.defer="form.descripcion"
@@ -165,9 +165,9 @@
         </div>
 
         @if($form['tipo_siniestro'] === 'vehiculo')
-        <div class="md:col-span-2 mt-8">
+        <div class="mt-8 md:col-span-2">
           <div class="mb-2 text-base font-semibold text-gray-700">Información de cierre</div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <label class="block text-gray-700 dark:text-gray-200" for="seguimiento">Seguimiento</label>
               <textarea id="seguimiento" wire:model.defer="form.seguimiento"
@@ -181,7 +181,7 @@
                   <i class="ti ti-currency-dollar"></i>
                 </span>
                 <input type="number" id="costo" step="0.01" min="0" wire:model.defer="form.costo"
-                  class="w-full h-10 pl-9 pr-3 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                  class="w-full h-10 pr-3 bg-white border border-gray-300 rounded-lg pl-9 form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
                   placeholder="0.00">
               </div>
               @error('form.costo')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
@@ -201,9 +201,9 @@
         </div>
       </form>
       @else
-      <div class="flex justify-between items-center mb-4">
-        <div class="flex flex-wrap items-center gap-4 w-full">
-          <div class="flex gap-4 w-full">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex flex-wrap items-center w-full gap-4">
+          <div class="flex w-full gap-4">
             <div>
               <label for="perPage" class="mr-2 text-gray-700 dark:text-gray-200">Mostrar:</label>
               <select wire:model.live="perPage" id="perPage"
@@ -223,7 +223,7 @@
               </button>
             </div>
           </div>
-          <div class="flex gap-4 w-full mt-1">
+          <div class="flex w-full gap-4 mt-1">
             <div>
               <label for="filtro_unidad" class="mr-2 text-gray-700 dark:text-gray-200">Filtrar por unidad:</label>
               <select wire:model.live="filtro_unidad" id="filtro_unidad"
@@ -258,12 +258,13 @@
         </div>
       </div>
       <div class="overflow-x-auto">
-        <table class="min-w-full table-fixed bg-white rounded shadow dark:bg-gray-800">
+        <table class="min-w-full bg-white rounded shadow table-fixed dark:bg-gray-800">
           <thead>
             <tr>
               <th class="px-4 py-2">Fecha</th>
               <th class="px-4 py-2">Descripción</th>
               <th class="px-4 py-2">Tipo</th>
+              <th class="px-4 py-2">Gravedad</th>
               <th class="px-4 py-2">Unidad / Elementos</th>
               <th class="px-4 py-2">Acciones</th>
             </tr>
@@ -271,12 +272,12 @@
           <tbody>
             @forelse ($siniestros as $siniestro)
             <tr class="border-t">
-              <td class="px-4 py-2 text-center text-sm">
+              <td class="px-4 py-2 text-sm text-center">
                 {{ $siniestro->fecha->format('d-m-Y') }}
               </td>
               <td class="px-4 py-2">
                 <button type="button"
-                  class="block max-w-xs text-gray-700 text-sm truncate cursor-pointer hover:underline text-left w-full bg-transparent border-none p-0"
+                  class="block w-full max-w-xs p-0 text-sm text-left text-gray-700 truncate bg-transparent border-none cursor-pointer hover:underline"
                   title="{{ $siniestro->descripcion }}" onclick="showDescModal(this)"
                   data-desc="{{ $siniestro->descripcion }}">
                   {{ $siniestro->descripcion }}
@@ -290,6 +291,17 @@
                 $badgeColor = $tipo === 'vehiculo'
                 ? 'bg-blue-100 text-blue-800 border border-blue-300'
                 : 'bg-purple-100 text-purple-800 border border-purple-300';
+                // Obtener gravedad
+                $tipos = $tipo === 'vehiculo' ? ($tiposVehiculo ?? []) : ($tipo === 'personal' ? ($tiposPersonal ?? [])
+                : []);
+                $infoTipo = $siniestro->tipo && isset($tipos[$siniestro->tipo]) ? $tipos[$siniestro->tipo] : null;
+                $gravedad = $infoTipo['gravedad'] ?? null;
+                $badgeGravedad = match(strtolower($gravedad)) {
+                'alta' => 'bg-red-100 text-red-700 border-red-300',
+                'media' => 'bg-yellow-100 text-yellow-700 border-yellow-300',
+                'baja' => 'bg-green-100 text-green-700 border-green-300',
+                default => 'bg-gray-100 text-gray-700 border-gray-300',
+                };
                 @endphp
                 <span
                   class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium {{ $badgeColor }}">
@@ -297,6 +309,17 @@
                   {{ $label }}
                 </span>
               </td>
+
+              <td class="px-4 py-2 text-center">
+                @if($gravedad)
+                <span class="inline-block px-2 py-1 rounded border text-xs font-semibold {{ $badgeGravedad }}">
+                  {{ ucfirst($gravedad) }}
+                </span>
+                @else
+                <span class="text-xs text-gray-400">-</span>
+                @endif
+              </td>
+
               <td class="px-4 py-2 text-center">
                 <div class="flex flex-col items-center justify-center gap-1 min-h-[40px]">
                   @php
@@ -312,7 +335,7 @@
                   @elseif($unidad && $totalUsuarios === 0)
                   {{-- Caso 2: Solo unidad --}}
                   <div class="flex items-center gap-2">
-                    <i class="ti ti-car text-blue-500"></i>
+                    <i class="text-blue-500 ti ti-car"></i>
                     <span class="text-sm font-medium text-gray-700">
                       {{ $unidad['numero'] }}: {{ $unidad['marca'] }} {{ $unidad['modelo'] }}
                     </span>
@@ -323,13 +346,13 @@
                   <div class="flex justify-center">
                     @if($totalUsuarios == 1)
                     <span
-                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200">
-                      <i class="ti ti-user text-gray-500"></i> {{ $siniestro->usuarios[0]->name }}
+                      class="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-full">
+                      <i class="text-gray-500 ti ti-user"></i> {{ $siniestro->usuarios[0]->name }}
                     </span>
                     @else
                     <span
-                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200">
-                      <i class="ti ti-users text-gray-500"></i> {{ $totalUsuarios }} personas
+                      class="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-full">
+                      <i class="text-gray-500 ti ti-users"></i> {{ $totalUsuarios }} personas
                     </span>
                     @endif
                   </div>
@@ -339,7 +362,7 @@
                   <div class="flex items-center justify-center gap-3">
                     {{-- Unidad --}}
                     <div class="flex items-center gap-1">
-                      <i class="ti ti-car text-blue-500"></i>
+                      <i class="text-blue-500 ti ti-car"></i>
                       <span class="text-sm text-gray-700">
                         {{ $unidad['numero'] }}
                       </span>
@@ -351,13 +374,13 @@
                     {{-- Personal --}}
                     @if($totalUsuarios == 1)
                     <span
-                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200">
-                      <i class="ti ti-user text-gray-500"></i> {{ $siniestro->usuarios[0]->name }}
+                      class="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-full">
+                      <i class="text-gray-500 ti ti-user"></i> {{ $siniestro->usuarios[0]->name }}
                     </span>
                     @else
                     <span
-                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200">
-                      <i class="ti ti-users text-gray-500"></i> {{ $totalUsuarios }}
+                      class="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-full">
+                      <i class="text-gray-500 ti ti-users"></i> {{ $totalUsuarios }}
                     </span>
                     @endif
                   </div>
@@ -387,14 +410,14 @@
             <tr>
               <td colspan="6" class="px-4 py-8 text-center">
                 <div class="flex flex-col items-center justify-center gap-4 py-8">
-                  <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100">
-                    <i class="ti ti-car-crash text-4xl text-gray-400"></i>
+                  <span class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full">
+                    <i class="text-4xl text-gray-400 ti ti-car-crash"></i>
                   </span>
                   <span class="text-lg font-semibold text-gray-700">No hay siniestros registrados</span>
                   <span class="text-sm text-gray-500">Agrega un nuevo siniestro para comenzar a gestionar el historial
                     de incidentes y accidentes.</span>
                   <button wire:click="showCreateForm" type="button"
-                    class="mt-2 px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-2">
+                    class="flex items-center gap-2 px-5 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700">
                     <i class="ti ti-plus"></i>
                     Agregar siniestro
                   </button>
@@ -412,17 +435,17 @@
       </div>
       @endif
 
-      <div id="modalDesc" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+      <div id="modalDesc" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-40">
         <div
-          class="bg-white dark:bg-gray-900 rounded-xl shadow-lg max-w-md w-full p-6 relative border border-gray-200 dark:border-gray-700">
+          class="relative w-full max-w-md p-6 bg-white border border-gray-200 shadow-lg dark:bg-gray-900 rounded-xl dark:border-gray-700">
           <button type="button" id="closeDescModalBtn"
-            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" title="Cerrar">
+            class="absolute text-gray-500 top-3 right-3 hover:text-gray-700 dark:hover:text-gray-300" title="Cerrar">
             <i class="ti ti-x"></i>
           </button>
-          <div class="mb-4 text-lg font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2">
-            <i class="ti ti-file-description text-blue-600 dark:text-blue-300"></i> Descripción completa
+          <div class="flex items-center gap-2 mb-4 text-lg font-bold text-blue-700 dark:text-blue-300">
+            <i class="text-blue-600 ti ti-file-description dark:text-blue-300"></i> Descripción completa
           </div>
-          <div class="text-gray-800 dark:text-gray-200 whitespace-pre-line text-base" id="modalDescText">
+          <div class="text-base text-gray-800 whitespace-pre-line dark:text-gray-200" id="modalDescText">
           </div>
         </div>
       </div>
