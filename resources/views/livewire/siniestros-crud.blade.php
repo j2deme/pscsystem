@@ -257,62 +257,129 @@
         </div>
       </div>
       <div class="overflow-x-auto">
-        <table class="min-w-full bg-white rounded shadow dark:bg-gray-800">
+        <table class="min-w-full table-fixed bg-white rounded shadow dark:bg-gray-800">
           <thead>
             <tr>
-              <th class="px-4 py-2">Unidad</th>
               <th class="px-4 py-2">Fecha</th>
               <th class="px-4 py-2">Descripción</th>
-              <th class="px-4 py-2">Costo</th>
               <th class="px-4 py-2">Tipo</th>
-              <th class="px-4 py-2">Usuarios</th>
+              <th class="px-4 py-2">Unidad / Elementos</th>
+              <th class="px-4 py-2">Acciones</th>
             </tr>
           </thead>
           <tbody>
             @forelse ($siniestros as $siniestro)
             <tr class="border-t">
-              <td class="px-4 py-2">
-                @php
-                $unidad = collect($placasDisponibles)->firstWhere('unidad_id', $siniestro->unidad_id);
-                @endphp
-                @if($unidad)
-                <a href="{{ route('vehiculos.detalle', ['id' => $siniestro->unidad_id]) }}">
-                  <i class="ti ti-car text-blue-600"></i> {{ $unidad['numero'] }}
-                </a>
-                @else
-                &ndash;
-                @endif
-              </td>
-              <td class="px-4 py-2 text-center">
-                <i class="ti ti-calendar text-gray-500"></i> {{
-                \Carbon\Carbon::parse($siniestro->fecha)->format('d-m-Y') }}
+              <td class="px-4 py-2 text-center text-sm">
+                {{ $siniestro->fecha->format('d-m-Y') }}
               </td>
               <td class="px-4 py-2">
-                <button type="button" class="text-blue-600 underline" onclick="showDescModal(this)"
+                <button type="button"
+                  class="block max-w-xs text-gray-700 text-sm truncate cursor-pointer hover:underline text-left w-full bg-transparent border-none p-0"
+                  title="{{ $siniestro->descripcion }}" onclick="showDescModal(this)"
                   data-desc="{{ $siniestro->descripcion }}">
-                  <i class="ti ti-file-description"></i> Ver
+                  {{ $siniestro->descripcion }}
                 </button>
               </td>
-              <td class="px-4 py-2 text-right">
-                @if($siniestro->costo == 0)
-                &ndash;
-                @else
-                <i class="ti ti-currency-dollar text-green-600"></i> ${{ number_format($siniestro->costo, 2) }}
-                @endif
+              <td class="px-4 py-2 text-center">
+                @php
+                $tipo = strtolower($siniestro->tipo_siniestro);
+                $icono = $tipo === 'vehiculo' ? 'ti-car-crash' : 'ti-user';
+                $label = $tipo === 'vehiculo' ? 'Vehículo' : 'Personal';
+                $badgeColor = $tipo === 'vehiculo'
+                ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                : 'bg-purple-100 text-purple-800 border border-purple-300';
+                @endphp
+                <span
+                  class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium {{ $badgeColor }}">
+                  <i class="ti {{ $icono }} text-sm"></i>
+                  {{ $label }}
+                </span>
               </td>
               <td class="px-4 py-2 text-center">
-                <span
-                  class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold {{ $siniestro->tipo_siniestro == 'Vehículo' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' }}">
-                  <i class="ti ti-car-crash"></i> {{ $siniestro->tipo_siniestro }}
-                </span>
+                <div class="flex flex-col items-center justify-center gap-1 min-h-[40px]">
+                  @php
+                  $tipo = strtolower($siniestro->tipo_siniestro);
+                  $unidad = collect($placasDisponibles)->firstWhere('unidad_id', $siniestro->unidad_id);
+                  $totalUsuarios = $siniestro->usuarios ? count($siniestro->usuarios) : 0;
+                  @endphp
+
+                  @if(!$unidad && $totalUsuarios === 0)
+                  {{-- Caso 1: Sin unidad ni personal --}}
+                  <span class="text-gray-400">-</span>
+
+                  @elseif($unidad && $totalUsuarios === 0)
+                  {{-- Caso 2: Solo unidad --}}
+                  <div class="flex items-center gap-2">
+                    <i class="ti ti-car text-blue-500"></i>
+                    <span class="text-sm font-medium text-gray-700">
+                      {{ $unidad['numero'] }}: {{ $unidad['marca'] }} {{ $unidad['modelo'] }}
+                    </span>
+                  </div>
+
+                  @elseif(!$unidad && $totalUsuarios > 0)
+                  {{-- Caso 3: Solo personal --}}
+                  <div class="flex justify-center">
+                    @if($totalUsuarios == 1)
+                    <span
+                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200">
+                      <i class="ti ti-user text-gray-500"></i> {{ $siniestro->usuarios[0]->name }}
+                    </span>
+                    @else
+                    <span
+                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200">
+                      <i class="ti ti-users text-gray-500"></i> {{ $totalUsuarios }} personas
+                    </span>
+                    @endif
+                  </div>
+
+                  @elseif($unidad && $totalUsuarios > 0)
+                  {{-- Caso 4: Unidad y personal (EN MISMA LÍNEA) --}}
+                  <div class="flex items-center justify-center gap-3">
+                    {{-- Unidad --}}
+                    <div class="flex items-center gap-1">
+                      <i class="ti ti-car text-blue-500"></i>
+                      <span class="text-sm text-gray-700">
+                        {{ $unidad['numero'] }}
+                      </span>
+                    </div>
+
+                    {{-- Separador visual --}}
+                    <span class="text-gray-300">|</span>
+
+                    {{-- Personal --}}
+                    @if($totalUsuarios == 1)
+                    <span
+                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200">
+                      <i class="ti ti-user text-gray-500"></i> {{ $siniestro->usuarios[0]->name }}
+                    </span>
+                    @else
+                    <span
+                      class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200">
+                      <i class="ti ti-users text-gray-500"></i> {{ $totalUsuarios }}
+                    </span>
+                    @endif
+                  </div>
+                  @endif
+                </div>
               </td>
-              <td class="px-4 py-2">
-                @foreach($siniestro->usuarios as $usuario)
-                <span
-                  class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
-                  <i class="ti ti-user"></i> {{ $usuario->name }}
-                </span>
-                @endforeach
+              <!-- Acciones -->
+              <td class="flex justify-center gap-2 px-4 py-2">
+                <a href="#"
+                  class="flex items-center justify-center p-2 text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200"
+                  title="Ver detalle">
+                  <i class="ti ti-eye"></i>
+                </a>
+                <button wire:click="editarSiniestro({{ $siniestro->id }})"
+                  class="flex items-center justify-center p-2 text-white bg-blue-400 rounded hover:bg-blue-500"
+                  title="Editar">
+                  <i class="ti ti-edit"></i>
+                </button>
+                <button wire:click="eliminarSiniestro({{ $siniestro->id }})"
+                  class="flex items-center justify-center p-2 text-white bg-red-600 rounded hover:bg-red-700"
+                  onclick="return confirm('¿Seguro que deseas eliminar este siniestro?')" title="Eliminar">
+                  <i class="ti ti-trash"></i>
+                </button>
               </td>
             </tr>
             @empty
@@ -335,20 +402,6 @@
             </tr>
             @endforelse
           </tbody>
-          <tfoot>
-            @if($siniestros->sum('costo') > 0)
-            <tr>
-              <td colspan="3" class="px-4 py-2 text-right font-bold text-gray-700 dark:text-gray-200">
-                Total costos:
-              </td>
-              <td class="px-4 py-2 text-right font-bold text-green-700 dark:text-green-300">
-                ${{ number_format($siniestros->sum('costo'), 2) }}
-              </td>
-              <td></td>
-              <td></td>
-            </tr>
-            @endif
-          </tfoot>
         </table>
         <div class="mt-4">
           @if($siniestros->hasPages())
