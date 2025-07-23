@@ -292,8 +292,8 @@
                 ? 'bg-blue-100 text-blue-800 border border-blue-300'
                 : 'bg-purple-100 text-purple-800 border border-purple-300';
                 // Obtener gravedad
-                $tipos = $tipo === 'vehiculo' ? ($tiposVehiculo ?? []) : ($tipo === 'personal' ? ($tiposPersonal ?? [])
-                : []);
+                $tipos = $tipo === 'vehiculo' ? ($tiposVehiculo ?? []) : ($tipo === 'personal' ? ($tiposPersonal ?? []):
+                []);
                 $infoTipo = $siniestro->tipo && isset($tipos[$siniestro->tipo]) ? $tipos[$siniestro->tipo] : null;
                 $gravedad = $infoTipo['gravedad'] ?? null;
                 $badgeGravedad = match(strtolower($gravedad)) {
