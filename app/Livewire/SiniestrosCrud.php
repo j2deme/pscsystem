@@ -58,6 +58,20 @@ class SiniestrosCrud extends Component
       ->toArray();
   }
 
+  private function procesaBadges($siniestros, $tiposVehiculo, $tiposPersonal)
+  {
+    $siniestros->getCollection()->transform(function ($siniestro) use ($tiposVehiculo, $tiposPersonal) {
+      $tipo                         = strtolower($siniestro->tipo_siniestro);
+      $tipos                        = $tipo === 'vehiculo' ? $tiposVehiculo : ($tipo === 'personal' ? $tiposPersonal : []);
+      $infoTipo                     = $siniestro->tipo && isset($tipos[$siniestro->tipo]) ? $tipos[$siniestro->tipo] : null;
+      $gravedad                     = $infoTipo['gravedad'] ?? null;
+      $siniestro->badgeGravedadInfo = $this->getGravedadBadgeInfo($gravedad);
+      $siniestro->gravedad          = $gravedad;
+      return $siniestro;
+    });
+    return $siniestros;
+  }
+
   public function showCreateForm()
   {
     $this->reset('form');
@@ -165,6 +179,10 @@ class SiniestrosCrud extends Component
 
     $siniestros = $query->orderByDesc('fecha')->paginate($this->perPage);
 
+    $tiposVehiculo = $this->getTiposVehiculo();
+    $tiposPersonal = $this->getTiposPersonal();
+    $siniestros    = $this->procesaBadges($siniestros, $tiposVehiculo, $tiposPersonal);
+
     $data = [
       'breadcrumbItems' => [
         ['icon' => 'ti-home', 'url' => route('dashboard')],
@@ -182,8 +200,8 @@ class SiniestrosCrud extends Component
       'filtro_tipo' => $this->filtro_tipo,
       'filtro_fecha_inicio' => $this->filtro_fecha_inicio,
       'filtro_fecha_fin' => $this->filtro_fecha_fin,
-      'tiposVehiculo' => $this->getTiposVehiculo(),
-      'tiposPersonal' => $this->getTiposPersonal(),
+      'tiposVehiculo' => $tiposVehiculo,
+      'tiposPersonal' => $tiposPersonal,
     ];
 
     return view('livewire.siniestros-crud', $data)

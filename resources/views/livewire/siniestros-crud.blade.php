@@ -295,13 +295,8 @@
                 $tipos = $tipo === 'vehiculo' ? ($tiposVehiculo ?? []) : ($tipo === 'personal' ? ($tiposPersonal ?? []):
                 []);
                 $infoTipo = $siniestro->tipo && isset($tipos[$siniestro->tipo]) ? $tipos[$siniestro->tipo] : null;
-                $gravedad = $infoTipo['gravedad'] ?? null;
-                $badgeGravedad = match(strtolower($gravedad)) {
-                'alta' => 'bg-red-100 text-red-700 border-red-300',
-                'media' => 'bg-yellow-100 text-yellow-700 border-yellow-300',
-                'baja' => 'bg-green-100 text-green-700 border-green-300',
-                default => 'bg-gray-100 text-gray-700 border-gray-300',
-                };
+                $gravedad = $siniestro->gravedad ?? null;
+                $badgeGravedadInfo = $siniestro->badgeGravedadInfo ?? null;
                 @endphp
                 <span
                   class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium {{ $badgeColor }}">
@@ -312,7 +307,9 @@
 
               <td class="px-4 py-2 text-center">
                 @if($gravedad)
-                <span class="inline-block px-2 py-1 rounded border text-xs font-semibold {{ $badgeGravedad }}">
+                <span
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded border text-xs font-semibold {{ $badgeGravedadInfo['badgeBg'] ?? '' }} {{ $badgeGravedadInfo['border'] ?? '' }} {{ $badgeGravedadInfo['textColor'] ?? '' }}">
+                  <i class="ti {{ $badgeGravedadInfo['icon'] ?? '' }} {{ $badgeGravedadInfo['textColor'] ?? '' }}"></i>
                   {{ ucfirst($gravedad) }}
                 </span>
                 @else
@@ -326,24 +323,23 @@
                   $tipo = strtolower($siniestro->tipo_siniestro);
                   $unidad = collect($placasDisponibles)->firstWhere('unidad_id', $siniestro->unidad_id);
                   $totalUsuarios = $siniestro->usuarios ? count($siniestro->usuarios) : 0;
+                  $hasCosto = !empty($siniestro->costo) && $siniestro->costo > 0;
                   @endphp
 
-                  @if(!$unidad && $totalUsuarios === 0)
-                  {{-- Caso 1: Sin unidad ni personal --}}
-                  <span class="text-gray-400">-</span>
-
-                  @elseif($unidad && $totalUsuarios === 0)
-                  {{-- Caso 2: Solo unidad --}}
-                  <div class="flex items-center gap-2">
-                    <i class="text-blue-500 ti ti-car"></i>
-                    <span class="text-sm font-medium text-gray-700">
-                      {{ $unidad['numero'] }}: {{ $unidad['marca'] }} {{ $unidad['modelo'] }}
+                  <div class="flex flex-wrap items-center justify-center gap-2">
+                    @if(!$unidad && $totalUsuarios === 0)
+                    {{-- Caso 1: Sin unidad ni personal --}}
+                    <span class="text-gray-400">-</span>
+                    @elseif($unidad && $totalUsuarios === 0)
+                    {{-- Caso 2: Solo unidad --}}
+                    <span class="flex items-center gap-2">
+                      <i class="text-blue-500 ti ti-car"></i>
+                      <span class="text-sm font-medium text-gray-700">
+                        {{ $unidad['numero'] }}: {{ $unidad['marca'] }} {{ $unidad['modelo'] }}
+                      </span>
                     </span>
-                  </div>
-
-                  @elseif(!$unidad && $totalUsuarios > 0)
-                  {{-- Caso 3: Solo personal --}}
-                  <div class="flex justify-center">
+                    @elseif(!$unidad && $totalUsuarios > 0)
+                    {{-- Caso 3: Solo personal --}}
                     @if($totalUsuarios == 1)
                     <span
                       class="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-full">
@@ -355,23 +351,15 @@
                       <i class="text-gray-500 ti ti-users"></i> {{ $totalUsuarios }} elementos
                     </span>
                     @endif
-                  </div>
-
-                  @elseif($unidad && $totalUsuarios > 0)
-                  {{-- Caso 4: Unidad y personal (EN MISMA LÍNEA) --}}
-                  <div class="flex items-center justify-center gap-3">
-                    {{-- Unidad --}}
-                    <div class="flex items-center gap-1">
+                    @elseif($unidad && $totalUsuarios > 0)
+                    {{-- Caso 4: Unidad y personal (EN MISMA LÍNEA) --}}
+                    <span class="flex items-center gap-1">
                       <i class="text-blue-500 ti ti-car"></i>
                       <span class="text-sm text-gray-700">
                         {{ $unidad['numero'] }}
                       </span>
-                    </div>
-
-                    {{-- Separador visual --}}
+                    </span>
                     <span class="text-gray-300">|</span>
-
-                    {{-- Personal --}}
                     @if($totalUsuarios == 1)
                     <span
                       class="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-full">
@@ -383,8 +371,16 @@
                       <i class="text-gray-500 ti ti-users"></i> {{ $totalUsuarios }}
                     </span>
                     @endif
+                    @endif
+                    @if($hasCosto)
+                    <span class="text-gray-300">|</span>
+                    <span
+                      class="inline-flex items-center gap-1 px-2 py-1 ml-1 text-xs font-semibold text-green-700 bg-green-100 border border-green-300 rounded-full"
+                      title="${{ number_format($siniestro->costo, 2) }}">
+                      <i class="ti ti-currency-dollar"></i>
+                    </span>
+                    @endif
                   </div>
-                  @endif
                 </div>
               </td>
               <!-- Acciones -->
