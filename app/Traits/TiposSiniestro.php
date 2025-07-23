@@ -4,6 +4,42 @@ namespace App\Traits;
 
 trait TiposSiniestro
 {
+  /**
+   * Devuelve la información de icono, color de borde y color de texto para un badge de gravedad.
+   * @param string|null $gravedad
+   * @return array [icon, border, textColor, badgeBg]
+   */
+  public function getGravedadBadgeInfo($gravedad)
+  {
+    $g = strtolower($gravedad ?? '');
+    return match ($g) {
+      'baja' => [
+        'icon' => 'ti-antenna-bars-3',
+        'border' => 'border-green-400',
+        'textColor' => 'text-green-700',
+        'badgeBg' => 'bg-green-100',
+      ],
+      'media' => [
+        'icon' => 'ti-antenna-bars-4',
+        'border' => 'border-yellow-400',
+        'textColor' => 'text-yellow-800',
+        'badgeBg' => 'bg-yellow-100',
+      ],
+      'alta' => [
+        'icon' => 'ti-antenna-bars-5',
+        'border' => 'border-red-400',
+        'textColor' => 'text-red-700',
+        'badgeBg' => 'bg-red-100',
+      ],
+      default => [
+        'icon' => 'ti-antenna-bars-1',
+        'border' => 'border-gray-200',
+        'textColor' => 'text-gray-700',
+        'badgeBg' => 'bg-gray-100',
+      ],
+    };
+  }
+
   public function getTiposVehiculo()
   {
     return [
