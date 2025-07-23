@@ -34,11 +34,21 @@ class SiniestrosCrud extends Component
   public $filtro_tipo = '';
   public $filtro_fecha_inicio = '';
   public $filtro_fecha_fin = '';
+  public $returnToDetalle = false;
 
   public function mount()
   {
     $this->loadPlacasDisponibles();
     $this->loadUsuariosDisponibles();
+    $request = request();
+    if ($request->has('editar')) {
+      $id = $request->input('editar');
+      $this->editarSiniestro($id);
+    }
+    // Detectar si se debe regresar al detalle después de editar/cancelar
+    if ($request->has('return') && $request->input('return') === 'detalle') {
+      $this->returnToDetalle = true;
+    }
   }
 
   public function loadPlacasDisponibles()
@@ -88,6 +98,13 @@ class SiniestrosCrud extends Component
     $this->reset('form');
     $this->form['costo']    = 0;
     $this->form['usuarios'] = [];
+    // Si se inició edición desde el detalle, redirigir
+    if ($this->returnToDetalle && $this->editId) {
+      return redirect()->route('siniestros.detalle', ['id' => $this->editId]);
+    }
+    if ($this->returnToDetalle && request()->has('editar')) {
+      return redirect()->route('siniestros.detalle', ['id' => request()->input('editar')]);
+    }
   }
 
   public function save()
@@ -128,11 +145,17 @@ class SiniestrosCrud extends Component
       session()->flash('success', 'Siniestro creado correctamente.');
     }
 
+    $id             = $this->editId ?? null;
     $this->showForm = false;
     $this->reset('form');
     $this->form['costo']    = 0;
     $this->form['usuarios'] = [];
     $this->editId           = null;
+
+    // Si se inició edición desde el detalle, redirigir
+    if ($this->returnToDetalle && $id) {
+      return redirect()->route('siniestros.detalle', ['id' => $id]);
+    }
   }
 
   public function editarSiniestro($id)
