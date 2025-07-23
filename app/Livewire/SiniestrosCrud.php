@@ -235,7 +235,7 @@ class SiniestrosCrud extends Component
       $query->where('unidad_id', $this->filtro_unidad);
     }
     if ($this->filtro_tipo) {
-      $query->where('tipo', $this->filtro_tipo);
+      $query->where('tipo_siniestro', $this->filtro_tipo);
     }
     if ($this->filtro_fecha_inicio) {
       $query->whereDate('fecha', '>=', $this->filtro_fecha_inicio);
