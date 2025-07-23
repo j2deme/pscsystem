@@ -116,8 +116,9 @@
               class="w-full bg-white dark:bg-gray-800 border {{ $borderColor }} rounded-lg shadow p-4 flex flex-col gap-2 min-h-[80px]">
               @if($hasTipo)
               <div class="flex items-center gap-2">
-                <span class="font-semibold text-base">{{ $tipos[$form['tipo']]['label'] ?? $form['tipo'] }}</span>
-                <span class="inline-block px-2 py-1 rounded border text-xs font-semibold {{ $badgeColor }}">
+                <span class="font-semibold text-base flex-1">{{ $tipos[$form['tipo']]['label'] ?? $form['tipo']
+                  }}</span>
+                <span class="inline-block px-2 py-1 rounded border text-xs font-semibold {{ $badgeColor }} ml-auto">
                   {{ ucfirst($tipos[$form['tipo']]['gravedad'] ?? 'No especificada') }}
                 </span>
               </div>
