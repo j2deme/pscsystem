@@ -43,22 +43,37 @@
             <i class="ti ti-car"></i> Unidad
           </div>
           @if($unidad)
-          <dl class="space-y-1 text-gray-700 dark:text-gray-200">
-            <div>
-              <dt class="inline font-semibold">Placas:</dt>
-              <dd class="inline ml-1">{{ $unidad->placas }}</dd>
+          <div class="flex flex-col justify-between h-full min-h-[170px]">
+            <div class="flex flex-col items-center gap-2 pt-2">
+              <div
+                class="inline-block px-6 py-2 font-mono text-3xl font-extrabold tracking-widest text-blue-900 bg-white border-2 border-blue-400 rounded-md shadow-md"
+                style="letter-spacing:2.5px;min-width:140px;">
+                {{ $unidad->placas }}
+              </div>
+              <!-- Marca y modelo en una sola línea -->
+              <div class="mt-2 text-base font-medium text-gray-700 dark:text-gray-200">
+                {{ $unidad->marca }} <span class="mx-1 text-gray-400">|</span> {{ $unidad->modelo }}
+              </div>
             </div>
-            <div>
-              <dt class="inline font-semibold">Marca:</dt>
-              <dd class="inline ml-1">{{ $unidad->marca }}</dd>
+            <!-- Fila inferior para el botón -->
+            <div class="flex items-center justify-end w-full mt-4">
+              <a href="{{ route('vehiculos.detalle', ['id' => $unidad->unidad_id ?? $unidad->id]) }}"
+                class="inline-flex items-center gap-2 px-5 py-2 text-base text-white bg-blue-400 rounded-lg shadow-lg hover:bg-blue-500"
+                title="Ver detalle del vehículo">
+                <i class="ti ti-car"></i> Ver vehículo
+              </a>
             </div>
-            <div>
-              <dt class="inline font-semibold">Modelo:</dt>
-              <dd class="inline ml-1">{{ $unidad->modelo }}</dd>
-            </div>
-          </dl>
+          </div>
           @else
-          <span class="text-gray-400">Sin unidad</span>
+          <div
+            class="flex flex-col items-center justify-center h-[170px] bg-blue-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-blue-200 p-4">
+            <span
+              class="inline-flex items-center justify-center w-16 h-16 mb-2 text-4xl text-blue-300 bg-blue-100 rounded-full">
+              <i class="ti ti-car-off"></i>
+            </span>
+            <div class="text-lg font-semibold text-blue-400">Sin unidad referenciada</div>
+            <div class="text-sm text-gray-400">No se ha asignado un vehículo a este siniestro</div>
+          </div>
           @endif
         </div>
         <!-- Card: Elementos involucrados -->
@@ -101,7 +116,15 @@
           </ul>
           @endif
           @else
-          <span class="text-gray-400">Sin personal</span>
+          <div
+            class="flex flex-col items-center justify-center h-[170px] bg-blue-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-blue-200 p-4">
+            <span
+              class="inline-flex items-center justify-center w-16 h-16 mb-2 text-4xl text-blue-300 bg-blue-100 rounded-full">
+              <i class="ti ti-user-off"></i>
+            </span>
+            <div class="text-lg font-semibold text-blue-400">Sin elementos referenciados</div>
+            <div class="text-sm text-gray-400">No se ha asignado personal a este siniestro</div>
+          </div>
           @endif
         </div>
       </div>
