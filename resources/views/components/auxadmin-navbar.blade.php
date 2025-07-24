@@ -41,7 +41,7 @@
         ],
         [
             'titulo' => 'Cédulas',
-            'ruta' => '#',
+            'ruta' => route('aux.cedulasForm'),
             'icono' => 'file-text',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
         ],
