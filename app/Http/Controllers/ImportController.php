@@ -92,13 +92,15 @@ class ImportController extends Controller
     $importados = 0;
     $fallidos = 0;
 
+    Log::info('Inicio de importación de archivo rosa');
+
     try {
         $file = $request->file('excel');
         $spreadsheet = IOFactory::load($file->getRealPath());
         $sheet = $spreadsheet->getActiveSheet(0);
         $rows = $sheet->toArray();
 
-        foreach (array_slice($rows, 1) as $row) {
+        foreach (array_slice($rows, 1) as $index => $row) {
             try {
                 $primeraCelda = strtoupper(trim($row[0] ?? ''));
 
@@ -107,6 +109,7 @@ class ImportController extends Controller
                     str_starts_with($primeraCelda, 'ALTAS') ||
                     str_contains($primeraCelda, 'SIN MOVIMIENTOS')
                 ) {
+                    Log::info("Fila $index omitida (vacía o encabezado)");
                     continue;
                 }
 
@@ -173,17 +176,24 @@ class ImportController extends Controller
                 ]);
 
                 $importados++;
+                Log::info("Fila $index importada correctamente: $nombre $apellidoPaterno $apellidoMaterno");
+
             } catch (\Throwable $e) {
                 $fallidos++;
-                continue; // sigue con la siguiente fila
+                Log::error("Error en fila $index: " . $e->getMessage(), ['fila' => $row]);
+                continue;
             }
         }
 
         DB::commit();
 
+        Log::info("Importación completada. Importados: $importados, Fallidos: $fallidos");
+
         return back()->with('success', "Importación completada. Importados: $importados, Fallidos: $fallidos.");
+
     } catch (Exception $e) {
         DB::rollBack();
+        Log::error('Error general al importar archivo rosa: ' . $e->getMessage());
         return back()->with('error', 'Error al importar el archivo: ' . $e->getMessage());
     }
 }

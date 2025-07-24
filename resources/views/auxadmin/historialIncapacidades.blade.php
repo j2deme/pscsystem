@@ -5,7 +5,7 @@
         <div class="container mx-auto max-w-7xl">
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
                 <h1 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-6">
-                    Historial de Incapacidades
+                    Historial de Incapacidades.
                 </h1>
                 @livewire('historial-incapacidades')
             </div>

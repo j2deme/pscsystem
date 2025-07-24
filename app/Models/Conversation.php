@@ -14,9 +14,14 @@ class Conversation extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'conversation_user')
-            ->withPivot('last_read_at')
-            ->withTimestamps();
+        return $this->belongsToMany(
+            User::class,           // modelo relacionado
+            'conversation_user',   // tabla pivote
+            'conversation_id',     // clave foránea local (en la pivote)
+            'api_user_id'          // clave foránea del usuario (en la pivote)
+        )
+        ->withPivot('last_read_at')
+        ->withTimestamps();
     }
 
     public function messages()

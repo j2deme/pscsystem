@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\DocumentacionAltas;
+use App\Models\User;
 
 class SolicitudAlta extends Model
 {

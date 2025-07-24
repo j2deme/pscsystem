@@ -189,6 +189,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/actualizacion_documentacion/{id}', [AuxadminController::class, 'actualizarAcuses'])->name('documentacion.actualizar');
     Route::get('/confrontas', [AuxadminController::class, 'confrontasForm'])->name('aux.confrontas');
     Route::post('/confrontas-upload', [AuxadminController::class, 'confrontasUpload'])->name('confrontas.upload');
+
+    Route::get('/sipare', [App\Http\Controllers\SipareController::class, 'form'])->name('aux.sipareForm');
+    Route::post('/sipare/upload', [App\Http\Controllers\SipareController::class, 'upload'])->name('aux.sipareUpload');
     //nuevass rutas
     Route::get('/riesgos-trabajo', [RiesgoTrabajoController::class, 'index'])->name('aux.riesgosTrabajo');
     Route::get('/riesgos-trabajo/generar/{user}', [RiesgoTrabajoController::class, 'create'])->name('aux.generarRiesgoForm');
@@ -201,6 +204,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/aux/historial-incapacidades', [App\Http\Controllers\IncapacidadController::class, 'showIncapacidadesHistory'])->name('aux.historialIncapacidades');
     Route::get('/aux/historial-riesgos-trabajo', [App\Http\Controllers\RiesgoTrabajoController::class, 'showHistorialRiesgosTrabajo'])->name('aux.historialRiesgosTrabajo');
     Route::get('/reporte/incapacidades', [IncapacidadReporteController::class, 'generarPdf'])->name('reporte.incapacidades.pdf');
+    //graficas
+    Route::get('/graficos', [App\Http\Controllers\GraficosController::class, 'index'])->name('auxadmin.index');
+
 
     //Usuario nominas
     Route::get('/antiguedades', [NominasController::class, 'antiguedades'])->name('nominas.usersAntiguedades');

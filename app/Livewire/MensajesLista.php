@@ -53,7 +53,10 @@ class MensajesLista extends Component
 
         $conv = $existe ?: Conversation::create();
         if (!$existe) {
-            $conv->users()->attach([$usuarioId, auth()->id()]);
+            $conv->users()->attach([
+                $usuarioId => ['api_user_id' => $usuarioId],
+                auth()->id() => ['api_user_id' => auth()->id()],
+            ]);
         }
 
         $this->reset(['buscarUsuario', 'usuariosFiltrados', 'mostrarBuscador']);
