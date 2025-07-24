@@ -80,16 +80,16 @@ class User extends Authenticatable
     }
 
     public function conversations()
-{
-    return $this->belongsToMany(
-        Conversation::class,
-        'conversation_user',     // nombre tabla pivote
-        'api_user_id',           // FK hacia este modelo (User)
-        'conversation_id'        // FK hacia Conversation
-    )
-    ->withPivot('last_read_at')
-    ->withTimestamps();
-}
+    {
+        return $this->belongsToMany(
+            Conversation::class,
+            'conversation_user',        // nombre tabla pivote
+            'api_user_id',              // FK hacia este modelo (User)
+            'conversation_id'           // FK hacia Conversation
+        )
+            ->withPivot('last_read_at')
+            ->withTimestamps();
+    }
 
     public function messages()
     {
@@ -99,5 +99,10 @@ class User extends Authenticatable
     public function siniestros()
     {
         return $this->belongsToMany(\App\Models\Siniestro::class, 'siniestro_user', 'user_id', 'siniestro_id');
+    }
+
+    public function locations()
+    {
+        return $this->hasMany(Location::class);
     }
 }
