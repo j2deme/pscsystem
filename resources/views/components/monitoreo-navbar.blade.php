@@ -34,10 +34,9 @@ $cards = [
 ],
 [
 'titulo' => 'Siniestros',
-'ruta' => "#",
+'ruta' => route('siniestros.index'),
 'icono' => 'car-crash',
 'color' => 'bg-red-100 dark:bg-red-700',
-'disabled' => true,
 ],
 [
 'titulo' => 'Documentación de Usuarios',

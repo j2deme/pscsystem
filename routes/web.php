@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RiesgoTrabajoController;
 use App\Http\Controllers\IncapacidadController;
 use App\Http\Controllers\IncapacidadReporteController;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -172,10 +173,14 @@ Route::middleware('auth')->group(function () {
     })->name('vehiculos.detalle');
 
     // Servicios CRUD (Livewire)
-    Route::get('/servicios', App\Livewire\ServiciosCrud::class)->name('servicios.index');
+    Route::get('/servicios', \App\Livewire\ServiciosCrud::class)->name('servicios.index');
     // Detalle de Servicio (Livewire)
-    Route::get('/servicios/{id}', App\Livewire\ServicioDetalle::class)->name('servicio.detalle');
+    Route::get('/servicios/{id}', \App\Livewire\ServicioDetalle::class)->name('servicio.detalle');
 
+    // Siniestros CRUD (Livewire)
+    Route::get('/siniestros', \App\Livewire\SiniestrosCrud::class)->name('siniestros.index');
+    // Detalle del Siniestro (Livewire)
+    Route::get('/siniestros/{id}', \App\Livewire\SiniestroDetalle::class)->name('siniestros.detalle');
 
     //Usuario Aux Admin
     Route::get('/nuevas_altas_elementos', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');

@@ -18,15 +18,15 @@ $servicio = $servicio ?? null;
                 <div class="space-y-2 text-gray-700 dark:text-gray-200">
                     <dl class="space-y-1">
                         <div>
-                            <dt class="font-semibold inline">Placas:</dt>
+                            <dt class="inline font-semibold">Placas:</dt>
                             <dd class="inline ml-1">{{ $unidad['placas'] }}</dd>
                         </div>
                         <div>
-                            <dt class="font-semibold inline">Marca:</dt>
+                            <dt class="inline font-semibold">Marca:</dt>
                             <dd class="inline ml-1">{{ $unidad['marca'] }}</dd>
                         </div>
                         <div>
-                            <dt class="font-semibold inline">Modelo:</dt>
+                            <dt class="inline font-semibold">Modelo:</dt>
                             <dd class="inline ml-1">{{ $unidad['modelo'] }}</dd>
                         </div>
                     </dl>
@@ -54,7 +54,7 @@ $servicio = $servicio ?? null;
                     @endphp
                     <dl class="space-y-1">
                         <div>
-                            <dt class="font-semibold inline">Tipo:</dt>
+                            <dt class="inline font-semibold">Tipo:</dt>
                             <dd class="inline ml-1">
                                 <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold {{ $color }}">
                                     <i
@@ -64,18 +64,18 @@ $servicio = $servicio ?? null;
                             </dd>
                         </div>
                         <div>
-                            <dt class="font-semibold inline">Fecha:</dt>
+                            <dt class="inline font-semibold">Fecha:</dt>
                             <dd class="inline ml-1">{{ $servicio->fecha->format('d/m/Y') }}</dd>
                         </div>
                         @if(!empty($servicio->responsable))
                         <div>
-                            <dt class="font-semibold inline">Lugar de reparación:</dt>
+                            <dt class="inline font-semibold">Lugar de reparación:</dt>
                             <dd class="inline ml-1">{{ $servicio->responsable }}</dd>
                         </div>
                         @endif
                         @if(!empty($servicio->costo) && $servicio->costo > 0)
                         <div>
-                            <dt class="font-semibold inline">Costo:</dt>
+                            <dt class="inline font-semibold">Costo:</dt>
                             <dd class="inline ml-1">${{ number_format($servicio->costo, 2) }}</dd>
                         </div>
                         @endif
@@ -93,7 +93,7 @@ $servicio = $servicio ?? null;
         <div class="grid max-w-5xl grid-cols-1 gap-6 mx-auto mt-8 md:grid-cols-2">
             <!-- Columna 1: Descripción -->
             @if(!empty($servicio->observaciones))
-            <div class="p-6 bg-gray-50 shadow-md rounded-xl dark:bg-gray-900">
+            <div class="p-6 shadow-md bg-gray-50 rounded-xl dark:bg-gray-900">
                 <div class="flex items-center gap-2 mb-2 font-bold text-blue-700 dark:text-blue-300">
                     <i class="text-lg ti ti-file-description"></i>
                     Descripción
@@ -104,7 +104,7 @@ $servicio = $servicio ?? null;
                 </div>
             </div>
             <!-- Columna 2: Observaciones -->
-            <div class="p-6 bg-gray-50 shadow-md rounded-xl dark:bg-gray-900">
+            <div class="p-6 shadow-md bg-gray-50 rounded-xl dark:bg-gray-900">
                 <div class="flex items-center gap-2 mb-2 font-bold text-blue-700 dark:text-blue-300">
                     <i class="text-lg ti ti-message-dots"></i>
                     Observaciones
@@ -115,7 +115,7 @@ $servicio = $servicio ?? null;
                 </div>
             </div>
             @else
-            <div class="p-6 bg-gray-50 shadow-md rounded-xl dark:bg-gray-900 md:col-span-2">
+            <div class="p-6 shadow-md bg-gray-50 rounded-xl dark:bg-gray-900 md:col-span-2">
                 <div class="flex items-center gap-2 mb-2 font-bold text-blue-700 dark:text-blue-300">
                     <i class="text-lg ti ti-file-description"></i>
                     Descripción
@@ -129,21 +129,21 @@ $servicio = $servicio ?? null;
         </div>
         <!-- Bitácora de servicios de la unidad -->
         <div class="max-w-5xl mx-auto mt-8">
-            <div class="mb-4 text-lg font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2">
+            <div class="flex items-center gap-2 mb-4 text-lg font-bold text-blue-700 dark:text-blue-300">
                 <i class="ti ti-timeline"></i> Bitácora de servicios de la unidad
             </div>
-            <div class="flex flex-col md:flex-row items-center justify-center gap-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full items-stretch">
+            <div class="flex flex-col items-center justify-center gap-6 md:flex-row">
+                <div class="grid items-stretch w-full grid-cols-1 gap-6 md:grid-cols-3">
                     <!-- Servicio más reciente (siguiente) -->
                     <div class="flex flex-col items-center w-full">
-                        <div class="text-xs text-gray-500 mb-1">Servicio siguiente</div>
+                        <div class="mb-1 text-xs text-gray-500">Servicio siguiente</div>
                         @if($servicioSiguiente)
                         <div
                             class="flex flex-col items-center p-4 rounded-xl border shadow-lg {{ $estilos[$servicioSiguiente->tipo]['border'] }} {{ $estilos[$servicioSiguiente->tipo]['bg'] }} w-full">
-                            <div class="flex flex-col items-center mb-2 w-full relative">
+                            <div class="relative flex flex-col items-center w-full mb-2">
                                 <!-- Fecha en la esquina superior derecha -->
                                 <div
-                                    class="absolute top-0 right-0 flex items-center gap-1 text-blue-600 dark:text-blue-300 text-xs font-semibold">
+                                    class="absolute top-0 right-0 flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-300">
                                     <i class="ti ti-calendar"></i>
                                     {{ $servicioSiguiente->fecha->format('d/m/Y') }}
                                 </div>
@@ -157,29 +157,29 @@ $servicio = $servicio ?? null;
                                 class="inline-block px-4 py-1 rounded-full text-sm font-semibold {{ $estilos[$servicioSiguiente->tipo]['badge'] }} mb-2">
                                 {{ $servicioSiguiente->tipo }}
                             </span>
-                            <div class="mt-1 text-sm text-gray-700 dark:text-gray-200 text-center break-words max-w-full"
+                            <div class="max-w-full mt-1 text-sm text-center text-gray-700 break-words dark:text-gray-200"
                                 title="{{ $servicioSiguiente->descripcion }}"
                                 style="max-width: 100%; overflow-wrap: break-word;">
                                 {{ \Illuminate\Support\Str::limit($servicioSiguiente->descripcion, 60) }}
                             </div>
                             <a href="{{ route('servicio.detalle', ['id' => $servicioSiguiente->id]) }}"
-                                class="mt-2 text-xs text-blue-500 hover:underline flex items-center gap-1">
+                                class="flex items-center gap-1 mt-2 text-xs text-blue-500 hover:underline">
                                 <i class="ti ti-arrow-left"></i> Ver detalle
                             </a>
                         </div>
                         @else
                         <div
-                            class="flex flex-col items-center p-4 rounded-xl border border-gray-200 bg-gray-50 w-full shadow-sm">
+                            class="flex flex-col items-center w-full p-4 border border-gray-200 shadow-sm rounded-xl bg-gray-50">
                             <div class="flex flex-col items-center mb-2">
                                 <div
-                                    class="w-12 h-12 flex items-center justify-center rounded-full bg-white shadow border-2 border-gray-300 mb-2">
-                                    <i class="text-2xl ti ti-clock text-gray-400"></i>
+                                    class="flex items-center justify-center w-12 h-12 mb-2 bg-white border-2 border-gray-300 rounded-full shadow">
+                                    <i class="text-2xl text-gray-400 ti ti-clock"></i>
                                 </div>
                             </div>
                             <span
-                                class="inline-block px-4 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-500 mb-2">Sin
+                                class="inline-block px-4 py-1 mb-2 text-sm font-semibold text-gray-500 bg-gray-100 rounded-full">Sin
                                 registro</span>
-                            <div class="mt-1 text-sm text-gray-400 text-center">No hay servicios más recientes
+                            <div class="mt-1 text-sm text-center text-gray-400">No hay servicios más recientes
                                 registrados.</div>
                         </div>
                         @endif
@@ -189,9 +189,9 @@ $servicio = $servicio ?? null;
                         <div
                             class="flex flex-col items-center p-4 rounded-xl border-2 shadow-2xl mx-2 {{ $estilos[$servicio->tipo]['border'] }} {{ $estilos[$servicio->tipo]['bg'] }} w-full">
                             <!-- Fila superior con fecha alineada a la derecha -->
-                            <div class="flex w-full justify-end items-center mb-1">
+                            <div class="flex items-center justify-end w-full mb-1">
                                 <span
-                                    class="flex items-center gap-1 text-blue-700 dark:text-blue-300 text-sm font-bold top-0 right-0">
+                                    class="top-0 right-0 flex items-center gap-1 text-sm font-bold text-blue-700 dark:text-blue-300">
                                     <i class="ti ti-calendar"></i>
                                     {{ $servicio->fecha->format('d/m/Y') }}
                                 </span>
@@ -207,7 +207,7 @@ $servicio = $servicio ?? null;
                                 class="inline-block px-5 py-2 rounded-full text-base font-bold {{ $estilos[$servicio->tipo]['badge'] }} mb-2">
                                 {{ $servicio->tipo }}
                             </span>
-                            <div class="mt-1 text-base text-gray-800 dark:text-gray-100 text-center break-words max-w-full"
+                            <div class="max-w-full mt-1 text-base text-center text-gray-800 break-words dark:text-gray-100"
                                 title="{{ $servicio->descripcion }}"
                                 style="max-width: 100%; overflow-wrap: break-word;">
                                 {{ $servicio->descripcion }}
@@ -216,13 +216,13 @@ $servicio = $servicio ?? null;
                     </div>
                     <!-- Servicio más antiguo (previo) -->
                     <div class="flex flex-col items-center w-full">
-                        <div class="text-xs text-gray-500 mb-1">Servicio anterior</div>
+                        <div class="mb-1 text-xs text-gray-500">Servicio anterior</div>
                         @if($servicioPrevio)
                         <div
                             class="flex flex-col items-center p-4 rounded-xl border shadow-lg {{ $estilos[$servicioPrevio->tipo]['border'] }} {{ $estilos[$servicioPrevio->tipo]['bg'] }} w-full">
-                            <div class="flex flex-col items-center mb-2 w-full relative">
+                            <div class="relative flex flex-col items-center w-full mb-2">
                                 <div
-                                    class="absolute top-0 right-0 flex items-center gap-1 text-blue-600 dark:text-blue-300 text-xs font-semibold">
+                                    class="absolute top-0 right-0 flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-300">
                                     <i class="ti ti-calendar"></i>
                                     {{ $servicioPrevio->fecha->format('d/m/Y') }}
                                 </div>
@@ -236,29 +236,29 @@ $servicio = $servicio ?? null;
                                 class="inline-block px-4 py-1 rounded-full text-sm font-semibold {{ $estilos[$servicioPrevio->tipo]['badge'] }} mb-2">
                                 {{ $servicioPrevio->tipo }}
                             </span>
-                            <div class="mt-1 text-sm text-gray-700 dark:text-gray-200 text-center break-words max-w-full"
+                            <div class="max-w-full mt-1 text-sm text-center text-gray-700 break-words dark:text-gray-200"
                                 title="{{ $servicioPrevio->descripcion }}"
                                 style="max-width: 100%; overflow-wrap: break-word;">
                                 {{ \Illuminate\Support\Str::limit($servicioPrevio->descripcion, 60) }}
                             </div>
                             <a href="{{ route('servicio.detalle', ['id' => $servicioPrevio->id]) }}"
-                                class="mt-2 text-xs text-blue-500 hover:underline flex items-center gap-1">
+                                class="flex items-center gap-1 mt-2 text-xs text-blue-500 hover:underline">
                                 Ver detalle <i class="ti ti-arrow-right"></i>
                             </a>
                         </div>
                         @else
                         <div
-                            class="flex flex-col items-center p-4 rounded-xl border border-gray-200 bg-gray-50 w-full shadow-sm">
+                            class="flex flex-col items-center w-full p-4 border border-gray-200 shadow-sm rounded-xl bg-gray-50">
                             <div class="flex flex-col items-center mb-2">
                                 <div
-                                    class="w-12 h-12 flex items-center justify-center rounded-full bg-white shadow border-2 border-gray-300 mb-2">
-                                    <i class="text-2xl ti ti-clock text-gray-400"></i>
+                                    class="flex items-center justify-center w-12 h-12 mb-2 bg-white border-2 border-gray-300 rounded-full shadow">
+                                    <i class="text-2xl text-gray-400 ti ti-clock"></i>
                                 </div>
                             </div>
                             <span
-                                class="inline-block px-4 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-500 mb-2">Sin
+                                class="inline-block px-4 py-1 mb-2 text-sm font-semibold text-gray-500 bg-gray-100 rounded-full">Sin
                                 registro</span>
-                            <div class="mt-1 text-sm text-gray-400 text-center">No hay servicios anteriores
+                            <div class="mt-1 text-sm text-center text-gray-400">No hay servicios anteriores
                                 registrados.
                             </div>
                         </div>

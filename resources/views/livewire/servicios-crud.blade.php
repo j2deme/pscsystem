@@ -222,8 +222,7 @@
                                 </a>
                                 @endif
                             </td>
-                            <td class="px-4 py-2 text-center">{{
-                                \Carbon\Carbon::parse($servicio->fecha)->format('d-m-Y') }}</td>
+                            <td class="px-4 py-2 text-center">{{ $servicio->fecha->format('d-m-Y') }}</td>
                             <td class="px-4 py-2">
                                 <button type="button"
                                     class="block max-w-xs truncate cursor-pointer hover:underline text-left w-full bg-transparent border-none p-0"
