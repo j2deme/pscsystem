@@ -192,6 +192,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/sipare', [App\Http\Controllers\SipareController::class, 'form'])->name('aux.sipareForm');
     Route::post('/sipare/upload', [App\Http\Controllers\SipareController::class, 'upload'])->name('aux.sipareUpload');
+
+   Route::get('/cedulas', [App\Http\Controllers\CedulaController::class,'form'])->name('aux.cedulasForm');
+   Route::post('/cedulas/upload/{tipo}', [App\Http\Controllers\CedulaController::class,'upload'])->name('aux.cedulasupload');
+
+
     //nuevass rutas
     Route::get('/riesgos-trabajo', [RiesgoTrabajoController::class, 'index'])->name('aux.riesgosTrabajo');
     Route::get('/riesgos-trabajo/generar/{user}', [RiesgoTrabajoController::class, 'create'])->name('aux.generarRiesgoForm');
