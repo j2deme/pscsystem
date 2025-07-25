@@ -165,22 +165,21 @@ class ServiciosCrud extends Component
 
     public function render()
     {
-        $query = Servicio::query();
+        $query = Servicio::query()
+            ->when($this->filtro_unidad, function ($query) {
+                $query->where('unidad_id', $this->filtro_unidad);
+            })
+            ->when($this->filtro_tipo, function ($query) {
+                $query->where('tipo', $this->filtro_tipo);
+            })
+            ->when($this->filtro_fecha_inicio, function ($query) {
+                $query->whereDate('fecha', '>=', $this->filtro_fecha_inicio);
+            })
+            ->when($this->filtro_fecha_fin, function ($query) {
+                $query->whereDate('fecha', '<=', $this->filtro_fecha_fin);
+            })
+            ->orderByDesc('fecha');
 
-        if ($this->filtro_unidad) {
-            $query->where('unidad_id', $this->filtro_unidad);
-        }
-
-        if ($this->filtro_tipo) {
-            $query->where('tipo', $this->filtro_tipo);
-        }
-
-        if ($this->filtro_fecha_inicio) {
-            $query->whereDate('fecha', '>=', $this->filtro_fecha_inicio);
-        }
-        if ($this->filtro_fecha_fin) {
-            $query->whereDate('fecha', '<=', $this->filtro_fecha_fin);
-        }
 
         $servicios = $query->orderByDesc('fecha')->paginate($this->perPage);
 
