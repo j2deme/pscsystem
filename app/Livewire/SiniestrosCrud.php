@@ -185,20 +185,12 @@ class SiniestrosCrud extends Component
 
   public function render()
   {
-    $query = Siniestro::query();
-
-    if ($this->filtro_unidad) {
-      $query->where('unidad_id', $this->filtro_unidad);
-    }
-    if ($this->filtro_tipo) {
-      $query->where('tipo_siniestro', $this->filtro_tipo);
-    }
-    if ($this->filtro_fecha_inicio) {
-      $query->whereDate('fecha', '>=', $this->filtro_fecha_inicio);
-    }
-    if ($this->filtro_fecha_fin) {
-      $query->whereDate('fecha', '<=', $this->filtro_fecha_fin);
-    }
+    $query = Siniestro::query()
+      ->when($this->filtro_unidad, fn($q) => $q->where('unidad_id', $this->filtro_unidad))
+      ->when($this->filtro_tipo, fn($q) => $q->where('tipo_siniestro', $this->filtro_tipo))
+      ->when($this->filtro_fecha_inicio, fn($q) => $q->whereDate('fecha', '>=', $this->filtro_fecha_inicio))
+      ->when($this->filtro_fecha_fin, fn($q) => $q->whereDate('fecha', '<=', $this->filtro_fecha_fin))
+      ->orderByDesc('fecha');
 
     $siniestros = $query->orderByDesc('fecha')->paginate($this->perPage);
 
