@@ -164,7 +164,7 @@ class SiniestrosCrud extends Component
     $this->form     = [
       'tipo_siniestro' => $siniestro->tipo_siniestro,
       'unidad_id' => $siniestro->unidad_id,
-      'fecha' => $siniestro->fecha ? $siniestro->fecha->format('Y-m-d') : '',
+      'fecha' => optional($siniestro->fecha)->format('Y-m-d'),
       'tipo' => $siniestro->tipo,
       'zona' => $siniestro->zona,
       'descripcion' => $siniestro->descripcion,
@@ -192,7 +192,7 @@ class SiniestrosCrud extends Component
       ->when($this->filtro_fecha_fin, fn($q) => $q->whereDate('fecha', '<=', $this->filtro_fecha_fin))
       ->orderByDesc('fecha');
 
-    $siniestros = $query->orderByDesc('fecha')->paginate($this->perPage);
+    $siniestros = $query->paginate($this->perPage);
 
     $tiposVehiculo = $this->getTiposVehiculo();
     $tiposPersonal = $this->getTiposPersonal();
