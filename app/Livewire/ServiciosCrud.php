@@ -87,10 +87,10 @@ class ServiciosCrud extends Component
         $this->form['costo'] = 0;
         // Si se inició edición desde el detalle, redirigir
         if ($this->returnToDetalle && $this->editId) {
-            return redirect()->route('servicios.detalle', ['id' => $this->editId]);
+            return redirect()->route('servicio.detalle', ['id' => $this->editId]);
         }
         if ($this->returnToDetalle && request()->has('editar')) {
-            return redirect()->route('servicios.detalle', ['id' => request()->input('editar')]);
+            return redirect()->route('servicio.detalle', ['id' => request()->input('editar')]);
         }
     }
 
@@ -138,7 +138,7 @@ class ServiciosCrud extends Component
         $servicio       = Servicio::findOrFail($id);
         $this->form     = [
             'unidad_id' => $servicio->unidad_id,
-            'fecha' => $servicio->fecha,
+            'fecha' => optional($servicio->fecha)->format('Y-m-d'),
             'descripcion' => $servicio->descripcion,
             'costo' => $servicio->costo,
             'responsable' => $servicio->responsable,
@@ -181,7 +181,7 @@ class ServiciosCrud extends Component
             ->orderByDesc('fecha');
 
 
-        $servicios = $query->orderByDesc('fecha')->paginate($this->perPage);
+        $servicios = $query->paginate($this->perPage);
 
         $data = [
             'breadcrumbItems' => [

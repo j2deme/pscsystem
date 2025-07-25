@@ -34,7 +34,7 @@
 
             <form wire:submit.prevent="save" class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
                 <!-- 1a fila: Placa, Tipo de Servicio y Fecha -->
-                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-3">
                     <div>
                         <label class="block text-gray-700 dark:text-gray-200" for="placa-select">Placas de la
                             unidad</label>
@@ -72,7 +72,7 @@
                     </div>
                 </div>
                 <!-- 2a fila: Costo y Responsable/Taller -->
-                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
                     <div>
                         <label class="block text-gray-700 dark:text-gray-200" for="costo-input">Costo</label>
                         <div class="relative">
@@ -81,7 +81,7 @@
                                 <i class="ti ti-currency-dollar"></i>
                             </span>
                             <input type="number" id="costo-input" step="0.01" wire:model.defer="form.costo"
-                                class="w-full h-10 pl-9 pr-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                                class="w-full h-10 pr-3 transition-all duration-150 bg-white border border-gray-300 rounded-lg pl-9 form-input focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
                                 placeholder="0.00">
                         </div>
                         @error('form.costo')<span class="text-xs text-red-500">{{ $message }}</span>@enderror
@@ -101,7 +101,7 @@
                     </div>
                 </div>
                 <!-- Descripción y Observaciones en una sola fila -->
-                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 gap-4 md:col-span-2 md:grid-cols-2">
                     <div>
                         <label class="block text-gray-700 dark:text-gray-200" for="descripcion-input">Descripción del
                             servicio</label>
@@ -130,9 +130,9 @@
                 </div>
             </form>
             @else
-            <div class="flex justify-between items-center mb-4">
-                <div class="flex flex-wrap items-center gap-4 w-full">
-                    <div class="flex gap-4 w-full">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex flex-wrap items-center w-full gap-4">
+                    <div class="flex w-full gap-4">
                         <div>
                             <label for="perPage" class="mr-2 text-gray-700 dark:text-gray-200">Mostrar:</label>
                             <select wire:model.live="perPage" id="perPage" class="px-2 py-1 rounded form-select">
@@ -152,7 +152,7 @@
                         </div>
                     </div>
                     <!-- Filtros de fecha en segunda fila -->
-                    <div class="flex gap-4 w-full mt-1">
+                    <div class="flex w-full gap-4 mt-1">
                         <div>
                             <label for="filtro_unidad" class="mr-2 text-gray-700 dark:text-gray-200">Filtrar por
                                 unidad:</label>
@@ -205,19 +205,19 @@
                     </thead>
                     <tbody>
                         @forelse ($servicios as $servicio)
-                        <tr class="border-t">
+                        <tr class="border-t" wire:key='servicio-{{ $servicio->id }}'>
                             <td class="px-4 py-2">
                                 @php
                                 $unidad = collect($placasDisponibles)->firstWhere('unidad_id', $servicio->unidad_id);
                                 @endphp
                                 @if($unidad)
                                 <a href="{{ route('vehiculos.detalle', ['id' => $servicio->unidad_id]) }}"
-                                    class="transition text-gray-800 hover:text-blue-600 hover:underline font-semibold">
+                                    class="font-semibold text-gray-800 transition hover:text-blue-600 hover:underline">
                                     {{ $unidad['numero'] }}: {{ $unidad['marca'] }} ({{ $unidad['modelo'] }})
                                 </a>
                                 @else
                                 <a href="{{ route('vehiculos.detalle', ['id' => $servicio->unidad_id]) }}"
-                                    class="transition text-gray-800 hover:text-blue-600 hover:underline font-semibold">
+                                    class="font-semibold text-gray-800 transition hover:text-blue-600 hover:underline">
                                     Unidad #{{ $servicio->unidad_id }}
                                 </a>
                                 @endif
@@ -225,7 +225,7 @@
                             <td class="px-4 py-2 text-center">{{ $servicio->fecha->format('d-m-Y') }}</td>
                             <td class="px-4 py-2">
                                 <button type="button"
-                                    class="block max-w-xs truncate cursor-pointer hover:underline text-left w-full bg-transparent border-none p-0"
+                                    class="block w-full max-w-xs p-0 text-left truncate bg-transparent border-none cursor-pointer hover:underline"
                                     title="{{ $servicio->descripcion }}" onclick="showDescModal(this)"
                                     data-desc="{{ $servicio->descripcion }}">
                                     {{ $servicio->descripcion }}
@@ -273,15 +273,15 @@
                             <td colspan="5" class="px-4 py-8 text-center">
                                 <div class="flex flex-col items-center justify-center gap-4 py-8">
                                     <span
-                                        class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100">
-                                        <i class="ti ti-tool text-4xl text-gray-400"></i>
+                                        class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full">
+                                        <i class="text-4xl text-gray-400 ti ti-tool"></i>
                                     </span>
                                     <span class="text-lg font-semibold text-gray-700">No hay servicios
                                         registrados</span>
                                     <span class="text-sm text-gray-500">Agrega un nuevo servicio para comenzar a
                                         gestionar el historial de reparaciones y servicios.</span>
                                     <button wire:click="showCreateForm" type="button"
-                                        class="mt-2 px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-2">
+                                        class="flex items-center gap-2 px-5 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700">
                                         <i class="ti ti-plus"></i>
                                         Agregar servicio
                                     </button>
@@ -293,11 +293,11 @@
                     <tfoot>
                         @if($servicios->sum('costo') > 0)
                         <tr>
-                            <td colspan="3" class="px-4 py-2 text-right font-bold text-gray-700 dark:text-gray-200">
+                            <td colspan="3" class="px-4 py-2 font-bold text-right text-gray-700 dark:text-gray-200">
                                 TOTAL
                             </td>
                             <td
-                                class="px-4 py-2 text-right font-bold text-gray-700 dark:text-gray-200 border-b-blue-500 border-b-2">
+                                class="px-4 py-2 font-bold text-right text-gray-700 border-b-2 dark:text-gray-200 border-b-blue-500">
                                 ${{ number_format($servicios->sum('costo'), 2) }}
                             </td>
                             <td></td>
@@ -306,27 +306,27 @@
                         @endif
                     </tfoot>
                 </table>
-                <div class="mt-4">
+                <div class="mt-4" wire:key="paginacion-{{ md5($servicios->toJson()) }}" wire:ignore>
                     @if($servicios->hasPages())
-                    {{ $servicios->links() }}
+                    {{ $servicios->withQueryString()->links('vendor.pagination.tailwind') }}
                     @endif
                 </div>
             </div>
             @endif
             <!-- Modal para mostrar descripción completa -->
             <div id="modalDesc"
-                class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+                class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-40">
                 <div
-                    class="bg-white dark:bg-gray-900 rounded-xl shadow-lg max-w-md w-full p-6 relative border border-gray-200 dark:border-gray-700">
+                    class="relative w-full max-w-md p-6 bg-white border border-gray-200 shadow-lg dark:bg-gray-900 rounded-xl dark:border-gray-700">
                     <button type="button" id="closeDescModalBtn"
-                        class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                        class="absolute text-gray-500 top-3 right-3 hover:text-gray-700 dark:hover:text-gray-300"
                         title="Cerrar">
                         <i class="ti ti-x"></i>
                     </button>
-                    <div class="mb-4 text-lg font-bold text-blue-700 dark:text-blue-300 flex items-center gap-2">
+                    <div class="flex items-center gap-2 mb-4 text-lg font-bold text-blue-700 dark:text-blue-300">
                         <i class="ti ti-file-description"></i> Descripción completa
                     </div>
-                    <div class="text-gray-800 dark:text-gray-200 whitespace-pre-line text-base" id="modalDescText">
+                    <div class="text-base text-gray-800 whitespace-pre-line dark:text-gray-200" id="modalDescText">
                     </div>
                 </div>
             </div>
