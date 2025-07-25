@@ -237,4 +237,14 @@ class SiniestrosCrud extends Component
   {
     $this->resetPage();
   }
+
+  public function updatingFiltroFechaInicio()
+  {
+    $this->resetPage();
+  }
+
+  public function updatingFiltroFechaFin()
+  {
+    $this->resetPage();
+  }
 }
