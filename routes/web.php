@@ -22,6 +22,10 @@ use App\Http\Controllers\IncapacidadController;
 use App\Http\Controllers\IncapacidadReporteController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CedulaController;
+use App\Http\Controllers\SipareController;
+use App\Http\Controllers\GraficosController;
+use App\Http\Controllers\BajaAcuseController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -138,7 +142,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/descargar-vacaciones-cortes', function () {
         $inicio = request()->query('inicio');
         $fin    = request()->query('fin');
-        return (new App\Exports\VacacionesCortesExport())->generateFile($inicio, $fin);
+        return (new VacacionesCortesExport())->generateFile($inicio, $fin);
     })->name('exportar.vacacionesCortes');
 
     Route::get('/exportar-asistencias', function () {
@@ -190,12 +194,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/confrontas', [AuxadminController::class, 'confrontasForm'])->name('aux.confrontas');
     Route::post('/confrontas-upload', [AuxadminController::class, 'confrontasUpload'])->name('confrontas.upload');
 
-    Route::get('/sipare', [App\Http\Controllers\SipareController::class, 'form'])->name('aux.sipareForm');
-    Route::post('/sipare/upload', [App\Http\Controllers\SipareController::class, 'upload'])->name('aux.sipareUpload');
+    Route::get('/sipare', [SipareController::class, 'form'])->name('aux.sipareForm');
+    Route::post('/sipare/upload', [SipareController::class, 'upload'])->name('aux.sipareUpload');
 
-   Route::get('/cedulas', [App\Http\Controllers\CedulaController::class,'form'])->name('aux.cedulasForm');
-   Route::post('/cedulas/upload/{tipo}', [App\Http\Controllers\CedulaController::class,'upload'])->name('aux.cedulasupload');
+    Route::get('/cedulas', [CedulaController::class, 'form'])->name('aux.cedulasForm');
+    Route::post('/cedulas/upload/{tipo}', [CedulaController::class, 'upload'])->name('aux.cedulasupload');
 
+   Route::get('/acuses-bajas', [BajaAcuseController::class, 'index'])->name('aux.acusesbajas');
+   Route::post('/acuses-bajas/{solicitudBaja}', [BajaAcuseController::class, 'upload'])->name('aux.acusesbajasupload');
 
     //nuevass rutas
     Route::get('/riesgos-trabajo', [RiesgoTrabajoController::class, 'index'])->name('aux.riesgosTrabajo');
@@ -206,11 +212,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/incapacidades/generar/{user}', [IncapacidadController::class, 'create'])->name('aux.generarIncapacidadForm');
     Route::post('/incapacidades/guardar', [IncapacidadController::class, 'store'])->name('aux.guardarIncapacidad');
     //historial incapacidades
-    Route::get('/aux/historial-incapacidades', [App\Http\Controllers\IncapacidadController::class, 'showIncapacidadesHistory'])->name('aux.historialIncapacidades');
-    Route::get('/aux/historial-riesgos-trabajo', [App\Http\Controllers\RiesgoTrabajoController::class, 'showHistorialRiesgosTrabajo'])->name('aux.historialRiesgosTrabajo');
+    Route::get('/aux/historial-incapacidades', [IncapacidadController::class, 'showIncapacidadesHistory'])->name('aux.historialIncapacidades');
+    Route::get('/aux/historial-riesgos-trabajo', [RiesgoTrabajoController::class, 'showHistorialRiesgosTrabajo'])->name('aux.historialRiesgosTrabajo');
     Route::get('/reporte/incapacidades', [IncapacidadReporteController::class, 'generarPdf'])->name('reporte.incapacidades.pdf');
     //graficas
-    Route::get('/graficos', [App\Http\Controllers\GraficosController::class, 'index'])->name('auxadmin.index');
+    Route::get('/graficos', [GraficosController::class, 'index'])->name('auxadmin.index');
 
 
     //Usuario nominas
@@ -255,8 +261,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/mensajes', [ChatWebController::class, 'index'])->name('mensajes.index');
     Route::get('/mensajes/{conversation}', [ChatWebController::class, 'show'])->name('mensajes.show');
     Route::post('/mensajes/enviar', [ChatWebController::class, 'storeMensaje'])->name('mensajes.store');
-
-
 });
 
 require __DIR__ . '/auth.php';

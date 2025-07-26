@@ -28,10 +28,10 @@
         ],
         [
             'titulo' => 'Acuses de Bajas',
-            'ruta' => '#',
+            'ruta' => route('aux.acusesbajas'),
             'icono' => 'trash',
             'color' => 'bg-red-100 dark:bg-red-700',
-            'disabled' => true,
+
         ],
         [
             'titulo' => 'Confrontas IMSS/INFONAVIT',
