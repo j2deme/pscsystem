@@ -64,9 +64,19 @@
           </div>
           @endforeach
           @else
-          <div class="p-3 rounded bg-gray-50 dark:bg-gray-700">
+          <div class="flex flex-col items-center justify-center p-5 rounded bg-gray-50 dark:bg-gray-700">
+            <div class="mb-3">
+              <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-600">
+                <i class="ti ti-clock-question text-3xl text-gray-500 dark:text-gray-300"></i>
+              </span>
+            </div>
             <p class="font-semibold text-gray-900 dark:text-white">No hay alertas recientes</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Las nuevas alertas aparecerán aquí</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 text-center">
+              Las alertas recientes aparecerán aquí.
+            </p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 text-center mt-2">
+              ¡Todo está tranquilo por ahora!
+            </p>
           </div>
           @endif
         </div>
