@@ -5,25 +5,73 @@ namespace App\Livewire;
 use Livewire\Component;
 use Carbon\Carbon;
 use App\Models\Location;
+use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\On;
 
 class MapaMonitoreo extends Component
 {
   public $totalAlertas = 0;
   public $alertasActivas = 0;
-  public $autoRefresh = true;
   public $alertasRecientes = [];
+  public $filtroGravedad = "todas";
+  public $filtroUsuario = '';
+  public $cargando = false;
 
   private $RECENT_SPAN = 30; // Minutos
   private $ACTIVE_SPAN = 300; // Antigüedad máxima para mostrar alertas activas (5 horas)
   private static $configuracionColoresCache = null;
 
+
   public function mount()
   {
+    $this->cargando = true;
     $this->actualizarDatos();
+  }
+
+  public function iniciarCarga()
+  {
+    $this->cargando = true;
+  }
+
+  public function finalizarCarga()
+  {
+    $this->cargando = false;
+  }
+
+  public function updatedFiltroGravedad()
+  {
+    $this->iniciarCarga();
+    $this->actualizarDatos();
+    $this->dispatch('alertasActualizadas', alertas: $this->alertasRecientes);
+  }
+
+  public function updatedFiltroUsuario()
+  {
+    $this->iniciarCarga();
+    $this->actualizarDatos();
+    $this->dispatch('alertasActualizadas', alertas: $this->alertasRecientes);
+  }
+
+  #[On('solicitarActualizacionCompleta')] // Para Livewire v3
+  // O para Livewire v2: /** @on('solicitarActualizacionCompleta') */
+  public function solicitarActualizacionCompleta()
+  {
+    Log::info("📡 Evento 'solicitarActualizacionCompleta' recibido desde el frontend. Iniciando actualización de datos.");
+
+    $this->cargando = true;
+    $this->actualizarDatos();
+    $this->dispatch('alertasActualizadas', alertas: $this->alertasRecientes);
+
+    Log::info("✅ Datos actualizados y evento 'alertasActualizadas' emitido desde solicitarActualizacionCompleta.");
+
+    $this->finalizarCarga();
   }
 
   private function actualizarDatos()
   {
+    if (!$this->cargando) {
+      $this->iniciarCarga();
+    }
     $locations = Location::with([
       'user' => function ($query) {
         $query->select(['id', 'name', 'punto']); // Asegúrate de incluir 'id' para la relación
@@ -31,6 +79,40 @@ class MapaMonitoreo extends Component
     ])
       ->select(['id', 'user_id', 'latitude', 'longitude', 'created_at'])
       ->where('created_at', '>=', Carbon::now()->subMinutes($this->ACTIVE_SPAN))
+      ->when($this->filtroGravedad !== 'todas', function ($query) {
+        $ahora = Carbon::now('America/Mexico_City');
+        switch ($this->filtroGravedad) {
+          case 'critica':
+            // <= 10 minutos -> created_at >= (ahora - 10 minutos)
+            $query->where('created_at', '>=', $ahora->copy()->subMinutes(11));
+            break;
+          case 'alta':
+            // > 10 y <= 20 minutos -> created_at entre (ahora - 20) y (ahora - 10)
+            $query->where('created_at', '<', $ahora->copy()->subMinutes(11))
+              ->where('created_at', '>=', $ahora->copy()->subMinutes(20));
+            break;
+          case 'media':
+            // > 20 y <= 30 minutos
+            $query->where('created_at', '<', $ahora->copy()->subMinutes(21))
+              ->where('created_at', '>=', $ahora->copy()->subMinutes(30));
+            break;
+          case 'baja':
+            // > 30 y <= 60 minutos
+            $query->where('created_at', '<', $ahora->copy()->subMinutes(31))
+              ->where('created_at', '>=', $ahora->copy()->subMinutes(60));
+            break;
+          case 'antigua':
+            // > 60 minutos y <= 300 (ACTIVE_SPAN)
+            $query->where('created_at', '<', $ahora->copy()->subMinutes(61));
+            // No necesitamos añadir > 300 porque ya está en el where global
+            break;
+        }
+      })
+      ->when($this->filtroUsuario, function ($query) {
+        $query->whereHas('user', function ($q) {
+          $q->where('name', 'like', '%' . $this->filtroUsuario . '%');
+        });
+      })
       ->orderBy('created_at', 'desc')
       ->get();
 
@@ -65,6 +147,8 @@ class MapaMonitoreo extends Component
       // Consideramos activas las alertas de menos de 30 minutos
       return $alerta['minutosTranscurridos'] <= $this->RECENT_SPAN;
     })->count();
+
+    $this->finalizarCarga();
   }
 
   private function calcularEstadoPorTiempo($minutosTranscurridos)
