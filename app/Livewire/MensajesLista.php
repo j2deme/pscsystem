@@ -72,7 +72,7 @@ class MensajesLista extends Component
         }
 
         $this->reset(['buscarUsuario', 'usuariosFiltrados', 'mostrarBuscador']);
-        $this->dispatch('conversacionSeleccionada', id: $conversationId);
+        $this->dispatch('conversacionSeleccionada', id: $conv->id);
         $this->cargarConversaciones();
     }
 
