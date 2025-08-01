@@ -39,4 +39,26 @@ class Location extends Model
   {
     return $this->belongsTo(User::class);
   }
+
+  public function scopeGravedad($query, $gravedad)
+  {
+    $ahora = now('America/Mexico_City');
+    switch ($gravedad) {
+      case 'critica':
+        return $query->where('created_at', '>=', $ahora->copy()->subMinutes(10));
+      case 'alta':
+        return $query->where('created_at', '<', $ahora->copy()->subMinutes(10))
+          ->where('created_at', '>=', $ahora->copy()->subMinutes(20));
+      case 'media':
+        return $query->where('created_at', '<', $ahora->copy()->subMinutes(20))
+          ->where('created_at', '>=', $ahora->copy()->subMinutes(30));
+      case 'baja':
+        return $query->where('created_at', '<', $ahora->copy()->subMinutes(30))
+          ->where('created_at', '>=', $ahora->copy()->subMinutes(60));
+      case 'antigua':
+        return $query->where('created_at', '<', $ahora->copy()->subMinutes(60));
+      default:
+        return $query;
+    }
+  }
 }
