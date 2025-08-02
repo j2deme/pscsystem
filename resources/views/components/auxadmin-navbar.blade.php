@@ -28,10 +28,10 @@
         ],
         [
             'titulo' => 'Acuses de Bajas',
-            'ruta' => '#',
+            'ruta' => route('aux.acusesbajas'),
             'icono' => 'trash',
             'color' => 'bg-red-100 dark:bg-red-700',
-            'disabled' => true,
+
         ],
         [
             'titulo' => 'Confrontas IMSS/INFONAVIT',
@@ -41,7 +41,7 @@
         ],
         [
             'titulo' => 'Cédulas',
-            'ruta' => '#',
+            'ruta' => route('aux.cedulasForm'),
             'icono' => 'file-text',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
         ],

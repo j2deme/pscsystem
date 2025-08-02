@@ -94,11 +94,11 @@
 
                     <div>
                         <label for="archivo_pdf" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Hoja de Incapacidad (PDF)
+                             Hoja de Incapacidad (PDF, JPG, JPEG, PNG)
                         </label>
-                        <input type="file" name="archivo_pdf" id="archivo_pdf" accept=".pdf"
+                        <input type="file" name="archivo_pdf" id="archivo_pdf" accept=".pdf,.jpg,.jpeg,.png"
                                class="mt-1 block w-full text-gray-700 dark:text-gray-300" required>
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Solo archivos PDF, máximo 2MB.</p>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Solo archivos PDF, JPG, JPEG, PNG, máximo 2MB.</p>
                     </div>
 
                     <div class="flex items-center justify-end mt-6">

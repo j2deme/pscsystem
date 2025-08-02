@@ -43,7 +43,7 @@
                         Folio
                     </th>
                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                        PDF
+                        PDF,JPG,JPEG,PNG
                     </th>
                 </tr>
             </thead>
@@ -71,7 +71,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                         @if($incapacidad->ruta_archivo_pdf)
                             <a href="{{ Storage::url($incapacidad->ruta_archivo_pdf) }}" target="_blank" class="text-blue-600 hover:underline dark:text-blue-400 dark:hover:text-blue-200">
-                                Ver PDF
+                                Ver Archivo
                             </a>
                         @else
                             N/A

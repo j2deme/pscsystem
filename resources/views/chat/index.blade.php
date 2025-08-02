@@ -1,3 +1,4 @@
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <x-app-layout>
     <x-navbar />
 
@@ -15,4 +16,5 @@
             </div>
         </div>
     </div>
+@vite(['resources/js/echo.js'])
 </x-app-layout>

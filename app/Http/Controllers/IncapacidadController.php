@@ -45,9 +45,10 @@ class IncapacidadController extends Controller
             'dias_incapacidad' => 'required|integer|min:1',
             'fecha_inicio' => 'required|date',
             'folio' => 'required|string|max:255|unique:incapacidades,folio',
-            'archivo_pdf' => 'required|file|mimes:pdf|max:2048', // PDF, max 2MB
+            'archivo_pdf' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ], [
             'folio.unique' => 'El folio de incapacidad ya existe. Por favor, verifica.',
+             'archivo_pdf.mimes' => 'El archivo debe ser un PDF, JPG, JPEG o PNG.',
         ]);
 
         $rutaArchivo = null;
