@@ -84,12 +84,4 @@ class Turno extends Model
     return $this->belongsTo(User::class);
   }
 
-  /**
-   * Relación: Turnos asociados al usuario
-   * @return \Illuminate\Database\Eloquent\Relations\HasMany
-   */
-  public function turnos()
-  {
-    return $this->hasMany(Turno::class, 'User_id');
-  }
 }
