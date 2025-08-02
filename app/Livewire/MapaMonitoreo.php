@@ -21,7 +21,6 @@ class MapaMonitoreo extends Component
   private $ACTIVE_SPAN = 300; // Antigüedad máxima para mostrar alertas activas (5 horas)
   private static $configuracionColoresCache = null;
 
-
   public function mount()
   {
     $this->cargando = true;
@@ -52,19 +51,25 @@ class MapaMonitoreo extends Component
     $this->dispatch('alertasActualizadas', alertas: $this->alertasRecientes);
   }
 
-  #[On('solicitarActualizacionCompleta')] // Para Livewire v3
-  // O para Livewire v2: /** @on('solicitarActualizacionCompleta') */
+  #[On('solicitarActualizacionCompleta')]
   public function solicitarActualizacionCompleta()
   {
     Log::info("📡 Evento 'solicitarActualizacionCompleta' recibido desde el frontend. Iniciando actualización de datos.");
+    $this->iniciarCarga();
+    $this->actualizarDatos(); // Consulta BD con filtros actuales
 
-    $this->cargando = true;
-    $this->actualizarDatos();
     $this->dispatch('alertasActualizadas', alertas: $this->alertasRecientes);
-
     Log::info("✅ Datos actualizados y evento 'alertasActualizadas' emitido desde solicitarActualizacionCompleta.");
-
     $this->finalizarCarga();
+  }
+
+  public function refrescarAlertasDesdeServidor()
+  {
+    Log::info('📡 Iniciando refrescarAlertasDesdeServidor via wire:poll. Filtros actuales: Gravedad=' . $this->filtroGravedad . ', Usuario=' . $this->filtroUsuario);
+
+    $this->actualizarDatos();
+
+    Log::info('✅ Finalizando refrescarAlertasDesdeServidor via wire:poll. Alertas encontradas: ' . count($this->alertasRecientes));
   }
 
   private function actualizarDatos()
@@ -72,53 +77,27 @@ class MapaMonitoreo extends Component
     if (!$this->cargando) {
       $this->iniciarCarga();
     }
-    $locations = Location::with([
+
+    $queryLocations = Location::with([
       'user' => function ($query) {
         $query->select(['id', 'name', 'punto']); // Asegúrate de incluir 'id' para la relación
       }
     ])
       ->select(['id', 'user_id', 'latitude', 'longitude', 'created_at'])
       ->where('created_at', '>=', Carbon::now()->subMinutes($this->ACTIVE_SPAN))
-      ->when($this->filtroGravedad !== 'todas', function ($query) {
-        $ahora = Carbon::now('America/Mexico_City');
-        switch ($this->filtroGravedad) {
-          case 'critica':
-            // <= 10 minutos -> created_at >= (ahora - 10 minutos)
-            $query->where('created_at', '>=', $ahora->copy()->subMinutes(11));
-            break;
-          case 'alta':
-            // > 10 y <= 20 minutos -> created_at entre (ahora - 20) y (ahora - 10)
-            $query->where('created_at', '<', $ahora->copy()->subMinutes(11))
-              ->where('created_at', '>=', $ahora->copy()->subMinutes(20));
-            break;
-          case 'media':
-            // > 20 y <= 30 minutos
-            $query->where('created_at', '<', $ahora->copy()->subMinutes(21))
-              ->where('created_at', '>=', $ahora->copy()->subMinutes(30));
-            break;
-          case 'baja':
-            // > 30 y <= 60 minutos
-            $query->where('created_at', '<', $ahora->copy()->subMinutes(31))
-              ->where('created_at', '>=', $ahora->copy()->subMinutes(60));
-            break;
-          case 'antigua':
-            // > 60 minutos y <= 300 (ACTIVE_SPAN)
-            $query->where('created_at', '<', $ahora->copy()->subMinutes(61));
-            // No necesitamos añadir > 300 porque ya está en el where global
-            break;
-        }
-      })
-      ->when($this->filtroUsuario, function ($query) {
-        $query->whereHas('user', function ($q) {
-          $q->where('name', 'like', '%' . $this->filtroUsuario . '%');
+      ->gravedad($this->filtroGravedad)
+      ->when(!empty($this->filtroUsuario), function ($query) {
+        $query->whereHas('user', function ($userQuery) {
+          $userQuery->where('name', 'like', '%' . $this->filtroUsuario . '%');
         });
       })
-      ->orderBy('created_at', 'desc')
-      ->get();
+      ->orderBy('created_at', 'desc');
+
+    $locations = $queryLocations->get();
 
     $alertas = $locations->map(function ($location) {
       $timestampCreacion    = $location->created_at;
-      $minutosTranscurridos = $timestampCreacion->diffInMinutes(Carbon::now('America/Mexico_City'));
+      $minutosTranscurridos = (int) $timestampCreacion->diffInMinutes(Carbon::now('America/Mexico_City'));
       $estado = $this->calcularEstadoPorTiempo($minutosTranscurridos);
 
       // Mapeo explícito de campos para la vista
@@ -145,7 +124,7 @@ class MapaMonitoreo extends Component
     $this->totalAlertas   = count($this->alertasRecientes);
     $this->alertasActivas = collect($this->alertasRecientes)->filter(function ($alerta) {
       // Consideramos activas las alertas de menos de 30 minutos
-      return $alerta['minutosTranscurridos'] <= $this->RECENT_SPAN;
+      return ($alerta['minutosTranscurridos'] ?? 0) <= $this->RECENT_SPAN;
     })->count();
 
     $this->finalizarCarga();
@@ -189,55 +168,6 @@ class MapaMonitoreo extends Component
         ]);
       })
       ->toArray();
-  }
-
-  public function actualizarTiempoReal()
-  {
-    $ahora       = Carbon::now('America/Mexico_City');
-    $huboCambios = false;
-
-    foreach ($this->alertasRecientes as $index => $alerta) {
-      if (isset($alerta['timestamp_creacion'])) {
-        $minutosActuales = $ahora->diffInMinutes(Carbon::createFromTimestamp($alerta['timestamp_creacion'], 'America/Mexico_City'));
-
-        // Solo actualizar si el tiempo realmente cambió (por ejemplo, pasó un minuto)
-        // O si es necesario verificar cambios de estado (esto es más complejo)
-        // Por simplicidad, actualizamos siempre, pero podrías añadir una condición.
-        if ($minutosActuales != $alerta['minutosTranscurridos']) {
-          $estadoDinamico = $this->calcularEstadoPorTiempo($minutosActuales);
-
-          // Verificar si el estado cambió para optimizar la actualización de colores
-          $estadoCambio = $alerta['estado'] !== $estadoDinamico['estado'];
-
-          $this->alertasRecientes[$index]['minutosTranscurridos'] = $minutosActuales;
-          $this->alertasRecientes[$index]['estado']               = $estadoDinamico['estado'];
-          $this->alertasRecientes[$index]['estadoTexto']          = $estadoDinamico['texto'];
-
-          // Solo recalcular colores si el estado cambió
-          if ($estadoCambio) {
-            $colores                                          = $this->obtenerConfiguracionColores($estadoDinamico['estado']);
-            $this->alertasRecientes[$index]['colores']        = $colores;
-            $this->alertasRecientes[$index]['estadoCompleto'] = [
-              'codigo' => $estadoDinamico['estado'],
-              'texto' => $estadoDinamico['texto'],
-              'colores' => $colores
-            ];
-            $huboCambios                                      = true; // Indicar que al menos un marcador necesita actualización
-          }
-        }
-      }
-    }
-
-    // Recalcular estadísticas solo si es necesario o periódicamente
-    $this->totalAlertas   = count($this->alertasRecientes);
-    $this->alertasActivas = collect($this->alertasRecientes)->filter(function ($alerta) {
-      return ($alerta['minutosTranscurridos'] ?? 0) <= $this->RECENT_SPAN;
-    })->count();
-
-    // Enviar evento para actualizar la interfaz si hubo cambios relevantes
-    if ($huboCambios) {
-      $this->dispatch('actualizarMarcadores', alertas: $this->alertasRecientes);
-    }
   }
 
   /**
