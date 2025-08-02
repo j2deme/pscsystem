@@ -39,7 +39,7 @@ return new class extends Migration {
   public function down(): void
   {
     // Sólo eliminar si la tabla esta vacía
-    if (Schema::hasTable('turno') && Schema::getConnection()->getSchemaBuilder()->getColumnListing('turno') === []) {
+    if (Schema::hasTable('turno') && DB::table('turno')->count() === 0) {
       Schema::dropIfExists('turno');
     }
   }
