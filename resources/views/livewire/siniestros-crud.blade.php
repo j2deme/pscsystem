@@ -271,7 +271,7 @@
           </thead>
           <tbody>
             @forelse ($siniestros as $siniestro)
-            <tr class="border-t">
+            <tr class="border-t" wire:key='siniestro-{{ $siniestro->id }}'>
               <td class="px-4 py-2 text-sm text-center">
                 {{ $siniestro->fecha->format('d-m-Y') }}
               </td>
@@ -423,9 +423,9 @@
             @endforelse
           </tbody>
         </table>
-        <div class="mt-4">
+        <div class="mt-4" wire:key="paginacion-{{ md5($siniestros->toJson()) }}" wire:ignore>
           @if($siniestros->hasPages())
-          {{ $siniestros->links() }}
+          {{ $siniestros->links('vendor.pagination.tailwind') }}
           @endif
         </div>
       </div>

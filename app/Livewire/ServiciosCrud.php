@@ -87,10 +87,10 @@ class ServiciosCrud extends Component
         $this->form['costo'] = 0;
         // Si se inició edición desde el detalle, redirigir
         if ($this->returnToDetalle && $this->editId) {
-            return redirect()->route('servicios.detalle', ['id' => $this->editId]);
+            return redirect()->route('servicio.detalle', ['id' => $this->editId]);
         }
         if ($this->returnToDetalle && request()->has('editar')) {
-            return redirect()->route('servicios.detalle', ['id' => request()->input('editar')]);
+            return redirect()->route('servicio.detalle', ['id' => request()->input('editar')]);
         }
     }
 
@@ -138,7 +138,7 @@ class ServiciosCrud extends Component
         $servicio       = Servicio::findOrFail($id);
         $this->form     = [
             'unidad_id' => $servicio->unidad_id,
-            'fecha' => $servicio->fecha,
+            'fecha' => optional($servicio->fecha)->format('Y-m-d'),
             'descripcion' => $servicio->descripcion,
             'costo' => $servicio->costo,
             'responsable' => $servicio->responsable,
@@ -165,24 +165,23 @@ class ServiciosCrud extends Component
 
     public function render()
     {
-        $query = Servicio::query();
+        $query = Servicio::query()
+            ->when($this->filtro_unidad, function ($query) {
+                $query->where('unidad_id', $this->filtro_unidad);
+            })
+            ->when($this->filtro_tipo, function ($query) {
+                $query->where('tipo', $this->filtro_tipo);
+            })
+            ->when($this->filtro_fecha_inicio, function ($query) {
+                $query->whereDate('fecha', '>=', $this->filtro_fecha_inicio);
+            })
+            ->when($this->filtro_fecha_fin, function ($query) {
+                $query->whereDate('fecha', '<=', $this->filtro_fecha_fin);
+            })
+            ->orderByDesc('fecha');
 
-        if ($this->filtro_unidad) {
-            $query->where('unidad_id', $this->filtro_unidad);
-        }
 
-        if ($this->filtro_tipo) {
-            $query->where('tipo', $this->filtro_tipo);
-        }
-
-        if ($this->filtro_fecha_inicio) {
-            $query->whereDate('fecha', '>=', $this->filtro_fecha_inicio);
-        }
-        if ($this->filtro_fecha_fin) {
-            $query->whereDate('fecha', '<=', $this->filtro_fecha_fin);
-        }
-
-        $servicios = $query->orderByDesc('fecha')->paginate($this->perPage);
+        $servicios = $query->paginate($this->perPage);
 
         $data = [
             'breadcrumbItems' => [

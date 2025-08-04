@@ -164,7 +164,7 @@ class SiniestrosCrud extends Component
     $this->form     = [
       'tipo_siniestro' => $siniestro->tipo_siniestro,
       'unidad_id' => $siniestro->unidad_id,
-      'fecha' => $siniestro->fecha ? $siniestro->fecha->format('Y-m-d') : '',
+      'fecha' => optional($siniestro->fecha)->format('Y-m-d'),
       'tipo' => $siniestro->tipo,
       'zona' => $siniestro->zona,
       'descripcion' => $siniestro->descripcion,
@@ -185,22 +185,14 @@ class SiniestrosCrud extends Component
 
   public function render()
   {
-    $query = Siniestro::query();
+    $query = Siniestro::query()
+      ->when($this->filtro_unidad, fn($q) => $q->where('unidad_id', $this->filtro_unidad))
+      ->when($this->filtro_tipo, fn($q) => $q->where('tipo_siniestro', $this->filtro_tipo))
+      ->when($this->filtro_fecha_inicio, fn($q) => $q->whereDate('fecha', '>=', $this->filtro_fecha_inicio))
+      ->when($this->filtro_fecha_fin, fn($q) => $q->whereDate('fecha', '<=', $this->filtro_fecha_fin))
+      ->orderByDesc('fecha');
 
-    if ($this->filtro_unidad) {
-      $query->where('unidad_id', $this->filtro_unidad);
-    }
-    if ($this->filtro_tipo) {
-      $query->where('tipo_siniestro', $this->filtro_tipo);
-    }
-    if ($this->filtro_fecha_inicio) {
-      $query->whereDate('fecha', '>=', $this->filtro_fecha_inicio);
-    }
-    if ($this->filtro_fecha_fin) {
-      $query->whereDate('fecha', '<=', $this->filtro_fecha_fin);
-    }
-
-    $siniestros = $query->orderByDesc('fecha')->paginate($this->perPage);
+    $siniestros = $query->paginate($this->perPage);
 
     $tiposVehiculo = $this->getTiposVehiculo();
     $tiposPersonal = $this->getTiposPersonal();
@@ -242,6 +234,16 @@ class SiniestrosCrud extends Component
   }
 
   public function updatingPerPage()
+  {
+    $this->resetPage();
+  }
+
+  public function updatingFiltroFechaInicio()
+  {
+    $this->resetPage();
+  }
+
+  public function updatingFiltroFechaFin()
   {
     $this->resetPage();
   }
