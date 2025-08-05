@@ -17,14 +17,12 @@ $cards = [
 'ruta' => "#",
 'icono' => 'cash',
 'color' => 'bg-red-100 dark:bg-red-700',
-'disabled' => true,
 ],
 [
 'titulo' => 'Compras',
 'ruta' => "#",
 'icono' => 'shopping-cart',
 'color' => 'bg-blue-100 dark:bg-blue-700',
-'disabled' => true,
 ],
 [
 'titulo' => 'Servicios y Reparaciones',
@@ -43,14 +41,12 @@ $cards = [
 'ruta' => "#",
 'icono' => 'file-description',
 'color' => 'bg-blue-100 dark:bg-blue-700',
-'disabled' => true,
 ],
 [
 'titulo' => 'Solicitar Vacaciones',
 'ruta' => route('user.solicitarVacacionesForm'),
 'icono' => 'confetti',
 'color' => 'bg-yellow-100 dark:bg-yellow-700',
-'disabled' => Auth::user()->rol == 'admin'
 ],
 [
 'titulo' => 'Deducciones',
@@ -63,28 +59,24 @@ $cards = [
 'ruta' => route('user.historialVacaciones'),
 'icono' => 'calendar',
 'color' => 'bg-green-100 dark:bg-green-700',
-'disabled' => Auth::user()->rol == 'admin'
 ],
 [
 'titulo' => 'Ficha Técnica',
 'ruta' => route('user.verFicha', auth()->user()->id),
 'icono' => 'id',
 'color' => 'bg-yellow-100 dark:bg-yellow-700',
-'disabled' => Auth::user()->rol == 'admin'
 ],
 [
 'titulo' => 'Buzón de Quejas y Sugerencias',
 'ruta' => route('user.buzon'),
 'icono' => 'message',
 'color' => 'bg-purple-100 dark:bg-purple-700',
-'disabled' => Auth::user()->rol == 'admin'
 ],
 [
 'titulo' => 'Importar Datos',
 'ruta' => route('importar.excel'),
 'icono' => 'folder',
 'color' => 'bg-gray-100 dark:bg-gray-700',
-'disabled' => true,
 ],
 
 ];

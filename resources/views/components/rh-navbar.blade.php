@@ -71,14 +71,12 @@
                     'ruta' => route('rh.formAlta', $tipoSeleccionado),
                     'icono' => 'trending-up',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
-                    'disabled' => Auth::user()->rol=='admin'
                 ],
                 [
                     'titulo' => 'Generar Nueva Baja',
                     'ruta' => route('rh.generarNuevaBajaForm'),
                     'icono' => 'trending-down',
                     'color' => 'bg-red-100 dark:bg-red-700',
-                    'disabled' => Auth::user()->rol=='admin'
                 ],
                 [
                     'titulo' => 'Historial de Vacaciones',
@@ -91,13 +89,18 @@
                     'ruta' => route('user.buzon'),
                     'icono' => 'message',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
-                    'disabled' => Auth::user()->rol=='admin'
                 ],
                 [
                     'titulo' => 'Gestión de Usuarios',
                     'ruta' => route('admin.verUsuarios'),
                     'icono' => 'users',
                     'color' => 'bg-pink-100 dark:bg-pink-700'
+                ],
+                [
+                    'titulo' => 'Mensajes',
+                    'ruta' => route('mensajes.index'),
+                    'icono' => 'message',
+                    'color' => 'bg-purple-300 dark:bg-purple-700',
                 ],
             ];
         @endphp

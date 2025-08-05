@@ -14,11 +14,11 @@
 
     $cards = [
         [
-            'titulo' => 'Gráficas y Estadísticas',
-            'ruta' => route('nominas.graficas'),
-            'icono' => 'chart-bar',
+            'titulo' => 'Subida de Archivos',
+            'ruta' => route('nominas.subidaArchivos'),
+            'icono' => 'upload',
             'color' => 'bg-blue-100 dark:bg-blue-700',
-            'disabled' => true,
+            'disabled' => false,
         ],
         [
             'titulo' => 'Nuevas Altas',
@@ -81,35 +81,30 @@
             'ruta' => route('user.solicitarVacacionesForm'),
             'icono' => 'confetti',
             'color' => 'bg-green-100 dark:bg-green-700',
-            'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Mi Historial de Vacaciones',
             'ruta' => route('user.historialVacaciones'),
             'icono' => 'calendar',
             'color' => 'bg-yellow-100 dark:bg-yellow-700',
-            'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Ficha Técnica',
             'ruta' => route('user.verFicha', auth()->user()->id),
             'icono' => 'file-description',
             'color' => 'bg-blue-100 dark:bg-blue-700',
-            'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Gestión de Usuarios',
             'ruta' => route('admin.verUsuarios'),
             'icono' => 'user-cog',
             'color' => 'bg-green-100 dark:bg-green-700',
-            'disabled' => Auth::user()->rol == 'admin'
         ],
         [
             'titulo' => 'Buzón de Quejas y Sugerencias',
             'ruta' => route('user.buzon'),
             'icono' => 'message',
             'color' => 'bg-purple-100 dark:bg-purple-700',
-            'disabled' => Auth::user()->rol == 'admin'
         ],
 
     ];

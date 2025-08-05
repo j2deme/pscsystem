@@ -62,21 +62,18 @@
                     'ruta' => route('user.buzon'),
                     'icono' => 'message',
                     'color' => 'bg-purple-100 dark:bg-purple-700',
-                    'disabled' => Auth::user()->rol=='admin'
                 ],
                 [
                     'titulo' => 'Ficha Técnica',
                     'ruta' => route('user.verFicha', auth()->user()->id),
                     'icono' => 'file-description',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700',
-                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Mensajes',
                     'ruta' => route('mensajes.index'),
                     'icono' => 'message',
                     'color' => 'bg-purple-100 dark:bg-purple-700',
-                    'disabled' => Auth::user()->rol == 'admin'
                 ],
             ];
         @endphp
