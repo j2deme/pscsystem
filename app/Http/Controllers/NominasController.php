@@ -517,4 +517,8 @@ public function solicitarConstancia(Request $request)
 
         return view('nominas.destajos', compact('usuarios', 'nominasPorUsuario', 'periodoTexto', 'destajos'));
     }
+
+    public function subidasArchivosForm(){
+        return view('nominas.subidasArchivos');
+    }
 }

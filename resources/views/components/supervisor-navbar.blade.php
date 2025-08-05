@@ -48,21 +48,18 @@
                     'ruta' => route('sup.nuevoUsuarioForm'),
                     'icono' => 'users-group',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
-                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Solicitar Vacaciones de Elemento',
                     'ruta' => route('sup.solicitarVacacionesElemento'),
                     'icono' => 'beach',
                     'color' => 'bg-yellow-100 dark:bg-yellow-700',
-                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Solicitar Baja de Elemento',
                     'ruta' => route('sup.solicitarBajaForm'),
                     'icono' => 'arrow-down',
                     'color' => 'bg-red-100 dark:bg-red-700',
-                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Historial de Altas',
@@ -102,14 +99,12 @@
                     'ruta' => route('user.solicitarVacacionesForm'),
                     'icono' => 'confetti',
                     'color' => 'bg-green-100 dark:bg-green-700',
-                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Tiempos Extras',
                     'ruta' => route('sup.tiemposExtras'),
                     'icono' => 'clock-hour-2',
                     'color' => 'bg-blue-100 dark:bg-blue-700',
-                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Historial de Tiempos Extras y Coberturas',
@@ -122,28 +117,24 @@
                     'ruta' => route('user.historialVacaciones'),
                     'icono' => 'calendar',
                     'color' => 'bg-green-100 dark:bg-green-700',
-                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Gestión de Usuarios',
                     'ruta' => route('sup.gestionUsuarios'),
                     'icono' => 'users-group',
                     'color' => 'bg-indigo-100 dark:bg-indigo-700',
-                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Buzón de Quejas y Sugerencias',
                     'ruta' => route('user.buzon'),
                     'icono' => 'message',
                     'color' => 'bg-purple-100 dark:bg-purple-700',
-                    'disabled' => Auth::user()->rol == 'admin'
                 ],
                 [
                     'titulo' => 'Mensajes',
                     'ruta' => route('mensajes.index'),
                     'icono' => 'message',
                     'color' => 'bg-purple-100 dark:bg-purple-700',
-                    'disabled' => Auth::user()->rol == 'admin'
                 ],
             ];
         @endphp

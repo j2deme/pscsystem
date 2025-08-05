@@ -151,7 +151,6 @@
             'ruta' => route('admin.monitoreoDashboard'),
             'icono' => 'trending-up',
             'color' => 'bg-indigo-300 dark:bg-indigo-700',
-            'disabled' => true,
         ],
         [
             'titulo' => 'Supervisores',
