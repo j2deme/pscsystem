@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Alerta;
+use App\Models\Archivonomina;
 use App\Models\Asistencia;
 use App\Models\Nomina;
 use App\Models\SolicitudVacaciones;
@@ -523,16 +524,83 @@ public function solicitarConstancia(Request $request)
     }
 
     public function subirArchivosNominas(Request $request){
-        $request->validate([
-            'arch_nomina' => 'xslx, xls, csv|required',
-            'arch_destajo' => 'xslx, xls, csv|required',
-            'periodo' =>'string|required',
+    \Log::info('=== INICIO SUBIR ARCHIVOS NOMINAS ===');
+
+    // Validación con nombres correctos
+    $request->validate([
+        'arch_nomina' => 'required|mimes:xlsx,xls,csv',
+        'arch_destajo' => 'required|mimes:xlsx,xls,csv',
+        'periodo' => 'required|string',
+    ]);
+
+    \Log::info('Validación exitosa');
+
+    try {
+        $periodo = $request->get('periodo');
+        \Log::info('Periodo recibido', ['periodo' => $periodo]);
+
+        // Crear el directorio si no existe
+        $rutaDirectorio = 'archivos_nominas/' . $periodo;
+        $rutaCompleta = storage_path('app/public/' . $rutaDirectorio);
+
+        \Log::info('Rutas', ['ruta_completa' => $rutaCompleta]);
+
+        if (!file_exists($rutaCompleta)) {
+            \Log::info('Creando directorio...');
+            $creado = mkdir($rutaCompleta, 0755, true);
+            \Log::info('Directorio creado', ['resultado' => $creado]);
+        }
+
+        // Procesar archivo de nóminas
+        if ($request->hasFile('arch_nomina')) {
+            $archivoNomina = $request->file('arch_nomina');
+            \Log::info('Archivo nóminas recibido', [
+                'original_name' => $archivoNomina->getClientOriginalName(),
+                'size' => $archivoNomina->getSize()
+            ]);
+
+            $nombreArchivoNomina = time() . '_nominas.' . $archivoNomina->getClientOriginalExtension();
+            $rutaArchivoNomina = $archivoNomina->storeAs($rutaDirectorio, $nombreArchivoNomina, 'public');
+            \Log::info('Archivo nóminas guardado', ['ruta' => $rutaArchivoNomina]);
+        }
+
+        // Procesar archivo de destajos
+        if ($request->hasFile('arch_destajo')) {
+            $archivoDestajo = $request->file('arch_destajo');
+            \Log::info('Archivo destajos recibido', [
+                'original_name' => $archivoDestajo->getClientOriginalName(),
+                'size' => $archivoDestajo->getSize()
+            ]);
+
+            $nombreArchivoDestajo = time() . '_destajos.' . $archivoDestajo->getClientOriginalExtension();
+            $rutaArchivoDestajo = $archivoDestajo->storeAs($rutaDirectorio, $nombreArchivoDestajo, 'public');
+            \Log::info('Archivo destajos guardado', ['ruta' => $rutaArchivoDestajo]);
+        }
+
+        // Guardar en la base de datos
+        \Log::info('Guardando en BD...');
+        $archivoNominaModel = new Archivonomina();
+        $archivoNominaModel->periodo = $periodo;
+        $archivoNominaModel->arch_nomina = $rutaArchivoNomina ?? null;
+        $archivoNominaModel->arch_destajo = $rutaArchivoDestajo ?? null;
+        $archivoNominaModel->save();
+
+        \Log::info('Registro guardado', ['id' => $archivoNominaModel->id]);
+
+        \Log::info('=== FIN EXITOSO ===');
+
+        // Redirigir al dashboard con mensaje de éxito
+        return redirect()->route('dashboard')->with('success', 'Archivos subidos correctamente');
+
+    } catch (\Exception $e) {
+        \Log::error('=== ERROR ===', [
+            'mensaje' => $e->getMessage(),
+            'archivo' => $e->getFile(),
+            'linea' => $e->getLine()
         ]);
 
-        $periodo = $request->get('periodo');
-        $mesNombre = strtolower($request->get('mes'));
-        $anio = now()->year;
-
-
+        // Redirigir de vuelta con error
+        return redirect()->back()->with('error', 'Error al subir los archivos: ' . $e->getMessage())->withInput();
     }
+}
 }
