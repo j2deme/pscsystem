@@ -521,4 +521,18 @@ public function solicitarConstancia(Request $request)
     public function subidasArchivosForm(){
         return view('nominas.subidasArchivos');
     }
+
+    public function subirArchivosNominas(Request $request){
+        $request->validate([
+            'arch_nomina' => 'xslx, xls, csv|required',
+            'arch_destajo' => 'xslx, xls, csv|required',
+            'periodo' =>'string|required',
+        ]);
+
+        $periodo = $request->get('periodo');
+        $mesNombre = strtolower($request->get('mes'));
+        $anio = now()->year;
+
+
+    }
 }

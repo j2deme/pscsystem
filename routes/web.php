@@ -239,6 +239,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/solicitar-constancia', [NominasController::class, 'solicitarConstancia'])->name('solicitar.constancia');
     Route::get('/destajos', [NominasController::class, 'destajos'])->name('nominas.destajos');
     Route::get('/nominas_subidas_archivos', [NominasController::class,'subidasArchivosForm'])->name('nominas.subidaArchivos');
+    Route::post('/nominas_subir_archivos', [NominasController::class,'subirArchivosNominas'])->name('nominas.guardarArchivos');
     Route::get('/calculo_destajos', [NominasController::class, 'calculoDestajos'])->name('nominas.calculoDestajos');
     Route::post('/notificaciones/leidas', function () {
         \App\Models\Alerta::where('user_id', Auth::id())
