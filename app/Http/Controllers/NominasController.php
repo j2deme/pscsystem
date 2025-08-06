@@ -525,16 +525,18 @@ public function solicitarConstancia(Request $request)
 
 public function subirArchivosNominas(Request $request){
     \Log::info('=== INICIO SUBIR ARCHIVOS NOMINAS ===');
+    \Log::info('Memoria inicial: ' . round(memory_get_usage() / 1024 / 1024, 2) . ' MB');
 
     try {
-        // Validación con nombres correctos
+        // Validación
         $request->validate([
-            'arch_nomina' => 'nullable|mimes:xlsx,xls,csv|max:10240', // 10MB max
+            'arch_nomina' => 'nullable|mimes:xlsx,xls,csv|max:10240', // 10MB
             'arch_destajo' => 'nullable|mimes:xlsx,xls,csv|max:10240',
             'periodo' => 'required|string',
         ]);
 
         \Log::info('Validación exitosa');
+        \Log::info('Memoria después validación: ' . round(memory_get_usage() / 1024 / 1024, 2) . ' MB');
 
         $periodo = $request->get('periodo');
         \Log::info('Periodo recibido', ['periodo' => $periodo]);
@@ -543,12 +545,8 @@ public function subirArchivosNominas(Request $request){
         $rutaDirectorio = 'archivos_nominas/' . $periodo;
         $rutaCompleta = storage_path('app/public/' . $rutaDirectorio);
 
-        \Log::info('Rutas', ['ruta_completa' => $rutaCompleta]);
-
         if (!file_exists($rutaCompleta)) {
-            \Log::info('Creando directorio...');
-            $creado = mkdir($rutaCompleta, 0755, true);
-            \Log::info('Directorio creado', ['resultado' => $creado]);
+            mkdir($rutaCompleta, 0755, true);
         }
 
         $rutaArchivoNomina = null;
@@ -559,12 +557,18 @@ public function subirArchivosNominas(Request $request){
             $archivoNomina = $request->file('arch_nomina');
             \Log::info('Archivo nóminas recibido', [
                 'original_name' => $archivoNomina->getClientOriginalName(),
-                'size' => $archivoNomina->getSize()
+                'size_bytes' => $archivoNomina->getSize(),
+                'size_mb' => round($archivoNomina->getSize() / 1024 / 1024, 2),
+                'memory_antes' => round(memory_get_usage() / 1024 / 1024, 2) . ' MB'
             ]);
 
             $nombreArchivoNomina = time() . '_nominas.' . $archivoNomina->getClientOriginalExtension();
             $rutaArchivoNomina = $archivoNomina->storeAs($rutaDirectorio, $nombreArchivoNomina, 'public');
-            \Log::info('Archivo nóminas guardado', ['ruta' => $rutaArchivoNomina]);
+
+            \Log::info('Archivo nóminas guardado', [
+                'ruta' => $rutaArchivoNomina,
+                'memory_despues' => round(memory_get_usage() / 1024 / 1024, 2) . ' MB'
+            ]);
         }
 
         // Procesar archivo de destajos
@@ -572,49 +576,49 @@ public function subirArchivosNominas(Request $request){
             $archivoDestajo = $request->file('arch_destajo');
             \Log::info('Archivo destajos recibido', [
                 'original_name' => $archivoDestajo->getClientOriginalName(),
-                'size' => $archivoDestajo->getSize()
+                'size_bytes' => $archivoDestajo->getSize(),
+                'size_mb' => round($archivoDestajo->getSize() / 1024 / 1024, 2),
+                'memory_antes' => round(memory_get_usage() / 1024 / 1024, 2) . ' MB'
             ]);
 
             $nombreArchivoDestajo = time() . '_destajos.' . $archivoDestajo->getClientOriginalExtension();
             $rutaArchivoDestajo = $archivoDestajo->storeAs($rutaDirectorio, $nombreArchivoDestajo, 'public');
-            \Log::info('Archivo destajos guardado', ['ruta' => $rutaArchivoDestajo]);
+
+            \Log::info('Archivo destajos guardado', [
+                'ruta' => $rutaArchivoDestajo,
+                'memory_despues' => round(memory_get_usage() / 1024 / 1024, 2) . ' MB'
+            ]);
         }
 
         // Guardar en la base de datos
-        \Log::info('Guardando en BD...');
+        \Log::info('Guardando en BD...', [
+            'memory_antes' => round(memory_get_usage() / 1024 / 1024, 2) . ' MB'
+        ]);
+
         $archivoNominaModel = new Archivonomina();
         $archivoNominaModel->periodo = $periodo;
         $archivoNominaModel->arch_nomina = $rutaArchivoNomina;
         $archivoNominaModel->arch_destajo = $rutaArchivoDestajo;
         $archivoNominaModel->save();
 
-        \Log::info('Registro guardado', ['id' => $archivoNominaModel->id]);
+        \Log::info('Registro guardado', [
+            'id' => $archivoNominaModel->id,
+            'memory_final' => round(memory_get_usage() / 1024 / 1024, 2) . ' MB'
+        ]);
+
         \Log::info('=== FIN EXITOSO ===');
 
-        // Limpiar cualquier salida bufferizada
-        if (ob_get_level()) {
-            ob_clean();
-        }
-
-        // Usar session helper en lugar de with() para evitar problemas
-        session()->flash('success', 'Archivos subidos correctamente');
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Archivos subidos correctamente');
 
     } catch (\Exception $e) {
         \Log::error('=== ERROR ===', [
             'mensaje' => $e->getMessage(),
             'archivo' => $e->getFile(),
             'linea' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
+            'memory_error' => round(memory_get_usage() / 1024 / 1024, 2) . ' MB'
         ]);
 
-        // Limpiar buffer
-        if (ob_get_level()) {
-            ob_clean();
-        }
-
-        session()->flash('error', 'Error al subir los archivos: ' . $e->getMessage());
-        return redirect()->back()->withInput();
+        return redirect()->back()->with('error', 'Error al subir los archivos.')->withInput();
     }
 }
 }
