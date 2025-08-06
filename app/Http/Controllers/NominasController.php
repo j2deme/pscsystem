@@ -736,4 +736,8 @@ public function subirArchivosNominas(Request $request){
             return 0;
         }
     }
+
+    public function registros(){
+        return view('nominas.registros');
+    }
 }
