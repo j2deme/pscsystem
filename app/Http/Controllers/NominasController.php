@@ -528,8 +528,8 @@ public function solicitarConstancia(Request $request)
 
     // Validación con nombres correctos
     $request->validate([
-        'arch_nomina' => 'required|mimes:xlsx,xls,csv',
-        'arch_destajo' => 'required|mimes:xlsx,xls,csv',
+        'arch_nomina' => 'nullable|mimes:xlsx,xls,csv',
+        'arch_destajo' => 'nullable|mimes:xlsx,xls,csv',
         'periodo' => 'required|string',
     ]);
 

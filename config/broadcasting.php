@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('BROADCAST_DRIVER', 'reverb'),
+    'default' => env('BROADCAST_DRIVER', 'log'),
 
     'connections' => [
 
@@ -37,7 +37,7 @@ return [
             ],
         ],
 
-        'pusher' => [
+        /*'pusher' => [
             'driver' => 'pusher',
             'key' => env('PUSHER_APP_KEY'),
             'secret' => env('PUSHER_APP_SECRET'),
@@ -53,7 +53,7 @@ return [
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
             ],
-        ],
+        ],*/
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
