@@ -523,19 +523,19 @@ public function solicitarConstancia(Request $request)
         return view('nominas.subidasArchivos');
     }
 
-    public function subirArchivosNominas(Request $request){
+public function subirArchivosNominas(Request $request){
     \Log::info('=== INICIO SUBIR ARCHIVOS NOMINAS ===');
 
-    // Validación con nombres correctos
-    $request->validate([
-        'arch_nomina' => 'nullable|mimes:xlsx,xls,csv',
-        'arch_destajo' => 'nullable|mimes:xlsx,xls,csv',
-        'periodo' => 'required|string',
-    ]);
-
-    \Log::info('Validación exitosa');
-
     try {
+        // Validación con nombres correctos
+        $request->validate([
+            'arch_nomina' => 'nullable|mimes:xlsx,xls,csv|max:10240', // 10MB max
+            'arch_destajo' => 'nullable|mimes:xlsx,xls,csv|max:10240',
+            'periodo' => 'required|string',
+        ]);
+
+        \Log::info('Validación exitosa');
+
         $periodo = $request->get('periodo');
         \Log::info('Periodo recibido', ['periodo' => $periodo]);
 
@@ -551,8 +551,11 @@ public function solicitarConstancia(Request $request)
             \Log::info('Directorio creado', ['resultado' => $creado]);
         }
 
+        $rutaArchivoNomina = null;
+        $rutaArchivoDestajo = null;
+
         // Procesar archivo de nóminas
-        if ($request->hasFile('arch_nomina')) {
+        if ($request->hasFile('arch_nomina') && $request->file('arch_nomina')->isValid()) {
             $archivoNomina = $request->file('arch_nomina');
             \Log::info('Archivo nóminas recibido', [
                 'original_name' => $archivoNomina->getClientOriginalName(),
@@ -565,7 +568,7 @@ public function solicitarConstancia(Request $request)
         }
 
         // Procesar archivo de destajos
-        if ($request->hasFile('arch_destajo')) {
+        if ($request->hasFile('arch_destajo') && $request->file('arch_destajo')->isValid()) {
             $archivoDestajo = $request->file('arch_destajo');
             \Log::info('Archivo destajos recibido', [
                 'original_name' => $archivoDestajo->getClientOriginalName(),
@@ -581,26 +584,37 @@ public function solicitarConstancia(Request $request)
         \Log::info('Guardando en BD...');
         $archivoNominaModel = new Archivonomina();
         $archivoNominaModel->periodo = $periodo;
-        $archivoNominaModel->arch_nomina = $rutaArchivoNomina ?? null;
-        $archivoNominaModel->arch_destajo = $rutaArchivoDestajo ?? null;
+        $archivoNominaModel->arch_nomina = $rutaArchivoNomina;
+        $archivoNominaModel->arch_destajo = $rutaArchivoDestajo;
         $archivoNominaModel->save();
 
         \Log::info('Registro guardado', ['id' => $archivoNominaModel->id]);
-
         \Log::info('=== FIN EXITOSO ===');
 
-        // Redirigir al dashboard con mensaje de éxito
-        return redirect()->back()->with('success', 'Archivos subidos correctamente');
+        // Limpiar cualquier salida bufferizada
+        if (ob_get_level()) {
+            ob_clean();
+        }
+
+        // Usar session helper en lugar de with() para evitar problemas
+        session()->flash('success', 'Archivos subidos correctamente');
+        return redirect()->back();
 
     } catch (\Exception $e) {
         \Log::error('=== ERROR ===', [
             'mensaje' => $e->getMessage(),
             'archivo' => $e->getFile(),
-            'linea' => $e->getLine()
+            'linea' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
         ]);
 
-        // Redirigir de vuelta con error
-        return redirect()->back()->with('error', 'Error al subir los archivos: ' . $e->getMessage())->withInput();
+        // Limpiar buffer
+        if (ob_get_level()) {
+            ob_clean();
+        }
+
+        session()->flash('error', 'Error al subir los archivos: ' . $e->getMessage());
+        return redirect()->back()->withInput();
     }
 }
 }
