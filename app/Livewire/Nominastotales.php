@@ -118,142 +118,145 @@ class Nominastotales extends Component
     }
 
     public function actualizarGrafica()
-    {
-        \Log::info('Iniciando actualización de gráfica', [
-            'filtro' => $this->filtro,
-            'anio_actual' => now()->year
+{
+    \Log::info('Iniciando actualización de gráfica', [
+        'filtro' => $this->filtro,
+        'anio_actual' => now()->year
+    ]);
+
+    $anioActual = now()->year;
+
+    // Reiniciar arrays
+    if ($this->filtro === 'todos') {
+        $this->labels = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        $this->periodo1 = array_fill(0, 12, 0);
+        $this->periodo2 = array_fill(0, 12, 0);
+    } else {
+        $this->labels = ['Periodo 1', 'Periodo 2'];
+        $this->periodo1 = [0, 0]; // Dos elementos para periodo 1 y 2
+        $this->periodo2 = [0, 0]; // Dos elementos para periodo 1 y 2
+    }
+
+    $this->total = 0;
+
+    // Construir query con filtro por año y mes si aplica
+    $query = Archivonomina::whereYear('created_at', $anioActual);
+
+    // Si hay un filtro específico de mes, aplicarlo al periodo
+    if ($this->filtro !== 'todos') {
+        $query->where('periodo', 'like', '%' . ucfirst($this->filtro) . '%');
+    }
+
+    // Solo obtener registros que tengan subtotal calculado
+    $archivosNominas = $query->whereNotNull('subtotal')->get();
+
+    \Log::info('Archivos encontrados con subtotal', [
+        'cantidad' => $archivosNominas->count(),
+        'filtro' => $this->filtro
+    ]);
+
+    foreach ($archivosNominas as $archivoNomina) {
+        \Log::info('Procesando archivo con subtotal', [
+            'id' => $archivoNomina->id,
+            'periodo' => $archivoNomina->periodo,
+            'subtotal' => $archivoNomina->subtotal
         ]);
 
-        $anioActual = now()->year;
+        // Adaptar la expresión regular para el formato "2° Julio" (sin año)
+        if (preg_match('/^(1°|2°)\s*(\w+)(?:\s+(\d{4}))?$/u', $archivoNomina->periodo, $matches)) {
+            $quincena = $matches[1];
+            $mesTexto = $matches[2];
+            $anio = $matches[3] ?? $anioActual; // Si no hay año, usar el año actual
 
-        // Reiniciar arrays
-        if ($this->filtro === 'todos') {
-            $this->labels = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-            $this->periodo1 = array_fill(0, 12, 0);
-            $this->periodo2 = array_fill(0, 12, 0);
-        } else {
-            $this->labels = ['Periodo 1', 'Periodo 2'];
-            $this->periodo1 = [0];
-            $this->periodo2 = [0];
-        }
-
-        $this->total = 0;
-
-        // Construir query con filtro por año y mes si aplica
-        $query = Archivonomina::whereYear('created_at', $anioActual);
-
-        // Si hay un filtro específico de mes, aplicarlo al periodo
-        if ($this->filtro !== 'todos') {
-            $query->where('periodo', 'like', '%' . ucfirst($this->filtro) . '%');
-        }
-
-        // Solo obtener registros que tengan subtotal calculado
-        $archivosNominas = $query->whereNotNull('subtotal')->get();
-
-        \Log::info('Archivos encontrados con subtotal', [
-            'cantidad' => $archivosNominas->count(),
-            'filtro' => $this->filtro
-        ]);
-
-        foreach ($archivosNominas as $archivoNomina) {
-            \Log::info('Procesando archivo con subtotal', [
-                'id' => $archivoNomina->id,
-                'periodo' => $archivoNomina->periodo,
-                'subtotal' => $archivoNomina->subtotal
+            \Log::info('Datos extraídos del periodo', [
+                'quincena' => $quincena,
+                'mes' => $mesTexto,
+                'anio' => $anio
             ]);
 
-            // Adaptar la expresión regular para el formato "2° Julio" (sin año)
-            if (preg_match('/^(1°|2°)\s*(\w+)(?:\s+(\d{4}))?$/u', $archivoNomina->periodo, $matches)) {
-                $quincena = $matches[1];
-                $mesTexto = $matches[2];
-                $anio = $matches[3] ?? $anioActual; // Si no hay año, usar el año actual
+            // Verificar que sea del año actual
+            if ((int) $anio !== $anioActual) {
+                \Log::info('Año no coincide, saltando', ['anio_archivo' => $anio, 'anio_actual' => $anioActual]);
+                continue;
+            }
 
-                \Log::info('Datos extraídos del periodo', [
-                    'quincena' => $quincena,
-                    'mes' => $mesTexto,
-                    'anio' => $anio
-                ]);
+            // USAR EL SUBTOTAL PRE-CALCULADO EN LUGAR DE PROCESAR EL ARCHIVO
+            $totalCalculado = $archivoNomina->subtotal ?? 0;
 
-                // Verificar que sea del año actual
-                if ((int) $anio !== $anioActual) {
-                    \Log::info('Año no coincide, saltando', ['anio_archivo' => $anio, 'anio_actual' => $anioActual]);
-                    continue;
-                }
+            \Log::info('Total obtenido del subtotal', [
+                'total' => $totalCalculado,
+                'subtotal_db' => $archivoNomina->subtotal
+            ]);
 
-                // USAR EL SUBTOTAL PRE-CALCULADO EN LUGAR DE PROCESAR EL ARCHIVO
-                $totalCalculado = $archivoNomina->subtotal ?? 0;
-
-                \Log::info('Total obtenido del subtotal', [
-                    'total' => $totalCalculado,
-                    'subtotal_db' => $archivoNomina->subtotal
-                ]);
-
-                if ($this->filtro === 'todos') {
-                    // Modo todos: agrupar por mes
-                    $mesIndex = $this->mesTextoANumero($mesTexto) - 1;
-                    if ($mesIndex >= 0 && $mesIndex <= 11) {
-                        if ($quincena === '1°') {
-                            $this->periodo1[$mesIndex] += $totalCalculado;
-                            \Log::info('Agregando a periodo 1 todos', [
-                                'mes' => $mesTexto,
-                                'indice' => $mesIndex,
-                                'valor' => $totalCalculado,
-                                'total_acumulado' => $this->periodo1[$mesIndex]
-                            ]);
-                        } elseif ($quincena === '2°') {
-                            $this->periodo2[$mesIndex] += $totalCalculado;
-                            \Log::info('Agregando a periodo 2 todos', [
-                                'mes' => $mesTexto,
-                                'indice' => $mesIndex,
-                                'valor' => $totalCalculado,
-                                'total_acumulado' => $this->periodo2[$mesIndex]
-                            ]);
-                        }
-                    }
-                } else {
-                    // Modo filtro específico: mostrar solo el mes filtrado
-                    if ($this->normalizarTexto($mesTexto) === $this->normalizarTexto($this->filtro)) {
-                        if ($quincena === '1°') {
-                            $this->periodo1[0] += $totalCalculado;
-                            \Log::info('Agregando a periodo 1 filtro', [
-                                'mes' => $mesTexto,
-                                'valor' => $totalCalculado,
-                                'total_acumulado' => $this->periodo1[0]
-                            ]);
-                        } elseif ($quincena === '2°') {
-                            $this->periodo2[0] += $totalCalculado;
-                            \Log::info('Agregando a periodo 2 filtro', [
-                                'mes' => $mesTexto,
-                                'valor' => $totalCalculado,
-                                'total_acumulado' => $this->periodo2[0]
-                            ]);
-                        }
+            if ($this->filtro === 'todos') {
+                // Modo todos: agrupar por mes
+                $mesIndex = $this->mesTextoANumero($mesTexto) - 1;
+                if ($mesIndex >= 0 && $mesIndex <= 11) {
+                    if ($quincena === '1°') {
+                        $this->periodo1[$mesIndex] += $totalCalculado;
+                        \Log::info('Agregando a periodo 1 todos', [
+                            'mes' => $mesTexto,
+                            'indice' => $mesIndex,
+                            'valor' => $totalCalculado,
+                            'total_acumulado' => $this->periodo1[$mesIndex]
+                        ]);
+                    } elseif ($quincena === '2°') {
+                        $this->periodo2[$mesIndex] += $totalCalculado;
+                        \Log::info('Agregando a periodo 2 todos', [
+                            'mes' => $mesTexto,
+                            'indice' => $mesIndex,
+                            'valor' => $totalCalculado,
+                            'total_acumulado' => $this->periodo2[$mesIndex]
+                        ]);
                     }
                 }
             } else {
-                \Log::warning('No se pudo parsear el periodo', [
-                    'periodo' => $archivoNomina->periodo,
-                    'patron_esperado' => '^(1°|2°)\\s*(\\w+)(?:\\s+(\\d{4}))?$'
-                ]);
+                // Modo filtro específico: mostrar solo el mes filtrado
+                if ($this->normalizarTexto($mesTexto) === $this->normalizarTexto($this->filtro)) {
+                    // Para el filtro específico, usar índices 0 para periodo 1 y 1 para periodo 2
+                    if ($quincena === '1°') {
+                        $this->periodo1[0] += $totalCalculado; // Índice 0 para Periodo 1
+                        $this->periodo2[0] += 0; // Mantener 0 en periodo 2
+                        \Log::info('Agregando a periodo 1 filtro específico', [
+                            'mes' => $mesTexto,
+                            'valor' => $totalCalculado,
+                            'total_acumulado_periodo1' => $this->periodo1[0]
+                        ]);
+                    } elseif ($quincena === '2°') {
+                        $this->periodo1[1] += 0; // Mantener 0 en periodo 1
+                        $this->periodo2[1] += $totalCalculado; // Índice 1 para Periodo 2
+                        \Log::info('Agregando a periodo 2 filtro específico', [
+                            'mes' => $mesTexto,
+                            'valor' => $totalCalculado,
+                            'total_acumulado_periodo2' => $this->periodo2[1]
+                        ]);
+                    }
+                }
             }
+        } else {
+            \Log::warning('No se pudo parsear el periodo', [
+                'periodo' => $archivoNomina->periodo,
+                'patron_esperado' => '^(1°|2°)\\s*(\\w+)(?:\\s+(\\d{4}))?$'
+            ]);
         }
-
-        $this->total = array_sum($this->periodo1) + array_sum($this->periodo2);
-
-        \Log::info('Datos finales para la gráfica', [
-            'labels' => $this->labels,
-            'periodo1' => $this->periodo1,
-            'periodo2' => $this->periodo2,
-            'total' => $this->total
-        ]);
-
-        $this->dispatch('chart-nominas-updated', [
-            'labels' => $this->labels,
-            'periodo1' => $this->periodo1,
-            'periodo2' => $this->periodo2,
-            'total' => $this->total
-        ]);
     }
+
+    $this->total = array_sum($this->periodo1) + array_sum($this->periodo2);
+
+    \Log::info('Datos finales para la gráfica', [
+        'labels' => $this->labels,
+        'periodo1' => $this->periodo1,
+        'periodo2' => $this->periodo2,
+        'total' => $this->total
+    ]);
+
+    $this->dispatch('chart-nominas-updated', [
+        'labels' => $this->labels,
+        'periodo1' => $this->periodo1,
+        'periodo2' => $this->periodo2,
+        'total' => $this->total
+    ]);
+}
 
     // Agregar este método para normalizar texto (sin acentos)
     private function normalizarTexto($texto) {
