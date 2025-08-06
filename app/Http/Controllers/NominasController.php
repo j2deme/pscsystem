@@ -590,7 +590,7 @@ public function solicitarConstancia(Request $request)
         \Log::info('=== FIN EXITOSO ===');
 
         // Redirigir al dashboard con mensaje de éxito
-        return redirect()->route('dashboard')->with('success', 'Archivos subidos correctamente');
+        return redirect()->back()->with('success', 'Archivos subidos correctamente');
 
     } catch (\Exception $e) {
         \Log::error('=== ERROR ===', [

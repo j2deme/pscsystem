@@ -1,37 +1,48 @@
 @php
     $documentosObligatorios = [];
-        $documentosObligatorios = [
-            ['label' => 'Nóminas', 'name' => 'arch_nomina'],
-            ['label' => 'Destajos', 'name' => 'arch_destajo'],
-        ];
+    $documentosObligatorios = [
+        ['label' => 'Nóminas', 'name' => 'arch_nomina'],
+        ['label' => 'Destajos', 'name' => 'arch_destajo'],
+    ];
 
 @endphp
 
 <x-app-layout>
     <x-navbar />
 
-            <div class="py-8 px-6">
-                <div class="max-w-5xl mx-auto">
-                    @if(session('success'))
-            <div class="mt-4 text-green-600 font-semibold">
-                {{ session('success') }}
-            </div>
-            @endif
-
-            @if(session('error'))
-                <div class="mt-4 text-red-600 font-semibold">
-                    {{ session('error') }}
+    <div class="py-8 px-6">
+        <div class="max-w-5xl mx-auto">
+            @if (session('success'))
+                <div class="bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-4 py-3 shadow-md"
+                    role="alert">
+                    <div class="flex">
+                        <div>
+                            <p class="text-sm">{{ session('success') }}</p>
+                        </div>
+                    </div>
                 </div>
+            @else
+                @if (session('error'))
+                    <div class="bg-red-100 border-t-4 border-red-500 rounded-b text-red-900 px-4 py-3 shadow-md"
+                        role="alert">
+                        <div class="flex">
+                            <div>
+                                <p class="text-sm">{{ session('error') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             @endif
 
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-6">
                 <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-200">Archivos de Nóminas/Destajos</h2>
 
-                <form action="{{route('nominas.guardarArchivos')}}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('nominas.guardarArchivos') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group mb-6">
                         <label for="periodo" class="block text-sm font-semibold text-gray-600">Periodo</label>
-                        <select id="periodo" name="periodo" class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2" >
+                        <select id="periodo" name="periodo"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-md mt-2">
                             <option value="" disabled selected>Selecciona una opción</option>
                             <option value="1° Enero">1° Enero</option>
                             <option value="2° Enero">2° Enero</option>
@@ -63,26 +74,32 @@
                     <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-200 mb-2">Documentos</h3>
                     <div class="grid grid-cols-2 gap-6">
                         @foreach ($documentosObligatorios as $doc)
-                            <div x-data="dropFile('{{ $doc['name'] }}')" x-on:dragover.prevent x-on:drop.prevent="handleDrop($event)" class="border-2 border-dashed rounded-lg p-4 text-center hover:border-blue-400 transition">
+                            <div x-data="dropFile('{{ $doc['name'] }}')" x-on:dragover.prevent x-on:drop.prevent="handleDrop($event)"
+                                class="border-2 border-dashed rounded-lg p-4 text-center hover:border-blue-400 transition">
                                 <label class="block text-gray-700 dark:text-gray-300 font-medium mb-1">
                                     {{ $doc['label'] }} <span class="text-red-500">*</span>
                                 </label>
-                                <input type="file" name="{{ $doc['name'] }}" x-ref="fileInput" class="hidden" @change="handleFileInput">
-                                <button type="button" @click="$refs.fileInput.click()" class="mt-2 px-3 py-1 bg-blue-500 text-white text-sm rounded">
+                                <input type="file" name="{{ $doc['name'] }}" x-ref="fileInput" class="hidden"
+                                    @change="handleFileInput">
+                                <button type="button" @click="$refs.fileInput.click()"
+                                    class="mt-2 px-3 py-1 bg-blue-500 text-white text-sm rounded">
                                     Seleccionar archivo
                                 </button>
                                 <template x-if="fileName">
-                                    <p class="mt-2 text-sm text-green-600">Archivo: <strong x-text="fileName"></strong></p>
+                                    <p class="mt-2 text-sm text-green-600">Archivo: <strong x-text="fileName"></strong>
+                                    </p>
                                 </template>
                             </div>
                         @endforeach
                     </div>
 
                     <div class="mt-8 flex justify-center space-x-4">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-md transition">
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-md transition">
                             Subir Documentos
                         </button>
-                        <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-5 rounded-md hover:bg-gray-400 transition">
+                        <a href="{{ route('dashboard') }}"
+                            class="inline-block bg-gray-300 text-gray-800 py-2 px-5 rounded-md hover:bg-gray-400 transition">
                             Regresar
                         </a>
                     </div>
