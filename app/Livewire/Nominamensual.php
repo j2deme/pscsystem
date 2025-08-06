@@ -130,10 +130,128 @@ class Nominamensual extends Component
 
     // Mantén tu método calcularTotalDesdeExcel para registros antiguos
     private function calcularTotalDesdeExcel($rutaArchivo)
-    {
-        // Tu código existente...
-    }
+{
+    try {
+        \Log::info('Intentando cargar archivo Excel para fallback', ['ruta_db' => $rutaArchivo]);
 
+        // Construir la ruta completa correctamente
+        $rutaCompleta = storage_path('app/public/' . $rutaArchivo);
+        \Log::info('Ruta completa construida para fallback', ['ruta_completa' => $rutaCompleta]);
+
+        // Verificar si el archivo existe
+        if (!file_exists($rutaCompleta)) {
+            \Log::error('Archivo no encontrado para fallback', ['ruta_completa' => $rutaCompleta]);
+            return 0;
+        }
+
+        \Log::info('Archivo encontrado, cargando Excel para fallback...');
+        $spreadsheet = IOFactory::load($rutaCompleta);
+
+        // Verificar cuántas hojas tiene el archivo
+        $numeroHojas = $spreadsheet->getSheetCount();
+        $nombresHojas = $spreadsheet->getSheetNames();
+        \Log::info('Archivo cargado exitosamente para fallback', [
+            'numero_hojas' => $numeroHojas,
+            'nombres_hojas' => $nombresHojas
+        ]);
+
+        $totalGeneral = 0;
+
+        // Iterar por todas las hojas
+        for ($hojaIndex = 0; $hojaIndex < $numeroHojas; $hojaIndex++) {
+            $worksheet = $spreadsheet->getSheet($hojaIndex);
+            $nombreHoja = $nombresHojas[$hojaIndex];
+            \Log::info('Procesando hoja para fallback', [
+                'indice' => $hojaIndex,
+                'nombre' => $nombreHoja
+            ]);
+
+            $totalHoja = 0;
+            $fila = 5;
+            $espaciosBlancoSeguidos = 0;
+            $maxEspaciosBlanco = 3;
+
+            \Log::info('Iniciando iteración desde fila 5 en hoja: ' . $nombreHoja . ' (fallback)');
+
+            // Iterar hasta encontrar 3 espacios en blanco seguidos
+            $filasProcesadas = 0;
+            while ($espaciosBlancoSeguidos < $maxEspaciosBlanco && $fila < 1000) {
+                $nombreEmpleado = $worksheet->getCell('B' . $fila)->getValue();
+
+                // OBTENER EL VALOR CALCULADO en lugar de la fórmula
+                $celdaP = $worksheet->getCell('P' . $fila);
+                $valorP = $celdaP->getCalculatedValue();
+
+                \Log::debug('Procesando fila en hoja ' . $nombreHoja . ' para fallback', [
+                    'fila' => $fila,
+                    'nombre_empleado' => $nombreEmpleado,
+                    'formula_p' => $celdaP->getValue(),
+                    'valor_calculado_p' => $valorP,
+                    'espacios_blancos' => $espaciosBlancoSeguidos
+                ]);
+
+                // Verificar si la celda del nombre está vacía
+                if (empty($nombreEmpleado) || trim($nombreEmpleado) === '') {
+                    $espaciosBlancoSeguidos++;
+                    \Log::debug('Fila vacía encontrada en hoja ' . $nombreHoja . ' (fallback)', [
+                        'fila' => $fila,
+                        'espacios_consecutivos' => $espaciosBlancoSeguidos
+                    ]);
+                } else {
+                    $espaciosBlancoSeguidos = 0;
+
+                    // Obtener el valor total de la columna P (ya calculado)
+                    if (is_numeric($valorP)) {
+                        $totalHoja += $valorP;
+                        $totalGeneral += $valorP;
+                        \Log::debug('Valor sumado en hoja ' . $nombreHoja . ' (fallback)', [
+                            'fila' => $fila,
+                            'valor' => $valorP,
+                            'total_hoja' => $totalHoja,
+                            'total_general' => $totalGeneral
+                        ]);
+                    } else {
+                        \Log::debug('Valor no numérico en columna P en hoja ' . $nombreHoja . ' (fallback)', [
+                            'fila' => $fila,
+                            'valor' => $valorP
+                        ]);
+                    }
+                }
+
+                $fila++;
+                $filasProcesadas++;
+
+                // Seguridad para evitar bucles infinitos
+                if ($filasProcesadas > 500) {
+                    \Log::warning('Límite de filas procesadas alcanzado en hoja ' . $nombreHoja . ' (fallback)', [
+                        'filas' => $filasProcesadas
+                    ]);
+                    break;
+                }
+            }
+
+            \Log::info('Hoja procesada completamente para fallback', [
+                'nombre_hoja' => $nombreHoja,
+                'total_hoja' => $totalHoja,
+                'filas_procesadas' => $filasProcesadas
+            ]);
+        }
+
+        \Log::info('Cálculo completado para fallback', [
+            'total_general' => $totalGeneral,
+            'numero_hojas_procesadas' => $numeroHojas
+        ]);
+
+        return round($totalGeneral, 2);
+
+    } catch (\Exception $e) {
+        \Log::error('Error al calcular total de nómina en fallback: ' . $e->getMessage(), [
+            'exception' => $e,
+            'ruta_archivo' => $rutaArchivo ?? 'no definida'
+        ]);
+        return 0;
+    }
+}
     public function render()
     {
         return view('livewire.nominamensual');
