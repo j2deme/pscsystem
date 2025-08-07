@@ -73,12 +73,12 @@
                                                 {{ $status }}
                                             </span>
                                         </td>
-                                        @if ($solicitud->user)
-                                            <a href="{{ route('user.verFicha', $solicitud->user->id) }}"
+                                        @if ($solicitud->usuario)
+                                            <a href="{{ route('user.verFicha', $solicitud->usuario->id) }}"
                                                 class="text-blue-600 hover:text-blue-900">Ver Más</a>
                                             <br>
                                             <a href="#" class="text-indigo-600 hover:text-indigo-900"
-                                                onclick="asignarNumeroEmpleado({{ $solicitud->user->id }}, '{{ addslashes($solicitud->nombre . ' ' . $solicitud->apellido_paterno) }}')">
+                                                onclick="asignarNumeroEmpleado({{ $solicitud->usuario->id }}, '{{ addslashes($solicitud->nombre . ' ' . $solicitud->apellido_paterno) }}')">
                                                 Asignar Núm. Empleado
                                             </a>
                                         @else
