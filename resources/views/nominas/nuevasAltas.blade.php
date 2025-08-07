@@ -36,57 +36,76 @@
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @foreach ($solicitudes as $solicitud)
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
+                                    @if ($solicitud->usuario)
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
 
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            {{ trim(($solicitud->nombre ?? '') . ' ' . ($solicitud->apellido_paterno ?? '') . ' ' . ($solicitud->apellido_materno ?? '')) ?: 'N/D' }}
-                                        </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                {{ trim(($solicitud->nombre ?? '') . ' ' . ($solicitud->apellido_paterno ?? '') . ' ' . ($solicitud->apellido_materno ?? '')) ?: 'N/D' }}
+                                            </td>
 
-                                        <td
-                                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                            {{ $solicitud->curp ?? 'N/D' }}
-                                        </td>
+                                            <td
+                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                                {{ $solicitud->curp ?? 'N/D' }}
+                                            </td>
 
-                                        <td
-                                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                            {{ $solicitud->rfc ?? 'N/D' }}
-                                        </td>
+                                            <td
+                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                                {{ $solicitud->rfc ?? 'N/D' }}
+                                            </td>
 
-                                        <td
-                                            class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                            {{ optional($solicitud->created_at)->format('d/m/Y') ?? 'Sin fecha' }}
-                                        </td>
+                                            <td
+                                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                                {{ optional($solicitud->created_at)->format('d/m/Y') ?? 'Sin fecha' }}
+                                            </td>
 
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            @php
-                                                $status = $solicitud->status ?? 'Desconocido';
-                                                $statusClasses = match ($status) {
-                                                    'En Proceso' => 'bg-yellow-100 text-yellow-800',
-                                                    'Aceptada' => 'bg-green-100 text-green-800',
-                                                    'Rechazada' => 'bg-red-100 text-red-800',
-                                                    default => 'bg-gray-200 text-gray-800',
-                                                };
-                                            @endphp
-                                            <span
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClasses }}">
-                                                {{ $status }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            @if ($solicitud->usuario)
-                                                <a href="{{ route('user.verFicha', $solicitud->usuario->id) }}"
-                                                    class="text-blue-600 hover:text-blue-900">Ver Más</a>
-                                                <br>
-                                                <a href="#" class="text-indigo-600 hover:text-indigo-900"
-                                                    onclick="asignarNumeroEmpleado({{ $solicitud->usuario->id }}, '{{ addslashes($solicitud->nombre . ' ' . $solicitud->apellido_paterno) }}')">
-                                                    Asignar Núm. Empleado
-                                                </a>
-                                            @else
-                                                <span class="text-gray-500">Sin usuario</span>
-                                            @endif
-                                        </td>
-                                    </tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                @php
+                                                    $status = $solicitud->status ?? 'Desconocido';
+                                                    $statusClasses = match ($status) {
+                                                        'En Proceso' => 'bg-yellow-100 text-yellow-800',
+                                                        'Aceptada' => 'bg-green-100 text-green-800',
+                                                        'Rechazada' => 'bg-red-100 text-red-800',
+                                                        default => 'bg-gray-200 text-gray-800',
+                                                    };
+                                                @endphp
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClasses }}">
+                                                    {{ $status }}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap flex flex-col items-center gap-2">
+                                                @if ($solicitud->usuario)
+                                                    <a href="{{ route('user.verFicha', $solicitud->usuario->id) }}"
+                                                        class="inline-flex items-center justify-center w-10 h-10 bg-green-500 hover:bg-green-600 text-white rounded-full transition duration-200 shadow-sm"
+                                                        title="Ver ficha del empleado">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M2.458 12C3.732 7.932 7.324 5 12 5s8.268 2.932 9.542 7C21.742 14.068 19.37 17 12 17s-9.742-2.932-11.542-7z" />
+                                                        </svg>
+                                                    </a>
+
+                                                    <a href="#"
+                                                        onclick="asignarNumeroEmpleado({{ $solicitud->usuario->id }}, '{{ addslashes($solicitud->nombre . ' ' . $solicitud->apellido_paterno) }}')"
+                                                        class="inline-flex items-center justify-center w-10 h-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition duration-200 shadow-sm"
+                                                        title="Asignar número de empleado">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        </svg>
+                                                    </a>
+                                                @else
+                                                    <span class="text-gray-400 text-xs">—</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
