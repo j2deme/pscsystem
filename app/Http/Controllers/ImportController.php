@@ -107,7 +107,8 @@ class ImportController extends Controller
                 if (
                     $primeraCelda === '' ||
                     str_starts_with($primeraCelda, 'ALTAS') ||
-                    str_contains($primeraCelda, 'SIN MOVIMIENTOS')
+                    str_contains($primeraCelda, 'SIN MOVIMIENTOS') ||
+                    str_contains($primeraCelda, 'SIN ALTAS')
                 ) {
                     Log::info("Fila $index omitida (vacía o encabezado)");
                     continue;
