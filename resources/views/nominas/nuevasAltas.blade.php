@@ -56,9 +56,9 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <a href="{{route('user.verFicha', $solicitud->usuario->id)}}" class="text-blue-600 hover:text-blue-900">Ver Más</a>
+                                            <a href="{{route('user.verFicha', $solicitud->user->id)}}" class="text-blue-600 hover:text-blue-900">Ver Más</a>
                                             <br><a href="#" class="text-indigo-600 hover:text-indigo-900"
-                                                onclick="asignarNumeroEmpleado({{ $solicitud->usuario->id }}, '{{ $solicitud->nombre }} {{ $solicitud->apellido_paterno }}')">
+                                                onclick="asignarNumeroEmpleado({{ $solicitud->user->id }}, '{{ $solicitud->nombre }} {{ $solicitud->apellido_paterno }}')">
                                                 Asignar Núm. Empleado
                                             </a>
                                         </td>
