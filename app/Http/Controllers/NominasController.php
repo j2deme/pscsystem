@@ -36,6 +36,7 @@ class NominasController extends Controller
     public function nuevasAltas(){
         $solicitudes = SolicitudAlta::where('status', 'Aceptada')
             ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(15))//si se requiere respetar a toda la quincena
+            ->with('user')
             ->get();
         $users = User::where('estatus', 'Activo')
             ->where('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(15))
