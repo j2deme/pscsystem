@@ -2,6 +2,11 @@
     <div class="flex justify-center">
         <h2 class="text-xl font-semibold mb-2">Gráfico de Nómina</h2>
     </div>
+    <div class="flex justify-between items-center mb-4">
+        <a href="{{ route('nominas.registros') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm">
+            Ver Registros
+        </a>
+    </div>
     @if (!$readyToLoad)
         <div class="flex justify-center">
             <button wire:click="cargarGrafica" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
@@ -41,12 +46,6 @@
                 setTimeout(initializeChart, 100);
                 return;
             }
-
-            // Configurar dimensiones del canvas
-            /*ctx.style.width = '100%';
-            ctx.style.height = '100%';
-            ctx.width = ctx.offsetWidth;
-            ctx.height = ctx.offsetHeight;*/
 
             if (chartNominas) {
                 chartNominas.destroy();

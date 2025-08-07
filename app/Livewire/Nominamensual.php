@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace App\Livewire;
 
 use Livewire\Component;
@@ -40,6 +40,218 @@ class Nominamensual extends Component
         $this->calcularResumen();
     }
 
+    public function render()
+    {
+        return view('livewire.nominamensual');
+    }
+}<?php*/
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use App\Models\Archivonomina;
+
+class Nominamensual extends Component
+{
+    public $totalMesActual = 0;
+    public $variacion = 0;
+
+    public function mount()
+    {
+        \Log::info('Iniciando carga de componente Nominamensual');
+        $this->calcularTotalNomina();
+        $this->calcularVariacion();
+    }
+
+    private function calcularTotalNomina()
+    {
+        \Log::info('Buscando registro más reciente de nómina');
+
+        // Obtener el registro más reciente Y USAR EL SUBTOTAL PRE-CALCULADO
+        $registroMasReciente = Archivonomina::latest('created_at')->first();
+
+        if ($registroMasReciente) {
+            \Log::info('Registro encontrado', [
+                'id' => $registroMasReciente->id,
+                'periodo' => $registroMasReciente->periodo,
+                'subtotal' => $registroMasReciente->subtotal,
+                'created_at' => $registroMasReciente->created_at
+            ]);
+
+            // USAR EL SUBTOTAL PRE-CALCULADO EN LUGAR DE PROCESAR EL ARCHIVO
+            if ($registroMasReciente->subtotal !== null) {
+                $this->totalMesActual = $registroMasReciente->subtotal;
+                \Log::info('Total obtenido del subtotal pre-calculado', ['total' => $this->totalMesActual]);
+            } else if ($registroMasReciente->arch_nomina) {
+                // Fallback: si no hay subtotal, calcularlo (por registros antiguos)
+                $this->totalMesActual = $this->calcularTotalDesdeExcel($registroMasReciente->arch_nomina);
+                \Log::info('Total calculado del archivo (fallback)', ['total' => $this->totalMesActual]);
+            } else {
+                \Log::warning('No hay subtotal ni archivo de nómina en el registro');
+            }
+        } else {
+            \Log::warning('No se encontraron registros de nómina');
+        }
+    }
+
+    private function calcularVariacion()
+    {
+        \Log::info('Calculando variación porcentual');
+
+        // USAR SUBTOTAL PRE-CALCULADO PARA LA VARIACIÓN
+        $registros = Archivonomina::orderBy('created_at', 'desc')->limit(2)->get();
+
+        if ($registros->count() >= 2) {
+            $registroActual = $registros[0];
+            $registroAnterior = $registros[1];
+
+            \Log::info('Registros encontrados para variación', [
+                'actual_id' => $registroActual->id,
+                'anterior_id' => $registroAnterior->id
+            ]);
+
+            // USAR SUBTOTAL PRE-CALCULADO
+            $totalActual = $registroActual->subtotal ?? 0;
+            $totalAnterior = $registroAnterior->subtotal ?? 0;
+
+            \Log::info('Totales para variación (desde subtotal)', [
+                'actual' => $totalActual,
+                'anterior' => $totalAnterior
+            ]);
+
+            if ($totalAnterior > 0) {
+                $this->variacion = round((($totalActual - $totalAnterior) / $totalAnterior) * 100, 2);
+                \Log::info('Variación calculada', ['porcentaje' => $this->variacion]);
+            }
+        } else {
+            \Log::warning('No hay suficientes registros para calcular variación', ['cantidad' => $registros->count()]);
+        }
+    }
+
+    // Mantén tu método calcularTotalDesdeExcel para registros antiguos
+    private function calcularTotalDesdeExcel($rutaArchivo)
+{
+    try {
+        \Log::info('Intentando cargar archivo Excel para fallback', ['ruta_db' => $rutaArchivo]);
+
+        // Construir la ruta completa correctamente
+        $rutaCompleta = storage_path('app/public/' . $rutaArchivo);
+        \Log::info('Ruta completa construida para fallback', ['ruta_completa' => $rutaCompleta]);
+
+        // Verificar si el archivo existe
+        if (!file_exists($rutaCompleta)) {
+            \Log::error('Archivo no encontrado para fallback', ['ruta_completa' => $rutaCompleta]);
+            return 0;
+        }
+
+        \Log::info('Archivo encontrado, cargando Excel para fallback...');
+        $spreadsheet = IOFactory::load($rutaCompleta);
+
+        // Verificar cuántas hojas tiene el archivo
+        $numeroHojas = $spreadsheet->getSheetCount();
+        $nombresHojas = $spreadsheet->getSheetNames();
+        \Log::info('Archivo cargado exitosamente para fallback', [
+            'numero_hojas' => $numeroHojas,
+            'nombres_hojas' => $nombresHojas
+        ]);
+
+        $totalGeneral = 0;
+
+        // Iterar por todas las hojas
+        for ($hojaIndex = 0; $hojaIndex < $numeroHojas; $hojaIndex++) {
+            $worksheet = $spreadsheet->getSheet($hojaIndex);
+            $nombreHoja = $nombresHojas[$hojaIndex];
+            \Log::info('Procesando hoja para fallback', [
+                'indice' => $hojaIndex,
+                'nombre' => $nombreHoja
+            ]);
+
+            $totalHoja = 0;
+            $fila = 5;
+            $espaciosBlancoSeguidos = 0;
+            $maxEspaciosBlanco = 3;
+
+            \Log::info('Iniciando iteración desde fila 5 en hoja: ' . $nombreHoja . ' (fallback)');
+
+            // Iterar hasta encontrar 3 espacios en blanco seguidos
+            $filasProcesadas = 0;
+            while ($espaciosBlancoSeguidos < $maxEspaciosBlanco && $fila < 1000) {
+                $nombreEmpleado = $worksheet->getCell('B' . $fila)->getValue();
+
+                // OBTENER EL VALOR CALCULADO en lugar de la fórmula
+                $celdaP = $worksheet->getCell('P' . $fila);
+                $valorP = $celdaP->getCalculatedValue();
+
+                \Log::debug('Procesando fila en hoja ' . $nombreHoja . ' para fallback', [
+                    'fila' => $fila,
+                    'nombre_empleado' => $nombreEmpleado,
+                    'formula_p' => $celdaP->getValue(),
+                    'valor_calculado_p' => $valorP,
+                    'espacios_blancos' => $espaciosBlancoSeguidos
+                ]);
+
+                // Verificar si la celda del nombre está vacía
+                if (empty($nombreEmpleado) || trim($nombreEmpleado) === '') {
+                    $espaciosBlancoSeguidos++;
+                    \Log::debug('Fila vacía encontrada en hoja ' . $nombreHoja . ' (fallback)', [
+                        'fila' => $fila,
+                        'espacios_consecutivos' => $espaciosBlancoSeguidos
+                    ]);
+                } else {
+                    $espaciosBlancoSeguidos = 0;
+
+                    // Obtener el valor total de la columna P (ya calculado)
+                    if (is_numeric($valorP)) {
+                        $totalHoja += $valorP;
+                        $totalGeneral += $valorP;
+                        \Log::debug('Valor sumado en hoja ' . $nombreHoja . ' (fallback)', [
+                            'fila' => $fila,
+                            'valor' => $valorP,
+                            'total_hoja' => $totalHoja,
+                            'total_general' => $totalGeneral
+                        ]);
+                    } else {
+                        \Log::debug('Valor no numérico en columna P en hoja ' . $nombreHoja . ' (fallback)', [
+                            'fila' => $fila,
+                            'valor' => $valorP
+                        ]);
+                    }
+                }
+
+                $fila++;
+                $filasProcesadas++;
+
+                // Seguridad para evitar bucles infinitos
+                if ($filasProcesadas > 500) {
+                    \Log::warning('Límite de filas procesadas alcanzado en hoja ' . $nombreHoja . ' (fallback)', [
+                        'filas' => $filasProcesadas
+                    ]);
+                    break;
+                }
+            }
+
+            \Log::info('Hoja procesada completamente para fallback', [
+                'nombre_hoja' => $nombreHoja,
+                'total_hoja' => $totalHoja,
+                'filas_procesadas' => $filasProcesadas
+            ]);
+        }
+
+        \Log::info('Cálculo completado para fallback', [
+            'total_general' => $totalGeneral,
+            'numero_hojas_procesadas' => $numeroHojas
+        ]);
+
+        return round($totalGeneral, 2);
+
+    } catch (\Exception $e) {
+        \Log::error('Error al calcular total de nómina en fallback: ' . $e->getMessage(), [
+            'exception' => $e,
+            'ruta_archivo' => $rutaArchivo ?? 'no definida'
+        ]);
+        return 0;
+    }
+}
     public function render()
     {
         return view('livewire.nominamensual');

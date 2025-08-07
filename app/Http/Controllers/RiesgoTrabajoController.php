@@ -30,29 +30,36 @@ class RiesgoTrabajoController extends Controller
     /**
      * Guarda un nuevo riesgo de trabajo.
      */
-   public function store(Request $request, $id=null)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'tipo_riesgo' => 'required|in:En el trabajo,En trayecto',
-            'descripcion_observaciones' => 'nullable|string',
-            'archivo_pdf' => 'nullable|file|mimes:pdf|max:2048', // PDF, max 2MB
-        ]);
+   public function store(Request $request, $id = null)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'tipo_riesgo' => 'required|in:En el trabajo,En trayecto',
+        'descripcion_observaciones' => 'nullable|string',
+        'archivo_pdf' => 'nullable|file|mimes:pdf|max:2048', // PDF, max 2MB
+        'arch_alta' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048', // PDF o imágenes, max 2MB
+    ]);
 
-        $rutaArchivo = null;
-        if ($request->hasFile('archivo_pdf')) {
-            $rutaArchivo = $request->file('archivo_pdf')->store('riesgos_trabajo_pdfs', 'public');
-        }
-
-        RiesgoTrabajo::create([
-            'user_id' => $request->user_id,
-            'tipo_riesgo' => $request->tipo_riesgo,
-            'descripcion_observaciones' => $request->descripcion_observaciones,
-            'ruta_archivo_pdf' => $rutaArchivo,
-        ]);
-
-        return redirect()->route('aux.riesgosTrabajo')->with('success', 'Riesgo de trabajo registrado exitosamente.');
+    $rutaArchivoPdf = null;
+    if ($request->hasFile('archivo_pdf')) {
+        $rutaArchivoPdf = $request->file('archivo_pdf')->store('riesgos_trabajo_pdfs', 'public');
     }
+
+    $rutaArchAlta = null;
+    if ($request->hasFile('arch_alta')) {
+        $rutaArchAlta = $request->file('arch_alta')->store('riesgos_trabajo_altas', 'public');
+    }
+
+    RiesgoTrabajo::create([
+        'user_id' => $request->user_id,
+        'tipo_riesgo' => $request->tipo_riesgo,
+        'descripcion_observaciones' => $request->descripcion_observaciones,
+        'ruta_archivo_pdf' => $rutaArchivoPdf,
+        'arch_alta' => $rutaArchAlta,
+    ]);
+
+    return redirect()->route('aux.riesgosTrabajo')->with('success', 'Riesgo de trabajo registrado exitosamente.');
+}
  public function showHistorialRiesgosTrabajo()
     {
         return view('auxadmin.historialRiesgosTrabajo');
