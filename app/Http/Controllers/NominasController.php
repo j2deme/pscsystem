@@ -525,219 +525,221 @@ public function solicitarConstancia(Request $request)
         return view('nominas.subidasArchivos');
     }
 
-public function subirArchivosNominas(Request $request){
-        \Log::info('=== INICIO SUBIR ARCHIVOS NOMINAS ===');
+public function subirArchivosNominas(Request $request)
+{
+    \Log::info('=== INICIO SUBIR ARCHIVOS NOMINAS ===');
+    \Log::info('Memoria al inicio', [
+        'memory_limit' => ini_get('memory_limit'),
+        'usage' => memory_get_usage(true),
+    ]);
 
-        try {
-            // Validación
-            $request->validate([
-                'arch_nomina' => 'nullable|mimes:xlsx,xls,csv|max:10240',
-                'arch_destajo' => 'nullable|mimes:xlsx,xls,csv|max:10240',
-                'periodo' => 'required|string',
-            ]);
+    try {
+        // Validación
+        $request->validate([
+            'arch_nomina' => 'nullable|mimes:xlsx,xls,csv|max:10240',
+            'arch_nomina_spyt' => 'nullable|mimes:xlsx,xls,csv|max:10240',
+            'arch_nomina_montana' => 'nullable|mimes:xlsx,xls,csv|max:10240',
+            'arch_destajo' => 'nullable|mimes:xlsx,xls,csv|max:10240',
+            'periodo' => 'required|string',
+        ]);
 
-            \Log::info('Validación exitosa');
+        \Log::info('Validación exitosa');
 
-            $periodo = $request->get('periodo');
-            \Log::info('Periodo recibido', ['periodo' => $periodo]);
+        $periodo = $request->get('periodo');
+        \Log::info('Periodo recibido', ['periodo' => $periodo]);
 
-            // Crear el directorio si no existe
-            $rutaDirectorio = 'archivos_nominas/' . $periodo;
-            $rutaCompleta = storage_path('app/public/' . $rutaDirectorio);
+        // Crear directorio si no existe
+        $rutaDirectorio = 'archivos_nominas/' . $periodo;
+        $rutaCompleta = storage_path('app/public/' . $rutaDirectorio);
 
-            if (!file_exists($rutaCompleta)) {
-                mkdir($rutaCompleta, 0755, true);
-            }
-
-            $rutaArchivoNomina = null;
-            $rutaArchivoDestajo = null;
-
-            // Procesar archivo de nóminas
-            if ($request->hasFile('arch_nomina') && $request->file('arch_nomina')->isValid()) {
-                $archivoNomina = $request->file('arch_nomina');
-                \Log::info('Archivo nóminas recibido', [
-                    'original_name' => $archivoNomina->getClientOriginalName(),
-                    'size_bytes' => $archivoNomina->getSize()
-                ]);
-
-                $nombreArchivoNomina = time() . '_nominas.' . $archivoNomina->getClientOriginalExtension();
-                $rutaArchivoNomina = $archivoNomina->storeAs($rutaDirectorio, $nombreArchivoNomina, 'public');
-                \Log::info('Archivo nóminas guardado', ['ruta' => $rutaArchivoNomina]);
-            }
-
-            // Procesar archivo de destajos
-            if ($request->hasFile('arch_destajo') && $request->file('arch_destajo')->isValid()) {
-                $archivoDestajo = $request->file('arch_destajo');
-                \Log::info('Archivo destajos recibido', [
-                    'original_name' => $archivoDestajo->getClientOriginalName(),
-                    'size_bytes' => $archivoDestajo->getSize()
-                ]);
-
-                $nombreArchivoDestajo = time() . '_destajos.' . $archivoDestajo->getClientOriginalExtension();
-                $rutaArchivoDestajo = $archivoDestajo->storeAs($rutaDirectorio, $nombreArchivoDestajo, 'public');
-                \Log::info('Archivo destajos guardado', ['ruta' => $rutaArchivoDestajo]);
-            }
-
-            // Guardar en la base de datos
-            \Log::info('Guardando en BD...');
-            $archivoNominaModel = new Archivonomina();
-            $archivoNominaModel->periodo = $periodo;
-            $archivoNominaModel->arch_nomina = $rutaArchivoNomina;
-            $archivoNominaModel->arch_destajo = $rutaArchivoDestajo;
-
-            // Calcular subtotal inmediatamente después de guardar
-            if ($rutaArchivoNomina) {
-                $subtotal = $this->calcularSubtotalNomina($rutaArchivoNomina);
-                $archivoNominaModel->subtotal = $subtotal;
-                \Log::info('Subtotal calculado y guardado', ['subtotal' => $subtotal]);
-            }
-
-            $archivoNominaModel->save();
-
-            \Log::info('Registro guardado', ['id' => $archivoNominaModel->id]);
-            \Log::info('=== FIN EXITOSO ===');
-
-            return redirect()->back()->with('success', 'Archivos subidos y procesados correctamente');
-
-        } catch (\Exception $e) {
-            \Log::error('=== ERROR ===', [
-                'mensaje' => $e->getMessage(),
-                'archivo' => $e->getFile(),
-                'linea' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return redirect()->back()->with('error', 'Error al subir los archivos: ' . $e->getMessage())->withInput();
+        if (!file_exists($rutaCompleta)) {
+            mkdir($rutaCompleta, 0755, true);
         }
-    }
 
+        $rutaArchivoNomina = null;
+        $rutaArchivoNominaSpyt = null;
+        $rutaArchivoNominaMontana = null;
+        $rutaArchivoDestajo = null;
+
+        // === Guardado de archivos ===
+        if ($request->hasFile('arch_nomina') && $request->file('arch_nomina')->isValid()) {
+            $archivo = $request->file('arch_nomina');
+            $nombre = time() . '_nominas.' . $archivo->getClientOriginalExtension();
+            $rutaArchivoNomina = $archivo->storeAs($rutaDirectorio, $nombre, 'public');
+            \Log::info('Archivo nóminas PSC guardado', ['ruta' => $rutaArchivoNomina]);
+        }
+
+        if ($request->hasFile('arch_nomina_spyt') && $request->file('arch_nomina_spyt')->isValid()) {
+            $archivo = $request->file('arch_nomina_spyt');
+            $nombre = time() . '_nominas_spyt.' . $archivo->getClientOriginalExtension();
+            $rutaArchivoNominaSpyt = $archivo->storeAs($rutaDirectorio, $nombre, 'public');
+            \Log::info('Archivo nóminas SPYT guardado', ['ruta' => $rutaArchivoNominaSpyt]);
+        }
+
+        if ($request->hasFile('arch_nomina_montana') && $request->file('arch_nomina_montana')->isValid()) {
+            $archivo = $request->file('arch_nomina_montana');
+            $nombre = time() . '_nominas_montana.' . $archivo->getClientOriginalExtension();
+            $rutaArchivoNominaMontana = $archivo->storeAs($rutaDirectorio, $nombre, 'public');
+            \Log::info('Archivo nóminas Montana guardado', ['ruta' => $rutaArchivoNominaMontana]);
+        }
+
+        if ($request->hasFile('arch_destajo') && $request->file('arch_destajo')->isValid()) {
+            $archivo = $request->file('arch_destajo');
+            $nombre = time() . '_destajos.' . $archivo->getClientOriginalExtension();
+            $rutaArchivoDestajo = $archivo->storeAs($rutaDirectorio, $nombre, 'public');
+            \Log::info('Archivo destajos guardado', ['ruta' => $rutaArchivoDestajo]);
+        }
+
+        // === Cálculo de subtotales (uno por uno, con liberación de memoria) ===
+        $subtotalpsc = 0;
+        $subtotalspyt = 0;
+        $subtotalmontana = 0;
+
+        if ($rutaArchivoNomina) {
+            $subtotalpsc = $this->calcularSubtotalNomina($rutaArchivoNomina);
+            \Log::info('Subtotal PSC calculado', ['subtotal' => $subtotalpsc]);
+            gc_collect_cycles();
+        }
+
+        if ($rutaArchivoNominaSpyt) {
+            $subtotalspyt = $this->calcularSubtotalNomina($rutaArchivoNominaSpyt);
+            \Log::info('Subtotal SPYT calculado', ['subtotal' => $subtotalspyt]);
+            gc_collect_cycles();
+        }
+
+        if ($rutaArchivoNominaMontana) {
+            $subtotalmontana = $this->calcularSubtotalNomina($rutaArchivoNominaMontana);
+            \Log::info('Subtotal Montana calculado', ['subtotal' => $subtotalmontana]);
+            gc_collect_cycles();
+        }
+
+        // === Guardar en base de datos ===
+        $archivoNominaModel = new Archivonomina();
+        $archivoNominaModel->periodo = $periodo . ' ' . now()->format('Y');
+        $archivoNominaModel->arch_nomina = $rutaArchivoNomina;
+        $archivoNominaModel->arch_nomina_spyt = $rutaArchivoNominaSpyt;
+        $archivoNominaModel->arch_nomina_montana = $rutaArchivoNominaMontana;
+        $archivoNominaModel->arch_destajo = $rutaArchivoDestajo;
+        $archivoNominaModel->subtotal = $subtotalpsc + $subtotalspyt + $subtotalmontana;
+
+        $archivoNominaModel->save();
+
+        \Log::info('Registro guardado en BD', [
+            'id' => $archivoNominaModel->id,
+            'subtotal_total' => $archivoNominaModel->subtotal
+        ]);
+
+        \Log::info('=== FIN EXITOSO ===', [
+            'memoria_final' => memory_get_usage(true),
+            'memoria_pico' => memory_get_peak_usage(true),
+        ]);
+
+        return redirect()->back()->with('success', 'Archivos subidos y procesados correctamente');
+
+    } catch (\Exception $e) {
+        \Log::error('=== ERROR EN SUBIR ARCHIVOS NOMINAS ===', [
+            'mensaje' => $e->getMessage(),
+            'archivo' => $e->getFile(),
+            'linea' => $e->getLine(),
+            'trace' => $e->getTraceAsString(),
+            'memoria_usada' => memory_get_usage(true),
+            'memoria_pico' => memory_get_peak_usage(true),
+        ]);
+
+        return redirect()->back()
+            ->with('error', 'Error al subir los archivos: ' . $e->getMessage())
+            ->withInput();
+    }
+}
     /**
      * Calcular el subtotal de la nómina desde el archivo Excel
      */
     private function calcularSubtotalNomina($rutaArchivo)
-    {
+{
+    try {
+        \Log::info('Calculando subtotal de nómina', ['ruta_db' => $rutaArchivo]);
+
+        $rutaCompleta = storage_path('app/public/' . $rutaArchivo);
+        \Log::info('Ruta completa construida', ['ruta_completa' => $rutaCompleta]);
+
+        if (!file_exists($rutaCompleta)) {
+            \Log::error('Archivo no encontrado para calcular subtotal', ['ruta_completa' => $rutaCompleta]);
+            return 0;
+        }
+
+        \Log::info('Archivo encontrado, cargando Excel...');
+
+        // ✅ Paso 1: Identificar el tipo de archivo
         try {
-            \Log::info('Calculando subtotal de nómina', ['ruta_db' => $rutaArchivo]);
-
-            // Construir la ruta completa correctamente
-            $rutaCompleta = storage_path('app/public/' . $rutaArchivo);
-            \Log::info('Ruta completa construida', ['ruta_completa' => $rutaCompleta]);
-
-            // Verificar si el archivo existe
-            if (!file_exists($rutaCompleta)) {
-                \Log::error('Archivo no encontrado para calcular subtotal', ['ruta_completa' => $rutaCompleta]);
-                return 0;
-            }
-
-            \Log::info('Archivo encontrado, cargando Excel...');
-            $spreadsheet = IOFactory::load($rutaCompleta);
-
-            // Verificar cuántas hojas tiene el archivo
-            $numeroHojas = $spreadsheet->getSheetCount();
-            $nombresHojas = $spreadsheet->getSheetNames();
-            \Log::info('Archivo cargado exitosamente para subtotal', [
-                'numero_hojas' => $numeroHojas,
-                'nombres_hojas' => $nombresHojas
-            ]);
-
-            $totalGeneral = 0;
-
-            // Iterar por todas las hojas
-            for ($hojaIndex = 0; $hojaIndex < $numeroHojas; $hojaIndex++) {
-                $worksheet = $spreadsheet->getSheet($hojaIndex);
-                $nombreHoja = $nombresHojas[$hojaIndex];
-                \Log::info('Procesando hoja para subtotal', [
-                    'indice' => $hojaIndex,
-                    'nombre' => $nombreHoja
-                ]);
-
-                $totalHoja = 0;
-                $fila = 5;
-                $espaciosBlancoSeguidos = 0;
-                $maxEspaciosBlanco = 3;
-
-                \Log::info('Iniciando iteración desde fila 5 en hoja: ' . $nombreHoja);
-
-                // Iterar hasta encontrar 3 espacios en blanco seguidos
-                $filasProcesadas = 0;
-                while ($espaciosBlancoSeguidos < $maxEspaciosBlanco && $fila < 1000) {
-                    $nombreEmpleado = $worksheet->getCell('B' . $fila)->getValue();
-
-                    // OBTENER EL VALOR CALCULADO en lugar de la fórmula
-                    $celdaP = $worksheet->getCell('P' . $fila);
-                    $valorP = $celdaP->getCalculatedValue();
-
-                    \Log::debug('Procesando fila en hoja ' . $nombreHoja . ' para subtotal', [
-                        'fila' => $fila,
-                        'nombre_empleado' => $nombreEmpleado,
-                        'formula_p' => $celdaP->getValue(),
-                        'valor_calculado_p' => $valorP,
-                        'espacios_blancos' => $espaciosBlancoSeguidos
-                    ]);
-
-                    // Verificar si la celda del nombre está vacía
-                    if (empty($nombreEmpleado) || trim($nombreEmpleado) === '') {
-                        $espaciosBlancoSeguidos++;
-                        \Log::debug('Fila vacía encontrada en hoja ' . $nombreHoja, [
-                            'fila' => $fila,
-                            'espacios_consecutivos' => $espaciosBlancoSeguidos
-                        ]);
-                    } else {
-                        $espaciosBlancoSeguidos = 0;
-
-                        // Obtener el valor total de la columna P (ya calculado)
-                        if (is_numeric($valorP)) {
-                            $totalHoja += $valorP;
-                            $totalGeneral += $valorP;
-                            \Log::debug('Valor sumado en hoja ' . $nombreHoja, [
-                                'fila' => $fila,
-                                'valor' => $valorP,
-                                'total_hoja' => $totalHoja,
-                                'total_general' => $totalGeneral
-                            ]);
-                        } else {
-                            \Log::debug('Valor no numérico en columna P en hoja ' . $nombreHoja, [
-                                'fila' => $fila,
-                                'valor' => $valorP
-                            ]);
-                        }
-                    }
-
-                    $fila++;
-                    $filasProcesadas++;
-
-                    // Seguridad para evitar bucles infinitos
-                    if ($filasProcesadas > 500) {
-                        \Log::warning('Límite de filas procesadas alcanzado en hoja ' . $nombreHoja, [
-                            'filas' => $filasProcesadas
-                        ]);
-                        break;
-                    }
-                }
-
-                \Log::info('Hoja procesada completamente para subtotal', [
-                    'nombre_hoja' => $nombreHoja,
-                    'total_hoja' => $totalHoja,
-                    'filas_procesadas' => $filasProcesadas
-                ]);
-            }
-
-            \Log::info('Cálculo de subtotal completado para todas las hojas', [
-                'total_general' => $totalGeneral,
-                'numero_hojas_procesadas' => $numeroHojas
-            ]);
-
-            return $totalGeneral;
-
+            $tipo = \PhpOffice\PhpSpreadsheet\IOFactory::identify($rutaCompleta);
+            \Log::info('Tipo de archivo identificado', ['tipo' => $tipo]);
         } catch (\Exception $e) {
-            \Log::error('Error al calcular subtotal de nómina: ' . $e->getMessage(), [
-                'exception' => $e,
-                'ruta_archivo' => $rutaArchivo ?? 'no definida'
+            \Log::error('No se pudo identificar el tipo de archivo Excel', [
+                'ruta' => $rutaCompleta,
+                'error' => $e->getMessage()
             ]);
             return 0;
         }
-    }
 
+        // ✅ Paso 2: Crear lector basado en el tipo
+        $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader($tipo);
+        $reader->setReadDataOnly(true);  // Solo datos
+        $reader->setLoadAllSheets();     // Cargar todas las hojas
+
+        // ✅ Paso 3: Cargar el archivo
+        $spreadsheet = $reader->load($rutaCompleta);
+
+        $nombresHojas = $spreadsheet->getSheetNames();
+        $totalGeneral = 0;
+
+        foreach ($nombresHojas as $nombreHoja) {
+            $worksheet = $spreadsheet->getSheetByName($nombreHoja);
+            \Log::debug('Procesando hoja para subtotal', ['hoja' => $nombreHoja]);
+
+            $fila = 5;
+            $espaciosBlancoSeguidos = 0;
+
+            while ($espaciosBlancoSeguidos < 3 && $fila <= 1000) {
+                $nombreEmpleado = $worksheet->getCell('B' . $fila)->getValue();
+                $valorP = $worksheet->getCell('P' . $fila)->getCalculatedValue();
+
+                if (empty(trim($nombreEmpleado))) {
+                    $espaciosBlancoSeguidos++;
+                } else {
+                    $espaciosBlancoSeguidos = 0;
+                    if (is_numeric($valorP)) {
+                        $totalGeneral += $valorP;
+                    }
+                }
+
+                $fila++;
+            }
+        }
+
+        \Log::info('Cálculo de subtotal completado', ['total_general' => $totalGeneral]);
+
+        // 🔥 Liberar recursos
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet, $reader, $worksheet);
+        gc_collect_cycles();
+
+        return $totalGeneral;
+
+    } catch (\Exception $e) {
+        \Log::error('Error al calcular subtotal', [
+            'mensaje' => $e->getMessage(),
+            'ruta' => $rutaArchivo,
+            'linea' => $e->getLine(),
+        ]);
+
+        if (isset($spreadsheet)) {
+            $spreadsheet->disconnectWorksheets();
+            unset($spreadsheet);
+        }
+        gc_collect_cycles();
+        return 0;
+    }
+}
     public function registros(){
         return view('nominas.registros');
     }

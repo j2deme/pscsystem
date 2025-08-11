@@ -1,7 +1,9 @@
 @php
     $documentosObligatorios = [];
     $documentosObligatorios = [
-        ['label' => 'Nóminas', 'name' => 'arch_nomina'],
+        ['label' => 'Nómina PSC', 'name' => 'arch_nomina'],
+        ['label' => 'Nómina SPyT', 'name' => 'arch_nomina_spyt'],
+        ['label' => 'Nómina Montana', 'name' => 'arch_nomina_montana'],
         ['label' => 'Destajos', 'name' => 'arch_destajo'],
     ];
 

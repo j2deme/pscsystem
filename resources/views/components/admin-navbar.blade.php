@@ -178,19 +178,19 @@
             'icono' => 'message',
             'color' => 'bg-purple-300 dark:bg-purple-700',
         ],
-        [
+        /*[
             'titulo' => 'Importar Datos',
             'ruta' => route('importar.excel'),
             'icono' => 'folder-open',
             'color' => 'bg-gray-300 dark:bg-gray-700',
-            'disabled' => false,
-        ],
+            'disabled' => true,
+        ],*/
         [
             'titulo' => 'Registrar Datos',
             'ruta' => route('registrarNominas'),
             'icono' => 'file-text',
             'color' => 'bg-orange-300 dark:bg-orange-700',
-            'disabled' => true,
+            'disabled' => false,
         ],
         [
             'titulo' => 'Registrar Finiquitos',
