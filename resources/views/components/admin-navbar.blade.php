@@ -178,6 +178,14 @@
             'icono' => 'message',
             'color' => 'bg-purple-300 dark:bg-purple-700',
         ],
+        [
+            'titulo' => 'Depurar datos',
+            'form' => true, // Marcador para saber que es un formulario
+            'action' => route('admin.import.unify-duplicates'),
+            'icono' => 'message',
+            'color' => 'bg-purple-300 dark:bg-purple-700',
+            'confirm' => '¿Estás seguro de unificar los usuarios duplicados? Esta acción no se puede deshacer.',
+        ],
         /*[
             'titulo' => 'Importar Datos',
             'ruta' => route('importar.excel'),
@@ -259,6 +267,24 @@
                             Importar
                         </button>
                     </form>
+                @elseif (isset($card['form']) && $card['form'])
+                    <form action="{{ $card['action'] }}" method="POST" class="p-3 rounded-lg {{ $card['color'] }} hover:bg-opacity-70 transition relative block"
+    onsubmit="return confirm('{{ $card['confirm'] ?? '¿Estás seguro?' }}')">
+    @csrf
+    <button type="submit" class="w-full h-full flex items-center space-x-3 text-left">
+        <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+            <i class="ti ti-{{ $card['icono'] }} text-3xl {{
+                Str::contains($card['color'], 'blue') ? 'text-blue-700' :
+                (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
+                (Str::contains($card['color'], 'red') ? 'text-red-700' :
+                (Str::contains($card['color'], 'green') ? 'text-green-700' :
+                (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
+                (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
+            }}"></i>
+        </div>
+        <span class="font-medium">{{ $card['titulo'] }}</span>
+    </button>
+</form>
                 @else
                     <a href="{{ $card['ruta'] ?? '#' }}"
                         @if (in_array($card['titulo'], ['RRHH', 'Nóminas', 'IMSS'])) @click.prevent="$dispatch('cambiar-menu', { menu: '{{ strtolower(str_replace(' ', '_', $card['titulo'])) }}' })" @endif

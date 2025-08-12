@@ -11,6 +11,7 @@ use Carbon\Carbon;
 //use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Unidades;
+use App\Models\SolicitudAlta;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 
@@ -354,4 +355,76 @@ public function importarBajas(Request $request)
     }
 
 
+     public function unifyDuplicates(Request $request)
+    {
+        // Opcional: poner un límite de tiempo
+        ini_set('max_execution_time', 300);
+
+        \Log::info('Iniciando unificación de duplicados desde la interfaz.');
+
+        try {
+            // Paso 1: Obtener nombres duplicados (insensible a mayúsculas)
+            $duplicates = DB::table('users')
+                ->select(DB::raw('LOWER(name) as lower_name'), DB::raw('COUNT(*) as count'))
+                ->groupBy(DB::raw('LOWER(name)'))
+                ->having('count', '>', 1)
+                ->pluck('lower_name');
+
+            if ($duplicates->isEmpty()) {
+                return redirect()->back()->with('info', 'No se encontraron usuarios duplicados.');
+            }
+
+            $processed = 0;
+            $logInfo = "<strong>Usuarios procesados:</strong><ul>";
+
+            foreach ($duplicates as $lowerName) {
+                $users = User::whereRaw('LOWER(name) = ?', [$lowerName])
+                    ->orderBy('fecha_ingreso', 'asc')
+                    ->get();
+
+                if ($users->count() <= 1) continue;
+
+                $latestUser = $users->last();
+                $solicitudAlta = SolicitudAlta::find($latestUser->sol_alta_id);
+
+                if (!$solicitudAlta) {
+                    \Log::warning("SolicitudAlta no encontrada para sol_alta_id: {$latestUser->sol_alta_id}");
+                    continue;
+                }
+
+                // Construir historial de reingresos
+                $reingresos = $users->map(function ($user, $index) {
+                    $fecha = Carbon::parse($user->fecha_ingreso)->format('d/m/Y');
+                    return ($index + 1) . "° ingreso: {$fecha}";
+                })->implode(', ');
+
+                // Actualizar
+                $solicitudAlta->reingreso = $reingresos;
+                $solicitudAlta->save();
+
+                // Eliminar antiguos
+                $users->except($latestUser->id)->each(function ($user) {
+                    \Log::info("Procesando usuario antiguo: {$user->id}, {$user->name}, ingreso: {$user->fecha_ingreso}");
+
+                    // Marcar como Inactivo ANTES de eliminar
+                    $user->estatus = 'Inactivo';
+                    $user->save();
+                    $user->delete();
+                });
+
+                $logInfo .= "<li><strong>{$users->first()->name}</strong>: {$users->count()} ingresos unificados</li>";
+                $processed++;
+            }
+
+            $logInfo .= "</ul>";
+
+            return redirect()->back()->with('success', "✅ Proceso completado. Se unificaron $processed usuarios.")
+                             ->with('info', $logInfo);
+
+        } catch (\Exception $e) {
+            \Log::error('Error en unifyDuplicates: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Ocurrió un error: ' . $e->getMessage());
+        }
+    }
 }
