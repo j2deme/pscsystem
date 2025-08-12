@@ -28,7 +28,6 @@
                         <form action="{{ route('rh.almacenarBajaNueva', $user->id) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                             @csrf
 
-                            <!-- Datos Generales -->
                             <div class="bg-gray-50 dark:bg-gray-750/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-5">Datos Generales</h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -60,7 +59,6 @@
                                 </div>
                             </div>
 
-                            <!-- Datos de Baja -->
                             <div class="bg-gray-50 dark:bg-gray-750/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-5">Datos de Baja</h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -167,7 +165,6 @@
                                 </div>
                             </div>
 
-                            <!-- Botones -->
                             <div class="flex flex-col sm:flex-row sm:justify-center gap-3 pt-4">
                                 <button type="submit"
                                         class="px-6 py-2.5 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition focus:ring-2 focus:ring-green-300">

@@ -97,172 +97,204 @@
 
 </style>
 <x-app-layout>
-    <x-navbar></x-navbar>
+    <x-navbar />
     <div class="py-4 px-2 sm:py-6 sm:px-4">
         <div class="container mx-auto max-w-7xl">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-            <h2 class="text-xl font-bold text-gray-700 dark:text-gray-200 mb-4 border-b pb-2">Datos Generales</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
-                <div>
-                    <p class="text-gray-500">Fecha</p>
-                    <p class="font-medium text-gray-900 dark:text-white">
-                        {{ \Carbon\Carbon::parse($solicitud->fecha_baja)->format('d-m-Y') }}
-                    </p>
+            <!-- Datos Generales -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-50 to-transparent dark:from-gray-700 dark:to-transparent">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">Datos Generales</h2>
                 </div>
-                <div>
-                    <p class="text-gray-500">NSS</p>
-                    <p class="font-medium text-gray-900 dark:text-white">
-                        {{ $solicitudAlta->nss }}
-                    </p>
-                </div>
-                <div rowspan="3" class="flex justify-center items-center">
-                    <img src="{{ asset($documentacion->arch_foto) }}" alt="Foto del solicitante" class="rounded-xl w-24 h-24 object-cover border-2 border-gray-300 shadow">
-                </div>
-                <div>
-                    <p class="text-gray-500">Fecha de Ingreso</p>
-                    <p class="font-medium text-gray-900 dark:text-white">
-                        {{ \Carbon\Carbon::parse($user->fecha_ingreso)->format('d-m-Y') }}
-                    </p>
-                </div>
-                <div>
-                    <p class="text-gray-500">¿Incapacidad?</p>
-                    <p class="font-medium text-gray-900 dark:text-white">
-                        {{ $solicitud->incapacidad ?? 'No especificado' }}
-                    </p>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">Fecha de Baja</p>
+                            <p class="font-medium text-gray-900 dark:text-white mt-1">
+                                {{ \Carbon\Carbon::parse($solicitud->fecha_baja)->format('d/m/Y') }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">NSS</p>
+                            <p class="font-medium text-gray-900 dark:text-white mt-1">
+                                {{ $solicitudAlta->nss }}
+                            </p>
+                        </div>
+                        <div class="flex justify-center md:justify-end">
+                            <img src="{{ asset($documentacion->arch_foto) }}"
+                                 alt="Foto del solicitante"
+                                 class="rounded-xl w-24 h-24 object-cover border-2 border-gray-300 dark:border-gray-600 shadow-md">
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">Fecha de Ingreso</p>
+                            <p class="font-medium text-gray-900 dark:text-white mt-1">
+                                {{ \Carbon\Carbon::parse($user->fecha_ingreso)->format('d/m/Y') }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">¿Incapacidad?</p>
+                            <p class="font-medium text-gray-900 dark:text-white mt-1">
+                                {{ $solicitud->incapacidad ?? 'No especificado' }}
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow mt-2">
-            <h2 class="text-xl font-bold text-gray-700 dark:text-gray-200 mb-4 border-b pb-2">Datos de Baja</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                <div>
-                    <p class="text-gray-500">Nombre</p>
-                    <p class="font-medium text-gray-900 dark:text-white">{{ $user->name }}</p>
+            <!-- Datos de Baja -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden mt-6">
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-transparent dark:from-gray-700/50 dark:to-transparent">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">Datos de Baja</h2>
                 </div>
-                <div>
-                    <p class="text-gray-500">Empresa</p>
-                    <p class="font-medium text-gray-900 dark:text-white">{{ $user->empresa }}</p>
-                </div>
-                <div>
-                    <p class="text-gray-500">Punto</p>
-                    <p class="font-medium text-gray-900 dark:text-white">{{ $user->punto }}</p>
-                </div>
-                <div>
-                    <p class="text-gray-500">Por</p>
-                    <p class="font-medium text-gray-900 dark:text-white">
-                        {{ $solicitud->por ?? 'No especificado' }}
-                    </p>
-                </div>
-                <div>
-                    <p class="text-gray-500">Última Asistencia</p>
-                    <p class="font-medium text-gray-900 dark:text-white">
-                        {{ \Carbon\Carbon::parse($solicitud->ultima_asistencia)->format('d-m-Y') ?? 'No especificado' }}
-                    </p>
-                </div>
-                <div>
-                    <p class="text-gray-500">Estado de la Solicitud</p>
-                    <p class="font-medium text-gray-900 dark:text-white">
-                        @if($solicitud->estatus == 'En Proceso')
-                            <span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none text-gray-800 bg-yellow-300 rounded-full">
-                                {{ $solicitud->estatus }}
-                            </span>
-                        @elseif($solicitud->estatus == 'Aceptada')
-                            <span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none text-green-100 bg-green-600 rounded-full">
-                                {{ $solicitud->estatus }}
-                            </span>
-                        @elseif($solicitud->estatus == 'Rechazada')
-                            <span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs leading-none text-red-100 bg-red-600 rounded-full">
-                                {{ $solicitud->estatus }}
-                            </span>
-                        @endif
-                    </p>
-                </div>
-                <div>
-                    <p class="text-gray-500">Descuento de no devolución de equipo/material</p>
-                    <p class="font-medium text-gray-900 dark:text-white">
-                        {{ $solicitud->descuento ?? 'No se ha aplicado descuento' }}
-                    </p>
-                </div>
-                <div>
-                    <p class="text-gray-500">Archivo de Baja</p>
-                    @if($solicitud->archivo_baja)
-                        <p class="font-medium text-blue-500 dark:text-white">
-                            <a href="{{ asset('storage/' . $solicitud->archivo_baja) }}" target="_blank">
-                                Ver documento
-                            </a>
-                        </p>
-                    @else
-                        <p class="text-sm text-red-500">No disponible</p>
-                    @endif
-                </div>
-
-                @if($solicitud->por == 'Renuncia')
-                    <div>
-                        <p class="text-gray-500">Archivo de Renuncia</p>
-                        @if($solicitud->arch_renuncia)
-                            <p class="font-medium text-blue-500 dark:text-white">
-                                <a href="{{ asset('storage/' . $solicitud->arch_renuncia) }}" target="_blank">
+                <div class="p-6 space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">Nombre</p>
+                            <p class="font-medium text-gray-900 dark:text-white mt-1">{{ $user->name }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">Empresa</p>
+                            <p class="font-medium text-gray-900 dark:text-white mt-1">{{ $user->empresa }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">Punto</p>
+                            <p class="font-medium text-gray-900 dark:text-white mt-1">{{ $user->punto }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">Motivo de Baja</p>
+                            <p class="font-medium text-gray-900 dark:text-white mt-1">
+                                {{ $solicitud->por ?? 'No especificado' }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">Última Asistencia</p>
+                            <p class="font-medium text-gray-900 dark:text-white mt-1">
+                                {{ \Carbon\Carbon::parse($solicitud->ultima_asistencia)->format('d/m/Y') }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">Estado</p>
+                            <div class="mt-1">
+                                @if($solicitud->estatus == 'En Proceso')
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">
+                                        ⚙️ {{ $solicitud->estatus }}
+                                    </span>
+                                @elseif($solicitud->estatus == 'Aceptada')
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                                        ✅ {{ $solicitud->estatus }}
+                                    </span>
+                                @elseif($solicitud->estatus == 'Rechazada')
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200">
+                                        ❌ {{ $solicitud->estatus }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">Descuento por equipo/material no devuelto</p>
+                            <p class="font-medium text-gray-900 dark:text-white mt-1">
+                                {{ $solicitud->descuento ?? 'No se ha aplicado descuento' }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">Archivo de Baja</p>
+                            @if($solicitud->archivo_baja)
+                                <a href="{{ asset('storage/' . $solicitud->archivo_baja) }}" target="_blank"
+                                   class="inline-flex items-center mt-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
                                     Ver documento
                                 </a>
-                            </p>
-                        @else
-                            <p class="text-sm text-red-500">No disponible</p>
+                            @else
+                                <p class="text-sm text-red-500 mt-1">No disponible</p>
+                            @endif
+                        </div>
+
+                        @if($solicitud->por == 'Renuncia')
+                            <div>
+                                <p class="text-gray-500 dark:text-gray-400">Archivo de Renuncia Firmada</p>
+                                @if($solicitud->arch_renuncia)
+                                    <a href="{{ asset('storage/' . $solicitud->arch_renuncia) }}" target="_blank"
+                                       class="inline-flex items-center mt-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        Ver documento
+                                    </a>
+                                @else
+                                    <p class="text-sm text-red-500 mt-1">No disponible</p>
+                                @endif
+                            </div>
                         @endif
+
+                        <div>
+                            <p class="text-gray-500 dark:text-gray-400">Entrega de Equipo</p>
+                            @if($solicitud->arch_equipo_entregado)
+                                <a href="{{ asset('storage/' . $solicitud->arch_equipo_entregado) }}" target="_blank"
+                                   class="inline-flex items-center mt-1 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    Ver documento
+                                </a>
+                            @else
+                                <p class="text-sm text-red-500 mt-1">No disponible</p>
+                            @endif
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <p class="text-gray-500 dark:text-gray-400">Motivo (opcional)</p>
+                            <p class="font-medium text-gray-900 dark:text-white mt-1 whitespace-pre-line">
+                                {{ $solicitud->motivo ?? 'Sin detalles adicionales' }}
+                            </p>
+                        </div>
                     </div>
-                @endif
 
-                <div>
-                    <p class="text-gray-500">Archivo de Entrega de Equipo:</p>
-                    @if($solicitud->arch_equipo_entregado)
-                        <p class="font-medium text-blue-500 dark:text-white">
-                            <a href="{{ asset('storage/' . $solicitud->arch_equipo_entregado) }}" target="_blank">
-                                Ver documento
+                    <!-- Botones de acción -->
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                        @if(Auth::user()->rol == 'admin' || in_array(Auth::user()->rol, ['AUXILIAR NOMINAS', 'Auxiliar Nominas']) || (isset(Auth::user()->solicitudAlta) && in_array(Auth::user()->solicitudAlta->rol, ['AUXILIAR NOMINAS', 'Auxiliar Nominas'])))
+                            <button onclick="mostrarFiniquito({{ $solicitud->id }})"
+                                    class="px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                Finiquito
+                            </button>
+                        @endif
+
+                        @if(($solicitud->estatus == 'En Proceso' && $solicitud->por == 'Renuncia') || ($solicitud->estatus == 'En Proceso' && $solicitud->por == 'Separación Voluntaria' && Auth::user()->rol == 'admin'))
+                            <a href="{{ route('rh.aceptarBaja', $solicitud->id) }}"
+                               class="px-5 py-2.5 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Aceptar
                             </a>
-                        </p>
-                    @else
-                        <p class="text-sm text-red-500">No disponible</p>
-                    @endif
-                </div>
+                            <a href="{{ route('rh.rechazarBaja', $solicitud->id) }}"
+                               class="px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                Rechazar
+                            </a>
+                        @endif
 
-                <div class="md:col-span-2">
-                    <p class="text-gray-500">Motivo</p>
-                    <p class="font-medium text-gray-900 dark:text-white whitespace-pre-line">
-                        {{ $solicitud->motivo ?? 'Sin detalles adicionales' }}
-                    </p>
+                        <a href="{{ route('dashboard') }}"
+                           class="px-5 py-2.5 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Regresar
+                        </a>
+                    </div>
                 </div>
-
             </div>
-            <div class="text-center mt-6">
-            @if(Auth::user()->rol == 'admin' || Auth::user()->rol == 'AUXILIAR NOMINAS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR NOMINAS' || Auth::user()->solicitudAlta->rol == 'Auxiliar Nominas' || Auth::user()->rol == 'Auxiliar Nominas')
-                <a href="javascript:void(0);" onclick="mostrarFiniquito({{ $solicitud->id }})"
-                    class="inline-block bg-red-300 text-gray-800 py-2 px-6 rounded-md hover:bg-red-400 transition-colors">
-                    Finiquito
-                </a>
-            @endif
-            @if(($solicitud->estatus == 'En Proceso' && $solicitud->por == 'Renuncia') || ($solicitud->estatus == 'En Proceso' && $solicitud->por == 'Separación Voluntaria' && Auth::user()->rol == 'admin'))
-                <a href="{{route('rh.aceptarBaja', $solicitud->id)}}" class="inline-block bg-green-300 text-gray-800 py-2 px-6 rounded-md hover:bg-green-400 transition-colors">
-                    Aceptar
-                </a>
-                <a href="{{route('rh.rechazarBaja', $solicitud->id)}}" class="inline-block bg-red-300 text-gray-800 py-2 px-6 rounded-md hover:bg-red-400 transition-colors">
-                    Rechazar
-                </a>
-                <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-6 rounded-md hover:bg-gray-400 transition-colors">
-                    Regresar
-                </a>
-            @else
-                <a href="{{ route('dashboard') }}" class="inline-block bg-gray-300 text-gray-800 py-2 px-6 rounded-md hover:bg-gray-400 transition-colors">
-                    Regresar
-                </a>
-            @endif
         </div>
-        </div>
-
     </div>
-    </div>
-
-</x-app-layout>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</x-app-layout><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
     const tieneRenuncia = {{ $solicitud->arch_renuncia ? 'true' : 'false' }};

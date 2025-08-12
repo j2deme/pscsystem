@@ -5,11 +5,11 @@
     use Carbon\Carbon;
 
     $conteoAltas = SolicitudAlta::where('status', 'Aceptada')
-        ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(5))//si se requiere respetar a toda la quincena
+        ->whereDate('fecha_ingreso', '>=', Carbon::today('America/Mexico_City')->subDays(10))//si se requiere respetar a toda la quincena
         ->count();
     $conteoBajas = SolicitudBajas::where('estatus', 'Aceptada')
             ->where('por', 'Renuncia')
-            ->whereDate('created_at', '>=', Carbon::today('America/Mexico_City')->subDays(5))
+            ->whereDate('fecha_baja', '>=', Carbon::today('America/Mexico_City')->subDays(10))
             ->count();
 
     $cards = [
