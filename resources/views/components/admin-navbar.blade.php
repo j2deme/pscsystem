@@ -345,14 +345,11 @@
 
     <div class="flex-1 overflow-y-auto">
         <div x-data="{ slide: 1 }" class="relative">
-            <!-- Contenedor del carrusel -->
             <div class="overflow-hidden">
                 <div :class="`flex transition-transform duration-500 ease-in-out transform ${slide === 1 ? 'translate-x-0' : 'translate-x-full md:translate-x-[-50%]'}`"
                     style="display: flex; width: 200%;">
-                    <!-- Slide 1: Primeras 3 tarjetas -->
                     <div class="flex w-full">
                         <div class="grid gap-4 p-4 w-full" style="grid-template-columns: repeat(3, 1fr);">
-                            <!-- Elementos Activos -->
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-blue-500">
                                 <div class="h-full flex flex-col min-w-0">
                                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Elementos Activos
@@ -385,7 +382,6 @@
                                 </div>
                             </div>
 
-                            <!-- Altas Nuevas -->
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-green-500">
                                 <div class="h-full flex flex-col min-w-0">
                                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Altas Nuevas</h3>
@@ -416,7 +412,6 @@
                                 </div>
                             </div>
 
-                            <!-- Bajas Recientes -->
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-yellow-500">
                                 <div class="h-full flex flex-col min-w-0">
                                     <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Bajas Recientes
@@ -450,7 +445,6 @@
                         </div>
                     </div>
 
-                    <!-- Slide 2: Los 3 livewires -->
                     <div class="flex w-full">
                         <div class="grid gap-4 p-4 w-full" style="grid-template-columns: repeat(3, 1fr);">
                             @livewire('nominamensual')
