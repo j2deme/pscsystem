@@ -11,6 +11,7 @@ class Filtrousuarios extends Component
     use WithPagination;
 
     public $search = '';
+
     protected $queryString = ['search'];
 
     public function updatingSearch()
@@ -20,15 +21,14 @@ class Filtrousuarios extends Component
 
     public function render()
     {
-        if (strlen($this->search) > 2) {
-            $this->usuarios = User::where('estatus', 'Activo')
-                ->where('name', 'like', '%' . $this->search . '%')
-                ->limit(5)
-                ->get();
-        } else {
-            $this->usuarios = [];
+        $usuariosQuery = User::where('estatus', 'Activo');
+
+        if (strlen($this->search) > 1) {
+            $usuariosQuery->where('name', 'like', '%' . $this->search . '%');
         }
 
-        return view('livewire.nuevadeduccion');
+        $usuarios = $usuariosQuery->paginate(10);
+
+        return view('livewire.filtrousuarios', compact('usuarios'));
     }
 }
