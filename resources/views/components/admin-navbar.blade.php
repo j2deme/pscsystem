@@ -455,7 +455,7 @@
                 </div>
             </div>
 
-            <!-- Botones de navegación -->
+            <!-- Botones de navegación
             <div class="flex justify-center space-x-2 mt-4">
                 <button type="button" @click="slide = 1"
                     :class="{ 'bg-blue-500 text-white': slide ===
@@ -465,7 +465,7 @@
                     :class="{ 'bg-blue-500 text-white': slide ===
                         2, 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300': slide !== 2 }"
                     class="w-3 h-3 rounded-full focus:outline-none" aria-label="Slide 2"></button>
-            </div>
+            </div>-->
 
             <!-- Flechas opcionales (puedes quitarlas si no las quieres) -->
             <button type="button" @click="slide = 1"
