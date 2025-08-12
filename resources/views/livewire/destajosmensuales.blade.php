@@ -1,6 +1,6 @@
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-green-500">
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-orange-500">
     <div class="h-full flex flex-col min-w-0">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Suma de pagos de Nómina</h3>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Suma de pagos de Destajos</h3>
         <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">
             ${{ number_format($totalMesActual, 2) }}
         </div>

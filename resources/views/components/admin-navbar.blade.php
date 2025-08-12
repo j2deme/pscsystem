@@ -223,16 +223,24 @@
                     <div class="p-3 rounded-lg {{ $card['color'] }} opacity-50 cursor-not-allowed">
                         <div class="flex items-center space-x-3">
                             <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
-                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
-                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
-                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
-                                    (Str::contains($card['color'], 'indigo') ? 'text-indigo-700' :
-                                    (Str::contains($card['color'], 'orange') ? 'text-orange-700' :
-                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
-                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
-                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
-                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))))
-                                }}"></i>
+                                <i
+                                    class="ti ti-{{ $card['icono'] }} text-3xl {{ Str::contains($card['color'], 'blue')
+                                        ? 'text-blue-700'
+                                        : (Str::contains($card['color'], 'yellow')
+                                            ? 'text-yellow-700'
+                                            : (Str::contains($card['color'], 'indigo')
+                                                ? 'text-indigo-700'
+                                                : (Str::contains($card['color'], 'orange')
+                                                    ? 'text-orange-700'
+                                                    : (Str::contains($card['color'], 'red')
+                                                        ? 'text-red-700'
+                                                        : (Str::contains($card['color'], 'green')
+                                                            ? 'text-green-700'
+                                                            : (Str::contains($card['color'], 'purple')
+                                                                ? 'text-purple-700'
+                                                                : (Str::contains($card['color'], 'gray')
+                                                                    ? 'text-gray-700'
+                                                                    : 'text-gray-800'))))))) }}"></i>
                             </div>
                             <span class="font-medium">{{ $card['titulo'] }}</span>
                         </div>
@@ -247,15 +255,22 @@
                         class="p-3 rounded-lg {{ $card['color'] }}">
                         @csrf
                         <div class="flex items-center space-x-3">
-                            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
-                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
-                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
-                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
-                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
-                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
-                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
-                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
-                                }}"></i>
+                            <div
+                                class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                                <i
+                                    class="ti ti-{{ $card['icono'] }} text-3xl {{ Str::contains($card['color'], 'blue')
+                                        ? 'text-blue-700'
+                                        : (Str::contains($card['color'], 'yellow')
+                                            ? 'text-yellow-700'
+                                            : (Str::contains($card['color'], 'red')
+                                                ? 'text-red-700'
+                                                : (Str::contains($card['color'], 'green')
+                                                    ? 'text-green-700'
+                                                    : (Str::contains($card['color'], 'purple')
+                                                        ? 'text-purple-700'
+                                                        : (Str::contains($card['color'], 'gray')
+                                                            ? 'text-gray-700'
+                                                            : 'text-gray-800'))))) }}"></i>
                             </div>
                             <span class="font-medium">{{ $card['titulo'] }}</span>
                         </div>
@@ -268,19 +283,27 @@
                         </button>
                     </form>
                 @elseif (isset($card['form']) && $card['form'])
-                    <form action="{{ $card['action'] }}" method="POST" class="p-3 rounded-lg {{ $card['color'] }} hover:bg-opacity-70 transition relative block"
+                    <form action="{{ $card['action'] }}" method="POST"
+                        class="p-3 rounded-lg {{ $card['color'] }} hover:bg-opacity-70 transition relative block"
                         onsubmit="return confirm('{{ $card['confirm'] ?? '¿Estás seguro?' }}')">
                         @csrf
                         <button type="submit" class="w-full h-full flex items-center space-x-3 text-left">
-                            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
-                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
-                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
-                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
-                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
-                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
-                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
-                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
-                                }}"></i>
+                            <div
+                                class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                                <i
+                                    class="ti ti-{{ $card['icono'] }} text-3xl {{ Str::contains($card['color'], 'blue')
+                                        ? 'text-blue-700'
+                                        : (Str::contains($card['color'], 'yellow')
+                                            ? 'text-yellow-700'
+                                            : (Str::contains($card['color'], 'red')
+                                                ? 'text-red-700'
+                                                : (Str::contains($card['color'], 'green')
+                                                    ? 'text-green-700'
+                                                    : (Str::contains($card['color'], 'purple')
+                                                        ? 'text-purple-700'
+                                                        : (Str::contains($card['color'], 'gray')
+                                                            ? 'text-gray-700'
+                                                            : 'text-gray-800'))))) }}"></i>
                             </div>
                             <span class="font-medium">{{ $card['titulo'] }}</span>
                         </button>
@@ -290,15 +313,22 @@
                         @if (in_array($card['titulo'], ['RRHH', 'Nóminas', 'IMSS'])) @click.prevent="$dispatch('cambiar-menu', { menu: '{{ strtolower(str_replace(' ', '_', $card['titulo'])) }}' })" @endif
                         class="block p-3 rounded-lg {{ $card['color'] }} {{ $isActive ? 'ring-2 ring-blue-500' : '' }} hover:bg-opacity-70 transition relative">
                         <div class="flex items-center space-x-3">
-                            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
-                                <i class="ti ti-{{ $card['icono'] }} text-3xl {{
-                                    Str::contains($card['color'], 'blue') ? 'text-blue-700' :
-                                    (Str::contains($card['color'], 'yellow') ? 'text-yellow-700' :
-                                    (Str::contains($card['color'], 'red') ? 'text-red-700' :
-                                    (Str::contains($card['color'], 'green') ? 'text-green-700' :
-                                    (Str::contains($card['color'], 'purple') ? 'text-purple-700' :
-                                    (Str::contains($card['color'], 'gray') ? 'text-gray-700' : 'text-gray-800')))))
-                                }}"></i>
+                            <div
+                                class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                                <i
+                                    class="ti ti-{{ $card['icono'] }} text-3xl {{ Str::contains($card['color'], 'blue')
+                                        ? 'text-blue-700'
+                                        : (Str::contains($card['color'], 'yellow')
+                                            ? 'text-yellow-700'
+                                            : (Str::contains($card['color'], 'red')
+                                                ? 'text-red-700'
+                                                : (Str::contains($card['color'], 'green')
+                                                    ? 'text-green-700'
+                                                    : (Str::contains($card['color'], 'purple')
+                                                        ? 'text-purple-700'
+                                                        : (Str::contains($card['color'], 'gray')
+                                                            ? 'text-gray-700'
+                                                            : 'text-gray-800'))))) }}"></i>
                             </div>
                             <span class="font-medium">{{ $card['titulo'] }}</span>
                         </div>
@@ -314,97 +344,152 @@
     </div>
 
     <div class="flex-1 overflow-y-auto">
-        <div class="grid gap-4 p-4" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-blue-500">
-                <div class="h-full flex flex-col min-w-0">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Elementos Activos</h3>
-                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $activos }}</div>
-                    <div
-                        class="text-sm mt-1 flex items-center gap-1 {{ $variacionActivos >= 0 ? 'text-green-600' : 'text-red-500' }}">
-                        @if ($variacionActivos > 0)
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current"
-                                viewBox="0 0 20 20">
-                                <path d="M5 10l5-5 5 5H5z" />
-                            </svg>
-                        @elseif($variacionActivos < 0)
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current"
-                                viewBox="0 0 20 20">
-                                <path d="M5 10l5 5 5-5H5z" />
-                            </svg>
-                        @else
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current"
-                                viewBox="0 0 20 20">
-                                <path d="M4 9h12v2H4z" />
-                            </svg>
-                        @endif
-                        <span class="whitespace-nowrap">
-                            {{ $variacionActivos >= 0 ? '+' : '' }}{{ $variacionActivos }}% vs mes pasado
-                        </span>
+        <div x-data="{ slide: 1 }" class="relative">
+            <!-- Contenedor del carrusel -->
+            <div class="overflow-hidden">
+                <div :class="`flex transition-transform duration-500 ease-in-out transform ${slide === 1 ? 'translate-x-0' : 'translate-x-full md:translate-x-[-50%]'}`"
+                    style="display: flex; width: 200%;">
+                    <!-- Slide 1: Primeras 3 tarjetas -->
+                    <div class="flex w-full">
+                        <div class="grid gap-4 p-4 w-full" style="grid-template-columns: repeat(3, 1fr);">
+                            <!-- Elementos Activos -->
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-blue-500">
+                                <div class="h-full flex flex-col min-w-0">
+                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Elementos Activos
+                                    </h3>
+                                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                                        {{ $activos }}</div>
+                                    <div
+                                        class="text-sm mt-1 flex items-center gap-1 {{ $variacionActivos >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                                        @if ($variacionActivos > 0)
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                                <path d="M5 10l5-5 5 5H5z" />
+                                            </svg>
+                                        @elseif($variacionActivos < 0)
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                                <path d="M5 10l5 5 5-5H5z" />
+                                            </svg>
+                                        @else
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                                <path d="M4 9h12v2H4z" />
+                                            </svg>
+                                        @endif
+                                        <span class="whitespace-nowrap">
+                                            {{ $variacionActivos >= 0 ? '+' : '' }}{{ $variacionActivos }}% vs mes
+                                            pasado
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Altas Nuevas -->
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-green-500">
+                                <div class="h-full flex flex-col min-w-0">
+                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Altas Nuevas</h3>
+                                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                                        {{ $conteoAltasAdmin }}</div>
+                                    <div
+                                        class="text-sm mt-1 flex items-center gap-1 {{ $variacionAltas >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                                        @if ($variacionAltas > 0)
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                                <path d="M5 10l5-5 5 5H5z" />
+                                            </svg>
+                                        @elseif($variacionAltas < 0)
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                                <path d="M5 10l5 5 5-5H5z" />
+                                            </svg>
+                                        @else
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                                <path d="M4 9h12v2H4z" />
+                                            </svg>
+                                        @endif
+                                        <span class="whitespace-nowrap">
+                                            {{ $variacionAltas >= 0 ? '+' : '' }}{{ $variacionAltas }}% vs mes pasado
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bajas Recientes -->
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-yellow-500">
+                                <div class="h-full flex flex-col min-w-0">
+                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Bajas Recientes
+                                    </h3>
+                                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                                        {{ $conteoBajasAdmin }}</div>
+                                    <div
+                                        class="text-sm mt-1 flex items-center gap-1 {{ $variacionBajas >= 0 ? 'text-red-600' : 'text-green-500' }}">
+                                        @if ($variacionBajas > 0)
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                                <path d="M5 10l5-5 5 5H5z" />
+                                            </svg>
+                                        @elseif($variacionBajas < 0)
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                                <path d="M5 10l5 5 5-5H5z" />
+                                            </svg>
+                                        @else
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                                <path d="M4 9h12v2H4z" />
+                                            </svg>
+                                        @endif
+                                        <span class="whitespace-nowrap">
+                                            {{ $variacionBajas >= 0 ? '+' : '' }}{{ $variacionBajas }}% vs mes pasado
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2: Los 3 livewires -->
+                    <div class="flex w-full">
+                        <div class="grid gap-4 p-4 w-full" style="grid-template-columns: repeat(3, 1fr);">
+                            @livewire('nominamensual')
+                            @livewire('finiquitomensual')
+                            @livewire('destajosmensuales')
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-green-500">
-                <div class="h-full flex flex-col min-w-0">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Altas Nuevas</h3>
-                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $conteoAltasAdmin }}</div>
-                    <div
-                        class="text-sm mt-1 flex items-center gap-1 {{ $variacionAltas >= 0 ? 'text-green-600' : 'text-red-500' }}">
-                        @if ($variacionAltas > 0)
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current"
-                                viewBox="0 0 20 20">
-                                <path d="M5 10l5-5 5 5H5z" />
-                            </svg>
-                        @elseif($variacionAltas < 0)
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current"
-                                viewBox="0 0 20 20">
-                                <path d="M5 10l5 5 5-5H5z" />
-                            </svg>
-                        @else
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current"
-                                viewBox="0 0 20 20">
-                                <path d="M4 9h12v2H4z" />
-                            </svg>
-                        @endif
-                        <span class="whitespace-nowrap">
-                            {{ $variacionAltas >= 0 ? '+' : '' }}{{ $variacionAltas }}% vs mes pasado
-                        </span>
-                    </div>
-                </div>
+            <!-- Botones de navegación -->
+            <div class="flex justify-center space-x-2 mt-4">
+                <button type="button" @click="slide = 1"
+                    :class="{ 'bg-blue-500 text-white': slide ===
+                        1, 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300': slide !== 1 }"
+                    class="w-3 h-3 rounded-full focus:outline-none" aria-label="Slide 1"></button>
+                <button type="button" @click="slide = 2"
+                    :class="{ 'bg-blue-500 text-white': slide ===
+                        2, 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300': slide !== 2 }"
+                    class="w-3 h-3 rounded-full focus:outline-none" aria-label="Slide 2"></button>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-yellow-500">
-                <div class="h-full flex flex-col min-w-0">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Bajas Recientes</h3>
-                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $conteoBajasAdmin }}</div>
-                    <div
-                        class="text-sm mt-1 flex items-center gap-1 {{ $variacionBajas >= 0 ? 'text-red-600' : 'text-green-500' }}">
-                        @if ($variacionBajas > 0)
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current"
-                                viewBox="0 0 20 20">
-                                <path d="M5 10l5-5 5 5H5z" />
-                            </svg>
-                        @elseif($variacionBajas < 0)
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current"
-                                viewBox="0 0 20 20">
-                                <path d="M5 10l5 5 5-5H5z" />
-                            </svg>
-                        @else
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 fill-current"
-                                viewBox="0 0 20 20">
-                                <path d="M4 9h12v2H4z" />
-                            </svg>
-                        @endif
-                        <span class="whitespace-nowrap">
-                            {{ $variacionBajas >= 0 ? '+' : '' }}{{ $variacionBajas }}% vs mes pasado
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            @livewire('nominamensual')
-            @livewire('finiquitomensual')
-
+            <!-- Flechas opcionales (puedes quitarlas si no las quieres) -->
+            <button type="button" @click="slide = 1"
+                class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white dark:bg-gray-800 rounded-full p-1 shadow-md opacity-70 hover:opacity-100 focus:outline-none"
+                :disabled="slide === 1" :class="{ 'cursor-not-allowed opacity-40': slide === 1 }">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700 dark:text-gray-300"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <button type="button" @click="slide = 2"
+                class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white dark:bg-gray-800 rounded-full p-1 shadow-md opacity-70 hover:opacity-100 focus:outline-none"
+                :disabled="slide === 2" :class="{ 'cursor-not-allowed opacity-40': slide === 2 }">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700 dark:text-gray-300"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
         </div>
 
 
