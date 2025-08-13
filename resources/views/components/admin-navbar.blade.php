@@ -348,102 +348,130 @@
             <div class="overflow-hidden">
                 <div :class="`flex transition-transform duration-500 ease-in-out transform ${slide === 1 ? 'translate-x-0' : 'translate-x-full md:translate-x-[-50%]'}`"
                     style="display: flex; width: 200%;">
-                    <div class="flex w-full">
-                        <div class="grid gap-4 p-4 w-full" style="grid-template-columns: repeat(3, 1fr);">
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-blue-500">
-                                <div class="h-full flex flex-col min-w-0">
-                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Elementos Activos
+                    <div class="grid gap-4 p-4 w-full" style="grid-template-columns: repeat(3, 1fr);">
+
+                        {{-- Elementos Activos --}}
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border-t-4 border-blue-500 hover:shadow-xl transform hover:-translate-y-1 transition">
+                            <div class="flex items-center gap-4">
+                                <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
+                                    <!-- Icono de usuarios -->
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="h-8 w-8 text-blue-600 dark:text-blue-300" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 20h5v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2h5" />
+                                        <circle cx="12" cy="7" r="4" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Elementos Activos
                                     </h3>
-                                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">
-                                        {{ $activos }}</div>
+                                    <p class="text-3xl font-bold text-gray-800 dark:text-gray-200">{{ $activos }}
+                                    </p>
                                     <div
                                         class="text-sm mt-1 flex items-center gap-1 {{ $variacionActivos >= 0 ? 'text-green-600' : 'text-red-500' }}">
                                         @if ($variacionActivos > 0)
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                                 <path d="M5 10l5-5 5 5H5z" />
                                             </svg>
                                         @elseif($variacionActivos < 0)
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                                 <path d="M5 10l5 5 5-5H5z" />
                                             </svg>
                                         @else
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
+                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                                 <path d="M4 9h12v2H4z" />
                                             </svg>
                                         @endif
-                                        <span class="whitespace-nowrap">
-                                            {{ $variacionActivos >= 0 ? '+' : '' }}{{ $variacionActivos }}% vs mes
-                                            pasado
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-green-500">
-                                <div class="h-full flex flex-col min-w-0">
-                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Altas Nuevas</h3>
-                                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">
-                                        {{ $conteoAltasAdmin }}</div>
-                                    <div
-                                        class="text-sm mt-1 flex items-center gap-1 {{ $variacionAltas >= 0 ? 'text-green-600' : 'text-red-500' }}">
-                                        @if ($variacionAltas > 0)
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
-                                                <path d="M5 10l5-5 5 5H5z" />
-                                            </svg>
-                                        @elseif($variacionAltas < 0)
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
-                                                <path d="M5 10l5 5 5-5H5z" />
-                                            </svg>
-                                        @else
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
-                                                <path d="M4 9h12v2H4z" />
-                                            </svg>
-                                        @endif
-                                        <span class="whitespace-nowrap">
-                                            {{ $variacionAltas >= 0 ? '+' : '' }}{{ $variacionAltas }}% vs mes pasado
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border-l-4 border-yellow-500">
-                                <div class="h-full flex flex-col min-w-0">
-                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Bajas Recientes
-                                    </h3>
-                                    <div class="text-2xl font-bold text-gray-800 dark:text-gray-200">
-                                        {{ $conteoBajasAdmin }}</div>
-                                    <div
-                                        class="text-sm mt-1 flex items-center gap-1 {{ $variacionBajas >= 0 ? 'text-red-600' : 'text-green-500' }}">
-                                        @if ($variacionBajas > 0)
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
-                                                <path d="M5 10l5-5 5 5H5z" />
-                                            </svg>
-                                        @elseif($variacionBajas < 0)
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
-                                                <path d="M5 10l5 5 5-5H5z" />
-                                            </svg>
-                                        @else
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 shrink-0 fill-current" viewBox="0 0 20 20">
-                                                <path d="M4 9h12v2H4z" />
-                                            </svg>
-                                        @endif
-                                        <span class="whitespace-nowrap">
-                                            {{ $variacionBajas >= 0 ? '+' : '' }}{{ $variacionBajas }}% vs mes pasado
-                                        </span>
+                                        <span>{{ $variacionActivos >= 0 ? '+' : '' }}{{ $variacionActivos }}% vs mes
+                                            pasado</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        {{-- Altas Nuevas --}}
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border-t-4 border-green-500 hover:shadow-xl transform hover:-translate-y-1 transition">
+                            <div class="flex items-center gap-4">
+                                <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full">
+                                    <!-- Icono de flecha arriba -->
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="h-8 w-8 text-green-600 dark:text-green-300" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Altas Nuevas</h3>
+                                    <p class="text-3xl font-bold text-gray-800 dark:text-gray-200">
+                                        {{ $conteoAltasAdmin }}</p>
+                                    <div
+                                        class="text-sm mt-1 flex items-center gap-1 {{ $variacionAltas >= 0 ? 'text-green-600' : 'text-red-500' }}">
+                                        @if ($variacionAltas > 0)
+                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M5 10l5-5 5 5H5z" />
+                                            </svg>
+                                        @elseif($variacionAltas < 0)
+                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M5 10l5 5 5-5H5z" />
+                                            </svg>
+                                        @else
+                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M4 9h12v2H4z" />
+                                            </svg>
+                                        @endif
+                                        <span>{{ $variacionAltas >= 0 ? '+' : '' }}{{ $variacionAltas }}% vs mes
+                                            pasado</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Bajas Recientes --}}
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border-t-4 border-red-500 hover:shadow-xl transform hover:-translate-y-1 transition">
+                            <div class="flex items-center gap-4">
+                                <div class="p-3 bg-red-100 dark:bg-red-900 rounded-full">
+                                    <!-- Icono de flecha abajo -->
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="h-8 w-8 text-red-600 dark:text-red-300" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Bajas Recientes
+                                    </h3>
+                                    <p class="text-3xl font-bold text-gray-800 dark:text-gray-200">
+                                        {{ $conteoBajasAdmin }}</p>
+                                    <div
+                                        class="text-sm mt-1 flex items-center gap-1 {{ $variacionBajas >= 0 ? 'text-red-600' : 'text-green-500' }}">
+                                        @if ($variacionBajas > 0)
+                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M5 10l5-5 5 5H5z" />
+                                            </svg>
+                                        @elseif($variacionBajas < 0)
+                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M5 10l5 5 5-5H5z" />
+                                            </svg>
+                                        @else
+                                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M4 9h12v2H4z" />
+                                            </svg>
+                                        @endif
+                                        <span>{{ $variacionBajas >= 0 ? '+' : '' }}{{ $variacionBajas }}% vs mes
+                                            pasado</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
+
 
                     <div class="flex w-full">
                         <div class="grid gap-4 p-4 w-full" style="grid-template-columns: repeat(3, 1fr);">
@@ -455,19 +483,25 @@
                 </div>
             </div>
 
-            <!-- Botones de navegación
+            <!--
             <div class="flex justify-center space-x-2 mt-4">
                 <button type="button" @click="slide = 1"
-                    :class="{ 'bg-blue-500 text-white': slide ===
-                        1, 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300': slide !== 1 }"
+                    :class="{
+                        'bg-blue-500 text-white': slide ===
+                            1,
+                        'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300': slide !== 1
+                    }"
                     class="w-3 h-3 rounded-full focus:outline-none" aria-label="Slide 1"></button>
                 <button type="button" @click="slide = 2"
-                    :class="{ 'bg-blue-500 text-white': slide ===
-                        2, 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300': slide !== 2 }"
+                    :class="{
+                        'bg-blue-500 text-white': slide ===
+                            2,
+                        'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300': slide !== 2
+                    }"
                     class="w-3 h-3 rounded-full focus:outline-none" aria-label="Slide 2"></button>
-            </div>-->
+            </div>
+            -->
 
-            <!-- Flechas opcionales (puedes quitarlas si no las quieres) -->
             <button type="button" @click="slide = 1"
                 class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white dark:bg-gray-800 rounded-full p-1 shadow-md opacity-70 hover:opacity-100 focus:outline-none"
                 :disabled="slide === 1" :class="{ 'cursor-not-allowed opacity-40': slide === 1 }">
