@@ -189,6 +189,9 @@ Route::middleware('auth')->group(function () {
     // Detalle del Siniestro (Livewire)
     Route::get('/siniestros/{id}', \App\Livewire\SiniestroDetalle::class)->name('siniestros.detalle');
 
+    // Gastos CRUD (Livewire)
+    Route::get('/gastos', \App\Livewire\GastosCrud::class)->name('gastos.index');
+
     //Usuario Aux Admin
     Route::get('/nuevas_altas_elementos', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');
     Route::post('/subida_documentacion/{id}', [AuxadminController::class, 'guardarAcuses'])->name('documentacion.subir');
