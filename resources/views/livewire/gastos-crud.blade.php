@@ -106,6 +106,7 @@
               <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Monto</th>
               <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Detalles</th>
               <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Evidencia</th>
+              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Acciones</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -273,6 +274,13 @@
                 @else
                 <span class="text-xs text-gray-400">Sin evidencia</span>
                 @endif
+              </td>
+              <td class="px-4 py-2 text-center">
+                <a href="{{ route('gastos.detalle', $gasto->id) }}"
+                  class="inline-flex items-center justify-center w-8 h-8 text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600"
+                  title="Ver detalle">
+                  <i class="ti ti-eye"></i>
+                </a>
               </td>
             </tr>
             @empty

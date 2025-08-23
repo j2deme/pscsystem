@@ -191,6 +191,8 @@ Route::middleware('auth')->group(function () {
 
     // Gastos CRUD (Livewire)
     Route::get('/gastos', \App\Livewire\GastosCrud::class)->name('gastos.index');
+    // Detalle del Gasto (Livewire)
+    Route::get('/gastos/{id}', \App\Livewire\GastoDetalle::class)->name('gastos.detalle');
 
     //Usuario Aux Admin
     Route::get('/nuevas_altas_elementos', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');
@@ -206,8 +208,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/cedulas', [CedulaController::class, 'form'])->name('aux.cedulasForm');
     Route::post('/cedulas/upload/{tipo}', [CedulaController::class, 'upload'])->name('aux.cedulasupload');
 
-   Route::get('/acuses-bajas', [BajaAcuseController::class, 'index'])->name('aux.acusesbajas');
-   Route::post('/acuses-bajas/{solicitudBaja}', [BajaAcuseController::class, 'upload'])->name('aux.acusesbajasupload');
+    Route::get('/acuses-bajas', [BajaAcuseController::class, 'index'])->name('aux.acusesbajas');
+    Route::post('/acuses-bajas/{solicitudBaja}', [BajaAcuseController::class, 'upload'])->name('aux.acusesbajasupload');
 
     //nuevass rutas
     Route::get('/riesgos-trabajo', [RiesgoTrabajoController::class, 'index'])->name('aux.riesgosTrabajo');
@@ -242,9 +244,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/asginar_num_empleado', [NominasController::class, 'asignarNumEmpleado'])->name('nominas.asignarNumeroEmpleado');
     Route::post('/solicitar-constancia', [NominasController::class, 'solicitarConstancia'])->name('solicitar.constancia');
     Route::get('/destajos', [NominasController::class, 'destajos'])->name('nominas.destajos');
-    Route::get('/nominas_subidas_archivos', [NominasController::class,'subidasArchivosForm'])->name('nominas.subidaArchivos');
-    Route::post('/nominas_subir_archivos', [NominasController::class,'subirArchivosNominas'])->name('nominas.guardarArchivos');
-    Route::get('/registros_nominas', [NominasController::class,'registros'])->name('nominas.registros');
+    Route::get('/nominas_subidas_archivos', [NominasController::class, 'subidasArchivosForm'])->name('nominas.subidaArchivos');
+    Route::post('/nominas_subir_archivos', [NominasController::class, 'subirArchivosNominas'])->name('nominas.guardarArchivos');
+    Route::get('/registros_nominas', [NominasController::class, 'registros'])->name('nominas.registros');
     Route::get('/calculo_destajos', [NominasController::class, 'calculoDestajos'])->name('nominas.calculoDestajos');
     Route::post('/notificaciones/leidas', function () {
         \App\Models\Alerta::where('user_id', Auth::id())
