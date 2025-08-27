@@ -14,8 +14,8 @@ $cards = [
 ],
 [
 'titulo' => 'Control de Gastos',
-'ruta' => "#",
-'icono' => 'cash',
+'ruta' => route('gastos.index'),
+'icono' => 'receipt-2',
 'color' => 'bg-red-100 dark:bg-red-700',
 ],
 [

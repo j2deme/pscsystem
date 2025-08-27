@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
 
 
 /**
@@ -23,6 +24,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property float|null $Gasolina_antes_carga
  * @property float|null $Gasolina_despues_carga
  * @property \App\Models\User $user
+ *
+ * @property-read int $userId
+ * @property-write int $userId
+ * @property-read string|null $userName
+ * @property-write string|null $userName
+ * @property-read float $monto
+ * @property-write float $monto
+ * @property-read Carbon $fecha
+ * @property-write Carbon|string $fecha
+ * @property-read string $hora
+ * @property-write string $hora
+ * @property-read string $evidencia
+ * @property-write string $evidencia
+ * @property-read string $tipo
+ * @property-write string $tipo
+ * @property-read float|null $km
+ * @property-write float|null $km
+ * @property-read float|null $gasolinaAntesCarga
+ * @property-write float|null $gasolinaAntesCarga
+ * @property-read float|null $gasolinaDespuesCarga
+ * @property-write float|null $gasolinaDespuesCarga
  */
 class Gastos extends Model
 {
@@ -87,6 +109,27 @@ class Gastos extends Model
     return $this->belongsTo(User::class);
   }
 
+  // --- Accessors (getters) ---
+
+  public function getUserIdAttribute()
+  {
+    return $this->attributes['user_id'];
+  }
+
+  public function getUserNameAttribute()
+  {
+    return $this->attributes['user_name'];
+  }
+
+  public function getMontoAttribute()
+  {
+    return $this->attributes['Monto'];
+  }
+
+  public function getFechaAttribute($value)
+  {
+    return $value ? Carbon::parse($value) : null;
+  }
 
   /**
    * Accessor para formatear la hora en formato HH:mm
@@ -98,4 +141,80 @@ class Gastos extends Model
     return date('H:i', strtotime($value));
   }
 
+  public function getEvidenciaAttribute()
+  {
+    return $this->attributes['Evidencia'];
+  }
+
+  public function getTipoAttribute()
+  {
+    return $this->attributes['Tipo'];
+  }
+
+  public function getKmAttribute()
+  {
+    return $this->attributes['Km'];
+  }
+
+  public function getGasolinaAntesCargaAttribute()
+  {
+    return $this->attributes['Gasolina_antes_carga'];
+  }
+
+  public function getGasolinaDespuesCargaAttribute()
+  {
+    return $this->attributes['Gasolina_despues_carga'];
+  }
+
+  // --- Mutators (setters) ---
+
+  public function setUserIdAttribute($value)
+  {
+    $this->attributes['user_id'] = $value;
+  }
+
+  public function setUserNameAttribute($value)
+  {
+    $this->attributes['user_name'] = $value;
+  }
+
+  public function setMontoAttribute($value)
+  {
+    $this->attributes['Monto'] = $value;
+  }
+
+  public function setFechaAttribute($value)
+  {
+    $this->attributes['Fecha'] = $value instanceof Carbon ? $value->toDateString() : $value;
+  }
+
+  public function setHoraAttribute($value)
+  {
+    $this->attributes['Hora'] = date('H:i:s', strtotime($value));
+  }
+
+  public function setEvidenciaAttribute($value)
+  {
+    $this->attributes['Evidencia'] = $value;
+  }
+
+  public function setTipoAttribute($value)
+  {
+    $this->attributes['Tipo'] = $value;
+  }
+
+  public function setKmAttribute($value)
+  {
+    $this->attributes['Km'] = $value;
+  }
+
+  public function setGasolinaAntesCargaAttribute($value)
+  {
+    $this->attributes['Gasolina_antes_carga'] = $value;
+  }
+
+  public function setGasolinaDespuesCargaAttribute($value)
+  {
+    $this->attributes['Gasolina_despues_carga'] = $value;
+  }
 }
