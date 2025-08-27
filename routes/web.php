@@ -227,6 +227,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/finiquitos', [NominasController::class, 'verBajas'])->name('nominas.verBajas');
     Route::get('/nuevas_altas', [NominasController::class, 'nuevasAltas'])->name('nominas.nuevasAltas');
     Route::post('/guardar-calculo-finiquito', [NominasController::class, 'guardarCalculoFiniquito'])->name('guardar.calculo.finiquito');
+    Route::post('/guardar_finiquito/{id}', [NominasController::class, 'guardarFiniquitoManual'])->name('guardarFiniquitoManual');
     Route::get('/asistencias_nominas', [NominasController::class, 'asistenciasNominas'])->name('nominas.asistencias');
     Route::get('/vacaciones_nominas', [NominasController::class, 'vacacionesNominas'])->name('nominas.vacaciones');
     Route::get('/nominas_vacaciones', [NominasController::class, 'vacacionesIndex'])->name('nominas.vacaciones');
