@@ -194,6 +194,11 @@ Route::middleware('auth')->group(function () {
     // Detalle del Gasto (Livewire)
     Route::get('/gastos/{id}', \App\Livewire\GastoDetalle::class)->name('gastos.detalle');
 
+    // Compras CRUD (Livewire)
+    Route::get('/compras', \App\Livewire\ComprasCrud::class)->name('compras.index');
+    // Detalle de Compra (Livewire)
+    # Route::get('/compras/{id}', \App\Livewire\CompraDetalle::class)->name('compras.detalle');
+
     //Usuario Aux Admin
     Route::get('/nuevas_altas_elementos', [AuxadminController::class, 'nuevasAltas'])->name('aux.nuevasAltas');
     Route::post('/subida_documentacion/{id}', [AuxadminController::class, 'guardarAcuses'])->name('documentacion.subir');
