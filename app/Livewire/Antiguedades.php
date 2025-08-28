@@ -4,6 +4,7 @@ namespace App\Livewire;
 use App\Models\User;
 use Carbon\Carbon;
 use Livewire\Component;
+use Livewire\WithPagination;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Storage;
 
 class Antiguedades extends Component
 {
+    use WithPagination;
+
     public $filtroQuincena = 'todas';
     public $filtroMes = 'todos';
     public $filtroAnio = 'todos';
@@ -28,6 +31,7 @@ class Antiguedades extends Component
         $this->filtroMes = $this->filtroMes === 'todos' ? $hoy->month : $this->filtroMes;
         $this->filtroQuincena = $this->filtroQuincena === 'todas' ? ($hoy->day <= 15 ? '1' : '2') : $this->filtroQuincena;
     }
+
     public function render()
     {
         $usuarios = User::where('estatus', 'Activo')
@@ -49,8 +53,24 @@ class Antiguedades extends Component
                 };
             });
 
+        // Convertir la colección filtrada a una instancia de LengthAwarePaginator
+        $currentPage = request()->get('page', 1);
+        $perPage = 10;
+        $currentPageItems = $usuarios->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        $paginatedUsers = new \Illuminate\Pagination\LengthAwarePaginator(
+            $currentPageItems,
+            $usuarios->count(),
+            $perPage,
+            $currentPage,
+            [
+                'path' => request()->url(),
+                'pageName' => 'page',
+            ]
+        );
+
         return view('livewire.antiguedades', [
-            'usuarios' => $usuarios,
+            'usuarios' => $paginatedUsers,
         ]);
     }
 
@@ -98,6 +118,7 @@ class Antiguedades extends Component
             $salario = floatval($soloNumero) / 2;
             $salarioDiario = $salario > 0 ? round($salario / 15, 2) : 0;
             $prima = round($salarioDiario * $diasVacaciones * 0.25, 2);
+            $vacacionesMonto = $diasVacaciones * $salarioDiario;
 
             $sheet->fromArray([
                 $index + 1,
@@ -108,7 +129,7 @@ class Antiguedades extends Component
                 $antiguedad->y . ' ' . ($antiguedad->y == 1 ? 'Año' : 'Años'),
                 $diasVacaciones,
                 number_format($salarioDiario, 2),
-                number_format($diasVacaciones * $salarioDiario, 2),
+                number_format($vacacionesMonto, 2),
                 number_format($prima, 2),
             ], null, 'A' . $row);
 
@@ -127,25 +148,34 @@ class Antiguedades extends Component
     }
 
     public function obtenerUsuariosFiltrados()
-{
-    return User::where('estatus', 'Activo')
-        ->whereMonth('fecha_ingreso', $this->filtroMes)
-        ->get()
-        ->filter(function ($usuario) {
-            $fechaIngreso = Carbon::parse($usuario->fecha_ingreso);
-            $dia = $fechaIngreso->day;
-            $antiguedad = $fechaIngreso->diffInYears(Carbon::now());
+    {
+        return User::where('estatus', 'Activo')
+            ->whereMonth('fecha_ingreso', $this->filtroMes)
+            ->get()
+            ->filter(function ($usuario) {
+                $fechaIngreso = Carbon::parse($usuario->fecha_ingreso);
+                $dia = $fechaIngreso->day;
+                $antiguedad = $fechaIngreso->diffInYears(Carbon::now());
 
-            if ($antiguedad < 1) {
-                return false;
-            }
+                if ($antiguedad < 1) {
+                    return false;
+                }
 
-            return match ($this->filtroQuincena) {
-                '1' => $dia >= 1 && $dia <= 15,
-                '2' => $dia >= 16,
-                default => true,
-            };
-        });
-}
+                return match ($this->filtroQuincena) {
+                    '1' => $dia >= 1 && $dia <= 15,
+                    '2' => $dia >= 16,
+                    default => true,
+                };
+            });
+    }
 
+    public function updatedFiltroQuincena()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFiltroMes()
+    {
+        $this->resetPage();
+    }
 }
