@@ -12,7 +12,6 @@
                         </div>
                     </div>
                 @endif
-            <h2 class="text-2xl mb-4">Historial de Solicitudes de Bajas</h2>
             @livewire('rhfiltrobajas')
             </div>
         </div>
