@@ -20,7 +20,7 @@ $cards = [
 ],
 [
 'titulo' => 'Compras',
-'ruta' => "#",
+'ruta' => route('compras.index'),
 'icono' => 'shopping-cart',
 'color' => 'bg-blue-100 dark:bg-blue-700',
 ],
