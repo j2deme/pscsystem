@@ -126,8 +126,24 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                        {{ $incapacidad->user->name ?? 'Usuario Eliminado' }}
+                                        @if($incapacidad->user)
+                                            {{ $incapacidad->user->name }}
+                                        @elseif($incapacidad->user_id && $incapacidad->user()->withTrashed()->first())
+                                            {{ $incapacidad->user()->withTrashed()->first()->name }}
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200 ml-2">
+                                                Eliminado
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                                                Usuario Eliminado
+                                            </span>
+                                        @endif
                                     </div>
+                                    @if($incapacidad->user && $incapacidad->user->trashed())
+                                        <div class="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                                            Usuario eliminado
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200">
