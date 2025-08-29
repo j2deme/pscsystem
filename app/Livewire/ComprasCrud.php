@@ -64,6 +64,14 @@ class ComprasCrud extends Component
   {
     $this->loadUnidadesDisponibles();
     $this->loadTiposDisponibles();
+
+    // Verificar si se solicita edición desde el detalle
+    $request = request();
+    if ($request->has('editar')) {
+      $id = $request->input('editar');
+      $this->editarCompra($id);
+    }
+
     // Establecer fecha y hora por defecto para nuevos registros
     $this->form['fecha_hora'] = now()->format('Y-m-d\TH:i');
   }

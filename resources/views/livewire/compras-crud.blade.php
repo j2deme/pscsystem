@@ -317,6 +317,11 @@
                 @endif
               </td>
               <td class="flex justify-center gap-2 px-4 py-2">
+                <a href="{{ route('compras.detalle', $compra->id) }}"
+                  class="flex items-center justify-center p-2 text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600"
+                  title="Ver detalle">
+                  <i class="ti ti-eye"></i>
+                </a>
                 <button wire:click="editarCompra({{ $compra->id }})"
                   class="flex items-center justify-center p-2 text-white bg-blue-400 rounded hover:bg-blue-500"
                   title="Editar">
