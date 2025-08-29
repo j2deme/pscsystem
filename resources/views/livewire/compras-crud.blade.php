@@ -340,7 +340,8 @@
                   <span class="text-lg font-semibold text-gray-700 dark:text-gray-200">No hay registros de
                     compras/servicios</span>
                   <span class="text-sm text-gray-500 dark:text-gray-400">Agrega un nuevo registro para comenzar a
-                    gestionar las compras y servicios de las unidades.</span>
+                    gestionar
+                    las compras y servicios de las unidades.</span>
                   <button wire:click="showCreateForm" type="button"
                     class="flex items-center gap-2 px-5 py-2 mt-2 text-white bg-blue-600 rounded hover:bg-blue-700">
                     <i class="ti ti-plus"></i>
