@@ -249,9 +249,38 @@
                 @endif
               </td>
               <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
+                @php
+                $tipo = $compra->tipo;
+                $icono = match($tipo) {
+                'Refacción' => 'ti-bolt',
+                'Insumo' => 'ti-box',
+                'Servicio Menor' => 'ti-asset',
+                'Servicio Mayor' => 'ti-engine',
+                'Compra Directa' => 'ti-shopping-cart',
+                'Mantenimiento' => 'ti-gauge',
+                'Reparación' => 'ti-tool',
+                'Verificación' => 'ti-checklist',
+                'Afinación' => 'ti-adjustments',
+                'Cambio de Llantas' => 'ti-car-4wd-filled',
+                'Hojalatería y Pintura' => 'ti-spray',
+                'Siniestro' => 'ti-car-crash',
+                default => 'ti-basket-plus'
+                };
+
+                // Asignación de colores por categoría semántica
+                [$bgColor, $textColor] = match($tipo) {
+                'Mantenimiento', 'Afinación', 'Servicio Menor', 'Servicio Mayor' => ['bg-blue-100', 'text-blue-800'],
+                'Reparación', 'Hojalatería y Pintura' => ['bg-green-100', 'text-green-800'],
+                'Siniestro' => ['bg-red-100', 'text-red-800'],
+                'Refacción', 'Insumo', 'Compra Directa', 'Cambio de Llantas' => ['bg-yellow-100', 'text-yellow-800'],
+                'Verificación' => ['bg-purple-100', 'text-purple-800'],
+                default => ['bg-gray-100', 'text-gray-800']
+                };
+                @endphp
                 <span
-                  class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100">
-                  {{ $compra->tipo }}
+                  class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full {{ $bgColor }} {{ $textColor }} dark:bg-opacity-20 dark:text-opacity-90">
+                  <i class="mr-1 text-sm ti {{ $icono }}"></i>
+                  {{ $tipo }}
                 </span>
               </td>
               <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 max-w-xs">
@@ -259,25 +288,25 @@
                   class="block w-full max-w-xs p-0 text-sm text-left text-gray-700 truncate bg-transparent border-none cursor-pointer hover:underline"
                   title="{{ $compra->descripcion }}" onclick="showDescModal(this)"
                   data-desc="{{ $compra->descripcion }}">
-                  {{ \Illuminate\Support\Str::limit($compra->descripcion, 50) }}
+                  {{ Str::limit($compra->descripcion, 50) }}
                 </button>
                 @if($compra->notas)
                 <div class="mt-1 text-xs text-gray-500 italic">
-                  Notas: {{ \Illuminate\Support\Str::limit($compra->notas, 30) }}
+                  <i class="ti ti-notes"></i> {{ Str::limit($compra->notas, 30) }}
                 </div>
                 @endif
               </td>
               <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
                 {{ $compra->proveedor ?? 'N/A' }}
               </td>
-              <td class="px-4 py-2 text-sm font-medium text-gray-900 dark:text-white">
+              <td class="px-4 py-2 text-sm font-medium text-gray-900 dark:text-white text-right">
                 @if($compra->costo !== null)
                 ${{ number_format($compra->costo, 2) }}
                 @else
                 <span class="text-gray-400">N/A</span>
                 @endif
               </td>
-              <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
+              <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 text-center items-center">
                 @if($compra->garantia)
                 <span
                   class="inline-flex items-center px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full dark:bg-green-900 dark:text-green-100">
