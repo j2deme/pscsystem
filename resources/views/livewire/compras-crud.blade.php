@@ -218,17 +218,17 @@
       </div>
 
       <div class="overflow-x-auto">
-        <table class="min-w-full bg-white rounded shadow table-auto dark:bg-gray-800">
+        <table class="min-w-full bg-white rounded shadow table-auto dark:bg-gray-800" style="table-layout: fixed;">
           <thead class="bg-gray-50 dark:bg-gray-700">
             <tr>
-              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Fecha/Hora</th>
-              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Unidad</th>
-              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Tipo</th>
-              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Descripción</th>
-              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Proveedor</th>
-              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Costo</th>
-              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200">Garantía</th>
-              <th class="px-4 py-2 text-center text-gray-700 dark:text-gray-200">Acciones</th>
+              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200 w-32">Fecha/Hora</th>
+              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200 w-48">Unidad</th>
+              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200 w-32">Tipo</th>
+              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200 flex-1">Descripción</th>
+              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200 w-40">Proveedor</th>
+              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200 w-32">Costo</th>
+              <th class="px-4 py-2 text-left text-gray-700 dark:text-gray-200 w-24">Garantía</th>
+              <th class="px-4 py-2 text-center text-gray-700 dark:text-gray-200 w-24">Acciones</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
