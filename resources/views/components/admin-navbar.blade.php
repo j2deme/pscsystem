@@ -113,6 +113,12 @@
             'color' => 'bg-purple-300 dark:bg-purple-700',
         ],
         [
+            'titulo' => 'Mapa',
+            'ruta' => route('monitoreo.mapa'),
+            'icono' => 'map',
+            'color' => 'bg-green-300 dark:bg-green-700',
+        ],
+        [
             'titulo' => 'Nóminas',
             'ruta' => route('admin.nominasDashboard'),
             'icono' => 'currency-dollar',
