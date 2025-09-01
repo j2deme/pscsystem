@@ -201,10 +201,11 @@
         ],*/
         [
             'titulo' => 'Registrar Datos',
-            'ruta' => route('updateDestajos'),
+            'ruta' => '#', // Cambia a # ya que no será un href normal
             'icono' => 'file-text',
             'color' => 'bg-orange-300 dark:bg-orange-700',
             'disabled' => false,
+            'onclick' => 'actualizarDestajos()', // Agrega esta línea
         ],/*
         [
             'titulo' => 'Registrar Finiquitos',
@@ -316,8 +317,14 @@
                     </form>
                 @else
                     <a href="{{ $card['ruta'] ?? '#' }}"
-                        @if (in_array($card['titulo'], ['RRHH', 'Nóminas', 'IMSS'])) @click.prevent="$dispatch('cambiar-menu', { menu: '{{ strtolower(str_replace(' ', '_', $card['titulo'])) }}' })" @endif
-                        class="block p-3 rounded-lg {{ $card['color'] }} {{ $isActive ? 'ring-2 ring-blue-500' : '' }} hover:bg-opacity-70 transition relative">
+                        @if (isset($card['onclick']))
+                            onclick="{{ $card['onclick'] }}; return false;"
+                        @endif
+                        @if (in_array($card['titulo'], ['RRHH', 'Nóminas', 'IMSS']))
+                            @click.prevent="$dispatch('cambiar-menu', { menu: '{{ strtolower(str_replace(' ', '_', $card['titulo'])) }}' })"
+                        @endif
+                        id="{{ Str::slug($card['titulo']) }}"
+                        class="block p-3 rounded-lg {{ $card['color'] }} {{ $isActive ? 'ring-2 ring-blue-500' : '' }} hover:bg-opacity-70 transition relative cursor-pointer">
                         <div class="flex items-center space-x-3">
                             <div
                                 class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
@@ -572,6 +579,77 @@
     </div>
 </div>
 @push('scripts')
+<script>
+function actualizarDestajos() {
+    if (confirm('¿Estás seguro de actualizar todos los destajos? Este proceso puede tardar varios minutos.')) {
+        const boton = document.getElementById('registrar-datos');
+        if (boton) {
+            // Cambiar el texto del botón
+            const span = boton.querySelector('span.font-medium');
+            if (span) {
+                span.textContent = 'Procesando...';
+            }
+            boton.classList.add('opacity-75');
+            boton.onclick = null; // Deshabilitar clics adicionales
+        }
+
+        procesarLotes(0);
+    }
+}
+
+function procesarLotes(offset) {
+    fetch('{{ route("updateDestajos") }}?offset=' + offset, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+
+        if (data.continuar) {
+            // Continuar con el siguiente lote
+            setTimeout(() => procesarLotes(data.siguiente_offset), 1000);
+        } else {
+            // Proceso completado
+            alert(`Proceso completado. ${data.actualizados} registros actualizados.`);
+
+            // Refrescar la tabla si es necesario
+            if (typeof Livewire !== 'undefined') {
+                Livewire.dispatch('refreshTable');
+            }
+
+            // Restaurar botón
+            const boton = document.getElementById('registrar-datos');
+            if (boton) {
+                const span = boton.querySelector('span.font-medium');
+                if (span) {
+                    span.textContent = 'Registrar Datos';
+                }
+                boton.classList.remove('opacity-75');
+                boton.onclick = actualizarDestajos;
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error durante el proceso.');
+
+        // Restaurar botón en caso de error
+        const boton = document.getElementById('registrar-datos');
+        if (boton) {
+            const span = boton.querySelector('span.font-medium');
+            if (span) {
+                span.textContent = 'Registrar Datos';
+            }
+            boton.classList.remove('opacity-75');
+            boton.onclick = actualizarDestajos;
+        }
+    });
+}
+</script>
     <script>
         let currentSlide = 0;
         const totalSlides = 3;
@@ -613,4 +691,5 @@
             //setInterval(nextSlide, 10000);
         });
     </script>
+
 @endpush

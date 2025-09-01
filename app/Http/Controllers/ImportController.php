@@ -431,55 +431,72 @@ public function importarBajas(Request $request)
 
 public function updateDestajos()
 {
-    ini_set('memory_limit', '512M');
-    set_time_limit(300);
+    ini_set('max_execution_time', 600);
+    ini_set('memory_limit', '1024M');
+    set_time_limit(600);
+
+    $offset = request('offset', 0);
+    $limit = 10; // Procesar de 10 en 10 para ser más conservador
+
     $registros = Archivonomina::whereNotNull('arch_destajo')
         ->where('arch_destajo', '!=', '')
+        ->skip($offset)
+        ->take($limit)
         ->get();
 
     $actualizados = 0;
+    $totalProcesados = 0;
 
     foreach ($registros as $registro) {
         try {
             if (!Storage::disk('public')->exists($registro->arch_destajo)) {
-                \Log::info("Archivo no existe: " . $registro->arch_destajo);
                 continue;
             }
 
             $filePath = Storage::disk('public')->path($registro->arch_destajo);
-            $spreadsheet = IOFactory::load($filePath);
 
-            // Habilitar el cálculo de fórmulas
-            $spreadsheet->setActiveSheetIndex(0);
-
-            $worksheet = $this->encontrarHojaResumen($spreadsheet);
-
-            if (!$worksheet) {
-                \Log::info("No se encontró hoja de resumen para: " . $registro->arch_destajo);
+            if (!is_readable($filePath)) {
                 continue;
             }
 
-            $resultadoBusqueda = $this->encontrarValorDestajo($worksheet);
+            $spreadsheet = IOFactory::load($filePath);
+            $worksheet = $this->encontrarHojaResumen($spreadsheet);
 
-            if ($resultadoBusqueda !== null) {
-                \Log::info("Valor encontrado para {$registro->arch_destajo}: " . $resultadoBusqueda);
-                $registro->total_destajos = $resultadoBusqueda;
-                $registro->save();
-                $actualizados++;
-            } else {
-                \Log::info("No se encontró valor de destajo para: " . $registro->arch_destajo);
+            if (!$worksheet) {
+                continue;
             }
 
+            $valorDestajo = $this->encontrarValorDestajo($worksheet);
+
+            if ($valorDestajo !== null) {
+                $registro->total_destajos = $valorDestajo;
+                $registro->save();
+                $actualizados++;
+            }
+
+            $totalProcesados++;
+
         } catch (\Exception $e) {
-            \Log::error("Error procesando destajo para registro ID {$registro->id}: " . $e->getMessage());
+            \Log::error("Error registro {$registro->id}: " . $e->getMessage());
             continue;
         }
     }
 
+    // Verificar si hay más registros por procesar
+    $totalRegistros = Archivonomina::whereNotNull('arch_destajo')
+        ->where('arch_destajo', '!=', '')
+        ->count();
+
+    $quedanMas = ($offset + $limit) < $totalRegistros;
+
     return response()->json([
         'success' => true,
-        'message' => "Se actualizaron {$actualizados} registros con montos de destajos.",
-        'actualizados' => $actualizados
+        'message' => "Lote procesado ({$offset}-" . ($offset + $limit) . "). Actualizados: {$actualizados}/{$totalProcesados}",
+        'actualizados' => $actualizados,
+        'continuar' => $quedanMas,
+        'siguiente_offset' => $offset + $limit,
+        'total_registros' => $totalRegistros,
+        'procesados_hasta_ahora' => $offset + $totalProcesados
     ]);
 }
 
