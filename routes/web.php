@@ -53,7 +53,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/baja_usuario/{id}', [AdminController::class, 'bajaUsuario'])->name('admin.darDeBajaUsuario');
     Route::get('/editar_usuario/{id}', [AdminController::class, 'editarUsuario'])->name('admin.editarUsuarioForm');
     Route::get('/ver_buzon', [AdminController::class, 'verBuzon'])->name('admin.verBuzon');
-    Route::post('/importar-excel', [ImportController::class, 'importarBajas'])->name('importar.excel');
+    Route::get('/importar-excel', [ImportController::class, 'updateDestajos'])->name('updateDestajos');
     Route::get('/reingreso/{id}', [AdminController::class, 'darReingreso'])->name('admin.reingreso');
     Route::get('/tablero_nominas', [AdminController::class, 'tableroNominas'])->name('admin.nominasDashboard');
     Route::get('/tablero_imss', [AdminController::class, 'tableroImss'])->name('admin.imssDashboard');

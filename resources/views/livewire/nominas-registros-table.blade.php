@@ -125,11 +125,17 @@
                                 @endif
                             </div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">
-                                {{ $registro->subtotal ? '$' . number_format($registro->subtotal, 2) : 'N/A' }}
-                            </div>
-                        </td>
+<td class="px-6 py-4 whitespace-nowrap">
+    <div class="text-sm font-medium text-gray-900">
+        @if($registro->subtotal && $registro->subtotal > 0)
+            ${{ number_format($registro->subtotal, 2) }}
+        @elseif($registro->total_destajos && $registro->total_destajos > 0)
+            ${{ number_format($registro->total_destajos, 2) }}
+        @else
+            $0.00
+        @endif
+    </div>
+</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {{ $registro->created_at->format('d/m/Y H:i') }}
                         </td>

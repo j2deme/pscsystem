@@ -7,11 +7,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-//use Hash;
-//use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Models\Unidades;
 use App\Models\SolicitudAlta;
+use App\Models\Archivonomina;
+use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 
@@ -427,4 +428,191 @@ public function importarBajas(Request $request)
             return redirect()->back()->with('error', 'Ocurrió un error: ' . $e->getMessage());
         }
     }
+
+public function updateDestajos()
+{
+    $registros = Archivonomina::whereNotNull('arch_destajo')
+        ->where('arch_destajo', '!=', '')
+        ->get();
+
+    $actualizados = 0;
+
+    foreach ($registros as $registro) {
+        try {
+            if (!Storage::disk('public')->exists($registro->arch_destajo)) {
+                \Log::info("Archivo no existe: " . $registro->arch_destajo);
+                continue;
+            }
+
+            $filePath = Storage::disk('public')->path($registro->arch_destajo);
+            $spreadsheet = IOFactory::load($filePath);
+
+            // Habilitar el cálculo de fórmulas
+            $spreadsheet->setActiveSheetIndex(0);
+
+            $worksheet = $this->encontrarHojaResumen($spreadsheet);
+
+            if (!$worksheet) {
+                \Log::info("No se encontró hoja de resumen para: " . $registro->arch_destajo);
+                continue;
+            }
+
+            $resultadoBusqueda = $this->encontrarValorDestajo($worksheet);
+
+            if ($resultadoBusqueda !== null) {
+                \Log::info("Valor encontrado para {$registro->arch_destajo}: " . $resultadoBusqueda);
+                $registro->total_destajos = $resultadoBusqueda;
+                $registro->save();
+                $actualizados++;
+            } else {
+                \Log::info("No se encontró valor de destajo para: " . $registro->arch_destajo);
+            }
+
+        } catch (\Exception $e) {
+            \Log::error("Error procesando destajo para registro ID {$registro->id}: " . $e->getMessage());
+            continue;
+        }
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => "Se actualizaron {$actualizados} registros con montos de destajos.",
+        'actualizados' => $actualizados
+    ]);
+}
+
+private function encontrarHojaResumen($spreadsheet)
+{
+    if ($spreadsheet->sheetNameExists('RESUMEN')) {
+        return $spreadsheet->getSheetByName('RESUMEN');
+    }
+
+    $sheetCount = $spreadsheet->getSheetCount();
+    if ($sheetCount > 0) {
+        return $spreadsheet->getSheet($sheetCount - 1);
+    }
+
+    return null;
+}
+
+private function encontrarValorDestajo($worksheet)
+{
+    $highestRow = $worksheet->getHighestRow();
+    $highestColumn = $worksheet->getHighestColumn();
+
+    \Log::info("Buscando en hoja. Filas: {$highestRow}, Columnas: {$highestColumn}");
+
+    for ($row = 1; $row <= $highestRow; $row++) {
+        for ($col = 'A'; $col <= $highestColumn && $col <= 'J'; $col++) {
+            $cellCoordinate = $col . $row;
+            $cell = $worksheet->getCell($cellCoordinate);
+            $cellValue = $cell->getValue();
+
+            if ($cellValue && $this->esTotalDestajo($cellValue)) {
+                \Log::info("Encontrado 'TOTAL DESTAJO' en celda: {$cellCoordinate} con valor: " . trim($cellValue));
+
+                // Obtener la celda a la derecha
+                $colIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($col);
+                $nextCol = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($colIndex + 1);
+                $nextCellCoordinate = $nextCol . $row;
+
+                \Log::info("Buscando valor en celda: {$nextCellCoordinate}");
+
+                $nextCell = $worksheet->getCell($nextCellCoordinate);
+                $valorCeldaDerecha = $nextCell->getValue();
+                $valorCalculado = $nextCell->getCalculatedValue(); // Obtener el valor calculado
+                $valorFormateado = $nextCell->getFormattedValue();
+
+                \Log::info("Valor crudo: " . var_export($valorCeldaDerecha, true));
+                \Log::info("Valor calculado: " . var_export($valorCalculado, true));
+                \Log::info("Valor formateado: " . $valorFormateado);
+
+                // Priorizar el valor calculado, luego el formateado
+                $valorNumerico = null;
+
+                if (is_numeric($valorCalculado)) {
+                    $valorNumerico = (float) $valorCalculado;
+                    \Log::info("Usando valor calculado: " . $valorNumerico);
+                } else {
+                    $valorNumerico = $this->extraerValorNumerico($valorFormateado);
+                    \Log::info("Usando valor formateado procesado: " . var_export($valorNumerico, true));
+                }
+
+                if ($valorNumerico !== null) {
+                    return $valorNumerico;
+                } else {
+                    \Log::info("No se pudo extraer valor numérico");
+                }
+            }
+        }
+    }
+
+    return null;
+}
+
+private function esTotalDestajo($texto)
+{
+    if (!is_string($texto)) {
+        return false;
+    }
+
+    $textoNormalizado = trim(strtoupper($texto));
+    $esTotalDestajo = strpos($textoNormalizado, 'TOTAL DESTAJO') !== false;
+
+    if ($esTotalDestajo) {
+        \Log::info("Coincidencia encontrada: " . $textoNormalizado);
+    }
+
+    return $esTotalDestajo;
+}
+
+private function extraerValorNumerico($valor)
+{
+    if ($valor === null || $valor === '') {
+        return null;
+    }
+
+    if (is_numeric($valor)) {
+        return (float) $valor;
+    }
+
+    // Limpiar el texto para extraer números
+    $valorString = (string) $valor;
+    $valorLimpio = preg_replace('/[^\d.,]/', '', $valorString);
+
+    if (empty($valorLimpio)) {
+        return null;
+    }
+
+    \Log::debug("Valor limpio: " . $valorLimpio);
+
+    // Manejar diferentes formatos de número
+    if (strpos($valorLimpio, ',') !== false && strpos($valorLimpio, '.') !== false) {
+        // Determinar cuál es el separador decimal
+        $lastDot = strrpos($valorLimpio, '.');
+        $lastComma = strrpos($valorLimpio, ',');
+
+        if ($lastDot > $lastComma) {
+            // Formato: 1,234.56 (punto como decimal)
+            $valorLimpio = str_replace(',', '', $valorLimpio);
+        } else {
+            // Formato: 1.234,56 (coma como decimal)
+            $valorLimpio = str_replace('.', '', $valorLimpio);
+            $valorLimpio = str_replace(',', '.', $valorLimpio);
+        }
+    } elseif (strpos($valorLimpio, ',') !== false) {
+        // Posiblemente formato europeo, verificar si tiene sentido como decimal
+        $parts = explode(',', $valorLimpio);
+        if (strlen(end($parts)) <= 2 && count($parts) > 1) {
+            // Última parte tiene 2 o menos dígitos, probablemente decimal
+            $valorLimpio = str_replace('.', '', $valorLimpio);
+            $valorLimpio = str_replace(',', '.', $valorLimpio);
+        } else {
+            // Parte entera con comas como separadores de miles
+            $valorLimpio = str_replace(',', '', $valorLimpio);
+        }
+    }
+
+    return is_numeric($valorLimpio) ? (float) $valorLimpio : null;
+}
 }

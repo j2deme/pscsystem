@@ -198,14 +198,14 @@
             'icono' => 'folder-open',
             'color' => 'bg-gray-300 dark:bg-gray-700',
             'disabled' => true,
-        ],
+        ],*/
         [
             'titulo' => 'Registrar Datos',
-            'ruta' => route('registrarNominas'),
+            'ruta' => route('updateDestajos'),
             'icono' => 'file-text',
             'color' => 'bg-orange-300 dark:bg-orange-700',
             'disabled' => false,
-        ],
+        ],/*
         [
             'titulo' => 'Registrar Finiquitos',
             'ruta' => route('registrarFiniquitos'),
