@@ -431,6 +431,8 @@ public function importarBajas(Request $request)
 
 public function updateDestajos()
 {
+    ini_set('memory_limit', '512M');
+    set_time_limit(300);
     $registros = Archivonomina::whereNotNull('arch_destajo')
         ->where('arch_destajo', '!=', '')
         ->get();
