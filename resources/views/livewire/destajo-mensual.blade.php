@@ -2,47 +2,37 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div>
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                Análisis de Nómina
+                Análisis de Destajos
             </h2>
             <p class="text-sm text-gray-600 dark:text-gray-400">Visualización de montos por periodos</p>
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-2">
-            <a href="{{ route('nominas.registros') }}"
-               class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-                Ver Registros
-            </a>
-
-            @if ($readyToLoad && $total > 0)
-                <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-lg p-3 text-white text-center">
-                    <div class="text-xs opacity-90">Total Nómina</div>
-                    <div class="text-lg font-bold">${{ number_format($total, 2) }}</div>
-                </div>
-            @endif
-        </div>
+        @if ($readyToLoad && $total > 0)
+            <div class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg p-4 text-white">
+                <div class="text-xs opacity-90">Total Acumulado</div>
+                <div class="text-2xl font-bold">${{ number_format($total, 2) }}</div>
+            </div>
+        @endif
     </div>
 
     @if (!$readyToLoad)
         <div class="flex flex-col items-center justify-center py-12">
             <div class="bg-gray-100 dark:bg-gray-700 rounded-full p-4 mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
             </div>
             <button wire:click="cargarGrafica"
-                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
+                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                Generar Gráfico de Nómina
+                Generar Gráfico de Destajos
             </button>
-            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">Haz clic para visualizar los datos de nómina</p>
+            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">Haz clic para visualizar los datos de destajos</p>
         </div>
     @endif
 
@@ -50,13 +40,13 @@
         <div wire:loading.remove wire:target="actualizarGrafica">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <div class="flex items-center space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                     </svg>
                     <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Filtrar por mes:</span>
                 </div>
                 <select wire:model.live="filtro"
-                        class="block w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:text-white">
+                        class="block w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
                     <option value="todos">Todos los meses</option>
                     @foreach(['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'] as $mes)
                         <option value="{{ $mes }}">{{ ucfirst($mes) }}</option>
@@ -67,37 +57,37 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <div class="lg:col-span-2 bg-gray-50 dark:bg-gray-700/30 rounded-xl p-4">
                     <div class="relative w-full min-h-[400px]">
-                        <canvas id="chartNominas" wire:ignore></canvas>
+                        <canvas id="chartDestajos" wire:ignore></canvas>
                     </div>
                 </div>
 
                 <div class="space-y-4">
-                    <div class="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/30 dark:to-violet-900/30 rounded-xl p-5 border border-purple-200 dark:border-purple-800">
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-xl p-5 border border-blue-200 dark:border-blue-800">
                         <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-sm font-medium text-purple-800 dark:text-purple-200">Periodo 1</h3>
-                            <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                            <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200">Periodo 1</h3>
+                            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
                         </div>
                         <div class="text-2xl font-bold text-gray-900 dark:text-white">
                             ${{ number_format(array_sum($periodo1), 2) }}
                         </div>
-                        <p class="text-xs text-purple-600 dark:text-purple-400 mt-1">26-10 de cada mes</p>
+                        <p class="text-xs text-blue-600 dark:text-blue-400 mt-1">26-10 de cada mes</p>
                     </div>
 
-                    <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 rounded-xl p-5 border border-orange-200 dark:border-orange-800">
+                    <div class="bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-900/30 dark:to-pink-900/30 rounded-xl p-5 border border-red-200 dark:border-red-800">
                         <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-sm font-medium text-orange-800 dark:text-orange-200">Periodo 2</h3>
-                            <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
+                            <h3 class="text-sm font-medium text-red-800 dark:text-red-200">Periodo 2</h3>
+                            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
                         </div>
                         <div class="text-2xl font-bold text-gray-900 dark:text-white">
                             ${{ number_format(array_sum($periodo2), 2) }}
                         </div>
-                        <p class="text-xs text-orange-600 dark:text-orange-400 mt-1">11-25 de cada mes</p>
+                        <p class="text-xs text-red-600 dark:text-red-400 mt-1">11-25 de cada mes</p>
                     </div>
 
-                    <div class="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/30 dark:to-cyan-900/30 rounded-xl p-5 border border-teal-200 dark:border-teal-800">
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-xl p-5 border border-green-200 dark:border-green-800">
                         <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-sm font-medium text-teal-800 dark:text-teal-200">Diferencia</h3>
-                            <div class="w-3 h-3 bg-teal-500 rounded-full"></div>
+                            <h3 class="text-sm font-medium text-green-800 dark:text-green-200">Diferencia</h3>
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
                         </div>
                         @php
                             $dif = array_sum($periodo1) - array_sum($periodo2);
@@ -106,7 +96,7 @@
                         <div class="text-2xl font-bold text-gray-900 dark:text-white">
                             {{ $dif >= 0 ? '+' : '' }}${{ number_format(abs($dif), 2) }}
                         </div>
-                        <p class="text-xs text-teal-600 dark:text-teal-400 mt-1">
+                        <p class="text-xs text-green-600 dark:text-green-400 mt-1">
                             {{ $porcentaje >= 0 ? '+' : '' }}{{ number_format($porcentaje, 1) }}%
                         </p>
                     </div>
@@ -114,14 +104,14 @@
             </div>
 
             @if ($filtro !== 'todos')
-                <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                     <div class="flex">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-500 flex-shrink-0 mt-0.5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <div>
-                            <h4 class="text-sm font-medium text-purple-800 dark:text-purple-200">Filtro activo</h4>
-                            <p class="text-sm text-purple-700 dark:text-purple-300 mt-1">
+                            <h4 class="text-sm font-medium text-blue-800 dark:text-blue-200">Filtro activo</h4>
+                            <p class="text-sm text-blue-700 dark:text-blue-300 mt-1">
                                 Mostrando datos solo para <span class="font-medium">{{ ucfirst($filtro) }}</span>
                             </p>
                         </div>
@@ -136,18 +126,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('livewire:init', () => {
-        let chartNominas = null;
+        let chartDestajos = null;
         let pendingData = null;
 
         function initializeChart() {
-            const ctx = document.getElementById('chartNominas');
+            const ctx = document.getElementById('chartDestajos');
             if (!ctx) {
                 setTimeout(initializeChart, 100);
                 return;
             }
 
-            if (chartNominas) {
-                chartNominas.destroy();
+            if (chartDestajos) {
+                chartDestajos.destroy();
             }
 
             const data = pendingData || {
@@ -157,15 +147,15 @@
                 total: 0
             };
 
-            chartNominas = new Chart(ctx, {
+            chartDestajos = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: data.labels,
                     datasets: [
                         {
                             label: 'Periodo 1 (26-10)',
-                            backgroundColor: 'rgba(147, 51, 234, 0.8)',
-                            borderColor: 'rgba(126, 34, 206, 1)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            borderColor: 'rgba(37, 99, 235, 1)',
                             borderWidth: 2,
                             borderRadius: 6,
                             borderSkipped: false,
@@ -175,8 +165,8 @@
                         },
                         {
                             label: 'Periodo 2 (11-25)',
-                            backgroundColor: 'rgba(249, 115, 22, 0.8)',
-                            borderColor: 'rgba(234, 88, 12, 1)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            borderColor: 'rgba(220, 38, 38, 1)',
                             borderWidth: 2,
                             borderRadius: 6,
                             borderSkipped: false,
@@ -202,7 +192,7 @@
                         },
                         title: {
                             display: true,
-                            text: `Total Nómina: $${parseFloat(data.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
+                            text: `Total Destajos: $${parseFloat(data.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
                             font: {
                                 size: 16,
                                 weight: 'bold'
@@ -271,25 +261,25 @@
             pendingData = null;
         }
 
-        Livewire.on('chart-nominas-updated', (data) => {
+        Livewire.on('chart-destajos-updated', (data) => {
             const chartData = Array.isArray(data) ? data[0] : data;
 
-            if (!document.getElementById('chartNominas')) {
+            if (!document.getElementById('chartDestajos')) {
                 pendingData = chartData;
                 setTimeout(initializeChart, 100);
-            } else if (chartNominas) {
-                chartNominas.data.labels = chartData.labels;
-                chartNominas.data.datasets[0].data = chartData.periodo1;
-                chartNominas.data.datasets[1].data = chartData.periodo2;
-                chartNominas.options.plugins.title.text = `Total Nómina: $${parseFloat(chartData.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                chartNominas.update('active');
+            } else if (chartDestajos) {
+                chartDestajos.data.labels = chartData.labels;
+                chartDestajos.data.datasets[0].data = chartData.periodo1;
+                chartDestajos.data.datasets[1].data = chartData.periodo2;
+                chartDestajos.options.plugins.title.text = `Total Destajos: $${parseFloat(chartData.total || 0).toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                chartDestajos.update('active');
             } else {
                 pendingData = chartData;
                 initializeChart();
             }
         });
 
-        if (document.getElementById('chartNominas')) {
+        if (document.getElementById('chartDestajos')) {
             initializeChart();
         }
     });
