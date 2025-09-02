@@ -895,22 +895,18 @@ private function calcularSubtotalNomina($rutaArchivo, $tipo = 'nomina')
     $solicitud = SolicitudBajas::findOrFail($id);
 
     if ($request->hasFile('finiquito_archivo')) {
-        // Crear directorio si no existe
         $directorio = 'solicitudesBajas/' . $id;
         Storage::disk('public')->makeDirectory($directorio);
 
-        // Generar nombre de archivo único
         $extension = $request->file('finiquito_archivo')->getClientOriginalExtension();
         $nombreArchivo = 'finiquito_' . date('Ymd_His') . '.' . $extension;
         $rutaCompleta = $directorio . '/' . $nombreArchivo;
 
-        // Guardar archivo
         $rutaArchivo = $request->file('finiquito_archivo')->storeAs($directorio, $nombreArchivo, 'public');
 
-        // Actualizar registro en la base de datos
         $solicitud->update([
             'calculo_finiquito' => $rutaArchivo,
-            'estatus' => 'Finiquito enviado a RH.'
+            'observaciones' => 'Finiquito enviado a RH.'
         ]);
 
         return redirect()->back()->with('success', 'Finiquito guardado correctamente.');

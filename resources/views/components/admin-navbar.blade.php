@@ -198,7 +198,7 @@
             'icono' => 'folder-open',
             'color' => 'bg-gray-300 dark:bg-gray-700',
             'disabled' => true,
-        ],*/
+        ],
         [
             'titulo' => 'Registrar Datos',
             'ruta' => '#', // Cambia a # ya que no será un href normal
@@ -206,7 +206,7 @@
             'color' => 'bg-orange-300 dark:bg-orange-700',
             'disabled' => false,
             'onclick' => 'actualizarDestajos()', // Agrega esta línea
-        ],/*
+        ],
         [
             'titulo' => 'Registrar Finiquitos',
             'ruta' => route('registrarFiniquitos'),
