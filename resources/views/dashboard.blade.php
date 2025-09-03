@@ -65,6 +65,11 @@
                         // Eliminamos caracteres especiales, excepto espacios.
                         $rol = trim(preg_replace('/[^a-zA-Z0-9\s]/', '', $rol));
 
+                        // Verificamos específicamente el rol "Auxiliar contabilidad"
+                        $rolOriginal = strtolower(Auth::user()->rol ?? '');
+                        if (strpos($rolOriginal, 'auxiliar contabilidad') !== false) {
+                            $navbar = 'auxcont-navbar';
+                        }
                         // Considerando que los roles pueden ser muy variables, buscaremos cadenas básicas
                         // Roles como: supervisor, supervisora, supervisión, supervision deben ser
                         // considerados como iguales.

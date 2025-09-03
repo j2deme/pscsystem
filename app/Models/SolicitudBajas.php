@@ -19,6 +19,7 @@ class SolicitudBajas extends Model
         'arch_renuncia',
         'arch_equipo_entregado',
         'archivo_baja',
+        'arch_cheque',
         'estatus',
         'fecha_baja',
         'observaciones',

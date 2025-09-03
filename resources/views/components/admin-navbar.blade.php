@@ -133,6 +133,12 @@
             'notificaciones' => $conteoAltasAux,
         ],
         [
+            'titulo' => 'Contabilidad',
+            'ruta'=> route('admin.contDashboard'),
+            'icono' => 'credit-card',
+            'color' => 'bg-indigo-300 dark:bg-indigo-700',
+        ],
+        [
             'titulo' => 'Jurídico',
             'ruta' => route('admin.juridicoDashboard'),
             'icono' => 'scale',

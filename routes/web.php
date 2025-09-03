@@ -26,6 +26,8 @@ use App\Http\Controllers\CedulaController;
 use App\Http\Controllers\SipareController;
 use App\Http\Controllers\GraficosController;
 use App\Http\Controllers\BajaAcuseController;
+use App\Http\Controllers\AuxcontController;
+
 
 Route::get('/', function () {
     return view('auth.login');
@@ -58,6 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tablero_nominas', [AdminController::class, 'tableroNominas'])->name('admin.nominasDashboard');
     Route::get('/tablero_imss', [AdminController::class, 'tableroImss'])->name('admin.imssDashboard');
     Route::get('/tablero_rh', [AdminController::class, 'tableroRh'])->name('admin.rhDashboard');
+    Route::get('/tablero_contabilidad', [AdminController::class, 'tableroAuxCont'])->name('admin.contDashboard');
     Route::get('tablero_monitoreo', [AdminController::class, 'tableroMonitoreo'])->name('admin.monitoreoDashboard');
     Route::get('tablero_juridico', [AdminController::class, 'tableroJuridico'])->name('admin.juridicoDashboard');
     Route::get('/tablero_custodios', [AdminController::class, 'tableroCustodios'])->name('admin.custodiosDashboard');
@@ -271,6 +274,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/historial_misiones', [CustodiosController::class, 'historialMisiones'])->name('custodios.historialMisiones');
     Route::get('/misiones_terminadas', [CustodiosController::class, 'misionesTerminadas'])->name('custodios.misionesTerminadas');
     //Route::get('mensajes', [CustodiosController::class,'mensajesIndex'])->name('custodios.mensajes');
+
+    //Usuario Auxiliar Contabilidad
+    Route::get('/Lista_finiquitos', [AuxContController::class, 'listaFiniquitos'])->name('auxcont.finiquitos');
+    Route::post('/subir-cheque/{id}', [AuxcontController::class, 'subirCheque'])->name('subir.cheque');
 
     //Mensajería
     Route::get('/mensajes/nuevo', [ChatWebController::class, 'crear'])->name('mensajes.crearChat');
