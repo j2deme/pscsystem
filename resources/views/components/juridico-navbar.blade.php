@@ -12,7 +12,7 @@
         [
             'titulo' => 'Nuevas Bajas',
             'ruta' => '#',
-            //'ruta' => route('juridico.nuevasBajas'),
+            'ruta' => route('juridico.nuevasBajas'),
             'icono' => 'trending-down',
             'color' => 'bg-green-100 dark:bg-green-700',
             'notificaciones' => $conteoBajas,

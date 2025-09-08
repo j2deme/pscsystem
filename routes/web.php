@@ -27,6 +27,7 @@ use App\Http\Controllers\SipareController;
 use App\Http\Controllers\GraficosController;
 use App\Http\Controllers\BajaAcuseController;
 use App\Http\Controllers\AuxcontController;
+use App\Http\Controllers\JuridicoController;
 
 
 Route::get('/', function () {
@@ -278,6 +279,10 @@ Route::middleware('auth')->group(function () {
     //Usuario Auxiliar Contabilidad
     Route::get('/Lista_finiquitos', [AuxContController::class, 'listaFiniquitos'])->name('auxcont.finiquitos');
     Route::post('/subir-cheque/{id}', [AuxcontController::class, 'subirCheque'])->name('subir.cheque');
+
+    //Usuario Juridico
+    Route::get('lista_nuevasBajas', [JuridicoController::class, 'listaNuevasBajas'])->name('juridico.nuevasBajas');
+    Route::post('/actualizar-motivo-baja', [JuridicoController::class, 'actualizarMotivoBaja'])->name('actualizar.motivo.baja');
 
     //Mensajería
     Route::get('/mensajes/nuevo', [ChatWebController::class, 'crear'])->name('mensajes.crearChat');
