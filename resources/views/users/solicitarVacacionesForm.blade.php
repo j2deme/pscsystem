@@ -3,7 +3,6 @@
     <div class="py-4 px-2 sm:py-6 sm:px-4">
         <div class="container mx-auto max-w-7xl">
 
-            <!-- Ficha Técnica -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
                 <div class="border-b border-gray-200 dark:border-gray-700 pb-4 mb-6">
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
@@ -15,7 +14,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <!-- Información Personal -->
                     <div class="lg:col-span-2">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
@@ -251,13 +249,13 @@
 
                 hoy.setHours(0, 0, 0, 0);
 
-                if (fechaInicio < hoy) {
-                    diasInput.value = '';
-                    btnSubmit.disabled = true;
-                    btnSubmit.classList.add('bg-red-400', 'cursor-not-allowed');
-                    btnSubmit.classList.remove('hover:bg-blue-700', 'bg-blue-600');
-                    return;
-                }
+                //if (fechaInicio < hoy) {
+                //    diasInput.value = '';
+                //    btnSubmit.disabled = true;
+                //    btnSubmit.classList.add('bg-red-400', 'cursor-not-allowed');
+                //    btnSubmit.classList.remove('hover:bg-blue-700', 'bg-blue-600');
+                //    return;
+                //}
 
                 if (fechaFin >= fechaInicio) {
                     const diffTime = fechaFin.getTime() - fechaInicio.getTime();

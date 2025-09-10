@@ -94,10 +94,11 @@
             'color' => 'bg-green-100 dark:bg-green-700',
         ],
         [
-            'titulo' => 'Buzón de Quejas y Sugerencias',
-            'ruta' => route('user.buzon'),
-            'icono' => 'message',
-            'color' => 'bg-purple-100 dark:bg-purple-700',
+            'titulo' => 'Historial de Registros Sipare',
+            'ruta' => route('aux.historialSipare'),
+            'icono' => 'calendar',
+            'color' => 'bg-yellow-100 dark:bg-yellow-700',
+            'disabled' => true,
         ],
          [
             'titulo' => 'Historial de Riesgos de Trabajo',
@@ -105,6 +106,19 @@
             'icono' => 'calendar',
             'color' => 'bg-red-100 dark:bg-red-700',
         ],
+        [
+            'titulo' => 'Historial de Cedulas',
+            'ruta' => route('aux.historialCedulas'),
+            'icono' => 'calendar',
+            'color' => 'bg-green-100 dark:bg-green-700',
+        ],
+                [
+            'titulo' => 'Buzón de Quejas y Sugerencias',
+            'ruta' => route('user.buzon'),
+            'icono' => 'message',
+            'color' => 'bg-purple-100 dark:bg-purple-700',
+        ],
+
 
     ];
 @endphp

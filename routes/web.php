@@ -220,6 +220,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/acuses-bajas', [BajaAcuseController::class, 'index'])->name('aux.acusesbajas');
     Route::post('/acuses-bajas/{solicitudBaja}', [BajaAcuseController::class, 'upload'])->name('aux.acusesbajasupload');
 
+    Route::get('/historial_cedulas', [AuxadminController::class, 'historialCedulas'])->name('aux.historialCedulas');
+    Route::get('/historial_sipare', [AuxadminController::class, 'historialSipare'])->name('aux.historialSipare');
+
     //nuevass rutas
     Route::get('/riesgos-trabajo', [RiesgoTrabajoController::class, 'index'])->name('aux.riesgosTrabajo');
     Route::get('/riesgos-trabajo/generar/{user}', [RiesgoTrabajoController::class, 'create'])->name('aux.generarRiesgoForm');
