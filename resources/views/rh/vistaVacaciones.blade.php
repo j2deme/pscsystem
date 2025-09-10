@@ -171,7 +171,6 @@
                                                         Subir
                                                     </button>
 
-                                                    @if($solicitud->user->empresa == 'Montana')
                                                         <a href="{{ route('sup.descargarSolicitudVacaciones', $solicitud->id) }}"
                                                            class="inline-flex items-center px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-lg transition duration-200 shadow-sm">
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -179,7 +178,6 @@
                                                             </svg>
                                                             Descargar
                                                         </a>
-                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
