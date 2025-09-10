@@ -179,7 +179,7 @@ class UserController extends Controller
         if(Auth::user()->rol == 'admin' || Auth::user()->solicitudAlta->departamento == 'Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUX RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar RH' || Auth::user()->solicitudAlta->rol == 'Auxiliar Recursos Humanos' || Auth::user()->solicitudAlta->rol == 'Aux RH' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'Auxiliar recursos humanos')
             return redirect()->route('dashboard')->with('success', 'Solicitud de vacaciones enviada correctamente');
         else
-            return redirect()->route('sup.solicitudesVacaciones')->with('success', 'Solicitud de vacaciones enviada correctamente');
+            return redirect()->route('dashboard')->with('success', 'Solicitud de vacaciones enviada correctamente');
     }
 
     public function historialVacaciones(){
