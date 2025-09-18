@@ -362,7 +362,6 @@
                                 <p class="text-sm text-red-500">Archivo de baja no disponible</p>
                             @endif
 
-                            @if ($solicitud->por == 'Renuncia')
                                 @if ($solicitud->arch_renuncia)
                                     <a href="{{ asset('storage/' . $solicitud->arch_renuncia) }}" target="_blank" class="document-link w-full">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -374,7 +373,6 @@
                                 @else
                                     <p class="text-sm text-red-500">Renuncia firmada no disponible</p>
                                 @endif
-                            @endif
 
                             @if ($solicitud->arch_equipo_entregado)
                                 <a href="{{ asset('storage/' . $solicitud->arch_equipo_entregado) }}" target="_blank" class="document-link w-full">

@@ -9,6 +9,7 @@ class JuridicoController extends Controller
 {
     public function listaNuevasBajas(){
         $solicitudes = SolicitudBajas::where('estatus', 'Aceptada')
+        ->orWhere('estatus', 'En Proceso')
             ->whereDate('fecha_baja', '>=', now()->subDays(15))
             ->orderBy('fecha_baja', 'desc')
             ->paginate(10);

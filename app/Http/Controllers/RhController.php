@@ -455,8 +455,8 @@ public function guardarArchivosAlta(Request $request, $id)
         'adelanto_nomina' => 'nullable|string',
         'descuento' => 'nullable|string',
         'archivo_baja' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-        'archivo_equipo_entregado' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-        'archivo_renuncia' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        'arch_equipo_entregado' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        'arch_renuncia' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
     ]);
 
     $user = User::findOrFail($id);
@@ -470,7 +470,7 @@ public function guardarArchivosAlta(Request $request, $id)
     $solicitud->incapacidad = $request->incapacidad;
     $solicitud->por = $request->por;
     $solicitud->ultima_asistencia = $request->ultima_asistencia;
-    if((Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS') && $solicitud->por == 'Renuncia'){
+    if((Auth::user()->rol=='admin' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS') && $solicitud->por == 'Renuncia'){
         $solicitud->estatus = 'Aceptada';
         $solicitud->observaciones = 'Baja de elemento Aprobada.';
         $solicitud->fecha_baja = $request->fecha_hoy;

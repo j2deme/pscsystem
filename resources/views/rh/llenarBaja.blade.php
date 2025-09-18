@@ -134,7 +134,7 @@
                                              :class="{ 'border-blue-500': isDragging }"
                                              @dragenter="isDragging = true"
                                              @dragleave="isDragging = false">
-                                            <input type="file" name="archivo_equipo_entregado" id="arch_equipo_entregado" class="hidden" @change="handleFile($event)" x-ref="inputFile">
+                                            <input type="file" name="arch_equipo_entregado" id="arch_equipo_entregado" class="hidden" @change="handleFile($event)" x-ref="inputFile">
                                             <div class="text-center">
                                                 <p class="text-sm text-gray-600 dark:text-gray-300" x-text="fileName || 'Arrastra un archivo aquí o haz clic para seleccionarlo'"></p>
                                                 <button type="button" class="mt-2 text-blue-600 hover:underline" @click="$refs.inputFile.click()">Seleccionar archivo</button>
