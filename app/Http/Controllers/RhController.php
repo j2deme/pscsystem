@@ -447,7 +447,7 @@ public function guardarArchivosAlta(Request $request, $id)
     public function almacenarBaja(Request $request, $id)
 {
     $request->validate([
-        'fecha_hoy' => 'required|date',
+        'fecha_baja' => 'required|date',
         'incapacidad' => 'nullable|string|max:255',
         'por' => 'required|in:Ausentismo,Separación Voluntaria,Renuncia',
         'ultima_asistencia' => 'nullable|date',
@@ -463,7 +463,7 @@ public function guardarArchivosAlta(Request $request, $id)
 
     $solicitud = new SolicitudBajas();
     $solicitud->user_id = $user->id;
-    $solicitud->fecha_solicitud = $request->fecha_hoy;
+    $solicitud->fecha_solicitud = $request->fecha_baja;
     $solicitud->motivo = $request->motivo;
     $solicitud->adelanto_nomina = $request->adelanto_nomina;
     $solicitud->descuento = $request->descuento;
@@ -473,7 +473,7 @@ public function guardarArchivosAlta(Request $request, $id)
     if((Auth::user()->rol=='admin' || Auth::user()->rol == 'AUXILIAR RECURSOS HUMANOS' || Auth::user()->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RH' || Auth::user()->solicitudAlta->rol == 'AUXILIAR RECURSOS HUMANOS') && $solicitud->por == 'Renuncia'){
         $solicitud->estatus = 'Aceptada';
         $solicitud->observaciones = 'Baja de elemento Aprobada.';
-        $solicitud->fecha_baja = $request->fecha_hoy;
+        $solicitud->fecha_baja = $request->fecha_baja;
         $solicitud->save();
 
         $userId = $solicitud->user_id;
@@ -483,7 +483,7 @@ public function guardarArchivosAlta(Request $request, $id)
     }else{
         $solicitud->estatus = 'En Proceso';
         $solicitud->observaciones = 'Solicitud en revisión';
-        $solicitud->fecha_baja = Carbon::now('America/Mexico_City');
+        $solicitud->fecha_baja = $request->fecha_baja;
     }
 
     try {

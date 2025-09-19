@@ -32,8 +32,8 @@
                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-5">Datos Generales</h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div>
-                                        <label for="fecha_hoy" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha Baja</label>
-                                        <input type="date" name="fecha_hoy" id="fecha_hoy"
+                                        <label for="fecha_baja" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fecha Baja</label>
+                                        <input type="date" name="fecha_baja" id="fecha_baja"
                                                class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                     </div>
 
