@@ -305,6 +305,10 @@
                                     <p class="text-gray-500 dark:text-gray-400 text-sm">Incapacidad</p>
                                     <p class="font-medium text-gray-900 dark:text-white">{{ $solicitud->incapacidad ?? 'No' }}</p>
                                 </div>
+                                <div>
+                                    <p class="text-gray-500 dark:text-gray-400 text-sm">Fecha de Baja</p>
+                                    <p class="font-medium text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($solicitud->fecha_baja)->format('d/m/Y') }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
