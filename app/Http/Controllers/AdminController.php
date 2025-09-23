@@ -126,6 +126,10 @@ class AdminController extends Controller
         return view ('admi.tableroContabilidad');
     }
 
+    public function tableroOperaciones(){
+        return view ('admi.tableroOperaciones');
+    }
+
     public function tableroMonitoreo(){
         return view('admi.tableroMonitoreo');
     }

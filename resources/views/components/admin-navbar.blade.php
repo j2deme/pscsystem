@@ -133,6 +133,13 @@
             'notificaciones' => $conteoAltasAux,
         ],
         [
+            'titulo' => 'Operaciones',
+            'ruta' => route('admin.operacionesDashboard'),
+            'icono' => 'activity',
+            'color' => 'bg-red-300 dark:bg-red-700',
+
+        ],
+        [
             'titulo' => 'Contabilidad',
             'ruta'=> route('admin.contDashboard'),
             'icono' => 'credit-card',

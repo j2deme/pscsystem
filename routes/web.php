@@ -60,6 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/importar-excel2', [ImportController::class, 'importarVacaciones'])->name('importar.excel');
     Route::get('/reingreso/{id}', [AdminController::class, 'darReingreso'])->name('admin.reingreso');
     Route::get('/tablero_nominas', [AdminController::class, 'tableroNominas'])->name('admin.nominasDashboard');
+    Route::get('/tablero_operaciones', [AdminController::class, 'tableroOperaciones'])->name('admin.operacionesDashboard');
     Route::get('/tablero_imss', [AdminController::class, 'tableroImss'])->name('admin.imssDashboard');
     Route::get('/tablero_rh', [AdminController::class, 'tableroRh'])->name('admin.rhDashboard');
     Route::get('/tablero_contabilidad', [AdminController::class, 'tableroAuxCont'])->name('admin.contDashboard');
