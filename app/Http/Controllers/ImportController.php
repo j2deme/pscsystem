@@ -7,10 +7,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Unidades;
 use App\Models\SolicitudAlta;
 use App\Models\Archivonomina;
+use App\Models\SolicitudVacaciones;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Exception;
@@ -634,4 +636,407 @@ private function extraerValorNumerico($valor)
 
     return is_numeric($valorLimpio) ? (float) $valorLimpio : null;
 }
+
+    public function importarVacaciones(Request $request)
+{
+    \Log::info('=== INICIO DE IMPORTACIÓN DE VACACIONES (PhpSpreadsheet) ===');
+
+    // Aumentar límites para archivos grandes
+    set_time_limit(300); // 5 minutos
+    ini_set('memory_limit', '512M');
+
+    $request->validate([
+        'excel' => 'required|file|mimes:xlsx,xls|max:10240',
+    ]);
+
+    if (!$request->hasFile('excel')) {
+        \Log::error('❌ No se recibió ningún archivo en la solicitud.');
+        return back()->with('error', 'No se seleccionó ningún archivo.');
+    }
+
+    try {
+        \Log::info('📂 Cargando archivo con PhpSpreadsheet...');
+        $inputFileName = $request->file('excel')->getPathname();
+        $spreadsheet = IOFactory::load($inputFileName);
+        $sheetNames = $spreadsheet->getSheetNames();
+        \Log::info('✅ Archivo cargado. Total de hojas: ' . count($sheetNames));
+
+        $hojasConfig = [
+            0 => 2, // Hoja 1 → columna C (índice 2)
+            1 => 3, // Hoja 2 → columna D (índice 3)
+            2 => 1, // Hoja 3 → columna B (índice 1)
+            5 => 1, // Hoja 6 → columna B (índice 1)
+        ];
+
+        $totalProcesados = 0;
+        $totalIgnorados = 0;
+
+        foreach ($hojasConfig as $indiceHoja => $colNombre) {
+            \Log::info("▶️ Procesando hoja índice: {$indiceHoja} (columna nombre: {$colNombre})");
+
+            if (!isset($sheetNames[$indiceHoja])) {
+                \Log::warning("⚠️ Hoja índice {$indiceHoja} no existe. Saltando...");
+                continue;
+            }
+
+            $sheet = $spreadsheet->getSheet($indiceHoja);
+            $highestRow = $sheet->getHighestRow();
+            $highestColumn = $sheet->getHighestColumn();
+            \Log::info("📊 Hoja '{$sheetNames[$indiceHoja]}' - Filas: {$highestRow}, Columnas: {$highestColumn}");
+
+            if ($highestRow < 2) {
+                \Log::warning("⚠️ Hoja {$indiceHoja} no tiene datos suficientes. Saltando...");
+                continue;
+            }
+
+            // 🔍 Buscar encabezados en filas 1-5
+            $encabezadosFila = null;
+            $headers = [];
+
+            for ($filaEncabezado = 1; $filaEncabezado <= 5; $filaEncabezado++) {
+                $posibleHeaders = $sheet->rangeToArray('A' . $filaEncabezado . ':' . $highestColumn . $filaEncabezado, null, true, false)[0] ?? [];
+
+                $tieneDel = false;
+                $tieneAl = false;
+
+                foreach ($posibleHeaders as $header) {
+                    if (is_string($header)) {
+                        if (Str::lower($header) === 'del') $tieneDel = true;
+                        if (Str::lower($header) === 'al') $tieneAl = true;
+                    }
+                }
+
+                if ($tieneDel && $tieneAl) {
+                    $encabezadosFila = $filaEncabezado;
+                    $headers = $posibleHeaders;
+                    \Log::info("✅ Encabezados encontrados en fila {$filaEncabezado}: " . json_encode($headers));
+                    break;
+                }
+            }
+
+            if ($encabezadosFila === null) {
+                \Log::error("❌ No se encontraron encabezados 'Del' y 'Al' en las primeras 5 filas de la hoja {$indiceHoja}. Saltando hoja.");
+                $totalIgnorados += max(0, $highestRow - 1);
+                continue;
+            }
+
+            // Buscar índices de columnas clave
+            $delIndex = null;
+            $alIndex = null;
+            $obsIndex = null;
+
+            foreach ($headers as $index => $header) {
+                if (is_string($header)) {
+                    if (Str::lower($header) === 'del') $delIndex = $index;
+                    if (Str::lower($header) === 'al') $alIndex = $index;
+                    if (Str::lower($header) === 'observaciones') $obsIndex = $index;
+                }
+            }
+
+            \Log::info("🔍 Columnas encontradas - Del: " . ($delIndex !== null ? $delIndex : 'NO') . ", Al: " . ($alIndex !== null ? $alIndex : 'NO') . ", Observaciones: " . ($obsIndex !== null ? $obsIndex : 'NO'));
+
+            if ($delIndex === null || $alIndex === null) {
+                \Log::error("❌ Columnas 'Del' o 'Al' NO ENCONTRADAS en hoja {$indiceHoja}. Saltando toda la hoja.");
+                $filasDatos = max(0, $highestRow - $encabezadosFila);
+                $totalIgnorados += $filasDatos;
+                continue;
+            }
+
+            $inicioDatos = $encabezadosFila + 1;
+            \Log::info("▶️ Iniciando procesamiento de datos desde la fila {$inicioDatos}");
+
+            for ($row = $inicioDatos; $row <= $highestRow; $row++) {
+                \Log::info("----- Procesando fila #{$row} en hoja {$indiceHoja} -----");
+
+                $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row, null, true, false)[0];
+
+                // Saltar filas vacías
+                if (empty(array_filter($rowData, fn($v) => !is_null($v) && $v !== '' && $v !== false))) {
+                    \Log::info("⏹️ Fila {$row} vacía. Saltando.");
+                    $totalIgnorados++;
+                    continue;
+                }
+
+                // Obtener nombre desde columna configurada
+                $nombreCompleto = $rowData[$colNombre] ?? null;
+                if (!$nombreCompleto || !is_string($nombreCompleto) || trim($nombreCompleto) === '') {
+                    \Log::warning("📛 Nombre no válido en fila {$row}: " . json_encode($rowData[$colNombre] ?? 'VACÍO'));
+                    $totalIgnorados++;
+                    continue;
+                }
+
+                $nombreCompleto = trim($nombreCompleto);
+                \Log::info("👤 Buscando usuario por nombre Excel: '{$nombreCompleto}'");
+
+                // 🔍 BUSCAR USUARIO INTELIGENTEMENTE
+                $user = $this->buscarUsuarioPorNombreExcel($nombreCompleto);
+                if (!$user) {
+                    \Log::warning("❌ Usuario NO ENCONTRADO para: '{$nombreCompleto}'");
+                    $totalIgnorados++;
+                    continue;
+                }
+
+                // ✅ PARTE CORREGIDA: CÁLCULO DEL ÚLTIMO AÑO LABORAL
+
+                $fechaIngresoRaw = $rowData[$colNombre + 1] ?? null;
+                if (!$fechaIngresoRaw) {
+                    \Log::warning("📅 Fecha de ingreso faltante para: {$nombreCompleto}");
+                    $totalIgnorados++;
+                    continue;
+                }
+
+                $fechaIngreso = $this->parsearFechaConValidacion($fechaIngresoRaw, 'Fecha de ingreso');
+                if (!$fechaIngreso) {
+                    \Log::warning("❌ Fecha de ingreso inválida o no corregible: {$fechaIngresoRaw}");
+                    $totalIgnorados++;
+                    continue;
+                }
+
+                $hoy = Carbon::today();
+
+                // ✅ CORRECCIÓN: Calcular último aniversario cumplido
+                $ultimoAniversario = $fechaIngreso->copy();
+                $ultimoAniversario->year = $hoy->year;
+
+                if ($ultimoAniversario->lte($hoy)) {
+                    $inicioUltimoAnio = $ultimoAniversario;
+                } else {
+                    $inicioUltimoAnio = $ultimoAniversario->copy()->subYear();
+                }
+
+                \Log::info("⏳ Último año laboral: del {$inicioUltimoAnio->toDateString()} al {$hoy->toDateString()}");
+
+                // ✅ FIN DE CORRECCIÓN
+
+                $fechaInicioRaw = $rowData[$delIndex] ?? null;
+                $fechaFinRaw = $rowData[$alIndex] ?? null;
+
+                if (!$fechaInicioRaw || !$fechaFinRaw) {
+                    \Log::warning("❌ Fechas 'Del' o 'Al' vacías para: {$nombreCompleto}");
+                    $totalIgnorados++;
+                    continue;
+                }
+
+                $fechaInicio = $this->parsearFechaConValidacion($fechaInicioRaw, 'Fecha inicio solicitud');
+                $fechaFin = $this->parsearFechaConValidacion($fechaFinRaw, 'Fecha fin solicitud');
+
+                if (!$fechaInicio || !$fechaFin) {
+                    \Log::warning("❌ Fechas de solicitud inválidas: inicio={$fechaInicioRaw}, fin={$fechaFinRaw}");
+                    $totalIgnorados++;
+                    continue;
+                }
+
+                \Log::info("🗓️ Solicitud: del {$fechaInicio->toDateString()} al {$fechaFin->toDateString()}");
+
+                if ($fechaInicio->gt($fechaFin)) {
+                    \Log::warning("❌ Fecha 'Del' mayor que 'Al' para: {$nombreCompleto}. Saltando.");
+                    $totalIgnorados++;
+                    continue;
+                }
+
+                // ✅ VALIDAR QUE LA SOLICITUD ESTÉ DENTRO DEL ÚLTIMO AÑO LABORAL
+                if ($fechaInicio->lt($inicioUltimoAnio)) {
+                    \Log::info("⏭️ Solicitud inicia ANTES del último año laboral ({$fechaInicio->toDateString()} < {$inicioUltimoAnio->toDateString()}). Ignorando.");
+                    $totalIgnorados++;
+                    continue;
+                }
+
+                if ($fechaFin->gt($hoy)) {
+                    \Log::info("⏭️ Solicitud termina DESPUÉS de hoy ({$fechaFin->toDateString()} > {$hoy->toDateString()}). Ignorando.");
+                    $totalIgnorados++;
+                    continue;
+                }
+
+                $observaciones = $obsIndex !== null ? ($rowData[$obsIndex] ?? '') : '';
+                \Log::info("📝 Observaciones: " . ($observaciones ?: '[vacío]'));
+
+                $tipo = 'Disfrutadas';
+                if (Str::contains(Str::lower($observaciones), 'pago')) {
+                    $tipo = 'Pagadas';
+                    \Log::info("🔖 Tipo detectado: PAGADAS");
+                }
+
+                $diasSolicitados = $fechaInicio->diffInDays($fechaFin) + 1;
+                \Log::info("🔢 Días solicitados: {$diasSolicitados}");
+
+                $aniosTrabajados = $fechaIngreso->diffInYears($hoy); // Solo para cálculo de días por derecho
+                $diasPorDerecho = $this->calcularDiasPorDerecho($aniosTrabajados);
+                \Log::info("⚖️ Días por derecho ({$aniosTrabajados} años): {$diasPorDerecho}");
+
+                $diasYaUtilizados = (int) SolicitudVacaciones::where('user_id', $user->id)
+                    ->where('estatus', 'Aceptada')
+                    ->whereBetween('fecha_inicio', [$inicioUltimoAnio, $hoy])
+                    ->sum(DB::raw('COALESCE(dias_solicitados, 0)'));
+
+                \Log::info("📉 Días ya utilizados: {$diasYaUtilizados}");
+
+                $diasDisponibles = max(0, $diasPorDerecho - $diasYaUtilizados);
+                \Log::info("📈 Días disponibles: {$diasDisponibles}");
+
+                $monto = $tipo === 'Pagadas' ? ($diasSolicitados * 100) : 0;
+                if ($monto > 0) {
+                    \Log::info("💰 Monto calculado: {$monto}");
+                }
+
+                SolicitudVacaciones::create([
+                    'user_id' => $user->id,
+                    'dias_por_derecho' => $diasPorDerecho,
+                    'fecha_inicio' => $fechaInicio,
+                    'fecha_fin' => $fechaFin,
+                    'monto' => $monto,
+                    'observaciones' => $observaciones,
+                    'tipo' => $tipo,
+                    'dias_ya_utlizados' => $diasYaUtilizados, // ← ¡Asegúrate que este nombre coincida con tu BD!
+                    'dias_disponibles' => $diasDisponibles,
+                    'dias_solicitados' => $diasSolicitados,
+                    'estatus' => 'Aceptada',
+                    'created_at' => now(),
+                ]);
+
+                \Log::info("✅ REGISTRO CREADO con éxito para: {$nombreCompleto}");
+                $totalProcesados++;
+            }
+        }
+
+        if ($totalProcesados === 0 && $totalIgnorados === 0) {
+            \Log::warning("⚠️ No se procesó ninguna hoja válida.");
+            return back()->with('warning', '⚠️ No se encontraron hojas válidas para procesar.');
+        }
+
+        \Log::info("=== RESUMEN FINAL ===");
+        \Log::info("✅ Total procesados: {$totalProcesados}");
+        \Log::info("❌ Total ignorados: {$totalIgnorados}");
+        \Log::info("=== IMPORTACIÓN FINALIZADA ===");
+
+        return back()->with([
+            'success' => "✅ ¡Importación completada! {$totalProcesados} registros procesados, {$totalIgnorados} ignorados."
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('🚨 ERROR GENERAL: ' . $e->getMessage());
+        \Log::error('Trace: ' . $e->getTraceAsString());
+        return back()->with('error', '❌ Error crítico: ' . $e->getMessage());
+    }
+}
+    /**
+     * Busca un usuario en la BD intentando normalizar nombres en formato "Apellido, Nombre"
+     */
+    private function buscarUsuarioPorNombreExcel($nombreExcel)
+    {
+        $nombreExcel = trim($nombreExcel);
+        $nombreExcel = preg_replace('/\s+/', ' ', $nombreExcel); // normalizar espacios
+
+        // Si tiene coma, invertir: "Apellido, Nombre" → "Nombre Apellido"
+        if (strpos($nombreExcel, ',') !== false) {
+            [$apellidos, $nombres] = array_map('trim', explode(',', $nombreExcel, 2));
+            $nombreBusqueda = $nombres . ' ' . $apellidos;
+        } else {
+            $nombreBusqueda = $nombreExcel;
+        }
+
+        \Log::info("🔍 Normalizado para búsqueda: '{$nombreBusqueda}'");
+
+        // Dividir en palabras significativas (mínimo 2 caracteres)
+        $palabras = array_filter(explode(' ', $nombreBusqueda), fn($p) => strlen($p) >= 2);
+
+        if (empty($palabras)) {
+            \Log::warning("⚠️ Nombre sin palabras válidas: {$nombreExcel}");
+            return null;
+        }
+
+        // Construir query: debe coincidir con TODAS las palabras
+        $query = User::query();
+        foreach ($palabras as $palabra) {
+            $query->where('name', 'like', "%{$palabra}%");
+        }
+
+        $usuario = $query->first();
+
+        if ($usuario) {
+            \Log::info("✅ Coincidencia encontrada: {$usuario->name} (ID: {$usuario->id})");
+        } else {
+            \Log::warning("❌ Ningún usuario coincide con todas las palabras: " . implode(', ', $palabras));
+        }
+
+        return $usuario;
+    }
+
+    private function calcularDiasPorDerecho($antiguedad)
+    {
+        return match (true) {
+            $antiguedad < 1 => 12,
+            $antiguedad == 1 => 12,
+            $antiguedad == 2 => 14,
+            $antiguedad == 3 => 16,
+            $antiguedad == 4 => 18,
+            $antiguedad == 5 => 20,
+            $antiguedad >= 6 && $antiguedad <= 10 => 22,
+            $antiguedad >= 11 && $antiguedad <= 15 => 24,
+            $antiguedad >= 16 && $antiguedad <= 20 => 26,
+            $antiguedad >= 21 && $antiguedad <= 25 => 28,
+            $antiguedad >= 26 && $antiguedad <= 30 => 30,
+            $antiguedad > 30 => 32,
+            default => 12,
+        };
+    }
+
+    /**
+ * Parsea y valida una fecha, corrigiendo errores comunes como años mal escritos o seriales de Excel.
+ */
+private function parsearFechaConValidacion($fechaRaw, $contexto = 'fecha')
+{
+    if (!$fechaRaw) {
+        \Log::warning("📅 {$contexto} está vacía.");
+        return null;
+    }
+
+    // Si es numérico, probablemente sea un serial de Excel
+    if (is_numeric($fechaRaw)) {
+        try {
+            // Convertir serial de Excel a fecha
+            if ($fechaRaw > 59) {
+                $fechaRaw -= 1; // Corrección por bug de Excel (1900 no fue bisiesto)
+            }
+            $unixDate = ($fechaRaw - 25569) * 86400; // 25569 = días entre 1900-01-01 y 1970-01-01
+            $fecha = Carbon::createFromTimestamp($unixDate)->startOfDay();
+            \Log::info("📅 {$contexto} convertida desde serial Excel: {$fecha->toDateString()}");
+            return $fecha;
+        } catch (\Exception $e) {
+            \Log::error("❌ Error al convertir serial Excel '{$fechaRaw}' para {$contexto}: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    // Si es string, limpiar y validar
+    $fechaRaw = trim($fechaRaw);
+
+    // Corregir errores comunes: año con 5+ dígitos
+    if (preg_match('/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{5,})$/', $fechaRaw, $matches)) {
+        $dia = $matches[1];
+        $mes = $matches[2];
+        $anio = $matches[3];
+
+        if (strlen($anio) > 4) {
+            $anioCorregido = substr($anio, -4);
+            $fechaCorregida = "{$dia}/{$mes}/{$anioCorregido}";
+            \Log::warning("⚠️ {$contexto} corregida: '{$fechaRaw}' → '{$fechaCorregida}'");
+            $fechaRaw = $fechaCorregida;
+        }
+    }
+
+    try {
+        $fecha = Carbon::parse($fechaRaw);
+        // Validar rango razonable
+        if ($fecha->year < 1900 || $fecha->year > 2100) {
+            \Log::error("❌ Fecha fuera de rango válido ({$fecha->toDateString()}) para: {$fechaRaw}");
+            return null;
+        }
+        \Log::info("📅 {$contexto} parseada correctamente: {$fecha->toDateString()}");
+        return $fecha;
+    } catch (\Exception $e) {
+        \Log::error("❌ Error al parsear {$contexto} '{$fechaRaw}': " . $e->getMessage());
+        return null;
+    }
+}
+
 }

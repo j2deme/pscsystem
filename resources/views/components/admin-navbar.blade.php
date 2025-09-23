@@ -190,6 +190,12 @@
             'icono' => 'message',
             'color' => 'bg-purple-300 dark:bg-purple-700',
         ],
+        [
+            'titulo' => 'Importar Datos',
+            'ruta' => route('importar.excel'),
+            'icono' => 'folder-open',
+            'color' => 'bg-gray-300 dark:bg-gray-700',
+        ],
         /*[
             'titulo' => 'Depurar datos',
             'form' => true, // Marcador para saber que es un formulario
@@ -198,13 +204,7 @@
             'color' => 'bg-purple-300 dark:bg-purple-700',
             'confirm' => '¿Estás seguro de unificar los usuarios duplicados? Esta acción no se puede deshacer.',
         ],
-        [
-            'titulo' => 'Importar Datos',
-            'ruta' => route('importar.excel'),
-            'icono' => 'folder-open',
-            'color' => 'bg-gray-300 dark:bg-gray-700',
-            'disabled' => true,
-        ],
+
         [
             'titulo' => 'Registrar Datos',
             'ruta' => '#', // Cambia a # ya que no será un href normal
