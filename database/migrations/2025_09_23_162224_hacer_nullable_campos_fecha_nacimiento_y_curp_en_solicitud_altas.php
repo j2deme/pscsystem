@@ -4,20 +4,24 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
     public function up()
     {
         Schema::table('solicitud_altas', function (Blueprint $table) {
-            $table->string('solicitante')->nullable()->after('id');
-            //$table->foreign('solicitante')->references('id')->on('users')->onDelete('cascade');
+            $table->date('fecha_nacimiento')->nullable()->change();
+            $table->string('curp')->nullable()->change();
         });
     }
 
     public function down()
     {
         Schema::table('solicitud_altas', function (Blueprint $table) {
-            $table->dropForeign(['solicitante']);
-            $table->dropColumn('solicitante');
+            $table->date('fecha_nacimiento')->nullable(false)->change();
+            $table->string('curp')->nullable(false)->change();
         });
     }
 };

@@ -77,6 +77,10 @@
                         $navbar = 'supervisor-navbar';
                         }
 
+                        if (strpos($rol, 'operaciones') !== false) {
+                        $navbar = 'operaciones-navbar';
+                        }
+
                         // Roles como: nominas, nómina, nomina deben ser considerados como iguales.
                         if (strpos($rol, 'nomina') !== false || strpos($rol, 'nómina') !== false) {
                         $navbar = 'nominas-navbar';

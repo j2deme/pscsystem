@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Unidades;
+use App\Models\DocumentacionAltas;
 use App\Models\SolicitudAlta;
 use App\Models\Archivonomina;
 use App\Models\SolicitudVacaciones;
@@ -1039,4 +1040,298 @@ private function parsearFechaConValidacion($fechaRaw, $contexto = 'fecha')
     }
 }
 
+
+public function importarPersonalActivo(Request $request)
+{
+    \Log::info('=== INICIO DE IMPORTACIÓN DE PERSONAL ACTIVO ===');
+
+    set_time_limit(300);
+    ini_set('memory_limit', '512M');
+
+    $request->validate([
+        'excel' => 'required|file|mimes:xlsx,xls|max:10240',
+    ]);
+
+    if (!$request->hasFile('excel')) {
+        return back()->with('error', 'No se seleccionó ningún archivo.');
+    }
+
+    try {
+        $inputFileName = $request->file('excel')->getPathname();
+        $spreadsheet = IOFactory::load($inputFileName);
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $highestRow = $sheet->getHighestRow();
+        $highestColumn = $sheet->getHighestColumn();
+
+        \Log::info("📊 Hoja activa - Filas: {$highestRow}, Columnas: {$highestColumn}");
+
+        // Contadores
+        $creados = 0;
+        $actualizados = 0;
+        $ignorados = 0;
+
+        // Procesar desde la fila 2 (asumiendo que fila 1 son encabezados)
+        for ($row = 2; $row <= $highestRow; $row++) {
+            \Log::info("----- Procesando fila #{$row} -----");
+
+            // Columna B: Nombre completo
+            $nombreCompletoExcel = $sheet->getCell("B{$row}")->getValue();
+            if (!$nombreCompletoExcel || !is_string($nombreCompletoExcel)) {
+                \Log::warning("📛 Nombre no válido en fila {$row}");
+                $ignorados++;
+                continue;
+            }
+
+            // Columna A: Número de empleado
+            $numEmpleado = $sheet->getCell("A{$row}")->getValue();
+
+            // Columna C: Fecha de ingreso
+            $fechaIngresoRaw = $sheet->getCell("C{$row}")->getValue();
+            $fechaIngreso = $this->parsearFechaConValidacion($fechaIngresoRaw, 'Fecha de ingreso');
+            if (!$fechaIngreso) {
+                \Log::warning("📅 Fecha de ingreso inválida en fila {$row}: {$fechaIngresoRaw}");
+                $ignorados++;
+                continue;
+            }
+
+            // Columna D: NSS
+            $nss = $sheet->getCell("D{$row}")->getValue();
+            if (!$nss) {
+                \Log::warning("🆔 NSS faltante en fila {$row}");
+                $ignorados++;
+                continue;
+            }
+
+            // Normalizar nombre
+            $nombreNormalizado = $this->normalizarNombreApellidos($nombreCompletoExcel);
+            if (!$nombreNormalizado) {
+                \Log::warning("📛 No se pudo normalizar nombre: {$nombreCompletoExcel}");
+                $ignorados++;
+                continue;
+            }
+
+            // Buscar usuario
+            $user = User::where('name', 'like', "%{$nombreNormalizado}%")->first();
+
+            if ($user) {
+                if ($user->estatus === 'Activo') {
+                    \Log::info("✅ Usuario ya activo: {$nombreNormalizado} (ID: {$user->id})");
+                    $ignorados++;
+                } else {
+                    $user->estatus = 'Activo';
+                    $user->save();
+                    \Log::info("🔄 Usuario reactivado: {$nombreNormalizado} (ID: {$user->id})");
+                    $actualizados++;
+                }
+            } else {
+                // Crear en solicitud_altas
+                $solicitudAlta = SolicitudAlta::create([
+                    'nombre' => $nombreNormalizado,
+                    'apellido_paterno' => $this->extraerApellidoPaterno($nombreCompletoExcel),
+                    'apellido_materno' => $this->extraerApellidoMaterno($nombreCompletoExcel),
+                    'nss' => $nss,
+                    'fecha_ingreso' => $fechaIngreso,
+                    'status' => 'Activo',
+                    'observaciones' => 'Solicitud Aceptada',
+                    'empresa' => 'PSC',
+                ]);
+
+                \Log::info("📄 SolicitudAlta creada: ID {$solicitudAlta->id}");
+
+                // Crear en documentacion_altas
+                $docAlta = DocumentacionAltas::create([
+                    'solicitud_id' => $solicitudAlta->id, // ← ¡Aquí va la clave!
+                ]);
+                \Log::info("📄 DocumentacionAlta creada: ID {$docAlta->id}");
+
+                // Crear en users
+                $user = User::create([
+                    'name' => $nombreNormalizado,
+                    'password' => bcrypt($nss),
+                    'email' => $this->generarEmailTemporal($nombreNormalizado, $nss),
+                    'estatus' => 'Activo',
+                    'empresa' => 'PSC',
+                    'num_empleado' => $numEmpleado,
+                    'fecha_ingreso' => $fechaIngreso,
+                    'sol_alta_id' => $solicitudAlta->id,
+                    'sol_docs_id' => $docAlta->id,
+                    'created_at' => now(),
+                ]);
+
+                \Log::info("✅ Usuario creado: {$nombreNormalizado} (ID: {$user->id})");
+                $creados++;
+            }
+        }
+
+        \Log::info("=== RESUMEN FINAL ===");
+        \Log::info("✅ Nuevos creados: {$creados}");
+        \Log::info("🔄 Actualizados (reactivados): {$actualizados}");
+        \Log::info("⏹️ Ignorados (ya activos): {$ignorados}");
+        \Log::info("=== IMPORTACIÓN FINALIZADA ===");
+
+        return back()->with([
+            'success' => "✅ ¡Importación completada! Nuevos: {$creados}, Actualizados: {$actualizados}, Ignorados: {$ignorados}."
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('🚨 ERROR GENERAL: ' . $e->getMessage());
+        \Log::error('Trace: ' . $e->getTraceAsString());
+        return back()->with('error', '❌ Error crítico: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Normaliza nombre: detecta apellidos compuestos y separa inteligentemente
+ */
+private function normalizarNombreApellidos($nombreExcel)
+{
+    if (!is_string($nombreExcel)) {
+        \Log::warning("❌ Nombre no es string: " . json_encode($nombreExcel));
+        return null;
+    }
+
+    // ✅ Normalizar espacios: eliminar múltiples, al inicio y final
+    $nombreExcel = preg_replace('/\s+/', ' ', trim($nombreExcel));
+    \Log::info("🧹 Nombre limpio de espacios: '{$nombreExcel}'");
+
+    $palabras = array_filter(explode(' ', $nombreExcel), function($palabra) {
+        return !empty($palabra); // ✅ Filtrar elementos vacíos
+    });
+
+    if (count($palabras) < 2) {
+        \Log::warning("⚠️ Nombre demasiado corto después de limpiar: '{$nombreExcel}'. Usando tal cual.");
+        return $nombreExcel;
+    }
+
+    // Lista de prefijos comunes en apellidos compuestos
+    $prefijosApellidos = ['DE', 'DEL', 'DE LA', 'DE LOS', 'VON', 'VAN', 'MC', 'MAC', 'O'];
+
+    // Estrategia: detectar apellidos compuestos
+    $apellidos = [];
+    $i = 0;
+    $total = count($palabras);
+
+    // Tomar al menos 1 palabra como apellido
+    $apellidos[] = $palabras[$i++];
+
+    // Si hay más palabras, ver si la siguiente forma parte de un apellido compuesto
+    if ($i < $total) {
+        $primera = strtoupper($palabras[0]);
+        $segunda = strtoupper($palabras[1]);
+
+        // Caso: "DE LA VEGA" → tomar 3 palabras
+        if ($primera === 'DE' && $segunda === 'LA' && $i + 1 < $total) {
+            $apellidos[] = $palabras[$i++];
+            $apellidos[] = $palabras[$i++];
+        }
+        // Caso: "DE LOS SANTOS" → tomar 3 palabras
+        elseif ($primera === 'DE' && $segunda === 'LOS' && $i + 1 < $total) {
+            $apellidos[] = $palabras[$i++];
+            $apellidos[] = $palabras[$i++];
+        }
+        // Caso: "VON BRAUN" → tomar 2 palabras
+        elseif (in_array($primera, ['VON', 'VAN', 'MC', 'MAC', 'O']) && $i < $total) {
+            $apellidos[] = $palabras[$i++];
+        }
+        // Caso: "DEL CASTILLO" → tomar 2 palabras
+        elseif ($primera === 'DEL' && $i < $total) {
+            $apellidos[] = $palabras[$i++];
+        }
+        // Caso normal: tomar 2 palabras como apellidos (si hay al menos 3 palabras en total)
+        elseif ($total >= 3) {
+            $apellidos[] = $palabras[$i++];
+        }
+        // Si solo hay 2 palabras, asumir que la primera es apellido, la segunda es nombre
+        else {
+            // Ya tomamos la primera palabra como apellido, no tomamos más
+        }
+    }
+
+    // El resto son nombres
+    $nombres = array_slice($palabras, count($apellidos));
+
+    $apellidosStr = implode(' ', $apellidos);
+    $nombresStr = implode(' ', $nombres);
+
+    $resultado = trim("{$nombresStr} {$apellidosStr}");
+
+    \Log::info("🔤 Normalizado: '{$nombreExcel}' → '{$resultado}' (Apellidos: '{$apellidosStr}', Nombres: '{$nombresStr}')");
+
+    return $resultado;
+}
+
+/**
+ * Extrae apellido paterno (inteligente)
+ */
+private function extraerApellidoPaterno($nombreExcel)
+{
+    if (!is_string($nombreExcel)) {
+        return '';
+    }
+
+    $palabras = array_filter(explode(' ', trim($nombreExcel)), 'strlen');
+    if (empty($palabras)) return '';
+
+    $primera = strtoupper($palabras[0]);
+
+    // Caso: "DE LA VEGA" → apellido paterno = "DE LA VEGA"
+    if ($primera === 'DE' && isset($palabras[1]) && strtoupper($palabras[1]) === 'LA' && isset($palabras[2])) {
+        return implode(' ', array_slice($palabras, 0, 3));
+    }
+    // Caso: "DE LOS SANTOS" → apellido paterno = "DE LOS SANTOS"
+    if ($primera === 'DE' && isset($palabras[1]) && strtoupper($palabras[1]) === 'LOS' && isset($palabras[2])) {
+        return implode(' ', array_slice($palabras, 0, 3));
+    }
+    // Caso: "VON BRAUN" → apellido paterno = "VON BRAUN"
+    if (in_array($primera, ['VON', 'VAN', 'MC', 'MAC', 'O']) && isset($palabras[1])) {
+        return "{$palabras[0]} {$palabras[1]}";
+    }
+    // Caso: "DEL CASTILLO" → apellido paterno = "DEL CASTILLO"
+    if ($primera === 'DEL' && isset($palabras[1])) {
+        return "{$palabras[0]} {$palabras[1]}";
+    }
+    // Caso normal: primera palabra
+    return $palabras[0];
+}
+
+/**
+ * Extrae apellido materno (inteligente)
+ */
+private function extraerApellidoMaterno($nombreExcel)
+{
+    if (!is_string($nombreExcel)) {
+        return null;
+    }
+
+    $palabras = array_filter(explode(' ', trim($nombreExcel)), 'strlen');
+    $total = count($palabras);
+
+    if ($total < 2) {
+        return null;
+    }
+
+    $primera = strtoupper($palabras[0]);
+
+    // Si el primer apellido es compuesto, el materno empieza después
+    if ($primera === 'DE' && isset($palabras[1]) && in_array(strtoupper($palabras[1]), ['LA', 'LOS']) && isset($palabras[2])) {
+        // "DE LA VEGA MARTINEZ" → materno = "MARTINEZ"
+        return $palabras[3] ?? null;
+    }
+    if (in_array($primera, ['VON', 'VAN', 'MC', 'MAC', 'O', 'DEL']) && isset($palabras[1])) {
+        // "VON BRAUN STELLA" → materno = "STELLA"
+        return $palabras[2] ?? null;
+    }
+    // Caso normal: segunda palabra
+    return $palabras[1] ?? null;
+}
+
+/**
+ * Genera email temporal
+ */
+private function generarEmailTemporal($nombre, $nss)
+{
+    $base = Str::slug($nombre, '.') . '.' . Str::slug($nss);
+    return substr($base, 0, 100) . '@empresa.com';
+}
 }

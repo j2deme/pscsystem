@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/ver_buzon', [AdminController::class, 'verBuzon'])->name('admin.verBuzon');
     Route::post('/importar-excel', [ImportController::class, 'updateDestajos'])->name('updateDestajos');
     Route::post('/importar-excel2', [ImportController::class, 'importarVacaciones'])->name('importar.excel');
+    Route::post('/importar-personal-activo', [ImportController::class, 'importarPersonalActivo'])->name('importar.personal.activo');
     Route::get('/reingreso/{id}', [AdminController::class, 'darReingreso'])->name('admin.reingreso');
     Route::get('/tablero_nominas', [AdminController::class, 'tableroNominas'])->name('admin.nominasDashboard');
     Route::get('/tablero_operaciones', [AdminController::class, 'tableroOperaciones'])->name('admin.operacionesDashboard');

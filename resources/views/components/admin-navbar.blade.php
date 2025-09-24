@@ -203,6 +203,12 @@
             'icono' => 'folder-open',
             'color' => 'bg-gray-300 dark:bg-gray-700',
         ],
+        [
+            'titulo' => 'Importar Personal Activo',
+            'ruta' => route('importar.personal.activo'),
+            'icono' => 'folder-open',
+            'color' => 'bg-blue-300 dark:bg-gray-700',
+        ],
         /*[
             'titulo' => 'Depurar datos',
             'form' => true, // Marcador para saber que es un formulario
@@ -302,6 +308,24 @@
                             Importar
                         </button>
                     </form>
+                @elseif($card['titulo'] === 'Importar Personal Activo')
+    <form action="{{ route('importar.personal.activo') }}" method="POST" enctype="multipart/form-data"
+        class="p-3 rounded-lg {{ $card['color'] }}">
+        @csrf
+        <div class="flex items-center space-x-3">
+            <div class="flex items-center justify-center mb-1 rounded-full shadow w-14 h-14 bg-white/80">
+                <i class="ti ti-user-plus text-3xl {{ Str::contains($card['color'], 'blue') ? 'text-blue-700' : 'text-gray-700' }}"></i>
+            </div>
+            <span class="font-medium">{{ $card['titulo'] }}</span>
+        </div>
+        <input type="file" name="excel" accept=".xlsx,.xls"
+            class="mt-2 w-full text-sm text-gray-500 file:mr-4 file:py-1 file:px-2 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            required>
+        <button type="submit"
+            class="mt-2 w-full bg-blue-600 text-white py-1 px-2 rounded hover:bg-blue-700 transition text-sm">
+            Importar
+        </button>
+    </form>
                 @elseif (isset($card['form']) && $card['form'])
                     <form action="{{ $card['action'] }}" method="POST"
                         class="p-3 rounded-lg {{ $card['color'] }} hover:bg-opacity-70 transition relative block"
