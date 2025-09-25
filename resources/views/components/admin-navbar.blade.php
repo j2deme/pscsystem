@@ -546,6 +546,30 @@
         </ul>
     </div>
 @endif
+@if(session('resumen'))
+    <div class="mt-6">
+        <h3 class="font-semibold text-blue-800">📊 Usuarios en Excel Y en BD (activos) <span class="text-sm text-blue-600">({{ session('resumen.en_excel_y_bd')->count() }})</span></h3>
+        <ul class="list-disc list-inside text-sm text-blue-700">
+            @foreach(session('resumen.en_excel_y_bd') as $item)
+                <li>{{ $item['nombre'] }} (ID: {{ $item['id_bd'] }}, Estatus: {{ $item['estatus'] }})</li>
+            @endforeach
+        </ul>
+
+        <h3 class="font-semibold text-green-800 mt-4">➕ Usuarios en Excel pero NO en BD <span class="text-sm text-green-600">({{ session('resumen.en_excel_no_bd')->count() }})</span></h3>
+        <ul class="list-disc list-inside text-sm text-green-700">
+            @foreach(session('resumen.en_excel_no_bd') as $item)
+                <li>{{ $item['nombre'] }} (Empleado: {{ $item['num_empleado'] ?? 'N/A' }})</li>
+            @endforeach
+        </ul>
+
+        <h3 class="font-semibold text-red-800 mt-4">❌ Usuarios en BD pero NO en Excel <span class="text-sm text-red-600">({{ session('resumen.en_bd_no_excel')->count() }})</span></h3>
+        <ul class="list-disc list-inside text-sm text-red-700">
+            @foreach(session('resumen.en_bd_no_excel') as $item)
+                <li>{{ $item['name'] }} (ID: {{ $item['id'] }}, Empleado: {{ $item['num_empleado'] ?? 'N/A' }})</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
             <!--
             <div class="flex justify-center space-x-2 mt-4">

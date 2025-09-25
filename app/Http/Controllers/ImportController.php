@@ -1088,7 +1088,7 @@ public function importarPersonalActivo(Request $request)
     try {
         $inputFileName = $request->file('excel')->getPathname();
         $spreadsheet = IOFactory::load($inputFileName);
-        $sheet = $spreadsheet->getActiveSheet();
+        $sheet = $spreadsheet->getSheet(1);
 
         $highestRow = $sheet->getHighestRow();
         $highestColumn = $sheet->getHighestColumn();
@@ -1101,6 +1101,11 @@ public function importarPersonalActivo(Request $request)
         $ignorados = 0;
         $yaRegistrados = 0; // ← ¡Nuevo contador!
         $nombresEnExcel = [];
+
+        // Listas para agrupar resultados
+        $usuariosEnExcelYBd = collect(); // Usuarios en Excel Y en BD (activos)
+        $usuariosEnExcelNoBd = collect(); // Usuarios en Excel pero no en BD
+        $usuariosEnBdNoExcel = collect(); // Usuarios en BD pero no en Excel
 
         // Procesar desde la fila 2
         for ($row = 2; $row <= $highestRow; $row++) {
@@ -1173,7 +1178,16 @@ public function importarPersonalActivo(Request $request)
             }
 
             if ($user) {
-                $yaRegistrados++; // ← ¡Incrementar aquí!
+                $yaRegistrados++;
+
+                // ✅ AGREGAR A LA LISTA DE "EN EXCEL Y EN BD"
+                $usuariosEnExcelYBd->push([
+                    'nombre' => $nombreNormalizado,
+                    'id_bd' => $user->id,
+                    'estatus' => $user->estatus,
+                    'num_empleado' => $user->num_empleado ?? 'N/A',
+                    'empresa' => $user->empresa ?? 'N/A',
+                ]);
 
                 if ($user->estatus === 'Activo') {
                     \Log::info("✅ Usuario ya activo: {$nombreNormalizado} (ID: {$user->id})");
@@ -1185,6 +1199,13 @@ public function importarPersonalActivo(Request $request)
                     $actualizados++;
                 }
             } else {
+                // ✅ AGREGAR A LA LISTA DE "EN EXCEL PERO NO EN BD"
+                $usuariosEnExcelNoBd->push([
+                    'nombre' => $nombreNormalizado,
+                    'num_empleado' => $codigoEmpleado,
+                    'empresa' => 'PSC',
+                ]);
+
                 // Crear en solicitud_altas con TODOS los nuevos campos
                 $solicitudAlta = SolicitudAlta::create([
                     'nombre' => $nombreNormalizado,
@@ -1237,27 +1258,23 @@ public function importarPersonalActivo(Request $request)
             }
         }
 
-        // 🔍 COMPROBACIÓN FINAL: Excluir soft-deleted y evitar duplicados
-        \Log::info("🔍 Iniciando comprobación de usuarios activos (no Montana, no eliminados) no encontrados en Excel...");
+        // 🔍 COMPROBACIÓN FINAL: 3 listas claras
+        \Log::info("🔍 Iniciando comprobación final...");
 
-        $usuariosActivosNoEnExcel = User::where('estatus', 'Activo')
-            ->whereNull('deleted_at') // ← ¡Excluir soft-deleted!
-            ->whereNotIn('name', $nombresEnExcel)
+        // 1. Usuarios en BD pero NO en Excel
+        $usuariosEnBdNoExcel = User::where('estatus', 'Activo')
+            ->whereNull('deleted_at')
+            ->whereNotIn(DB::raw('UPPER(name)'), array_map('strtoupper', $nombresEnExcel))
             ->where('empresa', '!=', 'Montana')
             ->whereNotNull('empresa')
             ->select('name', 'id', 'num_empleado', 'empresa')
             ->get();
 
-        if ($usuariosActivosNoEnExcel->count() > 0) {
-            \Log::warning("⚠️ Usuarios activos (no Montana, no eliminados) en BD que NO aparecen en el Excel:");
-            foreach ($usuariosActivosNoEnExcel as $usuario) {
-                \Log::warning("   - {$usuario->name} (ID: {$usuario->id}, Empleado: {$usuario->num_empleado}, Empresa: {$usuario->empresa})");
-            }
-        } else {
-            \Log::info("✅ Todos los usuarios activos (no Montana, no eliminados) en BD están en el Excel.");
-        }
+        // Mostrar resumen
+        \Log::info("📊 Usuarios en Excel Y en BD (activos): {$usuariosEnExcelYBd->count()}");
+        \Log::info("📊 Usuarios en Excel pero NO en BD: {$usuariosEnExcelNoBd->count()}");
+        \Log::info("📊 Usuarios en BD pero NO en Excel: {$usuariosEnBdNoExcel->count()}");
 
-        \Log::info("📊 Usuarios ya registrados en BD: {$yaRegistrados}");
         \Log::info("=== RESUMEN FINAL ===");
         \Log::info("✅ Nuevos creados: {$creados}");
         \Log::info("🔄 Actualizados (reactivados): {$actualizados}");
@@ -1267,7 +1284,11 @@ public function importarPersonalActivo(Request $request)
 
         return back()->with([
             'success' => "✅ ¡Importación completada! Nuevos: {$creados}, Actualizados: {$actualizados}, Ya registrados: {$yaRegistrados}, Ignorados: {$ignorados}.",
-            'usuarios_no_en_excel' => $usuariosActivosNoEnExcel->count() > 0 ? $usuariosActivosNoEnExcel : null,
+            'resumen' => [
+                'en_excel_y_bd' => $usuariosEnExcelYBd,
+                'en_excel_no_bd' => $usuariosEnExcelNoBd,
+                'en_bd_no_excel' => $usuariosEnBdNoExcel,
+            ],
         ]);
 
     } catch (\Exception $e) {
