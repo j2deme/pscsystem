@@ -124,7 +124,7 @@
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                        {{ $user->solicitudAlta?->punto ?? 'No Disponible' }}
+                        {{ $user->punto ?? 'No Disponible' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         @if($user->rol == 'admin')

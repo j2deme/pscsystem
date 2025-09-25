@@ -20,6 +20,9 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'sol_alta_id',
+        'sol_docs_id',
+        'num_empleado',
         'email',
         'password',
         'fecha_ingreso',

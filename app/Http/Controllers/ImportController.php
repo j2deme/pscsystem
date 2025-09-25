@@ -1367,9 +1367,10 @@ private function normalizarNombreApellidos($nombreExcel)
     $apellidosStr = implode(' ', $apellidos);
     $nombresStr = implode(' ', $nombres);
 
-    $resultado = trim("{$nombresStr} {$apellidosStr}");
+    // ✅ Devolver solo los nombres
+    $resultado = trim($nombresStr);
 
-    \Log::info("🔤 Normalizado: '{$nombreExcel}' → '{$resultado}' (Apellidos: '{$apellidosStr}', Nombres: '{$nombresStr}')");
+    \Log::info("🔤 Normalizado: '{$nombreExcel}' → Nombres: '{$resultado}', Apellidos: '{$apellidosStr}'");
 
     return $resultado;
 }
@@ -1383,7 +1384,8 @@ private function extraerApellidoPaterno($nombreExcel)
         return '';
     }
 
-    $palabras = array_filter(explode(' ', trim($nombreExcel)), 'strlen');
+    $nombreExcel = preg_replace('/\s+/', ' ', trim($nombreExcel));
+    $palabras = array_filter(explode(' ', $nombreExcel), 'strlen');
     if (empty($palabras)) return '';
 
     $primera = strtoupper($palabras[0]);
@@ -1417,7 +1419,8 @@ private function extraerApellidoMaterno($nombreExcel)
         return null;
     }
 
-    $palabras = array_filter(explode(' ', trim($nombreExcel)), 'strlen');
+    $nombreExcel = preg_replace('/\s+/', ' ', trim($nombreExcel));
+    $palabras = array_filter(explode(' ', $nombreExcel), 'strlen');
     $total = count($palabras);
 
     if ($total < 2) {
