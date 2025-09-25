@@ -984,6 +984,10 @@ private function extraerValorNumerico($valor)
     /**
  * Parsea y valida una fecha, corrigiendo errores comunes como años mal escritos o seriales de Excel.
  */
+/**
+ * Parsea y valida una fecha, corrigiendo errores comunes como años mal escritos o seriales de Excel.
+ * Ahora maneja caracteres invisibles y fechas inválidas.
+ */
 private function parsearFechaConValidacion($fechaRaw, $contexto = 'fecha')
 {
     if (!$fechaRaw) {
@@ -996,7 +1000,7 @@ private function parsearFechaConValidacion($fechaRaw, $contexto = 'fecha')
         try {
             // Convertir serial de Excel a fecha
             if ($fechaRaw > 59) {
-                $fechaRaw -= 1; // Corrección por bug de Excel (1900 no fue bisiesto)
+                $fechaRaw -= 1; // Corrección por bug de Excel
             }
             $unixDate = ($fechaRaw - 25569) * 86400; // 25569 = días entre 1900-01-01 y 1970-01-01
             $fecha = Carbon::createFromTimestamp($unixDate)->startOfDay();
@@ -1008,32 +1012,57 @@ private function parsearFechaConValidacion($fechaRaw, $contexto = 'fecha')
         }
     }
 
-    // Si es string, limpiar y validar
+    // Limpiar caracteres invisibles
+    $fechaRaw = preg_replace('/[\x00-\x1F\x7F]/', '', $fechaRaw);
     $fechaRaw = trim($fechaRaw);
 
-    // Corregir errores comunes: año con 5+ dígitos
+    \Log::info("📅 {$contexto} recibida para parsear: '{$fechaRaw}' (tipo: " . gettype($fechaRaw) . ")");
+
+    // Corregir años mal escritos (5+ dígitos)
     if (preg_match('/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{5,})$/', $fechaRaw, $matches)) {
         $dia = $matches[1];
         $mes = $matches[2];
         $anio = $matches[3];
-
-        if (strlen($anio) > 4) {
-            $anioCorregido = substr($anio, -4);
-            $fechaCorregida = "{$dia}/{$mes}/{$anioCorregido}";
-            \Log::warning("⚠️ {$contexto} corregida: '{$fechaRaw}' → '{$fechaCorregida}'");
-            $fechaRaw = $fechaCorregida;
-        }
+        $anioCorregido = substr($anio, -4);
+        $fechaCorregida = "{$dia}/{$mes}/{$anioCorregido}";
+        \Log::warning("⚠️ {$contexto} corregida: '{$fechaRaw}' → '{$fechaCorregida}'");
+        $fechaRaw = $fechaCorregida;
     }
 
-    try {
-        $fecha = Carbon::parse($fechaRaw);
-        // Validar rango razonable
+    // Intentar parsear con formato específico d/m/Y
+    $fecha = Carbon::createFromFormat('d/m/Y', $fechaRaw);
+
+    if ($fecha && $fecha->format('d/m/Y') === $fechaRaw) {
+        // Verificar rango razonable
         if ($fecha->year < 1900 || $fecha->year > 2100) {
             \Log::error("❌ Fecha fuera de rango válido ({$fecha->toDateString()}) para: {$fechaRaw}");
             return null;
         }
-        \Log::info("📅 {$contexto} parseada correctamente: {$fecha->toDateString()}");
+        // Verificar que la fecha sea válida (por ejemplo, 30/02/2025 no es válida)
+        $dia = $fecha->day;
+        $mes = $fecha->month;
+        $anio = $fecha->year;
+        if (!checkdate($mes, $dia, $anio)) {
+            \Log::error("❌ Fecha inválida según checkdate ({$fechaRaw})");
+            return null;
+        }
+        \Log::info("📅 {$contexto} parseada correctamente con formato d/m/Y: {$fecha->toDateString()}");
         return $fecha;
+    }
+
+    // Si falla, intentar con Carbon::parse() (último recurso)
+    try {
+        $fecha = Carbon::parse($fechaRaw);
+
+        // Verificar rango razonable
+        if ($fecha->year < 1900 || $fecha->year > 2100) {
+            \Log::error("❌ Fecha fuera de rango válido ({$fecha->toDateString()}) para: {$fechaRaw}");
+            return null;
+        }
+
+        \Log::info("📅 {$contexto} parseada con Carbon::parse(): {$fecha->toDateString()}");
+        return $fecha;
+
     } catch (\Exception $e) {
         \Log::error("❌ Error al parsear {$contexto} '{$fechaRaw}': " . $e->getMessage());
         return null;
@@ -1043,7 +1072,7 @@ private function parsearFechaConValidacion($fechaRaw, $contexto = 'fecha')
 
 public function importarPersonalActivo(Request $request)
 {
-    \Log::info('=== INICIO DE IMPORTACIÓN DE PERSONAL ACTIVO ===');
+    \Log::info('=== INICIO DE IMPORTACIÓN DE PERSONAL ACTIVO (CON NUEVOS CAMPOS Y SIN DUPLICADOS) ===');
 
     set_time_limit(300);
     ini_set('memory_limit', '512M');
@@ -1070,35 +1099,55 @@ public function importarPersonalActivo(Request $request)
         $creados = 0;
         $actualizados = 0;
         $ignorados = 0;
+        $yaRegistrados = 0; // ← ¡Nuevo contador!
+        $nombresEnExcel = [];
 
-        // Procesar desde la fila 2 (asumiendo que fila 1 son encabezados)
+        // Procesar desde la fila 2
         for ($row = 2; $row <= $highestRow; $row++) {
             \Log::info("----- Procesando fila #{$row} -----");
 
-            // Columna B: Nombre completo
-            $nombreCompletoExcel = $sheet->getCell("B{$row}")->getValue();
+            // Leer todos los campos necesarios
+            $registroPatronal = $sheet->getCell("A{$row}")->getValue();
+            $departamento = $sheet->getCell("B{$row}")->getValue(); // punto
+            $puesto = $sheet->getCell("C{$row}")->getValue();       // rol
+            $tipoPeriodo = $sheet->getCell("D{$row}")->getValue();
+            $codigoEmpleado = $sheet->getCell("E{$row}")->getValue();
+            $nombreCompletoExcel = $sheet->getCell("F{$row}")->getValue();
+            $rfc = $sheet->getCell("G{$row}")->getValue();
+            $nss = $sheet->getCell("H{$row}")->getValue();
+            $curp = $sheet->getCell("I{$row}")->getValue();
+            $estadoEmpleado = $sheet->getCell("J{$row}")->getValue();
+            $fechaIngresoRaw = $sheet->getCell("K{$row}")->getValue();
+            $tipoCotizacion = $sheet->getCell("L{$row}")->getValue();
+            $sbcFijo = $sheet->getCell("M{$row}")->getValue();
+            $sbcVariable = $sheet->getCell("N{$row}")->getValue();
+            $sbcTopado = $sheet->getCell("O{$row}")->getValue();
+            $salarioDiario = $sheet->getCell("P{$row}")->getValue();
+
+            // Validar nombre
             if (!$nombreCompletoExcel || !is_string($nombreCompletoExcel)) {
                 \Log::warning("📛 Nombre no válido en fila {$row}");
                 $ignorados++;
                 continue;
             }
 
-            // Columna A: Número de empleado
-            $numEmpleado = $sheet->getCell("A{$row}")->getValue();
-
-            // Columna C: Fecha de ingreso
-            $fechaIngresoRaw = $sheet->getCell("C{$row}")->getValue();
-            $fechaIngreso = $this->parsearFechaConValidacion($fechaIngresoRaw, 'Fecha de ingreso');
-            if (!$fechaIngreso) {
-                \Log::warning("📅 Fecha de ingreso inválida en fila {$row}: {$fechaIngresoRaw}");
+            if (trim(strtoupper($estadoEmpleado)) === 'BAJA') {
+                \Log::info("⏭️ Usuario con estado 'Baja' en fila {$row}, omitiendo.");
                 $ignorados++;
                 continue;
             }
 
-            // Columna D: NSS
-            $nss = $sheet->getCell("D{$row}")->getValue();
+            // Validar NSS
             if (!$nss) {
                 \Log::warning("🆔 NSS faltante en fila {$row}");
+                $ignorados++;
+                continue;
+            }
+
+            // Validar fecha de ingreso
+            $fechaIngreso = $this->parsearFechaConValidacion($fechaIngresoRaw, 'Fecha de ingreso');
+            if (!$fechaIngreso) {
+                \Log::warning("📅 Fecha de ingreso inválida en fila {$row}: {$fechaIngresoRaw}");
                 $ignorados++;
                 continue;
             }
@@ -1111,10 +1160,21 @@ public function importarPersonalActivo(Request $request)
                 continue;
             }
 
-            // Buscar usuario
-            $user = User::where('name', 'like', "%{$nombreNormalizado}%")->first();
+            $nombresEnExcel[] = $nombreNormalizado;
+
+            // 🔍 BUSCAR USUARIO: Primero coincidencia EXACTA (insensible a mayúsculas), luego LIKE
+            $user = User::whereRaw('UPPER(name) = ?', [strtoupper($nombreNormalizado)])->first();
+
+            if (!$user) {
+                // Si no se encuentra, buscar con LIKE (máximo 1 resultado)
+                $user = User::where('name', 'like', "%{$nombreNormalizado}%")
+                    ->orderBy('id', 'asc')
+                    ->first();
+            }
 
             if ($user) {
+                $yaRegistrados++; // ← ¡Incrementar aquí!
+
                 if ($user->estatus === 'Activo') {
                     \Log::info("✅ Usuario ya activo: {$nombreNormalizado} (ID: {$user->id})");
                     $ignorados++;
@@ -1125,25 +1185,36 @@ public function importarPersonalActivo(Request $request)
                     $actualizados++;
                 }
             } else {
-                // Crear en solicitud_altas
+                // Crear en solicitud_altas con TODOS los nuevos campos
                 $solicitudAlta = SolicitudAlta::create([
                     'nombre' => $nombreNormalizado,
                     'apellido_paterno' => $this->extraerApellidoPaterno($nombreCompletoExcel),
                     'apellido_materno' => $this->extraerApellidoMaterno($nombreCompletoExcel),
                     'nss' => $nss,
+                    'curp' => $curp,
+                    'rfc' => $rfc,
                     'fecha_ingreso' => $fechaIngreso,
                     'status' => 'Activo',
                     'observaciones' => 'Solicitud Aceptada',
                     'empresa' => 'PSC',
+                    'registro_patronal' => $registroPatronal,
+                    'punto' => $departamento,
+                    'rol' => $puesto,
+                    'tipo_periodo' => $tipoPeriodo,
+                    'tipo_cotizacion' => $tipoCotizacion,
+                    'sbc_fijo' => $sbcFijo,
+                    'sbc_variable' => $sbcVariable,
+                    'sbc_topado' => $sbcTopado,
+                    'sd' => $salarioDiario,
                 ]);
 
                 \Log::info("📄 SolicitudAlta creada: ID {$solicitudAlta->id}");
 
                 // Crear en documentacion_altas
                 $docAlta = DocumentacionAltas::create([
-                    'solicitud_id' => $solicitudAlta->id, // ← ¡Aquí va la clave!
+                    'solicitud_id' => $solicitudAlta->id,
                 ]);
-                \Log::info("📄 DocumentacionAlta creada: ID {$docAlta->id}");
+                \Log::info("📄 DocumentacionAltas creada: ID {$docAlta->id}");
 
                 // Crear en users
                 $user = User::create([
@@ -1152,10 +1223,12 @@ public function importarPersonalActivo(Request $request)
                     'email' => $this->generarEmailTemporal($nombreNormalizado, $nss),
                     'estatus' => 'Activo',
                     'empresa' => 'PSC',
-                    'num_empleado' => $numEmpleado,
+                    'num_empleado' => $codigoEmpleado,
                     'fecha_ingreso' => $fechaIngreso,
                     'sol_alta_id' => $solicitudAlta->id,
                     'sol_docs_id' => $docAlta->id,
+                    'punto' => $departamento,
+                    'rol' => $puesto,
                     'created_at' => now(),
                 ]);
 
@@ -1164,14 +1237,37 @@ public function importarPersonalActivo(Request $request)
             }
         }
 
+        // 🔍 COMPROBACIÓN FINAL: Excluir soft-deleted y evitar duplicados
+        \Log::info("🔍 Iniciando comprobación de usuarios activos (no Montana, no eliminados) no encontrados en Excel...");
+
+        $usuariosActivosNoEnExcel = User::where('estatus', 'Activo')
+            ->whereNull('deleted_at') // ← ¡Excluir soft-deleted!
+            ->whereNotIn('name', $nombresEnExcel)
+            ->where('empresa', '!=', 'Montana')
+            ->whereNotNull('empresa')
+            ->select('name', 'id', 'num_empleado', 'empresa')
+            ->get();
+
+        if ($usuariosActivosNoEnExcel->count() > 0) {
+            \Log::warning("⚠️ Usuarios activos (no Montana, no eliminados) en BD que NO aparecen en el Excel:");
+            foreach ($usuariosActivosNoEnExcel as $usuario) {
+                \Log::warning("   - {$usuario->name} (ID: {$usuario->id}, Empleado: {$usuario->num_empleado}, Empresa: {$usuario->empresa})");
+            }
+        } else {
+            \Log::info("✅ Todos los usuarios activos (no Montana, no eliminados) en BD están en el Excel.");
+        }
+
+        \Log::info("📊 Usuarios ya registrados en BD: {$yaRegistrados}");
         \Log::info("=== RESUMEN FINAL ===");
         \Log::info("✅ Nuevos creados: {$creados}");
         \Log::info("🔄 Actualizados (reactivados): {$actualizados}");
+        \Log::info("📊 Ya registrados: {$yaRegistrados}");
         \Log::info("⏹️ Ignorados (ya activos): {$ignorados}");
         \Log::info("=== IMPORTACIÓN FINALIZADA ===");
 
         return back()->with([
-            'success' => "✅ ¡Importación completada! Nuevos: {$creados}, Actualizados: {$actualizados}, Ignorados: {$ignorados}."
+            'success' => "✅ ¡Importación completada! Nuevos: {$creados}, Actualizados: {$actualizados}, Ya registrados: {$yaRegistrados}, Ignorados: {$ignorados}.",
+            'usuarios_no_en_excel' => $usuariosActivosNoEnExcel->count() > 0 ? $usuariosActivosNoEnExcel : null,
         ]);
 
     } catch (\Exception $e) {
@@ -1180,7 +1276,6 @@ public function importarPersonalActivo(Request $request)
         return back()->with('error', '❌ Error crítico: ' . $e->getMessage());
     }
 }
-
 /**
  * Normaliza nombre: detecta apellidos compuestos y separa inteligentemente
  */
@@ -1203,9 +1298,6 @@ private function normalizarNombreApellidos($nombreExcel)
         \Log::warning("⚠️ Nombre demasiado corto después de limpiar: '{$nombreExcel}'. Usando tal cual.");
         return $nombreExcel;
     }
-
-    // Lista de prefijos comunes en apellidos compuestos
-    $prefijosApellidos = ['DE', 'DEL', 'DE LA', 'DE LOS', 'VON', 'VAN', 'MC', 'MAC', 'O'];
 
     // Estrategia: detectar apellidos compuestos
     $apellidos = [];
@@ -1332,6 +1424,6 @@ private function extraerApellidoMaterno($nombreExcel)
 private function generarEmailTemporal($nombre, $nss)
 {
     $base = Str::slug($nombre, '.') . '.' . Str::slug($nss);
-    return substr($base, 0, 100) . '@empresa.com';
+    return substr($base, 0, 100) . '@temporal.com';
 }
 }

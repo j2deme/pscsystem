@@ -6,6 +6,7 @@
     use App\Models\SolicitudVacaciones;
     use App\Models\Asistencia;
     use Carbon\Carbon;
+    use Illuminate\Support\Facades\DB;
 
     $vacacionesAdmin = SolicitudVacaciones::where('estatus', 'En Proceso')
         ->where('observaciones', '!=', 'Solicitud aceptada, falta subir archivo de solicitud.')
@@ -18,7 +19,10 @@
         ->where('fecha_baja', '>=', Carbon::now()->subDays(7))
         ->count();
 
-    $activos = User::where('estatus', 'Activo')->count();
+    $activos = User::where('estatus', 'Activo')
+    ->selectRaw('COUNT(DISTINCT UPPER(name)) as total')
+    ->first()
+    ->total;
     $activosMesActual = User::where('estatus', 'Activo')
         ->whereDate('created_at', '>=', Carbon::now()->startOfMonth())
         ->count();
@@ -532,6 +536,16 @@
                     </div>
                 </div>
             </div>
+            @if(session('usuarios_no_en_excel'))
+    <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <h3 class="font-semibold text-yellow-800 mb-2">⚠️ Usuarios activos (no Montana) en sistema que NO están en el Excel:</h3>
+        <ul class="list-disc list-inside text-sm text-yellow-700 space-y-1">
+            @foreach(session('usuarios_no_en_excel') as $usuario)
+                <li>{{ $usuario->name }} (ID: {{ $usuario->id }}, Empleado: {{ $usuario->num_empleado }}, Empresa: {{ $usuario->empresa }})</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
             <!--
             <div class="flex justify-center space-x-2 mt-4">
